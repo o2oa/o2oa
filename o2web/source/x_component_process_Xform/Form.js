@@ -4654,46 +4654,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     //},
     downloadAll: function (){
         var iframe, iframeDoc;
-        // var _listCssLinks = ()=>{
-        //     const links = [];
-        //     // iframeDoc.querySelectorAll('link').forEach((link)=>{
-        //     //     const href = link.getAttribute('href');
-        //     //     if (href && !(/^(https?:)?\/\//.test(href) || /^(data|blob|javascript|mailto|tel):/.test(href) || href.startsWith('#'))) {
-        //     //         links.push(href);
-        //     //     }
-        //     // });
-        //     if( this.json.formStyleType === 'v10' ){
-        //         // links.push('../x_component_process_FormDesigner/Module/Form/skin/v10/index.css');
-        //         // links.push('../x_component_process_FormDesigner/Module/Form/skin/v10/homepage.css');
-        //         links.push('../x_desktop/css/v10/style.css');
-        //         links.push('../x_component_process_FormDesigner/Module/Form/skin/v10/form.css');
-        //         links.push('../x_component_process_FormDesigner/Module/Form/skin/v10/view.css');
-        //     }
-        //     return links;
-        // }
-
-        // var _replaceLinkHref = ()=>{
-        //     const baseUrl = window.location.href;
-        //     const basePath = baseUrl.substring(0, baseUrl.lastIndexOf('/') + 1);
-        //     const port = layout.port === "" ? "" : ":" + layout.port;
-        //     iframeDoc.querySelectorAll('link').forEach((link)=>{
-        //         const href = link.getAttribute('href');
-        //         if (href && !(/^(https?:)?\/\//.test(href) || /^(data|blob|javascript|mailto|tel):/.test(href) || href.startsWith('#'))) {
-        //             let newHref;
-        //             if (href.startsWith('/')) {
-        //                 newHref = window.location.origin + href; // 从根目录开始
-        //             } else if (href.startsWith('./')) {
-        //                 newHref = basePath + href.substring(2);   // 当前目录
-        //             } else {
-        //                 newHref = basePath + href; // 相对路径
-        //             }
-        //             newHref = newHref.replace(window.location.origin, 'http://127.0.0.1'+port)
-        //             try{
-        //                 link.setAttribute('href', newHref);
-        //             }catch(e){}
-        //         }
-        //     });
-        // }
         var _loadCss = (urls, callback) => {
             const ps = urls.map(async (url) => {
                 const res = await fetch(url);
@@ -4715,10 +4675,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var port = layout.port === "" ? "" : ":" + layout.port;
             const FONT_BASE_URL = "http://127.0.0.1" + port + "/x_desktop/css/v10/";
             allStyleList.forEach(styleEl => {
-                //console.log(styleEl.dataset.url)
-                //if( styleEl.dataset.url && styleEl.dataset.url.includes('css/v10') ){
-                    styleEl.textContent = styleEl.textContent.replace(fontReg, `url("${FONT_BASE_URL}$1")`);
-                //}
+               styleEl.textContent = styleEl.textContent.replace(fontReg, `url("${FONT_BASE_URL}$1")`);
             });
         }
         var _download = ()=>{
@@ -4726,7 +4683,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 const html = iframeDoc.documentElement.outerHTML;
                 //const html = this.app.content.get("html");
                 this._downloadAll(html, ()=>{
-                    iframe?.destroy();
+                    //iframe?.destroy();
                     if (this.mask) { this.mask.hide(); this.mask = null; }
                 });
             }, 2000)
@@ -4740,9 +4697,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if( this.json.formStyleType === 'v10' ) {
                 iframeDoc.querySelector('head').empty();
 
-                // _removeEl('script');
-                // _removeEl('style');
-                // _removeEl('link');
+                // const formContentChild = iframeDoc.querySelector('.form-content')?.firstElementChild;
+                // formContentChild.setStyle('width', '100%');
+
+                _removeEl('script');
+                _removeEl('style');
+                _removeEl('link');
 
                 _loadCss([
                     '../x_desktop/css/v10/style.css',
@@ -4752,7 +4712,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     _removeEl('template');
                     _removeEl('.form-side-content');
                     _replaceV10FontUrl();
-                    console.log(iframeDoc.querySelector('head').outerHTML)
                     _download();
                 });
             }else{
@@ -4763,17 +4722,22 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             MWF.require("MWF.widget.Mask", null, false);
             this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
             this.mask.loadNode(this.app.content);
+
+            let src = this.app.options.name === 'cms.Document' ?
+                `../x_desktop/cmsdoc.html?documentId=${this.businessData.document.id}&readonly=true&downloading=true` :
+                `../x_desktop/work.html?workid=${this.businessData.work.id}&readonly=true&downloading=true`;
+
             iframe = new Element('iframe', {
-                src: `../x_desktop/work.html?workid=${this.businessData.work.id}&readonly=true&downloading=true`,
-                "width": "100%",
+                src: src,
+                "width": "1000px",
                 "height": "100%",
                 "frameborder": "0px",
                 "scrolling": "auto",
                 "seamless": "seamless",
                 "styles": {
                     "position": "absolute",
-                    "top": "0px",
-                    "left": "0px",
+                    "top": "10000px",
+                    "left": "0",
                     "z-index": 2,
                     "background-color": "#fff"
                 }
@@ -4832,9 +4796,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var orginUrl = "http://127.0.0.1" + port;
 
         html = html.replace(/\.\.\/(x_|o2_)/g, orginUrl + "/$1");
-
-        debugger;
-        console.log(html);
 
         o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id, "pdf", {
             "workHtml": encodeURIComponent(html),

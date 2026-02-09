@@ -84,6 +84,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this.fireEvent("afterLoad");
                 this.fireEvent("load");
 
+                if( this.downloading ){
+                    this.node.setStyle('overflow', 'hidden');
+                    this.node.setStyle('margin-bottom', '200px');
+                }
+
                 this.form.app.addEvent("resize", function(){
                     // if (this.options.pageShow!=="double"){
                     //     this._doublePage();
@@ -1192,9 +1197,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }
         // }
 
-        if( !this.downloading ){
+        //if( !this.downloading ){
             o2.loadCss('../x_desktop/fonts/fonts.css');
-        }
+        //}
     },
     loadDocumentEditor: function(callback){
         this._loadToolbars();

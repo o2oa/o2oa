@@ -1475,42 +1475,15 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
     },
     _loadOONodeDownloading: function (){
-        debugger;
-        const OODownloadingNodeStyle = {
-            "display": "flex",
-            "align-items": "center",
-            "flex": "1 1 46%",
-            "box-sizing": "border-box"
-        }
-        const OODownloadingLabelNodeStyle = {
-            "width": "6.2vw",
-            "min-width": "4.3em",
-            "max-width": "9em",
-            "padding": "0.5em 0.35em",
-            "margin-right": "0.5em",
-            "display": "flex",
-            "align-items": "flex-end",
-            "height": "100%",
-            "flex": "0 0 6.2vw",
-            "color": "var(--oo-color-text2)",
-            "flex-direction": "column",
-            "justify-content": "center",
-            "box-sizing": "border-box !important",
-            "white-space": "nowrap"
-        }
-        const OODownloadingValueNodeStyle = {
-            "align-items": "center",
-            "display": "flex",
-            "flex": "1 1 0%",
-            "padding": "0.5em 0.6em"
-        }
         this.node.setStyle('display', 'none');
         let valueNode, labelNode;
-        const node = new Element('div.oo-node-download', {
+        const node = new Element('div.oo-node-downloading', {
             'id': this.json.id,
-            'MWFType': this.json.type,
+            'MWFType': this.json.type
         }).inject(this.node, 'after');
-        node.setStyles(OODownloadingNodeStyle);
+        this.node.destroy();
+
+        node.setStyles(this.form.css.OODownloadingNodeStyle);
 
         if (this.json.styles) {
             node.setStyles(this.json.styles);
@@ -1529,7 +1502,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 if(this.json.properties['label-style']){
                     labelNode.setAttribute('style', this.json.properties['label-style']);
                 }
-                labelNode.setStyles(OODownloadingLabelNodeStyle);
+                labelNode.setStyles(this.form.css.OODownloadingLabelNodeStyle);
                 if(this.json.properties['label-Align']){
                     let justifyContent;
                     switch (this.json.properties['label-Align']) {
@@ -1543,7 +1516,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             if(!this.json.inDatatable && this.json.properties['view-style']) {
                 valueNode.setAttribute('style', this.json.properties['view-style']);
             }
-            valueNode.setStyles(OODownloadingValueNodeStyle);
+            valueNode.setStyles(this.form.css.OODownloadingValueNodeStyle);
 
             this.downloadingNode = node;
             this.downloadingLabelNode = labelNode;

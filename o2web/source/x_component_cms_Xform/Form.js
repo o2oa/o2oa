@@ -964,6 +964,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 if (replace || !this.forms[json.id]) this.forms[json.id] = module;
             }
             module.readonly = this.options.readonly;
+            module.downloading = this.options.downloading;
             module.load();
             return module;
         },
@@ -1882,12 +1883,20 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
          * @example
          * this.form.getApp().appForm.downloadAll();
          */
-        downloadAll: function () {
+        _downloadAll: function (htmlString, callback) {
+            var htmlFormId = "";
+            var html = htmlString || document.documentElement.outerHTML; //this.app.content.get("html");
+            var port = layout.port === "" ? "" : ":" + layout.port;
+            var orginUrl = "http://127.0.0.1" + port;
+
+            html = html.replace(/\.\.\/(x_|o2_)/g, orginUrl + "/$1");
+
             o2.Actions.load("x_cms_assemble_control").FileInfoAction.uploadWorkInfo(this.businessData.document.id, "pdf", {
-                "workHtml": encodeURIComponent(this.app.content.get("html")),
+                "workHtml": encodeURIComponent(html),
                 "pageWidth": 1000
             }, function (json) {
                 var htmlFormId = json.data.id;
+                if(callback)callback();
                 htmlFormId = htmlFormId.replace("#", "%23");
                 var url = "/x_cms_assemble_control/jaxrs/fileinfo/batch/download/doc/" + this.businessData.document.id + "/site/(0)";
                 url = o2.filterUrl(o2.Actions.getHost("x_processplatform_assemble_surface") + url);

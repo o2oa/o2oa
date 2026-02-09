@@ -51,6 +51,7 @@ MWF.xApplication.cms.Document.Main = new Class({
 
         if( this.options.readonly === "false" )this.options.readonly = false;
         if( this.options.readonly === "true" )this.options.readonly = true;
+        if( this.options.downloading === 'true' )this.options.downloading = true;
         if( this.options.documentId && this.options.documentId!=""){
             this.options.appId = "cms.Document"+this.options.documentId;
         }
@@ -552,6 +553,7 @@ MWF.xApplication.cms.Document.Main = new Class({
             MWF.xDesktop.requireApp("cms.Xform", "$all", function(){
                 this.appForm = new MWF.CMSForm(this.formNode, this.form, {
                     "readonly": this.readonly,
+                    "downloading": this.options.downloading,
                     "autoSave" : this.options.autoSave,
                     "saveOnClose" : this.options.saveOnClose,
                     "onPostPublish" : this.options.postPublish,
@@ -621,6 +623,7 @@ MWF.xApplication.cms.Document.Main = new Class({
         if( this.options.editFormId )status.editFormId = this.options.editFormId;
         if( this.options.printFormId )status.printFormId = this.options.printFormId;
         if( this.options.forceFormId )status.forceFormId = this.options.forceFormId;
+        if( this.options.downloading )status.downloading = this.options.downloading;
         if(this.options.appId && this.options.appId!="")status.appId = this.options.appId;
         if( this.options.useProcessForm )status.useProcessForm = true;
         return status;
