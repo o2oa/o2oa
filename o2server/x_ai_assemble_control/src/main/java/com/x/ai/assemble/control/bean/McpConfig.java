@@ -63,6 +63,8 @@ public class McpConfig extends GsonPropertyObject {
 
     private String type = "http";
 
+
+
     public String getDisplayName() {
         return displayName;
     }
