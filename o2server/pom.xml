@@ -1035,12 +1035,12 @@
 			<dependency>
 				<groupId>com.itextpdf</groupId>
 				<artifactId>html2pdf</artifactId>
-				<version>5.0.5</version>
+				<version>6.3.1</version>
 			</dependency>
 			<dependency>
 				<groupId>com.itextpdf</groupId>
 				<artifactId>font-asian</artifactId>
-				<version>8.0.5</version>
+				<version>9.5.0</version>
 			</dependency>
 			<dependency>
 				<groupId>redis.clients</groupId>
