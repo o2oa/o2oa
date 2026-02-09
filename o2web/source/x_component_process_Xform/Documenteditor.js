@@ -1191,8 +1191,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this.loadDocumentEditor(callback);
             }
         // }
-       
-        o2.loadCss('../x_desktop/fonts/fonts.css');
+
+        if( !this.downloading ){
+            o2.loadCss('../x_desktop/fonts/fonts.css');
+        }
     },
     loadDocumentEditor: function(callback){
         this._loadToolbars();
@@ -1219,7 +1221,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }
             //if (!layout.mobile) this.loadSideToolbar();
 
-            o2.load("../o2_lib/diff-match-patch/diff_match_patch.js");
+            if(!this.downloading){
+                o2.load("../o2_lib/diff-match-patch/diff_match_patch.js");
+            }
 
             if (this.form.businessData.data["$work"]){
                 var id = this.form.businessData.data["$work"].job;

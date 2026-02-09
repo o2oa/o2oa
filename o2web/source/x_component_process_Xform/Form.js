@@ -4694,6 +4694,18 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         //         }
         //     });
         // }
+        var _loadCss = (urls, callback) => {
+            const ps = urls.map(async (url) => {
+                const res = await fetch(url);
+                const styleElement = iframeDoc.createElement('style');
+                styleElement.type = 'text/css';
+                styleElement.textContent = await res.text();
+                iframeDoc.head.appendChild(styleElement);
+            });
+            Promise.all(ps).then(()=>{
+                callback()
+            });
+        }
         var _replaceV10FontUrl = ()=>{
             const allStyleList = iframeDoc.querySelectorAll('style');
 
@@ -4703,10 +4715,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var port = layout.port === "" ? "" : ":" + layout.port;
             const FONT_BASE_URL = "http://127.0.0.1" + port + "/x_desktop/css/v10/";
             allStyleList.forEach(styleEl => {
-                console.log(styleEl.dataset.url)
-                if( styleEl.dataset.url && styleEl.dataset.url.includes('css/v10') ){
+                //console.log(styleEl.dataset.url)
+                //if( styleEl.dataset.url && styleEl.dataset.url.includes('css/v10') ){
                     styleEl.textContent = styleEl.textContent.replace(fontReg, `url("${FONT_BASE_URL}$1")`);
-                }
+                //}
             });
         }
         var _download = ()=>{
@@ -4725,32 +4737,24 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var downloadWithIframe = (appForm)=>{
             iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
 
-            // _removeEl('script');
-            // _removeEl('style');
-            // _removeEl('link');
-
             if( this.json.formStyleType === 'v10' ) {
-                setTimeout(()=>{
-                    iframeDoc.querySelector('head').empty();
+                iframeDoc.querySelector('head').empty();
 
-                    _removeEl('script');
-                    _removeEl('style');
-                    _removeEl('link');
+                // _removeEl('script');
+                // _removeEl('style');
+                // _removeEl('link');
 
+                _loadCss([
+                    '../x_desktop/css/v10/style.css',
+                    '../x_component_process_FormDesigner/Module/Form/skin/v10/form.css',
+                    '../x_component_process_FormDesigner/Module/Form/skin/v10/view.css'
+                ],  ()=>{
+                    _removeEl('template');
+                    _removeEl('.form-side-content');
+                    _replaceV10FontUrl();
                     console.log(iframeDoc.querySelector('head').outerHTML)
-
-                    iframeDoc.body.loadCss([
-                        '../x_desktop/css/v10/style.css',
-                        '../x_component_process_FormDesigner/Module/Form/skin/v10/form.css',
-                        '../x_component_process_FormDesigner/Module/Form/skin/v10/view.css'
-                    ], {}, ()=>{
-                        console.log(iframeDoc.querySelector('head').outerHTML)
-                        _removeEl('template');
-                        _removeEl('.form-side-content');
-                        _replaceV10FontUrl();
-                        _download();
-                    });
-                }, 200)
+                    _download();
+                });
             }else{
                 _download();
             }
