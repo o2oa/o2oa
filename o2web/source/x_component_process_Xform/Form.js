@@ -4755,7 +4755,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         _replaceV10FontUrl();
                         _download();
                     });
-                }, 5000)
+                }, 200)
             }else{
                 _download();
             }
