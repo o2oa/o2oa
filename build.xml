@@ -259,6 +259,7 @@
 				<include name="commons/" />
 				<exclude name="commons/ext/" />
 				<include name="configInit/" />
+				<include name="dynamic/" />
 				<include name="configSample/" />
 				<include name="localSample/" />
 				<include name="servers/webServer/" />
@@ -291,6 +292,7 @@
 				<include name="commons/" />
 				<exclude name="commons/ext/" />
 				<include name="configInit/" />
+				<include name="dynamic/" />
 				<include name="configSample/" />
 				<include name="localSample/" />
 				<include name="servers/webServer/" />
@@ -326,6 +328,7 @@
 				<include name="commons/" />
 				<exclude name="commons/ext/" />
 				<include name="configInit/" />
+				<include name="dynamic/" />
 				<include name="configSample/" />
 				<include name="localSample/" />
 				<include name="servers/webServer/" />
@@ -348,6 +351,7 @@
 				<include name="commons/" />
 				<exclude name="commons/ext/" />
 				<include name="configInit/" />
+				<include name="dynamic/" />
 				<include name="configSample/" />
 				<include name="localSample/" />
 				<include name="servers/webServer/" />
@@ -370,6 +374,7 @@
 				<include name="commons/" />
 				<exclude name="commons/ext/" />
 				<include name="configInit/" />
+				<include name="dynamic/" />
 				<include name="configSample/" />
 				<include name="localSample/" />
 				<include name="servers/webServer/" />
@@ -392,6 +397,7 @@
 				<include name="commons/" />
 				<exclude name="commons/ext/" />
 				<include name="configInit/" />
+				<include name="dynamic/" />
 				<include name="configSample/" />
 				<include name="localSample/" />
 				<include name="servers/webServer/" />
@@ -414,6 +420,7 @@
 				<include name="commons/" />
 				<exclude name="commons/ext/" />
 				<include name="configInit/" />
+				<include name="dynamic/" />
 				<include name="configSample/" />
 				<include name="localSample/" />
 				<include name="servers/webServer/" />
@@ -436,6 +443,7 @@
 				<include name="commons/" />
 				<exclude name="commons/ext/" />
 				<include name="configInit/" />
+				<include name="dynamic/" />
 				<include name="configSample/" />
 				<include name="localSample/" />
 				<include name="servers/webServer/" />
