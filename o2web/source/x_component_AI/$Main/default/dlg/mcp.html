@@ -9,6 +9,18 @@
                       label-style="width:8.2vw;"
                       label-Align="right">
             </oo-input>
+
+            <oo-input  required="true" data-o2-element="iconNode" autocomplete="off"
+                       label='{{$.lp.mcp.icon}}'
+                       name="icon"
+                       value='{{$.data.extra.icon}}'
+                       label-style="width:8.2vw;"
+                       label-Align="right"
+                       left-icon="{{$.data.extra.icon}}"
+                       onchange="this.setAttribute('left-icon', this.value)">
+
+            </oo-input>
+
             <oo-input required="true"
                       label="{{$.lp.mcp.displayName}}"
                       value="{{$.data.displayName}}"
@@ -18,6 +30,15 @@
                       label-Align="right">
             </oo-input>
 
+            <oo-radio-group required="true" name="enable"
+                            label="{{$.lp.mcp.enable}}"
+                            value="{{$.data.enable}}"
+                            label-style="width:8.2vw;"
+                            label-Align="right">
+                <oo-radio text="{{$.lp.common.yes}}" value="true"></oo-radio>
+                <oo-radio text="{{$.lp.common.no}}" value="false"></oo-radio>
+            </oo-radio-group>
+
             <oo-input required="true"
                       label="{{$.lp.mcp.category}}"
                       value="{{$.data.category}}"
@@ -26,14 +47,32 @@
                       label-style="width:8.2vw;"
                       label-Align="right">
             </oo-input>
-            <oo-radio-group name="enable"
-                            label="{{$.lp.mcp.enable}}"
-                            value="{{$.data.enable}}"
+            <oo-radio-group name="indexEnable"
+                            label="{{$.lp.mcp.indexEnable}}"
+                            value="{{$.data.extra.indexEnable}}"
                             label-style="width:8.2vw;"
                             label-Align="right">
                 <oo-radio text="{{$.lp.common.yes}}" value="true"></oo-radio>
                 <oo-radio text="{{$.lp.common.no}}" value="false"></oo-radio>
             </oo-radio-group>
+
+            <oo-textarea
+                    label="{{$.lp.mcp.indexDesc}}"
+                    value="{{$.data.extra.indexDesc}}"
+                    style="width:100%"
+                    name="indexDesc"
+                    label-style="width:8.2vw;"
+                    label-Align="right">
+            </oo-textarea>
+            <oo-textarea
+                    label="{{$.lp.mcp.indexPrompt}}"
+                    value="{{$.data.extra.indexPrompt}}"
+                    style="width:100%"
+                    name="indexPrompt"
+                    label-style="width:8.2vw;"
+                    label-Align="right">
+            </oo-textarea>
+
             <oo-textarea required="true"
                          label="{{$.lp.mcp.desc}}"
                          value="{{$.data.desc}}"
@@ -99,6 +138,13 @@
                 <label class="label" style="min-width: 8.2vw;">{{$.lp.mcp.returntemplate}}</label>
                 <div style="overflow: hidden;width:60rem;height:10rem;">
                     <div style="width: 100%;height:100%;"  data-o2-element="msgTemplateNode">
+                    </div>
+                </div>
+            </div>
+            <div class="content-item flex" style="flex:100%">
+                <label class="label" style="min-width: 8.2vw;">{{$.lp.mcp.returncss}}</label>
+                <div style="overflow: hidden;width:60rem;height:10rem;">
+                    <div style="width: 100%;height:100%;"  data-o2-element="msgCssNode">
                     </div>
                 </div>
             </div>

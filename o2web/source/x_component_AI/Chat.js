@@ -6,8 +6,10 @@ MWF.xApplication.AI.Chat = new Class({
     options: {
         "view": "view.html",
         "style": "default",
+        "initMsg" : ""
     },
     initialize: async function (app, container, options) {
+
         this.setOptions(options);
         this.app = app;
         this.container = container;
@@ -28,12 +30,24 @@ MWF.xApplication.AI.Chat = new Class({
         this.config.appName = this.config.appName || "O2OA";
         this.config.title = this.config.title || this.lp.config.title;
         this.config.desc = this.config.desc || this.lp.config.desc;
+
+        if(this.config.o2AiEnable){
+            const mcpList = await this.action.ConfigAction.listMcpConfigPaging(1,100);
+
+            this.mcpList = mcpList.data
+                .filter(item => item.extra && item.extra.indexEnable === "true")
+                .slice(0, 4);
+            console.log(this.mcpList)
+        }
         this.load();
     },
     load : function (callback){
         o2.load("../o2_lib/marked/lib/marked.js", function () {
-            this.container.loadHtml(this.viewPath, {"bind": {"lp": this.lp,"config":this.config}, "module": this}, function () {
+            this.container.loadHtml(this.viewPath, {"bind": {"lp": this.lp,"config":this.config,"mcpList":this.mcpList}, "module": this}, function () {
                 this.bindEvent();
+                if(this.options.initMsg!==""){
+                    this.chatNode.set("text",this.options.initMsg);
+                }
                 if(callback) callback();
             }.bind(this));
         }.bind(this));
@@ -208,13 +222,11 @@ MWF.xApplication.AI.Chat = new Class({
         if(!this.config.o2AiEnable) return;
         const options = [
             { icon: 'networking_click', label: this.lp.types.auto + " ｜ " + this.lp.types.auto_text, type: "auto", text1: this.lp.types.auto, text2: this.lp.types.auto_text },
-            { icon: 'message', label: this.lp.types.chat + " ｜ "+this.lp.types.chat_text, type: "chat", text1: this.lp.types.chat, text2: this.lp.types.chat_text },
-            { icon: 'renwu', label: this.lp.types.task + " ｜ " + this.lp.types.task_text, type: "mcp", text1: this.lp.types.task, text2: this.lp.types.task_text },
             { icon: 'canyue', label: this.lp.types.knowledge + " ｜ " + this.lp.types.knowledge_text, type: "searchKnowledgeBase", text1: this.lp.types.knowledge, text2: this.lp.types.knowledge_text }
         ];
         new MWF.xApplication.AI.O2Select({
-            selectValueList: ["auto","chat","mcp","searchKnowledgeBase"],
-            selectTextList: [this.lp.types.auto,this.lp.types.chat,this.lp.types.task,this.lp.types.knowledge],
+            selectValueList: ["auto","searchKnowledgeBase"],
+            selectTextList: [this.lp.types.auto,this.lp.types.knowledge],
             onChange : function(value){
 
                 const option = options.filter(d=>{

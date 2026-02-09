@@ -17,8 +17,7 @@
         </div>
         {{if $.user.roleList.contains("Manager@ManagerSystemRole@R")}}
         <div class="setting" data-o2-events="click:setting" >
-            <div class="ooicon-config"></div>
-            <div>{{$.lp.setting}}</div>
+            <oo-button left-icon="config" style="pointer-events: auto; width: 80%; margin: auto; display: block;" type="light">{{$.lp.setting}}</oo-button>
         </div>
         {{end if}}
     </div>
