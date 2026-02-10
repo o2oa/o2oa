@@ -84,11 +84,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this.fireEvent("afterLoad");
                 this.fireEvent("load");
 
-                if( this.downloading ){
-                    this.node.setStyle('overflow', 'hidden');
-                    this.node.setStyle('margin-bottom', '200px');
-                }
-
                 this.form.app.addEvent("resize", function(){
                     // if (this.options.pageShow!=="double"){
                     //     this._doublePage();
@@ -1260,7 +1255,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     transform: 'none'
                 })
             })
-            this.node.setStyle({
+            this.node.setStyles({
                 'border': '0',
                 'height': 'auto'
             });
@@ -2385,6 +2380,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.doublePageAction.set("text", MWF.xApplication.process.Xform.LP.doublePage);
     },
     resetNodeSize: function(){
+        if(this.downloading)return;
         //var contentSize = this.contentNode.getSize();
         var contentHeight = this.contentNode.offsetHeight;
         var toolbarSize = this.toolNode.getSize();

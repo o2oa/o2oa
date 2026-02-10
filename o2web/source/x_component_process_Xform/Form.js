@@ -4819,6 +4819,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         html = html.replace(/\.\.\/(x_|o2_)/g, orginUrl + "/$1");
         html = html.replaceAll(window.location.origin, orginUrl);
 
+        console.log(html)
+
         o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id, "pdf", {
             "workHtml": encodeURIComponent(html),
             "pageWidth": 793.7

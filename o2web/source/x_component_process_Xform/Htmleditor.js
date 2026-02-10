@@ -62,8 +62,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
                 "-moz-user-select": "text"
             });
             if(this.downloading){
-                debugger;
-                this.node.set('html', this._getBusinessData());
+                this.praseHtml();
                 var images = this.node.getElements("img");
                 images.each( function( img ){
                     img.setStyles({
@@ -116,6 +115,13 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
         }
     //    this._loadValue();
 	},
+    praseHtml: function () {
+        o2.require("o2.widget.ImageLazyLoader", function () {
+            var loadder = new o2.widget.ImageLazyLoader(this.node, this._getBusinessData());
+            loadder.parseHtml();
+            this.node.set("html", loadder.html_new);
+        }.bind(this), null, false);
+    },
     loadLazyImage: function(callback){
         o2.require("o2.widget.ImageLazyLoader", function(){
             var loadder = new o2.widget.ImageLazyLoader(this.node, this._getBusinessData());

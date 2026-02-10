@@ -60,7 +60,18 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                     "-webkit-user-select": "text",
                     "-moz-user-select": "text"
                 });
-                if (layout.mobile) {
+                if(this.downloading){
+                    this.praseHtml();
+                    var images = this.node.getElements("img");
+                    images.each( function( img ){
+                        img.setStyles({
+                            "height": "auto",
+                            "max-width" : "100%"
+                        });
+                    }.bind(this));
+                    this.fireEvent("afterLoad");
+                    this.fieldModuleLoaded = true;
+                }else if (layout.mobile) {
                     this.loadLazyImage(function () { //图片懒加载
                         var images = this.node.getElements("img");
                         //移动端设置图片宽度为100%
@@ -101,6 +112,13 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
                 this.loadTinyMCEEditor(config);
             }
             //    this._loadValue();
+        },
+        praseHtml: function () {
+            o2.require("o2.widget.ImageLazyLoader", function () {
+                var loadder = new o2.widget.ImageLazyLoader(this.node, this._getBusinessData());
+                loadder.parseHtml();
+                this.node.set("html", loadder.html_new);
+            }.bind(this), null, false);
         },
         loadLazyImage: function (callback) {
             o2.require("o2.widget.ImageLazyLoader", function () {

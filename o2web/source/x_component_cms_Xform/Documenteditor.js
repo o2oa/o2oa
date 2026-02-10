@@ -26,7 +26,9 @@ MWF.xApplication.cms.Xform.Documenteditor = MWF.CMSDocumenteditor =  new Class({
             }
             //if (!layout.mobile) this.loadSideToolbar();
 
-            o2.load("../o2_lib/diff-match-patch/diff_match_patch.js");
+            if(!this.downloading){
+                o2.load("../o2_lib/diff-match-patch/diff_match_patch.js");
+            }
 
             // if (this.form.businessData.data["$work"]){
             // 	var id = this.form.businessData.data["$work"].job;
@@ -41,6 +43,7 @@ MWF.xApplication.cms.Xform.Documenteditor = MWF.CMSDocumenteditor =  new Class({
             // 	}.bind(this));
             // }
 
+            this.setDownloadingStyle();
 
             if (callback) callback();
         }.bind(this));
