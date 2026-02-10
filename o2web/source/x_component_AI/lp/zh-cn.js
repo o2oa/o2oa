@@ -14,7 +14,7 @@ MWF.xApplication.AI.LP = {
 		"o2AiBaseUrl": "智能体服务地址",
 		"o2AiToken": "智能体服务认证秘钥"
 	},
-	"o2AiEnableTip" : "请先启用智能体",
+	"o2AiEnableTip" : "不启用智能体无法使用MCP和支持库功能",
 	"common" : {
 		"yes" : "是",
 		"close" : "关闭",
@@ -23,6 +23,8 @@ MWF.xApplication.AI.LP = {
 		"tip" : "提示",
 		"save" : "保存",
 		"select" : "选择",
+		"uploadLocal" : "本地上传",
+		"uploadDrive" : "从企业网盘中选择",
 		"savesuccess" : "保存成功",
 		"removetitle" : "删除确认",
 		"removeconfirm" : "您确定要删除吗？",
@@ -31,11 +33,11 @@ MWF.xApplication.AI.LP = {
 		"exportconfirm" : "导出确认"
 	},
 	"navi" : {
-		"index" : "首页",
+		"index" : "对话",
 		"newmcp" : "新建MCP",
 		"mcp" : "MCP设置",
 		"model" : "模型设置",
-		"setting" : "对话设置",
+		"setting" : "AI助手设置",
 		"knowledge" : "知识库索引"
 	},
 	"copysuccess" : "已拷贝到剪切板",
@@ -50,7 +52,7 @@ MWF.xApplication.AI.LP = {
 	"thinking" : "正在努力思考中",
 	"types" : {
 		"auto" : "自动",
-		"auto_text" : "AI根据你的问题自动挑最合适的",
+		"auto_text" : "AI根据你的问题自动挑最合适的答案",
 		"chat" : "聊天",
 		"chat_text" : "直接跟AI聊天，有问有答",
 		"task" : "任务",
@@ -86,6 +88,7 @@ MWF.xApplication.AI.LP = {
 	},
 	"mcp" : {
 		"name" : "名称",
+		"icon" : "图标",
 		"displayName" : "显示名称",
 		"category" : "分组",
 		"desc" : "说明",
@@ -98,7 +101,11 @@ MWF.xApplication.AI.LP = {
 		"fieldtype" : "字段类型",
 		"addmcp" : "添加mcp参数",
 		"returntemplate" : "返回模板",
-		"script" : "执行脚本"
+		"returncss" : "返回CSS",
+		"script" : "执行脚本",
+		"indexEnable" : "推荐到首页",
+		"indexDesc" : "推荐描述",
+		"indexPrompt" : "推荐提示词"
 	},
 	"knowledge" : {
 		"title" : "标题",

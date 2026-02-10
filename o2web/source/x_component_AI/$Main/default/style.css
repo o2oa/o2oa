@@ -76,7 +76,9 @@
     color: #24292e;
     font-family2: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
     font-size: 1.143rem;
-    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    width: 50em;
 }
 
 .markdown-body details {
@@ -1039,11 +1041,10 @@
     height: 3rem;
     display: flex;
     align-items: center;
-    gap:.5rem;
-    margin-left: 2rem;
-    margin-right: 2rem;
     cursor: pointer;
     justify-content:center;
+    flex: 0 0 3rem;
+    border-top: rgb(243, 243, 243);
 }
 
 .new {
@@ -1212,11 +1213,72 @@
 }
 
 .chat-hot-r{
-    flex:1;
-    display: flex;
-    flex-wrap: wrap;
-    gap:1em;
+    flex: 1;
+    /*display: flex;*/
+    /*flex-wrap: wrap;*/
+    /*gap: 1em;*/
+    /*!*height: 13em;*!*/
+    /*!*overflow: auto;*!*/
+    /*justify-content: center;*/
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: 1rem;
+    height: 12rem;
+    overflow: auto;
 }
+/* 媒体查询精准适配（可选但推荐）：针对小屏手机（768px以下）精细化调整 */
+@media (max-width: 768px) {
+    .chat-hot-r{
+        flex: 1;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1em;
+        /*height: 13em;*/
+        /*overflow: auto;*/
+        justify-content: center;
+
+    }
+}
+
+
+/* 1. 默认状态：隐藏滚动条（宽度为0，无占用） */
+.chat-hot-r::-webkit-scrollbar {
+    width: 0;        /* 垂直滚动条宽度设为0（隐藏） */
+    height: 0;       /* 水平滚动条高度设为0（隐藏），按需保留 */
+    transition: width 0.2s ease; /* 宽度过渡，显示/隐藏更顺滑 */
+}
+
+/* 2. 鼠标悬停div时：显示滚动条+设置基础样式（细条+浅灰色） */
+.chat-hot-r:hover::-webkit-scrollbar {
+    width: 3px;      /* 滚动条宽度（细条，可调整：4-8px最佳） */
+    height: 3px;     /* 水平滚动条高度，按需调整 */
+    background-color: #f5f5f5; /* 滚动条轨道浅灰色（底色） */
+    border-radius: 3px; /* 轨道圆角，和宽度匹配更美观 */
+}
+
+/* 3. 滚动条滑块（拖动的部分）：浅灰色+圆角+hover效果 */
+.chat-hot-r:hover::-webkit-scrollbar-thumb {
+    background-color: #dcdcdc; /* 滑块浅灰色（比轨道深一点，更醒目） */
+    border-radius: 3px;        /* 滑块圆角，和轨道一致 */
+    cursor: pointer;           /* 鼠标移上变手型，提升交互 */
+    transition: background-color 0.2s ease;
+}
+
+/* 滑块hover强化：颜色稍深，反馈更明显 */
+.chat-hot-r:hover::-webkit-scrollbar-thumb:hover {
+    background-color: #c9c9c9; /* 浅灰色加深一点，不突兀 */
+}
+
+/* 可选：滚动条角落（垂直+水平交汇区）样式，和轨道保持一致 */
+.chat-hot-r:hover::-webkit-scrollbar-corner {
+    background-color: #f5f5f5;
+    border-radius: 3px;
+}
+
+
+
+
 .chat-hot-item{
     width: 16em;
     height: 5em;
@@ -1280,6 +1342,19 @@
     cursor: pointer;
 }
 
+.chat-tools-icon {
+
+    padding:.5rem;
+    font-size: 1.125rem;
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+.chat-tools-icon:hover{
+    background: #cfe0f1;
+}
 .chat-tools-cur{
     color: #2E82F7;
 }
@@ -1374,6 +1449,7 @@
     align-self: flex-end;
     width: 80%;
     display: flex;
+    gap:.5rem;
     justify-content: flex-end;
 }
 .chat-list-r {
@@ -1460,6 +1536,12 @@
     background: #fff;
     gap: .5em;
     cursor: pointer;
+}
+.chat-att-img{
+    max-width: 10em;;
+}
+.chat-att-img img{
+    width: 100%;
 }
 
 /* 当屏幕宽度小于或等于 768px 时，调整宽度为 80% */
@@ -1549,17 +1631,21 @@
     border: 1px solid rgba(0, 0, 0, .05);
     background-color: var(--oo-color-hover);
 }
-.model-item:hover .model-item-3{
+.model-item:hover .model-item-1-tool{
    display: block;
 }
 .model-item-1{
-    width: 4em;
+    width: 3em;
     display: inline-flex;
-    justify-content: center;
+    font-size: 2em;
+    align-items: center;
+    /* justify-content: center; */
+    color: var(--oo-color-main);
+    flex-direction: column;
 }
 .model-item-1 img{
-    width: 2.5em;
-    height:2.5em;
+    width: 2.5rem;
+    height:2.5rem;
 }
 .model-item-2{
     flex:1;
@@ -1572,16 +1658,25 @@
     font-weight: 500;
 
 }
-.model-item-2-2{
-    font-size:.9em;
-    color:#2c2c36;
+.model-item-2-2 {
+    font-size: .9em;
+    color: #2c2c36;
     text-overflow: ellipsis;
     overflow: hidden;
+    display: -webkit-box;      /* 弹性盒模型 */
+    -webkit-box-orient: vertical; /* 子元素垂直排列 */
+    -webkit-line-clamp: 3;     /* 限制显示2行，可改3/4等 */
+    width: 100%;               /* 仍需设置宽度/最大宽度 */
+    /* 可选：行高配合，让多行布局更美观 */
+    line-height: 1.5;
 }
 
-.model-item-3{
+.model-item-1-tool{
     width: 3em;
     display: none;
+    font-size: 1rem;
+    color: #505050;
+    margin-top: 1rem;
 }
 
 
@@ -1715,7 +1810,10 @@
     flex: 1;
     display: flex;
     align-items: center;
-    justify-content: center;
+    white-space: nowrap;    /* 强制文本单行显示，不换行 */
+    overflow: hidden;       /* 隐藏超出容器的文本 */
+    text-overflow: ellipsis;/* 溢出部分显示省略号 */
+    padding: 0 0.5rem;
 }
 
 .m-bottom {
@@ -1725,12 +1823,29 @@
 
 .m-bottom > .chat-wrap {
     padding: 0;
+    background: #fff;
 }
 
 .m-content {
     flex: 1;
     overflow: auto;
-    padding: .5rem;
+    padding: 2rem 1rem;
+}
+.m-content .chat-hot{
+    margin-top:1em;
+}
+.m-content .chat-hot-item{
+    width: 9em;
+}
+.m-content .chat-hot-r > div[data-o2-binddataid] {
+
+}
+.m-content .chat-hot-r  {
+    height:auto;
+}
+.m-content .markdown-body{
+    width: 100%;
+    font-size: 1em;
 }
 .m-content>.history{
     padding:0;
@@ -1745,7 +1860,6 @@
     justify-content: center;
     flex-direction: column;
     padding: 0 1rem;
-    height: 100%;
 }
 .m-content-chat>.chat-title{
     font-size: 1.2rem;
@@ -1753,3 +1867,5 @@
 .m-content-chat>.chat-desc{
     font-size: 1rem;
 }
+
+/*mcp样式**/
