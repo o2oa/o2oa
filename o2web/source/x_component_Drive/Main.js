@@ -1721,7 +1721,7 @@ MWF.xApplication.Drive.List = new Class({
 				data.type = "folder";
 			}
 
-			if(this.app.currentNaviType === "person"){
+			if(this.app.currentNaviType === "person" || this.app.currentNaviType === "manage"){
 				data.isAdmin = true;
 				data.isEditor = true;
 				data.downloadable = true;
@@ -1820,7 +1820,7 @@ MWF.xApplication.Drive.List = new Class({
 
 				}
 
-				if(this.app.currentNaviType === "person"){
+				if(this.app.currentNaviType === "person" ){
 					this.options.isAdmin = true;
 					this.options.isEditor = true;
 				}
@@ -1991,7 +1991,7 @@ MWF.xApplication.Drive.List = new Class({
 			this.options.isAdmin = this.selectedList[0].isAdmin;
 			this.options.isEditor = this.selectedList[0].isEditor;
 
-			if(this.app.currentNaviType === "person"){
+			if(this.app.currentNaviType === "person" || this.app.currentNaviType === "manage"){
 				this.options.isAdmin = true;
 				this.options.isEditor = true;
 			}
