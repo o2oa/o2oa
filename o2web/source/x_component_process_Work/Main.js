@@ -52,7 +52,7 @@ MWF.xApplication.process.Work.Main = new Class({
             this.options.draftData = this.status.draftData;
         }
 
-        if( this.options.downloading === 'true' || this.status.downloading === 'true' )this.options.downloading = true;
+        if( this.options.downloading === 'true' || this.status?.downloading === 'true' )this.options.downloading = true;
 
         this.action = MWF.Actions.get("x_processplatform_assemble_surface");
 	},

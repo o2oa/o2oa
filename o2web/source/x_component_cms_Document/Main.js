@@ -51,7 +51,7 @@ MWF.xApplication.cms.Document.Main = new Class({
 
         if( this.options.readonly === "false" )this.options.readonly = false;
         if( this.options.readonly === "true" )this.options.readonly = true;
-        if( this.options.downloading === 'true' )this.options.downloading = true;
+        if( this.options.downloading === 'true' || this.status?.downloading === 'true' )this.options.downloading = true;
         if( this.options.documentId && this.options.documentId!=""){
             this.options.appId = "cms.Document"+this.options.documentId;
         }
