@@ -265,6 +265,10 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 this.node = this.container.getFirst();
                 if (cssClass) this.node.addClass(cssClass);
 
+                if(this.options.downloading){
+                    this.node.addClass("downloading");
+                }
+
                 this._loadEvents();
                 this.loadRelatedScript();
 
@@ -1893,7 +1897,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
 
             o2.Actions.load("x_cms_assemble_control").FileInfoAction.uploadWorkInfo(this.businessData.document.id, "pdf", {
                 "workHtml": encodeURIComponent(html),
-                "pageWidth": 1000
+                "pageWidth": 793.7
             }, function (json) {
                 var htmlFormId = json.data.id;
                 if(callback)callback();

@@ -492,6 +492,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     this.container.set("html", this.html);
                     this.node = this.container.getFirst();
 
+                    if(this.options.downloading){
+                        this.node.addClass("downloading");
+                    }
+
                     if (cssClass && !this.node.hasClass(cssClass)) this.node.addClass(cssClass);
 
                     this._loadEvents();
@@ -4712,6 +4716,27 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     _removeEl('template');
                     _removeEl('.form-side-content');
                     _replaceV10FontUrl();
+
+                    const formContentWorkStatus = iframeDoc.querySelector('.form-content-work-status');
+                    if(formContentWorkStatus){
+                        formContentWorkStatus.setStyle('margin-bottom', 0);
+                    }
+
+                    const formContentChild = iframeDoc.querySelector('.form-content')?.firstElementChild;
+                    formContentChild && formContentChild.setStyles({
+                        'width': '793.7px'
+                    });
+
+                    //页边距
+                    const cssRules = `
+                    @page {
+                        size: A4;
+                        margin: 0; //5毫米
+                    }`;
+                    const styleElement = iframeDoc.createElement('style');
+                    styleElement.innerHTML = cssRules;
+                    iframeDoc.head.appendChild(styleElement);
+
                     _download();
                 });
             }else{
@@ -4729,7 +4754,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             iframe = new Element('iframe', {
                 src: src,
-                "width": "1000px",
+                "width": "793.7px",
                 "height": "100%",
                 "frameborder": "0px",
                 "scrolling": "auto",
@@ -4799,7 +4824,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id, "pdf", {
             "workHtml": encodeURIComponent(html),
-            "pageWidth": 1000
+            "pageWidth": 793.7
         }, function (json) {
             htmlFormId = json.data.id;
             if(callback)callback();

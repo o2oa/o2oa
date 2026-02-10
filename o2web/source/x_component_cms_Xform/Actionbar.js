@@ -18,6 +18,11 @@ MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
         if (!this.toolbarNode)  this.toolbarNode = this.node;
         if (this.toolbarNode) this.toolbarNode.empty();
 
+        if(this.downloading){
+            this.node.style.setProperty('display', 'none', 'important');
+            return;
+        }
+
         //this.node.empty();
 
         MWF.require("MWF.widget.SimpleToolbar", function(){

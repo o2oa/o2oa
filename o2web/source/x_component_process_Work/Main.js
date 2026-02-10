@@ -36,7 +36,6 @@ MWF.xApplication.process.Work.Main = new Class({
 		this.lp = MWF.xApplication.process.Work.LP;
         if (!this.status) {
             if( this.options.readonly === "true" )this.options.readonly=true;
-            if( this.options.downloading === 'true' )this.options.downloading = true;
         } else {
             this.options.workId = this.status.workId;
             this.options.taskId = this.status.taskId;
@@ -53,7 +52,7 @@ MWF.xApplication.process.Work.Main = new Class({
             this.options.draftData = this.status.draftData;
         }
 
-        if( this.options.downloading === 'true' )this.options.downloading = true;
+        if( this.options.downloading === 'true' || this.status.downloading === 'true' )this.options.downloading = true;
 
         this.action = MWF.Actions.get("x_processplatform_assemble_surface");
 	},

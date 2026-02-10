@@ -1481,6 +1481,9 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             'id': this.json.id,
             'MWFType': this.json.type
         }).inject(this.node, 'after');
+        Array.from(this.node.classList).forEach(clazz=>{
+            node.addClass(clazz);
+        })
         this.node.destroy();
 
         node.setStyles(this.form.css.OODownloadingNodeStyle);
