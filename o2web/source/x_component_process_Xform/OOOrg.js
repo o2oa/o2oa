@@ -4,7 +4,7 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
     Extends: MWF.APPOrg,
     iconStyle: 'textFieldIcon',
     options: {
-        "moduleEvents": ["load", "queryLoad", "postLoad", "select", "removeItem"]
+        "moduleEvents": ["load", "queryLoad", "postLoad", "select", "removeItem", "change"]
     },
     _loadNode: function () {
         if (!this.isReadable && !!this.isHideUnreadable){

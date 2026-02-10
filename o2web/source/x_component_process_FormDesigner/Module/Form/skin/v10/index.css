@@ -168,10 +168,10 @@
     transition: background-color 0.3s, color 0.3s;
 }
 
-.form-layout .index-navi-index:hover {
+/* .form-layout .index-navi-index:hover {
     background-color: var(--oo-color-main);
     color: var(--oo-color-text-white);
-}
+} */
 
 .form-layout .index-navi-content {
     overflow: auto;
