@@ -48,14 +48,16 @@ MWF.xApplication.cms.Xform.Comment = MWF.CMSComment =  new Class(
          * var field = this.form.get("fieldId"); //获取组件对象
          * var items = field.comment.editor; //获取评论的编辑器对象
          */
-        this.comment = new MWF.xApplication.cms.Xform.widget.Comment( this.form.app, this.node, {
-            "documentId" : this.form.businessData.document.id,
-            "countPerPage" : this.json.countPerPage || 10,
-            "isAllowModified" : this.json.isAllowModified,
-            "isAllowPublish" : this.isEditable && this.json.isAllowPublish,
-            "isAdmin" : this.form.app.isAdmin,
-            "editorProperties" : config
-        });
-        this.comment.load();
+        if( !this.downloading ){
+            this.comment = new MWF.xApplication.cms.Xform.widget.Comment( this.form.app, this.node, {
+                "documentId" : this.form.businessData.document.id,
+                "countPerPage" : this.json.countPerPage || 10,
+                "isAllowModified" : this.json.isAllowModified,
+                "isAllowPublish" : this.isEditable && this.json.isAllowPublish,
+                "isAdmin" : this.form.app.isAdmin,
+                "editorProperties" : config
+            });
+            this.comment.load();
+        }
 	}
 }); 

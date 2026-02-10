@@ -4728,7 +4728,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     const cssRules = `
                     @page {
                         size: A4;
-                        margin: 0; //5毫米
+                        margin: 0;
                     }`;
                     const styleElement = iframeDoc.createElement('style');
                     styleElement.innerHTML = cssRules;
@@ -4816,8 +4816,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var html = htmlString || document.documentElement.outerHTML; //this.app.content.get("html");
         var port = layout.port === "" ? "" : ":" + layout.port;
         var orginUrl = "http://127.0.0.1" + port;
-
         html = html.replace(/\.\.\/(x_|o2_)/g, orginUrl + "/$1");
+        html = html.replaceAll(window.location.origin, orginUrl);
 
         o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id, "pdf", {
             "workHtml": encodeURIComponent(html),

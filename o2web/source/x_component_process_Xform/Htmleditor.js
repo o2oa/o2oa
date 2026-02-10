@@ -54,14 +54,26 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
             this.node?.addClass('hide');
             return ''
         }
-        
+
         if (this.isReadonly()){
             // this.node.set("html", this._getBusinessData());
             this.node.setStyles({
                 "-webkit-user-select": "text",
                 "-moz-user-select": "text"
             });
-            if( layout.mobile ){
+            if(this.downloading){
+                debugger;
+                this.node.set('html', this._getBusinessData());
+                var images = this.node.getElements("img");
+                images.each( function( img ){
+                    img.setStyles({
+                        "height": "auto",
+                        "max-width" : "100%"
+                    });
+                }.bind(this));
+                this.fireEvent("afterLoad");
+                this.fieldModuleLoaded = true;
+            }else if( layout.mobile){
                 this.loadLazyImage(function () { //图片懒加载
                     var images = this.node.getElements("img");
                     //移动端设置图片宽度为100%

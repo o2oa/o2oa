@@ -1890,10 +1890,11 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
         _downloadAll: function (htmlString, callback) {
             var htmlFormId = "";
             var html = htmlString || document.documentElement.outerHTML; //this.app.content.get("html");
+
             var port = layout.port === "" ? "" : ":" + layout.port;
             var orginUrl = "http://127.0.0.1" + port;
-
             html = html.replace(/\.\.\/(x_|o2_)/g, orginUrl + "/$1");
+            html = html.replaceAll(window.location.origin, orginUrl);
 
             o2.Actions.load("x_cms_assemble_control").FileInfoAction.uploadWorkInfo(this.businessData.document.id, "pdf", {
                 "workHtml": encodeURIComponent(html),
