@@ -4701,9 +4701,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if( this.json.formStyleType === 'v10' ) {
                 iframeDoc.querySelector('head').empty();
 
-                // const formContentChild = iframeDoc.querySelector('.form-content')?.firstElementChild;
-                // formContentChild.setStyle('width', '100%');
-
                 _removeEl('script');
                 _removeEl('style');
                 _removeEl('link');
