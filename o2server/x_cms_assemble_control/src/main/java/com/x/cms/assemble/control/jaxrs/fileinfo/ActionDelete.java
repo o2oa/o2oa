@@ -1,12 +1,10 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -16,13 +14,13 @@ import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
+import javax.servlet.http.HttpServletRequest;
 
 public class ActionDelete extends BaseAction {
 
-	private static  Logger logger = LoggerFactory.getLogger(ActionDelete.class);
-
-	@AuditLog(operation = "删除附件")
+	private static final  Logger logger = LoggerFactory.getLogger(ActionDelete.class);
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
+		logger.debug("ActionDelete fileInfo:{}.", effectivePerson.getDistinguishedName());
 		ActionResult<Wo> result = new ActionResult<>();
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -30,12 +28,12 @@ public class ActionDelete extends BaseAction {
 			// 先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			FileInfo fileInfo = business.getFileInfoFactory().get(id);
 			if (null == fileInfo) {
-				throw new Exception("fileInfo{id:" + id + "} 文件信息不存在，无法继续删除.");
+				throw new ExceptionEntityNotExist(id, FileInfo.class);
 			}
 			// 判断文档信息是否存在
 			Document document = business.getDocumentFactory().get(fileInfo.getDocumentId());
 			if (null == document) {
-				throw new Exception("document{id:" + fileInfo.getDocumentId() + "} 文档信息不存在，无法继续删除.");
+				throw new ExceptionEntityNotExist(fileInfo.getDocumentId(), Document.class);
 			}
 			// 如果信息存在，再判断用户是否有操作的权限，如果没权限不允许继续操作
 
@@ -59,9 +57,6 @@ public class ActionDelete extends BaseAction {
 			wo.setId( fileInfo.getId() );
 			result.setData( wo );
 
-		} catch (Exception e) {
-			result.error(e);
-			logger.error(e, effectivePerson, request, null);
 		}
 		return result;
 	}
