@@ -63,13 +63,6 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
             });
             if(this.downloading){
                 this.praseHtml();
-                var images = this.node.getElements("img");
-                images.each( function( img ){
-                    img.setStyles({
-                        "height": "auto",
-                        "max-width" : "100%"
-                    });
-                }.bind(this));
                 this.fireEvent("afterLoad");
                 this.fieldModuleLoaded = true;
             }else if( layout.mobile){
@@ -118,9 +111,89 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
     praseHtml: function () {
         o2.require("o2.widget.ImageLazyLoader", function () {
             var loadder = new o2.widget.ImageLazyLoader(this.node, this._getBusinessData());
-            loadder.parseHtml();
-            this.node.set("html", loadder.html_new);
+            this.node.set("html", loadder.clearHtml());
+            var images = this.node.getElements("img");
+            const ps = images.map( function( img ){
+                    if (!img.crossOrigin) {
+                        img.crossOrigin = "anonymous";
+                    }
+                return this.imgToBase64(img)
+                        .then(base64 => {
+                            img.src = base64;
+                        })
+                        .catch(err => {
+                            console.warn("图片处理失败：", err.message, img.src);
+                            img.destroy();
+                        });
+            }.bind(this));
+            this.moduleValueAG = Promise.allSettled(ps);
         }.bind(this), null, false);
+    },
+    imgToBase64: function(img, format = 'image/png', quality = 0.5) {
+        return new Promise((resolve, reject) => {
+
+            const parseImg = () => {
+                try {
+                    const width = img.naturalWidth || img.offsetWidth;
+                    const height = img.naturalHeight || img.offsetHeight;
+
+                    // const width =  img.offsetWidth || img.naturalWidth;
+                    // const height =  img.offsetHeight || img.naturalHeight;
+
+                    if (width <= 0 || height <= 0) {
+                        reject(new Error("图片尺寸无效，无法转换"));
+                        return;
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    ctx.drawImage(img, 0, 0);
+
+                    const base64Str = canvas.toDataURL(format, quality);
+                    resolve(base64Str);
+                } catch (error) {
+                    reject(new Error(`转换失败：${error.message}`));
+                }
+            };
+
+            img.setStyles({
+                "height": "auto",
+                "width": "auto",
+                "max-width" : "100%"
+            });
+
+            // 处理图片加载成功
+            const handleLoad = () => {
+                img.removeEventListener('load', handleLoad);
+                img.removeEventListener('error', handleError);
+                parseImg();
+            };
+
+            // 处理图片加载失败（关键：补充error监听）
+            const handleError = () => {
+                img.removeEventListener('load', handleLoad);
+                img.removeEventListener('error', handleError);
+                reject(new Error(`图片加载失败：${img.src}`));
+            };
+
+            // 图片已加载完成
+            if (img.complete) {
+                // 检查加载状态（避免缓存的失败图片）
+                if (img.naturalWidth === 0) {
+                    reject(new Error(`图片加载异常：${img.src}`));
+                } else {
+                    parseImg();
+                }
+            } else {
+                img.addEventListener('load', handleLoad);
+                img.addEventListener('error', handleError);
+                img.src = img.src;
+            }
+        });
     },
     loadLazyImage: function(callback){
         o2.require("o2.widget.ImageLazyLoader", function(){
@@ -554,7 +627,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
     },
     createErrorNode: function(text){
         node = new Element("div", {styles:{
-            "margin-top": "0.3em"  
+            "margin-top": "0.3em"
         }});
         var iconNode = new Element("div.ooicon-error", {
             "styles": {
@@ -690,7 +763,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
     },
     validation: function(routeName, opinion){
         if (this.isReadonly() || this.json.showMode==="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
-        
+
         if (!this.validationConfig(routeName, opinion))  return false;
 
         if (!this.json.validation) return true;
@@ -781,4 +854,4 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
             }
             return true;
         }
-}); 
+});

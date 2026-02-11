@@ -1522,6 +1522,7 @@
       "white-space": "nowrap"
     },
     "OODownloadingValueNodeStyle": {
+      "background-color": "#f7f7f7",
       "align-items": "center",
       "display": "flex",
       "flex": "1 1 0%",

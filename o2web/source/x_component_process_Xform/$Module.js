@@ -1505,7 +1505,6 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 if(this.json.properties['label-style']){
                     labelNode.setAttribute('style', this.json.properties['label-style']);
                 }
-                labelNode.setStyles(this.form.css.OODownloadingLabelNodeStyle);
                 if(this.json.properties['label-Align']){
                     let justifyContent;
                     switch (this.json.properties['label-Align']) {
@@ -1519,16 +1518,18 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             if(!this.json.inDatatable && this.json.properties['view-style']) {
                 valueNode.setAttribute('style', this.json.properties['view-style']);
             }
-            valueNode.setStyles(this.form.css.OODownloadingValueNodeStyle);
-
-            this.downloadingNode = node;
-            this.downloadingLabelNode = labelNode;
-            this.downloadingValueNode = valueNode;
-
-            this._afterLoadOONodeDownloading();
         }
+        if(labelNode){
+            labelNode.setStyles(this.form.css.OODownloadingLabelNodeStyle);
+        }
+        valueNode.setStyles(this.form.css.OODownloadingValueNodeStyle);
+
+        this.downloadingNode = node;
+        this.downloadingLabelNode = labelNode;
+        this.downloadingValueNode = valueNode;
+
+        this._afterLoadOONodeDownloading();
     },
     _afterLoadOONodeDownloading: function (){
-
     }
 });

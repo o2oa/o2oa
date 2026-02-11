@@ -1,7 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "Htmleditor", null, false);
 MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor = new Class({
     Extends: MWF.APPHtmleditor,
-
     // _loadUserInterface: function(){
     // 	this.node.empty();
     //     if (this.readonly){

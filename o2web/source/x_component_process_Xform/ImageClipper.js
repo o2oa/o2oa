@@ -69,8 +69,24 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
             }
             if(this.json.imageStyles)img.setStyles(this.json.imageStyles);
             img.inject( this.node );
+
+            if(this.downloading){
+                if (!img.crossOrigin) {
+                    img.crossOrigin = "anonymous";
+                }
+                this.moduleValueAG = this.imgToBase64(img)
+                    .then(base64 => {
+                        img.src = base64;
+                    })
+                    .catch(err => {
+                        console.warn("图片处理失败：", err.message, img.src);
+                        img.destroy();
+                    });
+            }
         }
         if( this.isReadonly())return;
+
+
 
         var divBottom = new Element("div").inject( this.node );
         var button = new Element("button").inject(divBottom);
@@ -378,6 +394,71 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
             return false;
         }
         return true;
-    }
-	
+    },
+     imgToBase64: function(img, format = 'image/png', quality = 0.5) {
+            return new Promise((resolve, reject) => {
+
+                const parseImg = () => {
+                    try {
+                        const width = img.naturalWidth || img.offsetWidth;
+                        const height = img.naturalHeight || img.offsetHeight;
+
+                        // const width =  img.offsetWidth || img.naturalWidth;
+                        // const height =  img.offsetHeight || img.naturalHeight;
+
+                        if (width <= 0 || height <= 0) {
+                            reject(new Error("图片尺寸无效，无法转换"));
+                            return;
+                        }
+
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        ctx.drawImage(img, 0, 0);
+
+                        const base64Str = canvas.toDataURL(format, quality);
+                        resolve(base64Str);
+                    } catch (error) {
+                        reject(new Error(`转换失败：${error.message}`));
+                    }
+                };
+
+                // img.setStyles({
+                //     "height": "auto",
+                //     "width": "auto",
+                //     "max-width" : "100%"
+                // });
+
+                // 处理图片加载成功
+                const handleLoad = () => {
+                    img.removeEventListener('load', handleLoad);
+                    img.removeEventListener('error', handleError);
+                    parseImg();
+                };
+
+                // 处理图片加载失败（关键：补充error监听）
+                const handleError = () => {
+                    img.removeEventListener('load', handleLoad);
+                    img.removeEventListener('error', handleError);
+                    reject(new Error(`图片加载失败：${img.src}`));
+                };
+
+                // 图片已加载完成
+                if (img.complete) {
+                    // 检查加载状态（避免缓存的失败图片）
+                    if (img.naturalWidth === 0) {
+                        reject(new Error(`图片加载异常：${img.src}`));
+                    } else {
+                        parseImg();
+                    }
+                } else {
+                    img.addEventListener('load', handleLoad);
+                    img.addEventListener('error', handleError);
+                    img.src = img.src;
+                }
+            });
+        },
 }); 
