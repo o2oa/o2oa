@@ -363,7 +363,7 @@ MWF.xApplication.Profile.Main = new Class({
             this.ideasSaveDefaultAction.addEvent("click", function(){
                 MWF.require("MWF.widget.UUID", function(){
                     var data = {};
-                    data.ideas = this.ideasArea.get("value").split("\n");
+                    data.ideas = this.ideasArea.get("value").split("\n").filter(v=>!!v);
                     MWF.UD.putPublicData("idea", data, function(){
                         this.notice(this.lp.ideaSaveOk, "success");
                     }.bind(this));
