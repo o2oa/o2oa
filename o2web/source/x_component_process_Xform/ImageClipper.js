@@ -403,8 +403,8 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
                         const width = img.naturalWidth || img.offsetWidth;
                         const height = img.naturalHeight || img.offsetHeight;
 
-                        // const width =  img.offsetWidth || img.naturalWidth;
-                        // const height =  img.offsetHeight || img.naturalHeight;
+                    const toWidth =  img.offsetWidth || img.naturalWidth;
+                    const toHeight =  img.offsetHeight || img.naturalHeight;
 
                         if (width <= 0 || height <= 0) {
                             reject(new Error("图片尺寸无效，无法转换"));
@@ -414,10 +414,10 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
 
-                        canvas.width = width;
-                        canvas.height = height;
+                    canvas.width = toWidth;
+                    canvas.height = toHeight;
 
-                        ctx.drawImage(img, 0, 0);
+                    ctx.drawImage(img, 0, 0, toWidth, toHeight);
 
                         const base64Str = canvas.toDataURL(format, quality);
                         resolve(base64Str);

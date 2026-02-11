@@ -661,6 +661,7 @@
     margin-bottom: 0;
 }
 .downloading.form-layout .form-content > div:first-child {
+    width: 793.7px !important;
     page-break-inside: avoid;
     -itext-page-break-inside: avoid;
     min-height: fit-content;
