@@ -65,6 +65,11 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
             this.toolbarNode = this.node.getFirst("div");
             if(!this.toolbarNode)return;
 
+            if(this.downloading){
+                this.node.style.setProperty('display', 'none', 'important');
+                return;
+            }
+
             this.toolbarNode.empty();
 
             MWF.require("MWF.widget.Toolbar", function(){

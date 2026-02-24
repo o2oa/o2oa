@@ -9,6 +9,8 @@ MWF.xApplication.process.Xform.OOCurrency = MWF.APPOOCurrency = new Class({
     _loadNode: function () {
         if (!this.isReadable && !!this.isHideUnreadable){
             this.node?.addClass('hide');
+        }else if(this.downloading){
+            this._loadOONodeDownloading();
         }else{
             this._loadNodeEdit();
         }
@@ -225,7 +227,32 @@ MWF.xApplication.process.Xform.OOCurrency = MWF.APPOOCurrency = new Class({
     getInputData: function () {
         return this.node.value;
     },
-
+    _afterLoadOONodeDownloading: function (){
+        var opt = {}, json = this.json;
+        if( json.preset === 'currency' ){
+            opt.currency = json.currency;
+            opt.prefixuse = json.prefixuse;
+        }else{
+            opt.prefix = (json.isPrefix!==false && json.prefix ) || '';
+            opt.suffix = json.suffix|| '';
+            opt.thousands = (json.isThousands!==false && json.thousands ) || '';
+            opt.decimal = json.decimal || '.';
+        }
+        opt.precision = json.hasOwnProperty('precision') ? json.precision : 2;
+        ['allowblank','disablenegative', 'round'].forEach(function(key){
+            if( json.hasOwnProperty(key) ){
+                opt[key] = json[key];
+            }
+        });
+        ['maximum', 'minimum'].forEach(function(key){
+            if( json.hasOwnProperty(key) && json[key] !== '' ){
+                opt[key] = json[key];
+            }
+        });
+        var OOCurrency = window.customElements.get('oo-currency');
+        var text = OOCurrency.formatCurrency(this._getBusinessData(), opt, opt.currency || '');
+        this.downloadingValueNode.set('text', text || '-');
+    }
     // notValidationMode: function (text) {
     //     if(!this.isNotValidationMode){
     //         this.isNotValidationMode = true;
