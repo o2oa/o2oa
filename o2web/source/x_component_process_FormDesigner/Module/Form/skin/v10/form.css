@@ -656,6 +656,35 @@
 
 
 
+/**一键下载**/
+.downloading.form-layout .form-content-work-status {
+    margin-bottom: 0;
+}
+.downloading.form-layout .form-content > div:first-child {
+    width: 793.7px !important;
+    page-break-inside: avoid;
+    -itext-page-break-inside: avoid;
+    min-height: fit-content;
+}
+
+.downloading.form-layout .form-content > div:first-child > div {
+    page-break-after: avoid;
+    page-break-before: avoid;
+    -itext-page-break-after: avoid;
+    -itext-page-break-before: avoid;
+    overflow: visible;
+    white-space: normal;
+    margin: 0 20px;
+}
+.downloading.form-layout .select-redheader-node {
+    display: none !important;
+}
+.downloading.form-layout [mwftype="documenteditor"]{
+    margin-left: -20px !important;
+    overflow: visible !important;
+}
+
+
 /* 手机 */
 @media only screen and (max-width: 767px) {
     /* :root{

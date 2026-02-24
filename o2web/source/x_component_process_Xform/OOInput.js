@@ -13,8 +13,10 @@ MWF.xApplication.process.Xform.OOInput = MWF.APPOOInput = new Class({
         if (this.json.id==='personAttributeList..data..0..attrName'){
             debugger;
         }
-        if (!this.isReadable && !!this.isHideUnreadable){
+        if (!this.isReadable && !!this.isHideUnreadable) {
             this.node?.addClass('hide');
+        }else if(this.downloading){
+            this._loadOONodeDownloading()
         }else{
             this._loadNodeEdit();
         }
@@ -216,5 +218,8 @@ MWF.xApplication.process.Xform.OOInput = MWF.APPOOInput = new Class({
             this.validationText = '';
             this.node.unInvalidStyle();
         }
+    },
+    _afterLoadOONodeDownloading: function (){
+        this.downloadingValueNode.set('text', this._getBusinessData() || '-');
     },
 });

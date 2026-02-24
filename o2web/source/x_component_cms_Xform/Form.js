@@ -214,6 +214,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
              * var subjectField = moduleAll["subject"] //获取名称为subject的组件
              */
             this.all = {};
+            this.allForName = {};
             this.forms = {};
 
             //if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
@@ -263,6 +264,10 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 this.container.set("html", this.html);
                 this.node = this.container.getFirst();
                 if (cssClass) this.node.addClass(cssClass);
+
+                if(this.options.downloading){
+                    this.node.addClass("downloading");
+                }
 
                 this._loadEvents();
                 this.loadRelatedScript();
@@ -963,6 +968,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 if (replace || !this.forms[json.id]) this.forms[json.id] = module;
             }
             module.readonly = this.options.readonly;
+            module.downloading = this.options.downloading;
             module.load();
             return module;
         },
@@ -1881,12 +1887,41 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
          * @example
          * this.form.getApp().appForm.downloadAll();
          */
-        downloadAll: function () {
+        // downloadAll: function () {
+        //     o2.Actions.load("x_cms_assemble_control").FileInfoAction.uploadWorkInfo(this.businessData.document.id, "pdf", {
+        //         "workHtml": encodeURIComponent(this.app.content.get("html")),
+        //         "pageWidth": 1000
+        //     }, function (json) {
+        //         var htmlFormId = json.data.id;
+        //         htmlFormId = htmlFormId.replace("#", "%23");
+        //         var url = "/x_cms_assemble_control/jaxrs/fileinfo/batch/download/doc/" + this.businessData.document.id + "/site/(0)";
+        //         url = o2.filterUrl(o2.Actions.getHost("x_processplatform_assemble_surface") + url);
+        //         var downloadUrl = o2.filterUrl(url + "?fileName=&flag=" + htmlFormId);
+        //         if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
+        //             var xtoken = layout.session.token;
+        //             //var xtoken = Cookie.read(o2.tokenName);
+        //             downloadUrl += "&" + o2.tokenName + "=" + xtoken;
+        //         }
+        //         window.open(downloadUrl);
+        //     }.bind(this));
+        // },
+        _downloadAll: function (htmlString, callback) {
+            var htmlFormId = "";
+            var html = htmlString || document.documentElement.outerHTML; //this.app.content.get("html");
+
+            var port = layout.port === "" ? "" : ":" + layout.port;
+            var orginUrl = "http://127.0.0.1" + port;
+            html = html.replace(/\.\.\/(x_|o2_)/g, orginUrl + "/$1");
+            html = html.replaceAll(window.location.origin, orginUrl);
+
+            console.log(html)
+
             o2.Actions.load("x_cms_assemble_control").FileInfoAction.uploadWorkInfo(this.businessData.document.id, "pdf", {
-                "workHtml": encodeURIComponent(this.app.content.get("html")),
-                "pageWidth": 1000
+                "workHtml": encodeURIComponent(html),
+                "pageWidth": 793.7
             }, function (json) {
                 var htmlFormId = json.data.id;
+                if(callback)callback();
                 htmlFormId = htmlFormId.replace("#", "%23");
                 var url = "/x_cms_assemble_control/jaxrs/fileinfo/batch/download/doc/" + this.businessData.document.id + "/site/(0)";
                 url = o2.filterUrl(o2.Actions.getHost("x_processplatform_assemble_surface") + url);

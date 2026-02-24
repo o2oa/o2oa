@@ -369,7 +369,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			moduleNodes.each(function (node) {
 				if (node.get("MWFtype") !== "form") {
 					var json = this.form._getDomjson(node);
-					this.templateJson[json.id] = json ;
+					if(json)this.templateJson[json.id] = json ;
 				}
 			}.bind(this));
 		},
@@ -3247,13 +3247,18 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		//this.loadSimulateModule();
 		this.fieldArray = []; //日期格式列下标
 		this.template.json.excelFieldConfig.each(function (config, i) {
+			const fieldJson = this.form.json.moduleList[config.field];
+			if( !fieldJson ){
+				console.warn(`从数据模板中未找到导入导出配置的字段:${config.title}（${ config.field }）`);
+				return;
+			}
 			this.fieldArray.push({
 				"text": config.title,
 				"field": config.field,
 				"index": i,
 				// "module": this.simelateModuleMap[config.field],
-				"json": this.form.json.moduleList[config.field]
-			})
+				"json": fieldJson
+			});
 		}.bind(this));
 	},
 	getDateIndexArray : function(){

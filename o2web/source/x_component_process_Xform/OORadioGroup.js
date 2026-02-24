@@ -14,6 +14,8 @@ MWF.xApplication.process.Xform.OORadioGroup = MWF.APPOORadioGroup = new Class({
         // }else{
             if (!this.isReadable && !!this.isHideUnreadable){
                 this.node?.addClass('hide');
+            }else if(this.downloading){
+                this._loadOONodeDownloading();
             }else{
                 this._loadNodeEdit();
             }
@@ -230,8 +232,13 @@ MWF.xApplication.process.Xform.OORadioGroup = MWF.APPOORadioGroup = new Class({
         this.fieldModuleLoaded = true;
         this.fireEvent("setData");
     },
-
-
+    _afterLoadOONodeDownloading: function (){
+        let value = this.getBusinessDataById(null, `${this.json.id}$text`) || '';
+        if(!value){
+            value = this._getBusinessData();
+        }
+        this.downloadingValueNode.set('text', value || '-');
+    },
     //
     // createModelNode: function () {
     //     this.modelNode = new Element('div', {'styles': this.form.css.modelNode}).inject(this.node, 'after');

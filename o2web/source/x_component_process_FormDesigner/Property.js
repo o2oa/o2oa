@@ -92,6 +92,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                             var parentNode = this.module.node.getParent("div[mwftype='datatable'],div[mwftype='datatemplate']");
                             this.ignoreSection = !!parentNode;
                         }
+                        if(this.designer?.options?.name.indexOf("portal") === 0){
+                            this.ignoreSection = true;
+                        }
                     }
                     this.htmlString = o2.bindJson(this.htmlString, {"lp": lp, appType: this.form.json.appType});
                     // this.htmlString = o2.bindJson(this.htmlString, {"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate});

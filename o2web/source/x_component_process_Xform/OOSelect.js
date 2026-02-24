@@ -40,7 +40,9 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
     _loadNode: function(){
 		if (!this.isReadable && !!this.isHideUnreadable){
             this.node?.addClass('hide');
-        }else{
+        }else if(this.downloading){
+			this._loadOONodeDownloading();
+		}else{
             this._loadNodeEdit();
         }
 
@@ -361,7 +363,19 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
             this.validationText = '';
             this.node.unInvalidStyle();
         }
-    }
+    },
+	_afterLoadOONodeDownloading: function (){
+		let value = this.getBusinessDataById(null, `${this.json.id}$text`) || '';
+		if(!value){
+			value = this._getBusinessData();
+		}
+		if(Array.isArray(value)){
+			value = value.map(v=>{
+				return Array.isArray(v) ? v.join(' /') : v;
+			}).join(' ,');
+		}
+		this.downloadingValueNode.set('text', value || '-');
+	},
 });
 
 function mergeUniqueArrays(arr1, arr2) {

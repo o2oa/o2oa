@@ -158,7 +158,7 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
         return this._uploadFileTo(file, node, this.form.businessData.document.id);
     },
 
-    _uploadFileTo(file, node, id) {
+    _uploadFileTo: function(file, node, id) {
         var formData = new FormData();
         formData.append('site', this.json.id);
         formData.append('file', file);
@@ -215,7 +215,7 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
             .join(',');
     },
 
-    _appendPrograsseMethods(node) {
+    _appendPrograsseMethods: function (node) {
         node.addFormDataMessage = (file) => {
             return {
                 data: {},
@@ -296,5 +296,15 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
         }
 
         return value ?? '';
+    },
+    _afterLoadOONodeDownloading: function (){
+        this.env = this._fileInCms() ? 'cms' : (this._fileInProcess() ? 'process' : '');
+        this.restfulActions =
+            this.env === 'process' ? this.form.workAction.action : this.env === 'cms' ? this.form.documentAction.action : null;
+        let value = this.getValue();
+        if(Array.isArray(value)){
+            value = value.map(v=>v.name);
+        }
+        this.downloadingValueNode.set('text', value.join(' ,') || '-');
     },
 });

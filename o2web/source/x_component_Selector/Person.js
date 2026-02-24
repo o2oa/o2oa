@@ -2378,6 +2378,9 @@ MWF.xApplication.Selector.Person.Item = new Class({
         }
     },
     _init: function (){},
+    _setShowName: function (){
+        this.textNode.set('text', this._getShowName())
+    },
     _getShowName: function(){
         return this.data.name + ( this.data.employee ? ("("+this.data.employee+")") : "" );
     },
