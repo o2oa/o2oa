@@ -40,7 +40,7 @@ MWF.xApplication.process.Xform.DatatableV10 = new Class({
         // this.node.insertAdjacentElement('afterend', buttonNode);
 
         this.node.addEventListener('click', (e) => {
-            if (this.datatableMode === 'mobile_default' && this.editable) {
+            if (this.datatableMode === 'mobile_default' && this.mobileEditable) {
                 this.datatableMode = 'mobile_edit';
 
                 // const size = document.body.getSize();
