@@ -1707,7 +1707,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     "values": ev.target.value,
                     "types": types,
                     "style": "v10",
-                    "count": 0,
+                    "tabStyle": 'v10',
+                    "count": 1,
                     "onComplete": function (items) {
                         if (items.length) {
                             ev.target.value = items.map(i => i.data.distinguishedName)
@@ -1719,7 +1720,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 if (types.length > 1) {
                     options.types = types
                 }else{
-                    options.type = types[0]
+                    options.type = types[0];
+                    options.types = null;
                 }
                 MWF.xDesktop.requireApp("Selector", "package", ()=>{
                     new o2.O2Selector(this.app.content, options);
@@ -1727,7 +1729,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             });
 
         });
-    
+
         const buttonHtml = `
             <oo-button class="button-ok" style="width: 6rem"  text="查询" left-icon="search"></oo-button>
             <oo-button class="button-cancel" type="cancel" text="重置" left-icon="process-cancel"></oo-button>
@@ -1746,6 +1748,10 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             const filterData = this.json.filter ? this.json.filter.clone() : [];
             const filter = [...filterData, ...this.customFilterListData];
             this.createViewNode({"filterList": filter}, null, true);
+
+            if( o2.isMediaMobile() ){
+               this._hideFilterSearch(true);
+            }
         });
         cancelButton.addEventListener("click", (ev)=>{
             this.searchAreaNode.querySelectorAll("oo-input, oo-select, oo-datetime, oo-switch, oo-selector").forEach( (node)=>{
@@ -1753,10 +1759,53 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 this.customFilterListData = [];
                 this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null}, null, true);
             });
+            if( o2.isMediaMobile() ){
+                this._hideFilterSearch(true);
+            }
         });
+    },
+    loadFilterMoreActionMobileV10: function(){
+        if (o2.isMediaMobile() && this.viewJson.customFilterList && this.viewJson.customFilterList.length){
+            var div = new Element('div.search-fulltext-more', {styles: {'font-size': '1.15rem'}});
+            this.moreSearchButton = new Element("oo-button");
+            this.moreSearchButton.setAttribute('type', (o2.isMediaMobile()) ? 'icon' : 'icon-light');
+            this.moreSearchButton.setAttribute('title', '更多筛选');
+            this.moreSearchButton.setAttribute('left-icon', o2.isMediaMobile() ? 'search' : 'jiekoupeizhi2');
+            div.appendChild(this.moreSearchButton);
+            this.searchAreaNode.appendChild(div);
 
+            this.viewSearchAreaNode?.addClass('hide');
 
+            this.moreSearchButton.addEventListener('click', ()=>{
+                if (this.viewSearchAreaNode?.hasClass('hide')){
+                    this._showFilterSearch();
+                }else{
+                    this._hideFilterSearch();
+                }
+            })
+        }
+    },
+    _showFilterSearch: function(ignoreAction){
+        this.moreSearchButton?.setAttribute('title', '全文检索');
+        this.viewSearchAreaNode?.removeClass('hide');
+        if( !o2.isMediaMobile() ){
+            this.moreSearchButton?.setAttribute('left-icon', 'arrow_back');
+        }
 
+        this.searchAreaNode.addClass('showFilter');
+        this.viewSearchAreaNode.addClass('showFilter');
+    },
+    _hideFilterSearch: function( ignoreAction ){
+        this.moreSearchButton?.setAttribute('title', '更多筛选');
+        this.viewSearchAreaNode?.addClass('hide');
+        if( !o2.isMediaMobile() ) {
+            this.moreSearchButton?.setAttribute('left-icon', 'jiekoupeizhi2');
+        }
+
+        this.searchAreaNode.removeClass('showFilter');
+        this.viewSearchAreaNode.removeClass('showFilter');
+
+        if(!ignoreAction)this._cancelFilter();
     },
     loadFilterSearch: function(){
         debugger;
@@ -1764,6 +1813,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             'onSuccess': (json)=>{
                 if (json.filterSkin==='v10'){
                     this.loadFilterSearchNodeV10();
+                    this.loadFilterMoreActionMobileV10();
                 }else{
                     this.loadFilterSearchNode();
                 }
