@@ -1,20 +1,5 @@
 package com.x.portal.assemble.surface.jaxrs.page;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.TreeMap;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.Cache.CacheKey;
@@ -26,19 +11,28 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.portal.assemble.surface.Business;
 import com.x.portal.assemble.surface.ThisApplication;
-import com.x.portal.assemble.surface.jaxrs.page.BaseAction.RelatedPage;
-import com.x.portal.assemble.surface.jaxrs.page.BaseAction.RelatedScript;
-import com.x.portal.assemble.surface.jaxrs.page.BaseAction.RelatedWidget;
-import com.x.portal.assemble.surface.jaxrs.page.V2GetWithPortal.Wo;
 import com.x.portal.core.entity.Page;
 import com.x.portal.core.entity.PageProperties;
 import com.x.portal.core.entity.Portal;
 import com.x.portal.core.entity.Script;
 import com.x.portal.core.entity.Widget;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class V2GetWithPortalMobile extends BaseAction {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(V2GetWithPortalMobile.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2GetWithPortalMobile.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, String portalFlag) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
@@ -105,7 +99,7 @@ class V2GetWithPortalMobile extends BaseAction {
 					for (String wid : properties.getMobileRelatedWidgetList()) {
 						w = bus.widget().pick(wid);
 						if (null != w) {
-							map.put(wid, new RelatedWidget(w, w.getMobileData()));
+							map.put(wid, new RelatedWidget(w, BooleanUtils.isFalse(w.getHasMobile()) ? w.getData() : w.getMobileData()));
 							list.add(w.getId() + w.getUpdateTime().getTime());
 						}
 					}
