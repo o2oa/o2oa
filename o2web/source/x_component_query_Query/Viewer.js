@@ -1873,9 +1873,16 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
             this.currentFilterData = {"filterList": filter};
             this.createViewNode(this.currentFilterData, null, true);
+
+            if( o2.isMediaMobile() ){
+               this._hideFilterSearch(true);
+            }
         });
         cancelButton.addEventListener("click", (ev)=>{
             this._cancelFilter();
+            if( o2.isMediaMobile() ){
+                this._hideFilterSearch(true);
+            }
         });
 
         this.viewSearchFilterItemAreaNode = new Element("div.search-item-area").inject(this.searchAreaNode, 'after');
@@ -1950,7 +1957,28 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 this.moreSearchButton = new Element("oo-button");
                 this.moreSearchButton.setAttribute('type', (o2.isMediaMobile()) ? 'icon' : 'icon-light');
                 this.moreSearchButton.setAttribute('title', '更多筛选');
-                this.moreSearchButton.setAttribute('left-icon', 'jiekoupeizhi2');
+                this.moreSearchButton.setAttribute('left-icon', o2.isMediaMobile() ? 'search' : 'jiekoupeizhi2');
+                div.appendChild(this.moreSearchButton);
+                this.viewFulltextSearchAreaNode.appendChild(div);
+
+                this.viewSearchAreaNode?.addClass('hide');
+
+                this.moreSearchButton.addEventListener('click', ()=>{
+                    if (this.viewSearchAreaNode?.hasClass('hide')){
+                        this._showFilterSearch();
+                    }else{
+                        this._hideFilterSearch();
+                    }
+                })
+            }
+        }else if(o2.isMediaMobile()){
+            this.viewFulltextSearchAreaNode = new Element("div.search-fulltext-area").inject(this.searchAreaNode, 'top');
+
+            if (this.viewJson.customFilterList && this.viewJson.customFilterList.length){
+                var div = new Element('div.search-fulltext-more', {styles: {'font-size': '1.15rem'}});
+                this.moreSearchButton = new Element("oo-button");
+                this.moreSearchButton.setAttribute('type', (o2.isMediaMobile()) ? 'icon' : 'icon-light');
+                this.moreSearchButton.setAttribute('left-icon', 'search');
                 div.appendChild(this.moreSearchButton);
                 this.viewFulltextSearchAreaNode.appendChild(div);
 
@@ -1967,12 +1995,14 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }
     },
 
-    _showFilterSearch: function(){
+    _showFilterSearch: function(ignoreAction){
         this.moreSearchButton?.setAttribute('title', '全文检索');
         this.fulltextSearchInput?.addClass('hide');
         this.fulltextSearchButton?.addClass('hide');
         this.viewSearchAreaNode?.removeClass('hide');
-        this.moreSearchButton?.setAttribute('left-icon', 'arrow_back');
+        if( !o2.isMediaMobile() ){
+            this.moreSearchButton?.setAttribute('left-icon', 'arrow_back');
+        }
 
         this.searchAreaNode.addClass('showFilter');
         this.viewFulltextSearchAreaNode.addClass('showFilter');
@@ -1981,21 +2011,23 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
             this.viewFulltextSearchAreaNode.addClass('column')
         }
 
-        this._cancelFilter();
+        if(!ignoreAction)this._cancelFilter();
     },
-    _hideFilterSearch: function(){
+    _hideFilterSearch: function( ignoreAction ){
         this.moreSearchButton?.setAttribute('title', '更多筛选');
         this.fulltextSearchInput?.removeClass('hide');
         this.fulltextSearchButton?.removeClass('hide');
         this.viewSearchAreaNode?.addClass('hide');
-        this.moreSearchButton?.setAttribute('left-icon', 'jiekoupeizhi2');
+        if( !o2.isMediaMobile() ) {
+            this.moreSearchButton?.setAttribute('left-icon', 'jiekoupeizhi2');
+        }
 
         this.searchAreaNode.removeClass('showFilter');
         this.viewFulltextSearchAreaNode.removeClass('showFilter');
         this.viewSearchAreaNode.removeClass('showFilter');
         this.viewFulltextSearchAreaNode.removeClass('column')
 
-        this._cancelFilter();
+        if(!ignoreAction)this._cancelFilter();
     },
 
     loadFilterSearch: function(){
