@@ -5,7 +5,8 @@ MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
         this._loadUserInterface();
     },
     _loadUserInterface: function(){
-        if (!this.isReadable){
+        debugger;
+        if (!this.isReadable || layout.mobile){
             this.node.setStyle('display', 'none');
             return '';
         }
