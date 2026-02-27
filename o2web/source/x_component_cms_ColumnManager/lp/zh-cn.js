@@ -50,12 +50,12 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "empty": "空白表单",
         "publishEdit": "发布类编辑表单",
         "publishRead": "发布类阅读表单",
-        "publishEditTidy": "发布类编辑表单(简洁)",
-        "publishReadTidy": "发布类阅读表单(简洁)",
+        "publishEditTidy": "发布类编辑(oo组件-v10)",
+        "publishReadTidy": "发布类阅读(oo组件-v10)",
         "publishEditGreen": "发布类编辑表单(绿色)",
         "publishReadGreen": "发布类阅读表单(绿色)",
         "dataInput": "数据录入类表单",
-        "dataInputTidy": "数据录入类表单(简洁)"
+        "dataInputTidy": "数据录入类(oo组件-v10)"
     },
 
 	"category": {
