@@ -2919,7 +2919,7 @@ MDomItem.Rtf = new Class({
                 });
 
                 // 额外处理：源码模式下的内容过滤（可选，增强防护）
-                editor.on('beforeSetData', function(evt) {
+                e.editor.on('beforeSetData', function(evt) {
                     evt.data.dataValue = evt.data.dataValue.replace(
                         /<a\s+[^>]*href\s*=\s*(["']?)javascript:.*?\1[^>]*>/gi,
                         function(match) {

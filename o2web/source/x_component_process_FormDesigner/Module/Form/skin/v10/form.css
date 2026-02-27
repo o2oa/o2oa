@@ -1215,19 +1215,19 @@
         font-weight: bold;
     }
 
-    .mwf_selectView_node .searchAreaNode > div {
-        height: unset !important;
-        border: 0 !important;
-        margin: 0 !important;
-        border-radius: 0 !important;
-        padding: 0.5em 1em;
-        display: flex;
-        font-size: 1rem;
-        background-color: transparent !important;
-        gap: 0.5em;
-        align-items: center;
-        flex-direction: row-reverse;
-    }
+    /*.mwf_selectView_node .searchAreaNode > div {*/
+    /*    height: unset !important;*/
+    /*    border: 0 !important;*/
+    /*    margin: 0 !important;*/
+    /*    border-radius: 0 !important;*/
+    /*    padding: 0.5em 1em;*/
+    /*    display: flex;*/
+    /*    font-size: 1rem;*/
+    /*    background-color: transparent !important;*/
+    /*    gap: 0.5em;*/
+    /*    align-items: center;*/
+    /*    flex-direction: row-reverse;*/
+    /*}*/
     .mwf_selectView_node .searchAreaNode > div::after {
         /* display: block;
         content: '搜索';

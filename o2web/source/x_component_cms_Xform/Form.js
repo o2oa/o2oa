@@ -867,6 +867,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 }
                 //移动端去掉操作栏
                 if (layout.mobile && json && json.type === "Actionbar") {
+                    node.hide();
                     return;
                 }
                 var module = this._loadModule(json, node, beforeLoadModule, replace);
