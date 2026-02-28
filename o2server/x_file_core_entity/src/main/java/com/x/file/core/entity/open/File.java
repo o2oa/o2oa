@@ -1,5 +1,6 @@
 package com.x.file.core.entity.open;
 
+import com.x.base.core.project.organization.OrganizationDefinition;
 import java.util.Date;
 import java.util.Objects;
 
@@ -99,7 +100,7 @@ public class File extends StorageObject {
 		this.lastUpdateTime = now;
 		this.name = name;
 		this.extension = StringUtils.lowerCase(FilenameUtils.getExtension(name));
-		this.person = person;
+		this.person = OrganizationDefinition.unique(person);
 		this.referenceType = referenceType;
 		this.reference = reference;
 		if (null == this.extension) {
