@@ -2485,7 +2485,6 @@ div.invalidHint.show::before {\r
 .options-content::-webkit-scrollbar-thumb{\r
     width: 6px;\r
     border-radius: 6px;\r
-    /* background-color: transparent; */\r
     background-color: #dddddd;\r
     cursor: pointer;\r
     /*opacity: 0;*/\r
