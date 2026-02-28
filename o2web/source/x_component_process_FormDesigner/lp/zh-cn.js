@@ -1491,6 +1491,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         selectItemScriptInfo: '返回一个可选值数组列表；或者一个resolve了可选值数组的Promise对象',
         selectTemplete: '自定义选项模板',
         showAllLevels: '完整路径',
+        maxTags: '最大标签数',
+        maxTagsInfo: '0表示无限制，超过最大标签数会折叠显示',
         checkStrictly: '父子节点不关联',
         checkStrictlyInfo: '是否严格的遵守父子节点不互相关联',
         emitPath: '返回完整数组',

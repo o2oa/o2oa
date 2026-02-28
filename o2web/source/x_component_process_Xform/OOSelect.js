@@ -182,6 +182,12 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 			this.node.removeAttribute('allow-input');
 		}
 
+		if (this.json.maxTags) {
+			this.node.setAttribute('max-tags', this.json.maxTags);
+		}else{
+			this.node.removeAttribute('max-tags');
+		}
+
 		if (this.json.multiple) {
 			this.node.setAttribute('multiple', 'true');
 		}else{

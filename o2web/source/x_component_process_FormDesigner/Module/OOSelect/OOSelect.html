@@ -55,7 +55,13 @@
                     <input type="radio" name="multiple" value="false" text{($.multiple!=true)?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
-
+            <tr>
+                <td class="editTableTitle">{{$.lp.maxTags}}:</td>
+                <td class="editTableValue">
+                    <input type="number" name="maxTags" value="text{$.maxTags || 0}" class="editTableInput"/>
+                    <div style="padding: 5px">{{$.lp.maxTagsInfo}}</div>
+                </td>
+            </tr>
 		  <tr>
 		    <td class="editTableTitle">{{$.lp.options}}:</td>
 		    <td class="editTableValue">
