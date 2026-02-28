@@ -10,12 +10,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
@@ -24,6 +27,7 @@ import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
+import org.glassfish.jersey.http.HttpHeaders;
 import org.primeframework.jwt.Signer;
 import org.primeframework.jwt.Verifier;
 import org.primeframework.jwt.domain.JWT;
@@ -31,7 +35,7 @@ import org.primeframework.jwt.hmac.HMACSigner;
 import org.primeframework.jwt.hmac.HMACVerifier;
 
 public class DocumentManager {
-	private static Logger logger = LoggerFactory.getLogger(DocumentManager.class);
+	private static final Logger logger = LoggerFactory.getLogger(DocumentManager.class);
 	private static HttpServletRequest request;
 	private static FileSystemManager fsManager = null;
 
@@ -99,8 +103,6 @@ public class DocumentManager {
 				fileObj.createFolder();
 				fileObj.close();
 			}
-		} catch (FileSystemException e) {
-			logger.error(e);
 		} catch (Exception e) {
 			logger.error(e);
 		}
@@ -142,7 +144,7 @@ public class DocumentManager {
 
 	public static String getServerUrl(){
 		String sep = "/";
-		String serverPath = ConfigManager.init("").getDownLoadUrl();
+		String serverPath = Objects.toString(ConfigManager.init("").getDownLoadUrl(), "");
 		if(StringUtils.isNotBlank(serverPath)){
 			if(serverPath.endsWith(sep)){
 				serverPath = serverPath.substring(0, serverPath.length()-1);
@@ -151,35 +153,42 @@ public class DocumentManager {
 				serverPath = serverPath + sep + x_onlyofficefile_assemble_control.class.getSimpleName();
 			}
 		}else{
-			serverPath =  "";
+			String referer = request.getHeader(HttpHeaders.REFERER);
+			if(StringUtils.isNotBlank(referer)) {
+				try {
+					URL url = new URL(referer);
+					int port = url.getPort();
+					serverPath = url.getProtocol() + "://" + url.getHost() + (
+							(port < 0 || port == 80 || port == 443) ? "" : ":" + port)
+							+ sep + x_onlyofficefile_assemble_control.class.getSimpleName();
+				} catch (MalformedURLException e) {
+					logger.debug(e.getMessage());
+				}
+			}
 		}
 		return serverPath;
 	}
 
 
-	public static String getFileUriById(String id) throws Exception {
+	public static String getFileUriById(String id) {
 		String serverPath = getServerUrl();
-		String fileUri = serverPath + "/jaxrs/onlyofficefile/file/" + id;
-		return fileUri;
+		return serverPath + "/jaxrs/onlyofficefile/file/" + id;
 	}
 
-	public static String getFileDiffUriById(String id)throws Exception {
+	public static String getFileDiffUriById(String id) {
 		String serverPath = getServerUrl();
-		String fileUri = serverPath + "/jaxrs/onlyofficefile/file/diff/" + id;
-		return fileUri;
+		return serverPath + "/jaxrs/onlyofficefile/file/diff/" + id;
 	}
 
 
 	public static String getFilePathById(String fileName, String version) {
-		String versionDir = versionDir(fileName, null, Integer.valueOf(version));
-		return versionDir;
+		return versionDir(fileName, null, Integer.valueOf(version));
 	}
 
 	public static String getCallback(String fileName) {
 		String serverPath = getServerUrl();
-		String query = serverPath + "/IndexServlet?type=track&appId=" + x_onlyofficefile_assemble_control.class.getSimpleName() +
+		return serverPath + "/IndexServlet?type=track&appId=" + x_onlyofficefile_assemble_control.class.getSimpleName() +
 				"&fileName=" + URLEncoder.encode(fileName, DefaultCharset.charset);
-		return query;
 	}
 
 	public static String getCallBack(String fileName, String appId, String authToken) {

@@ -10,8 +10,10 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.x_onlyofficefile_assemble_control;
 import com.x.onlyofficefile.assemble.control.jaxrs.onlyoffice.utility.ConfigManager;
+import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.http.HttpHeaders;
 
 public class ActionGetConfig extends BaseAction {
 	private static final Logger logger = LoggerFactory.getLogger(ActionGetConfig.class);
@@ -44,9 +46,19 @@ public class ActionGetConfig extends BaseAction {
 			wo.setGobackUrl(configManager.getGobackUrl());
 			wo.setDownLoadUrl(configManager.getDownLoadUrl());
 		}else{
-			String downloadUrl = StringUtils.substringBefore(request.getRequestURL().toString(),
-					"/" + x_onlyofficefile_assemble_control.class.getSimpleName());
-			wo.setDownLoadUrl(downloadUrl);
+			String referer = request.getHeader(HttpHeaders.REFERER);
+			if(StringUtils.isNotBlank(referer)) {
+				URL url = new URL(referer);
+				int port = url.getPort();
+				String downloadUrl = url.getProtocol() + "://" + url.getHost() + ((port < 0 || port == 80 || port == 443) ? "" : ":" + port)
+						+ "/" + x_onlyofficefile_assemble_control.class.getSimpleName();
+				wo.setDownLoadUrl(downloadUrl);
+				String protocol = url.getProtocol() + "://";
+				wo.setDocserviceConverter(protocol + wo.getDocserviceConverter());
+				wo.setDocserviceTempstorage(protocol + wo.getDocserviceTempstorage());
+				wo.setDocserviceApi(protocol + wo.getDocserviceApi());
+				wo.setDocservicePreloader(protocol + wo.getDocservicePreloader());
+			}
 		}
 		return result;
 	}
@@ -79,13 +91,13 @@ public class ActionGetConfig extends BaseAction {
 				"|.ods|.fods|.ots|.pptm|.ppt|.ppsx|.ppsm|.pps|.potx|.potm|.pot|.odp|.fodp|.otp|.rtf|.mht|.html|.htm|.epub";
 
 		@FieldDescribe("onlyoffice转换地址")
-		private String docserviceConverter = "http://onlyoffice.o2oa.net/ConvertService.ashx";
+		private String docserviceConverter = "onlyoffice.o2oa.net/ConvertService.ashx";
 		@FieldDescribe("onlyoffice临时存储路径")
-		private String docserviceTempstorage = "http://onlyoffice.o2oa.net/ResourceService.ashx";
+		private String docserviceTempstorage = "onlyoffice.o2oa.net/ResourceService.ashx";
 		@FieldDescribe("onlyoffice前端api地址")
-		private String docserviceApi = "http://onlyoffice.o2oa.net/web-apps/apps/api/documents/api.js";
+		private String docserviceApi = "onlyoffice.o2oa.net/web-apps/apps/api/documents/api.js";
 		@FieldDescribe("onlyoffice前端刷新地址")
-		private String docservicePreloader = "http://onlyoffice.o2oa.net/web-apps/apps/api/documents/cache-scripts.html";
+		private String docservicePreloader = "onlyoffice.o2oa.net/web-apps/apps/api/documents/cache-scripts.html";
 
 		@FieldDescribe("密钥，可为空")
 		private String secret = "o2oa@2022";
