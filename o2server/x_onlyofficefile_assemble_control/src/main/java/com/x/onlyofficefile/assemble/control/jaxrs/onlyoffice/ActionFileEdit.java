@@ -18,12 +18,11 @@ import com.x.onlyofficefile.assemble.control.jaxrs.onlyoffice.entities.FileModel
 import com.x.onlyofficefile.assemble.control.jaxrs.onlyoffice.utility.DocumentManager;
 import com.x.onlyofficefile.assemble.control.jaxrs.onlyoffice.utility.FileUtility;
 import com.x.onlyofficefile.assemble.control.jaxrs.onlyoffice.utility.ServiceConverter;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.util.UrlEncoded;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.util.UrlEncoded;
 
 /**
  * @author sword
@@ -47,6 +46,7 @@ public class ActionFileEdit extends BaseAction {
         if(StringUtils.isBlank(wi.getFileId())){
             throw new ExceptionCustom("参数错误");
         }
+        DocumentManager.Init(request);
         WrapFile woFile = this.getWoFile(wi, effectivePerson);
         if(woFile == null){
             throw new ExceptionCustom("业务系统异常");

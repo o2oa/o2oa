@@ -31,9 +31,9 @@ public class ConfigManager {
     private String docbuilderEXEPath;
 
     @FieldDescribe("查看文件类型")
-    private String docserviceViewedDocs;
+    private String docserviceViewedDocs = ".pdf|.docx|.xlsx|.csv|.pptx|.txt";
     @FieldDescribe("编辑文件类型")
-    private String docserviceEditedDocs;
+    private String docserviceEditedDocs = ".docx|.xlsx|.csv|.pptx|.txt";
     @FieldDescribe("转换文件类型")
     private String docserviceConvertDocs;
 
@@ -50,7 +50,7 @@ public class ConfigManager {
     private String downLoadUrl;
 
     @FieldDescribe("密钥，可为空")
-    private String secret;
+    private String secret = "o2oa@2022";
 
     @FieldDescribe("文件下载允许ip，多值逗号分隔。可为空，表示全允许")
     private String ipWhiteList;
