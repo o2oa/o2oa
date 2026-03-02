@@ -163,7 +163,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		ActionResult<ActionIsEnableOfficePreview.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionIsEnableOfficePreview().execute(effectivePerson);
+			result = new ActionIsEnableOfficePreview().execute(request, effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
