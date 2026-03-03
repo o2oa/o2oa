@@ -30,7 +30,16 @@ MWF.xApplication.AI.AttachmenPreview = new Class({
         if(layout.mobile){
             location.href = "../o2_lib/pdfjs/web/viewer.html?file=" + this.fileUrl;
         }else{
-            window.open("../o2_lib/pdfjs/web/viewer.html?file=" + this.fileUrl);
+
+            const url = "../o2_lib/pdfjs/web/viewer.html?file=" + encodeURIComponent(this.fileUrl);
+            const options = {
+                "fileUrl": url,
+                "fileName" : this.att.name,
+                "appId": "PdfViewer" + this.att.id
+            };
+            layout.openApplication(null, "PdfViewer", options);
+
+
         }
     },
     previewOffice : function(){
