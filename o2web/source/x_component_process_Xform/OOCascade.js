@@ -42,16 +42,16 @@ MWF.xApplication.process.Xform.OOCascade = MWF.APPOOCascade =  new Class({
 				this.node.setAttribute('disabled', true);
 			} else if (this.json.showMode === 'read') {
 				this.node.setAttribute('readmode', true);
-				if (this.json.readModeEvents!=='yes'){
-					this.node.setStyle('pointer-events', 'none');
-				}
+				// if (this.json.readModeEvents!=='yes'){
+				// 	this.node.setStyle('pointer-events', 'none');
+				// }
 			} else {
 			}
 		}else{
 			this.node.setAttribute('readmode', true);
-			if (this.json.readModeEvents!=='yes'){
-				this.node.setStyle('pointer-events', 'none');
-			}
+			// if (this.json.readModeEvents!=='yes'){
+			// 	this.node.setStyle('pointer-events', 'none');
+			// }
 		}
 
 		if (this.json.required){
@@ -150,6 +150,17 @@ MWF.xApplication.process.Xform.OOCascade = MWF.APPOOCascade =  new Class({
         });
 
 		this.setOptions();
+
+		this.node.addEvent('click', function () {
+			console.log('click')
+		}.bind(this));
+		this.node.addEvent('mouseout', function () {
+			console.log('mouseout')
+		}.bind(this));
+		console.log(this.node)
+		this.node.getParent().addEvent('click', function () {
+			console.log(this.node.getParent(), 'form click')
+		}.bind(this));
 	},
 
 	setOptions: function () {
