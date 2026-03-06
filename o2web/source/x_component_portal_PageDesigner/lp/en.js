@@ -332,6 +332,8 @@ MWF.xApplication.portal.PageDesigner.LP={
 	},
 	"clearNoDomModuleTitle": "Clear component configurations that are not in the HTML tree",
 	"clearNoDomModuleContent": "Do you want to clear component configurations that are not in the HTML tree? After clearing, it needs to be saved to take effect.",
+	"copyFormDataTitle": "Copy Component",
+	"copyFormDataContent": "There are no components in the mobile form yet. Do you want to copy from the PC form?",
 	"selectCopyModule": "Please select the component whose properties need to be copied",
 	"selectCopyModuleNotice": "Please select the component first!",
 	"fieldPermissions": "Data permission settings",

@@ -485,7 +485,36 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
         this.currentHistoryNode = this.historyArea;
     },
 
-    changeDesignerModeToMobile: function(){
+    changeDesignerModeToMobile: function (){
+        this._checkMobileFormData(function (){
+            this._changeDesignerModeToMobile();
+        }.bind(this))
+    },
+    _checkMobileFormData: function( callback ){
+        var _self = this;
+        if (!this.mobilePage && !Object.keys(this.pageMobileData.json.moduleList).length){
+            var p = MWF.getCenterPosition(this.content, 460, 120);
+            var event = {
+                "event": {
+                    "x": p.x,
+                    "y": p.y - 200,
+                    "clientX": p.x,
+                    "clientY": p.y - 200
+                }
+            }
+            this.confirm("warn", event,  MWF.APPPOD.LP.copyFormDataTitle, MWF.APPPOD.LP.copyFormDataContent, 460, 120, function(){
+                _self.pageMobileData = Object.clone(_self.pageData);
+                this.close();
+                callback();
+            }, function(){
+                this.close();
+                callback();
+            }, null, this.content);
+        }else{
+            callback();
+        }
+    },
+    _changeDesignerModeToMobile: function(){
         this.pcDesignerActionNode.setStyles(this.css.designerActionNode);
         this.mobileDesignerActionNode.setStyles(this.css.designerActionNode_current);
 
@@ -511,9 +540,9 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
         if (!this.mobilePage){
             this.designMobileNode.set("id", "designMobileNode");
             this.mobilePage = new MWF.PCPage(this, this.designMobileNode, {"mode": "Mobile"});
-            if (!Object.keys(this.pageMobileData.json.moduleList).length){
-                this.pageMobileData = Object.clone(this.pageData);
-            }
+            // if (!Object.keys(this.pageMobileData.json.moduleList).length){
+            //     this.pageMobileData = Object.clone(this.pageData);
+            // }
             this.mobilePage.load(this.pageMobileData);
 
             // this.mobilePage = new MWF.PCPage(this, this.designMobileNode, {"mode": "Mobile"});

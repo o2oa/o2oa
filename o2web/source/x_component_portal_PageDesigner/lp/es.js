@@ -304,6 +304,8 @@ MWF.xApplication.portal.PageDesigner.LP={
 	},
 	"clearNoDomModuleTitle": "Borrar la configuración de los componentes que no están en el árbol htl",
 	"clearNoDomModuleContent": "¿¿ borrar la configuración de los componentes que no están en el árbol httpl? Después de la limpieza, es necesario guardarlo para entrar en vigor.",
+	"copyFormDataTitle": "Copiar componente",
+	"copyFormDataContent": "Aún no hay componentes en el formulario móvil. ¿Deseas copiar desde el formulario de PC?",
 	"selectCopyModule": "Por favor, elija el componente que necesita copiar el atributo",
 	"selectCopyModuleNotice": "¡¡ por favor, elija el componente primero!",
 	"fieldPermissions": "Configuración de permisos de datos",
