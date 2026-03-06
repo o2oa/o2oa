@@ -4526,8 +4526,17 @@ MWF.xApplication.Drive.AttachmenPreview = new Class({
 	previewPdf : function(){
 		this.app.getAttachmentUrl(this.att, function (url) {
 			url = url.replace("/stream","");
-			window.open(("../o2_lib/pdfjs/web/viewer.html?file=" + encodeURIComponent(url)))
-		});
+			url = "../o2_lib/pdfjs/web/viewer.html?file=" + encodeURIComponent(url);
+
+			const options = {
+				"fileUrl": url,
+				"fileName" : this.att.name,
+				"appId": "PdfViewer" + this.att.id
+			};
+			layout.openApplication(null, "PdfViewer", options);
+
+
+		}.bind(this));
 	},
 	previewCad : function (){
 		this.app.getAttachmentUrl(this.att, function (url) {
