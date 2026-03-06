@@ -245,7 +245,7 @@ public class PublishProcessor extends AbstractPublishProcessor {
 				value = os.get(0);
 			}
 		}
-		return StringUtils.isBlank(value) ? aeiObjects.getWork().getCreatorIdentity() : value;
+		return value;
 	}
 
 	private String findLastIdentity(Work work) throws Exception {
