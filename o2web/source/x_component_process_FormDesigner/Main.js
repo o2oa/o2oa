@@ -489,8 +489,36 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         this.historyAreaMobile.hide();
         this.currentHistoryNode = this.historyArea;
     },
-
-    changeDesignerModeToMobile: function(){
+    changeDesignerModeToMobile: function (){
+        this._checkMobileFormData(function (){
+            this._changeDesignerModeToMobile();
+        }.bind(this))
+    },
+    _checkMobileFormData: function( callback ){
+        var _self = this;
+        if (!this.mobileForm && !Object.keys(this.formMobileData.json.moduleList).length){
+            var p = MWF.getCenterPosition(this.content, 460, 120);
+            var event = {
+                "event": {
+                    "x": p.x,
+                    "y": p.y - 200,
+                    "clientX": p.x,
+                    "clientY": p.y - 200
+                }
+            }
+            this.confirm("warn", event,  MWF.APPFD.LP.copyFormDataTitle, MWF.APPFD.LP.copyFormDataContent, 460, 120, function(){
+                _self.formMobileData = Object.clone(_self.formData);
+                this.close();
+                callback();
+            }, function(){
+                this.close();
+                callback();
+            }, null, this.content);
+        }else{
+            callback();
+        }
+    },
+    _changeDesignerModeToMobile: function(){
         this.pcDesignerActionNode.setStyles(this.css.designerActionNode);
         this.mobileDesignerActionNode.setStyles(this.css.designerActionNode_current);
 
@@ -515,9 +543,9 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 
         if (!this.mobileForm){
             this.mobileForm = new MWF.FCForm(this, this.designMobileNode, {"mode": "Mobile"});
-            if (!Object.keys(this.formMobileData.json.moduleList).length){
-                this.formMobileData = Object.clone(this.formData);
-            }
+            // if (!Object.keys(this.formMobileData.json.moduleList).length){
+            //     this.formMobileData = Object.clone(this.formData);
+            // }
             this.mobileForm.load(this.formMobileData);
         }else{
             this.mobileForm.showDomTree();

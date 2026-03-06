@@ -497,8 +497,10 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     hide: function(){
         var dsp = this.node.getStyle("display");
         if (dsp!=="none") this.node.store("mwf_display", dsp);
-        this.node.setStyle("display", "none");
-        if (this.iconNode) this.iconNode.setStyle("display", "none");
+        //this.node.setStyle("display", "none");
+        this.node.style.setProperty('display', 'none', 'important');
+        //if (this.iconNode) this.iconNode.setStyle("display", "none");
+        if (this.iconNode) this.iconNode.style.setProperty('display', 'none', 'important');
     },
     /**
      * @summary 显示组件.

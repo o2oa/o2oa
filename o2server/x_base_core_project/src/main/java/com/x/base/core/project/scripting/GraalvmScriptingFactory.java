@@ -331,7 +331,7 @@ public class GraalvmScriptingFactory {
 		StringBuilder sb = new StringBuilder();
 		if (BooleanUtils.isTrue(Config.general().getGraalvmEvalAsPromise())) {
 			sb.append("(async function(){ ").append(System.lineSeparator()).append(Objects.toString(text, ""))
-					.append(System.lineSeparator()).append(" }.apply(globalThis)).catch((e)=>{ throw e.stack; });");
+					.append(System.lineSeparator()).append(" }.apply(globalThis)).catch((e)=>{print(e); throw e; });");
 		} else {
 			sb.append("(function(){ ").append(System.lineSeparator()).append(Objects.toString(text, ""))
 					.append(System.lineSeparator()).append(" }.apply(globalThis));");
