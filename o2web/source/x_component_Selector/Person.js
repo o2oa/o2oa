@@ -1354,7 +1354,8 @@ MWF.xApplication.Selector.Person = new Class({
                 var id = obj.data.distinguishedName || obj.data.id || obj.data.name || obj.data.text;
                 if (text.indexOf(word)!==-1){
                     if (createdId.indexOf( id )===-1){
-                        this._newItem(obj.data, this, this.itemSearchAreaNode);
+                        var searchItem = this._newItemSearch(obj.data, this, this.itemSearchAreaNode);
+                        this.searchItems.push(searchItem);
                         createdId.push( id );
                     }
                 }
@@ -2761,6 +2762,8 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.category.checkUnselectAll();
         }
 
+
+        debugger;
         if( this.selector.searchItems && this.selector.searchItems.length ){
             this.selector.searchItems.each( function(itemSearch){
                 var sd = itemSearch.data;
@@ -2917,6 +2920,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
         if (callback) callback();
     },
     clickItem: function( callback, checkValid ){
+        debugger;
         if( this.tooltip ){
             if( this.selector.tooltips )this.selector.tooltips.erase(this.tooltip);
             this.tooltip.destroy();

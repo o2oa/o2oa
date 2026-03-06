@@ -1,6 +1,5 @@
 layout.addReady(function(){
     (function(layout){
-        debugger;
         var uri = new URI(window.location.href);
         var appNames = uri.getData("app");
         var optionsStr = uri.getData("option");

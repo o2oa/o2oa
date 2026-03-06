@@ -61,6 +61,9 @@ MWF.xApplication.Selector.QueryStat = new Class({
     },
     _newItem: function(data, selector, container, level){
         return new MWF.xApplication.Selector.QueryStat.Item(data, selector, container, level);
+    },
+    _newItemSearch: function(data, selector, container, level){
+        return new MWF.xApplication.Selector.QueryStat.SearchItem(data, selector, container, level);
     }
 });
 MWF.xApplication.Selector.QueryStat.Item = new Class({
@@ -108,6 +111,17 @@ MWF.xApplication.Selector.QueryStat.Item = new Class({
             this.setSelected();
         }
     }
+});
+
+MWF.xApplication.Selector.QueryStat.SearchItem = new Class({
+    Extends: MWF.xApplication.Selector.QueryStat.Item,
+    _getShowName: function(){
+        return this.data.name+((this.data.applicationName) ? "("+this.data.applicationName+")" : "");
+    },
+    _getTtiteText: function(){
+        return `${MWF.xApplication.Selector.LP.application}:${this.data.applicationName}
+${MWF.xApplication.Selector.LP.name}:${this.data.name}`;
+    },
 });
 
 MWF.xApplication.Selector.QueryStat.ItemSelected = new Class({

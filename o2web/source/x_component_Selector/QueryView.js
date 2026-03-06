@@ -79,7 +79,10 @@ MWF.xApplication.Selector.QueryView = new Class({
     },
     _newItem: function(data, selector, container, level){
         return new MWF.xApplication.Selector.QueryView.Item(data, selector, container, level);
-    }
+    },
+    _newItemSearch: function(data, selector, container, level){
+        return new MWF.xApplication.Selector.QueryView.SearchItem(data, selector, container, level);
+    },
 });
 MWF.xApplication.Selector.QueryView.Item = new Class({
 	Extends: MWF.xApplication.Selector.Person.Item,
@@ -127,6 +130,17 @@ MWF.xApplication.Selector.QueryView.Item = new Class({
             this.setSelected();
         }
     }
+});
+
+MWF.xApplication.Selector.QueryView.SearchItem = new Class({
+    Extends: MWF.xApplication.Selector.QueryView.Item,
+    _getShowName: function(){
+        return this.data.name+((this.data.applicationName) ? "("+this.data.applicationName+")" : "");
+    },
+    _getTtiteText: function(){
+        return `${MWF.xApplication.Selector.LP.application}:${this.data.applicationName}
+${MWF.xApplication.Selector.LP.name}:${this.data.name}`;
+    },
 });
 
 MWF.xApplication.Selector.QueryView.ItemSelected = new Class({

@@ -98,7 +98,10 @@ MWF.xApplication.Selector.Activity = new Class({
     },
     _newItem: function(data, selector, container, level){
         return new MWF.xApplication.Selector.Activity.Item(data, selector, container, level);
-    }
+    },
+    _newItemSearch: function(data, selector, container, level){
+        return new MWF.xApplication.Selector.Activity.SearchItem(data, selector, container, level);
+    },
 });
 MWF.xApplication.Selector.Activity.Item = new Class({
 	Extends: MWF.xApplication.Selector.Person.Item,
@@ -144,8 +147,21 @@ MWF.xApplication.Selector.Activity.Item = new Class({
     }
 });
 
+MWF.xApplication.Selector.Activity.SearchItem = new Class({
+    Extends: MWF.xApplication.Selector.Activity.Item,
+    _getShowName: function(){
+        var name =  this.data.alias ? this.data.name +"("+this.data.alias+")"  : this.data.name;
+        return this.data.processName + ' - '+name;
+    },
+    _getTtiteText: function(){
+        return `${MWF.xApplication.Selector.LP.process}:${this.data.processName}
+${MWF.xApplication.Selector.LP.name}:${this.data.name}
+${MWF.xApplication.Selector.LP.alias}:${this.data.alias}`;
+    },
+});
+
 MWF.xApplication.Selector.Activity.ItemSelected = new Class({
-	Extends: MWF.xApplication.Selector.Person.ItemSelected,
+	Extends: MWF.xApplication.Selector.Activity.Item,
     _getTtiteText: function(){
         return this.data.alias ? this.data.name +"("+this.data.alias+")"  : this.data.name;
     },

@@ -98,7 +98,10 @@ MWF.xApplication.Selector.ProcessActivity = new Class({
     },
     _newItem: function(data, selector, container, level){
         return new MWF.xApplication.Selector.ProcessActivity.Item(data, selector, container, level);
-    }
+    },
+    _newItemSearch: function(data, selector, container, level){
+        return new MWF.xApplication.Selector.ProcessActivity.SearchItem(data, selector, container, level);
+    },
 });
 MWF.xApplication.Selector.ProcessActivity.Item = new Class({
 	Extends: MWF.xApplication.Selector.Person.Item,
@@ -150,6 +153,19 @@ MWF.xApplication.Selector.ProcessActivity.Item = new Class({
     }
 });
 
+MWF.xApplication.Selector.ProcessActivity.SearchItem = new Class({
+    Extends: MWF.xApplication.Selector.ProcessActivity.Item,
+    _getShowName: function(){
+        var name =  this.data.alias ? this.data.name +"("+this.data.alias+")"  : this.data.name;
+        return this.data.processName + ' - '+name;
+    },
+    _getTtiteText: function(){
+        return `${MWF.xApplication.Selector.LP.process}:${this.data.processName}
+${MWF.xApplication.Selector.LP.name}:${this.data.name}
+${MWF.xApplication.Selector.LP.alias}:${this.data.alias}`;
+    },
+});
+
 MWF.xApplication.Selector.ProcessActivity.ItemSelected = new Class({
 	Extends: MWF.xApplication.Selector.Person.ItemSelected,
     _getTtiteText: function(){
@@ -161,6 +177,10 @@ MWF.xApplication.Selector.ProcessActivity.ItemSelected = new Class({
     },
     _setIcon: function(){
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/processicon.png)");
+    },
+    _setText: function(item){
+        // var surfix =  [item.data.applicationName, this.data.alias].filter(n=>!!n).join('/');
+        // this.textNode.set("text", item.data.name+(surfix ? "("+surfix+")" : ""));
     },
     check: function(){
         if (this.selector.items.length){
