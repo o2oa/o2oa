@@ -1,9 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.AuditLog;
@@ -14,10 +10,11 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.core.entity.Document;
+import javax.servlet.http.HttpServletRequest;
 
 public class ActionPersistPublishCancel extends BaseAction {
 
-	private static  Logger logger = LoggerFactory.getLogger(ActionPersistPublishCancel.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActionPersistPublishCancel.class);
 
 	@AuditLog(operation = "取消文档发布状态")
 	protected ActionResult<Wo> execute(HttpServletRequest request, String id, EffectivePerson effectivePerson) throws Exception {
@@ -47,7 +44,6 @@ public class ActionPersistPublishCancel extends BaseAction {
 				document.setDocStatus("draft");
 				document.setPublishTime(null);
 				document = documentPersistService.refreshDocInfoData( document );
-
 				CacheManager.notify(Document.class);
 
 				Wo wo = new Wo();
@@ -75,6 +71,7 @@ public class ActionPersistPublishCancel extends BaseAction {
 		if (check) {
 			try {
 				documentPersistService.refreshDocumentPermission( id, null, null );
+				document = documentQueryService.get(id);
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在收回已发布文档访问管理权限信息时发生异常！");
