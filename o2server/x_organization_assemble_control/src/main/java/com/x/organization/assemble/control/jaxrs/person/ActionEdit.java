@@ -49,6 +49,8 @@ class ActionEdit extends BaseAction {
             boolean isNameUpdate = !Objects.equals(person.getName(), wi.getName());
             boolean isMobileUpdate = !Objects.equals(person.getMobile(), wi.getMobile());
             Wi.copier.copy(wi, person);
+            person.setBirthday(wi.getBirthday());
+            person.setBoardDate(wi.getBoardDate());
             // 防止创建的时候加了空格
             person.setName(StringUtils.trim(person.getName()));
             this.checkName(business, person.getName(), person.getId());
@@ -115,10 +117,12 @@ class ActionEdit extends BaseAction {
         private static final long serialVersionUID = 1571810726944802231L;
 
         static WrapCopier<Wi, Person> copier = WrapCopierFactory.wi(Wi.class, Person.class, null,
-                ListTools.toList(JpaObject.FieldsUnmodify, Person.icon_FIELDNAME, Person.pinyin_FIELDNAME,
+                ListTools.toList(JpaObject.FieldsUnmodify, Person.icon_FIELDNAME, Person.iconMdpi_FIELDNAME,
+                        Person.iconLdpi_FIELDNAME, Person.pinyin_FIELDNAME,
                         Person.pinyinInitial_FIELDNAME, Person.password_FIELDNAME, Person.passwordExpiredTime_FIELDNAME,
+                        Person.changePasswordTime_FIELDNAME,
                         Person.lastLoginTime_FIELDNAME, Person.lastLoginAddress_FIELDNAME,
-                        Person.lastLoginClient_FIELDNAME, Person.topUnitList_FIELDNAME));
+                        Person.lastLoginClient_FIELDNAME, Person.topUnitList_FIELDNAME), false);
     }
 
     private void convertControllerList(EffectivePerson effectivePerson, Business business, Person person)
