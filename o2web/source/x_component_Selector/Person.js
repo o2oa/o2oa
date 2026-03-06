@@ -342,7 +342,6 @@ MWF.xApplication.Selector.Person = new Class({
         } else {
             this.css.maskNode["z-index"] = this.options.zIndex;
             var position = this.container.getPosition(this.container.getOffsetParent());
-            debugger;
             this.mask = new Mask(this.container, {
                 "destroyOnHide": true,
                 "style": this.css.maskNode,
@@ -350,7 +349,6 @@ MWF.xApplication.Selector.Person = new Class({
                 "iframeShimOptions": {"browsers": true},
                 "inject": {"where":"bottom"},
                 "onShow": function () {
-                    debugger;
                     this.shim.shim.setStyles({
                         "opacity": 0,
                         "top": "" + (position.y || 0) + "px",
@@ -2762,8 +2760,6 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.category.checkUnselectAll();
         }
 
-
-        debugger;
         if( this.selector.searchItems && this.selector.searchItems.length ){
             this.selector.searchItems.each( function(itemSearch){
                 var sd = itemSearch.data;
@@ -2920,7 +2916,6 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
         if (callback) callback();
     },
     clickItem: function( callback, checkValid ){
-        debugger;
         if( this.tooltip ){
             if( this.selector.tooltips )this.selector.tooltips.erase(this.tooltip);
             this.tooltip.destroy();

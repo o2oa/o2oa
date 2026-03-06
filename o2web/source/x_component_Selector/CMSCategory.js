@@ -150,7 +150,6 @@ MWF.xApplication.Selector.CMSCategory.ItemSelected = new Class({
           this.textNode.set("text", item.data.name+((item.data.appName) ? "("+item.data.appName+")" : ""));
     },
     check: function(){
-        debugger;
         if (this.selector.items.length){
             var items = this.selector.items.filter(function(item, index){
                 if( item.data.id && this.data.id){

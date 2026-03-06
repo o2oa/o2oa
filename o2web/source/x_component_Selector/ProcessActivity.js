@@ -240,7 +240,6 @@ MWF.xApplication.Selector.ProcessActivity.ItemCategory = new Class({
                     id: 'draft-'+this.data.id
                 });
                 activityList.forEach(function(data){
-                    debugger;
                     var d = {
                         processName: this.data.name,
                         id: data.id,
