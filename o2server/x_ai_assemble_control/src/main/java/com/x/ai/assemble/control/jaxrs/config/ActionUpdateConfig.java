@@ -120,14 +120,19 @@ public class ActionUpdateConfig extends BaseAction {
             ActionUpdateMcp updateMcp = new ActionUpdateMcp();
             Integer p = Config.resource_node_centersPirmaryPort();
             Boolean s = Config.resource_node_centersPirmarySslEnable();
+            String ip = BaseTools.getIpAddress();
+            String localHost = "127.0.0.1";
+            if(aiConfig.getO2AiBaseUrl().contains(localHost)){
+                ip = localHost;
+            }
             StringBuilder buffer = new StringBuilder();
             if (BooleanUtils.isTrue(s)) {
-                buffer.append("https://").append(BaseTools.getIpAddress());
+                buffer.append("https://").append(ip);
                 if (!NumberTools.valueEuqals(p, 443)) {
                     buffer.append(":").append(p);
                 }
             } else {
-                buffer.append("http://").append(BaseTools.getIpAddress());
+                buffer.append("http://").append(ip);
                 if (!NumberTools.valueEuqals(p, 80)) {
                     buffer.append(":").append(p);
                 }
