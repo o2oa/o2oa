@@ -1,10 +1,11 @@
-const o2DM  = MWF.xApplication.designermanager || {};
+MWF.require('o2.widget.PinYin', null, false);
+var o2DM  = o2DM || MWF.xApplication.designermanager || {};
 o2DM._portalAction = o2.Actions.load('x_portal_assemble_designer');
 o2DM._processAction = o2.Actions.load('x_processplatform_assemble_designer');
 o2DM._cmsAction = o2.Actions.load('x_cms_assemble_control');
 o2DM._queryAction = o2.Actions.load('x_query_assemble_designer');
 o2DM._serviceAction = o2.Actions.load('x_program_center');
-o2DM._openApp = o2.api.page.openApplication;
+//o2DM._openApp = o2.api.page.openApplication;
 
 o2DM._UNCATEGORIZED = 'uncategorized';
 o2DM._ALL = 'all';
@@ -223,7 +224,7 @@ o2DM._config = {
                     {
                         name: '页面配置',
                         componentName: 'portal.PageManager',
-                        _type: 'desiginer-category',
+                        _type: 'designer-category',
                         ooicon: 'pagepeizhi',
                         handleClick: (item, appid) => {
                             o2DM._openApp('portal.PortalManager', null, {navi: 0, application: appid});

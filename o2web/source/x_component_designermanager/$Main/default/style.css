@@ -4,4 +4,26 @@
         "header header"
         "nav main"
         "footer footer";
+    grid-template-columns: 20em 1fr;
+    grid-template-rows: auto 1fr auto;
+    height: 100vh;
+    margin: 0;
+}
+header{
+    grid-area: header;
+}
+nav{
+    grid-area: nav;
+    overflow: auto;
+}
+main{
+    grid-area: main;
+    overflow: auto;
+}
+footer{
+    grid-area: footer;
+}
+.app-content{
+    width: 100%;
+    height: 100%;
 }
