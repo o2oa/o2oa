@@ -9,8 +9,8 @@ o2DM._serviceAction = o2.Actions.load('x_program_center');
 
 o2DM._UNCATEGORIZED = 'uncategorized';
 o2DM._ALL = 'all';
-o2DM._RECENTLY_DESIGNER_NAME = 'RecentlyOpenedDesigner';
-o2DM._RECENTLY_DESIGNER_MAX_COUNT = 20; //最近打开的设计元素数量
+o2DM._HISTORY_DESIGNER_NAME = 'HistoryOpenedDesigner';
+o2DM._HISTORY_DESIGNER_MAX_COUNT = 20; //最近打开的设计元素数量
 
 o2DM._ooiconMap = {
     'portal.PageDesigner': 'pagepeizhi',
@@ -88,6 +88,23 @@ o2DM._sort =  (data, key='name', isDesc=false)=>{
     }.bind(this));
 };
 
+o2DM._findConfig = (componentName, rootObj = o2DM._config)=>{
+    if (rootObj.componentName === componentName) {
+        return rootObj;
+    }
+
+    if (rootObj.children && Array.isArray(rootObj.children)) {
+        for (const child of rootObj.children) {
+            const result = o2DM._findConfig(componentName, child);
+            if (result) {
+                return result;
+            }
+        }
+    }
+
+    return null;
+};
+
 o2DM._copyTextToClipboard=(text)=>{
     try{
         navigator.clipboard.writeText(text);
@@ -160,7 +177,6 @@ o2DM._designerTools = [
         name: '复制应用和设计对象',
         title: '优先级：别名->名称',
         handleClick: (data, appdata)=>{
-            debugger;
             var obj = {
                 type: appdata ? appdata._appType : data._appType,
                 name: data.alias || data.name
@@ -170,17 +186,18 @@ o2DM._designerTools = [
             }
             o2DM._copyTextToClipboard( JSON.stringify(obj, null, 2) )
         }
-    },{
-        ooicon: 'window-max',
-        _type: 'designer-tool',
-        name: '拷贝到其他应用',
-        handleClick: (data, appid, appdata)=>{
-            var {name, alias, id} = appdata;
-            o2DM._copyTextToClipboard(
-                JSON.stringify({name, alias, id}, null, 2)
-            )
-        }
     }
+    // ,{
+    //     ooicon: 'window-max',
+    //     _type: 'designer-tool',
+    //     name: '拷贝到其他应用',
+    //     handleClick: (data, appid, appdata)=>{
+    //         var {name, alias, id} = appdata;
+    //         o2DM._copyTextToClipboard(
+    //             JSON.stringify({name, alias, id}, null, 2)
+    //         )
+    //     }
+    // }
 ];
 
 o2DM._config = {
@@ -1085,7 +1102,7 @@ o2DM._config = {
                     }]
                 }]
         },
-        {_type: 'separator'},
+        //{_type: 'separator'},
         {
             name: '搜索设计',
             title: '根据关键字搜索具体设计',
@@ -1098,7 +1115,7 @@ o2DM._config = {
         {
             name: '最近打开',
             title: '最近打开的设计元素',
-            componentName: 'recentlyOpened',
+            componentName: 'historyOpened',
             ooicon: 'clock',
             _type: 'app-category',
             autoRefresh: true,
@@ -1109,13 +1126,13 @@ o2DM._config = {
                     o2DM._openApp(item.componentName, null, { id: item.id, application: {id: item.appid} });
                 },
                 listAction: () => {
-                    return o2.UD.getDataJson(o2DM._RECENTLY_DESIGNER_NAME).then((items) => {
+                    return o2.UD.getDataJson(o2DM._HISTORY_DESIGNER_NAME).then((items) => {
                         return o2DM._sort(items || [], 'time', true).map((item) => {
                             return {
                                 ...item,
                                 _pinyin: o2DM._toPY(item),
-                                ooicon: o2DM._ooiconMap[item.componentName] || '',
-                                title: (item.applicationName || '') + ' ' + o2DM._appNameMap[item.componentName] + ' ' + item.componentName
+                                icon: o2DM._ooiconMap[item.componentName] || '',
+                                name: o2DM._appNameMap[item.componentName] + ' ' + item.componentName
                             };
                         });
                     })

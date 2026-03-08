@@ -20,7 +20,7 @@ MWF.xApplication.designermanager.Main = new Class({
 		this.lp = MWF.xApplication.designermanager.LP;
 	},
 	loadApplication: function(callback){
-		o2DM._openApp = this._openApp.bind(this);
+		o2DM._openApp = this.openApp.bind(this);
 		layout.openApplication = (e, appNames, options, statusObj)=>{
 			o2DM._openApp(appNames, options, statusObj);
 		};
@@ -41,6 +41,9 @@ MWF.xApplication.designermanager.Main = new Class({
 	// 		}.bind(this));
 	// 	}.bind(this));
 	// },
+	openApp: function(path, options, status, callback){
+		this._openApp(path, options, status, callback);
+	},
 	_openApp: function(path, options, status, callback){
 		debugger;
 		var node = new Element('div.app-content').inject(this.applicationNode);
@@ -69,7 +72,7 @@ MWF.xApplication.designermanager.Main = new Class({
 
 				component.status = status;
 
-				var tag = this.createTag(component);
+				var tag = this.createTag(component, node);
 
 				//this.fireEvent("queryLoadApplication", component);
 				component.load();
@@ -82,9 +85,58 @@ MWF.xApplication.designermanager.Main = new Class({
 				//         _self.form.app.refresh();
 				//     }
 				// };
-				o2DM.appMap[component.appId] = {
-					tag, component, node
+
+				component._tag = tag;
+				component._container = node;
+
+				component.setTitle = function (str) {
+					// tag.setAttribute('text', str);
+					// tag._elements.text.textContent = str;
+					tag.innerHTML = str;
+					tag.setAttribute('title', str + ((component.appId) ? "-" + component.appId : ""));
+					component.options.title = str;
 				};
+
+				component.dm_close = ()=>{
+					if(o2DM.currentApp === component){
+						o2DM.currentApp = null;
+						var index = o2DM.apps.indexOf(component);
+						var lastApp = index > 0 ? o2DM.apps[index-1] : o2DM.apps[0];
+						if(lastApp){
+							lastApp._tag.setAttribute('type', 'current');
+							lastApp._container.show();
+							o2DM.currentApp = lastApp;
+						}else{
+							o2DM.currentApp = null;
+						}
+					}
+					o2DM.apps.erase(component);
+					delete o2DM.appMap[component.appId];
+					tag.remove();
+					component.close();
+					node.destroy();
+				};
+
+				component.dm_hide = ()=>{
+					component._tag.setAttribute('type', 'default');
+					component._container.hide();
+				};
+
+				component.dm_active = ()=>{
+					if(o2DM.currentApp === component) return;
+					o2DM.currentApp?.dm_hide();
+					tag.setAttribute('type', 'current');
+					node.show();
+					o2DM.currentApp = component;
+					this.addToHistory( component );
+				};
+
+				o2DM.appMap[component.appId] = component;
+				o2DM.apps.push(component);
+
+				debugger;
+
+				component.dm_active();
 			}else{
 				console.log('应用未找到：'+path, 'error');
 			}
@@ -102,19 +154,46 @@ MWF.xApplication.designermanager.Main = new Class({
 			_load();
 		}
 	},
-	createTag: function (app){
+	createTag: function (component){
 		var tag = new Element('oo-tag', {
-			text: app.options.title,
-			close: 'on'
+			text: component.options.title,
+			close: 'on',
+			type: 'current'
 		}).inject(this.taskBar);
-		tag.addEvent("close", function (e) {
+		tag.component = component;
+		tag.addEventListener("close", function (e) {
+			component.dm_close();
 			e.stopPropagation();
-			app.close();
 		});
-		tag.addEvent("click", function () {
-			app.active();
+		tag.addEventListener("click", function (e) {
+			component.dm_active();
 		});
 		return tag;
+	},
+	addToHistory: function(component){
+		const status = component.recordStatus && component.recordStatus();
+		if( status && status.id ){
+			o2.UD.getDataJson(o2DM._HISTORY_DESIGNER_NAME, (items)=>{
+				(items) => {
+					var list = o2DM._sort(items || [], 'time', true).filter((item) => {
+						return item.id !== path.id;
+					});
+					const config = o2DM._findConfig(component.options.name);
+					list.unshift({
+						isHistory: true,
+						_appType: config?._appType,
+						_type: config?._type || 'designer',
+						componentName: component.options.name,
+						id: status.id,
+						status: status,
+						time: new Date().getTime(),
+						timeString: new Date().format('db')
+					});
+					(list.length > o2DM._HISTORY_DESIGNER_MAX_COUNT) && (list.length = o2DM._HISTORY_DESIGNER_MAX_COUNT);
+					o2.UD.putData(o2DM._HISTORY_DESIGNER_NAME, list);
+				};
+			});
+		}
 	}
 });
 
@@ -149,6 +228,7 @@ o2DM.Nav = new Class({
 						case 'app':
 							d.children = tmplt.children.map((child)=>{
 								child.appid = d.id;
+								//child._parent = d;
 								return child;
 							});
 							d.img = d.icon ? `data:image/png;base64,${d.icon}` : d.defaultIcon;
@@ -172,6 +252,9 @@ o2DM.Nav = new Class({
 					}
 					d._type = tmplt._type;
 					d._config = tmplt;
+					//d._parent = data;
+					this._checkCreate(d);
+					this._checkTools(d);
 					return d;
 				});
 			});
@@ -184,10 +267,14 @@ o2DM.Nav = new Class({
 							child.selectable = 'yes';
 							child.id = `${child.componentName}`; break;
 						case 'designer-category':
-							child.id = `${child.componentName}.${appid}`; break;
+							child.id = `${child.componentName}.${appid}`;
+							break;
 					}
 				}
 				child.text = child.name;
+				//child._parent = list;
+				this._checkCreate(child);
+				this._checkTools(child);
 				return child;
 			});
 		}
@@ -246,14 +333,57 @@ o2DM.Nav = new Class({
 			});
 		}
 	},
-	handleCreate: function (e, data){
-		data.handleCreate(data.appid || this.getAppid(data), this.getAppname(data));
-		e.stopPropagation();
+	_checkTools: function (data){
+		if(data._type === 'app' || data._type === 'designer'){
+			const node = new Element('div.slot.ooicon-point3',{
+				slot: `${data.id}-inner`
+			}).inject(this.oonav);
+			node.addEventListener('click', (e)=>{
+				e.stopPropagation();
+				if(!node.menu){
+					node.menu = new $OOUI.Menu(node, {
+						area: this.app.content,
+						styles: { width: '8.75rem' },
+						items: (data._type === 'app' ? o2DM._appTools : o2DM._designerTools).map((tool)=>{
+							tool.label = tool.name;
+							tool.icon = tool.ooicon;
+							return tool;
+						})
+					});
+					node.menu.show();
+					node.menu.menu.addEventListener('command', (e)=>{
+						const d = e.detail;
+						if(d._type === 'designer-tool'){
+							d.handleClick(data, this.getAppdata(data));
+						}else{
+							d.handleClick(data, data.id, data);
+						}
+					});
+				}
+			});
+		}
 	},
+	_checkCreate: function (data){
+		if(data.handleCreate){
+			new Element('div.slot.ooicon-create',{
+				slot: `${data.id}-inner`,
+				events: {
+					click: (e)=>{
+						data.handleCreate(data.appid || this.getAppid(data), this.getAppname(data));
+						e.stopPropagation();
+					}
+				}
+			}).inject(this.oonav);
+		}
+	},
+	// handleCreate: function (e, data){
+	// 	data.handleCreate(data.appid || this.getAppid(data), this.getAppname(data));
+	// 	e.stopPropagation();
+	// },
 	handleClick: function (e, data){
 		if( data._type === 'designer-tool' ){
 			var d = this.getDesignerData(data);
-			data.handleClick(d, d.isRecently ? d.appData : this.getAppdata(data));
+			data.handleClick(d, d.isHistory ? d.appData : this.getAppdata(data));
 		}else{
 			data.handleClick(data, data.appid || this.getAppid(data), this.getAppdata(data));
 		}

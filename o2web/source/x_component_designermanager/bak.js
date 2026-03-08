@@ -48,7 +48,7 @@ var o2DesignerBreadcrumb = new Class({
                 }
             });
             this.node.addEvent('mousedown', (e)=>{ e.stopPropagation(); });
-            this.addToRecently();
+            this.addToHistory();
         });
     },
     getConfig: function( componentNamePaths){
@@ -68,17 +68,17 @@ var o2DesignerBreadcrumb = new Class({
         item.load();
         return item;
     },
-    addToRecently: function(){
+    addToHistory: function(){
         var pathlist = this.options.pathlist;
         var path = pathlist.getLast();
         var appData = pathlist.length === 4 ? pathlist[1] : pathlist[0];
         if( path.id ){
-            o2.UD.getDataJson(o2DB._RECENTLY_DESIGNER_NAME).then((items) => {
+            o2.UD.getDataJson(o2DB._HISTORY_DESIGNER_NAME).then((items) => {
                 var list = o2DB._sort(items || [], 'time', true).filter((item) => {
                     return item.id !== path.id;
                 });
                 list.unshift({
-                    isRecently: true,
+                    isHistory: true,
                     applicationName: appData.name,
                     _appType: appData._appType,
                     _type: path._type || 'designer',
@@ -90,8 +90,8 @@ var o2DesignerBreadcrumb = new Class({
                     time: new Date().getTime(),
                     timeString: new Date().format('db')
                 });
-                (list.length > o2DB._RECENTLY_DESIGNER_MAX_COUNT) && (list.length = o2DB._RECENTLY_DESIGNER_MAX_COUNT);
-                o2.UD.putData(o2DB._RECENTLY_DESIGNER_NAME, list);
+                (list.length > o2DB._HISTORY_DESIGNER_MAX_COUNT) && (list.length = o2DB._HISTORY_DESIGNER_MAX_COUNT);
+                o2.UD.putData(o2DB._HISTORY_DESIGNER_NAME, list);
             });
         }
     }
@@ -538,7 +538,7 @@ o2DB.SubMenu = new Class({
     handleClick: function (e, data){
         if( data._type === 'designer-tool' ){
             var d = this.getDesignerData();
-            data.handleClick(d, d.isRecently ? d.appData : this.getAppdata());
+            data.handleClick(d, d.isHistory ? d.appData : this.getAppdata());
         }else{
             data.handleClick(data, data.appid || this.getAppid(), this.getAppdata());
         }
@@ -560,8 +560,8 @@ o2DB._openApp = o2.api.page.openApplication;
 
 o2DB._UNCATEGORIZED = 'uncategorized';
 o2DB._ALL = 'all';
-o2DB._RECENTLY_DESIGNER_NAME = 'RecentlyOpenedDesigner';
-o2DB._RECENTLY_DESIGNER_MAX_COUNT = 20; //最近打开的设计元素数量
+o2DB._HISTORY_DESIGNER_NAME = 'HistoryOpenedDesigner';
+o2DB._HISTORY_DESIGNER_MAX_COUNT = 20; //最近打开的设计元素数量
 
 o2DB._ooiconMap = {
     'portal.PageDesigner': 'pagepeizhi',
@@ -1649,7 +1649,7 @@ o2DB._config = {
         {
             name: '最近打开',
             title: '最近打开的设计元素',
-            componentName: 'recentlyOpened',
+            componentName: 'historyOpened',
             ooicon: 'clock',
             _type: 'app-category',
             autoRefresh: true,
@@ -1660,7 +1660,7 @@ o2DB._config = {
                     o2DB._openApp(item.componentName, null, { id: item.id, application: {id: item.appid} });
                 },
                 listAction: () => {
-                    return o2.UD.getDataJson(o2DB._RECENTLY_DESIGNER_NAME).then((items) => {
+                    return o2.UD.getDataJson(o2DB._HISTORY_DESIGNER_NAME).then((items) => {
                         return o2DB._sort(items || [], 'time', true).map((item) => {
                             return {
                                 ...item,
