@@ -49,6 +49,7 @@ class ActionUpdateModel extends BaseAction {
 			if(aiModel == null){
 				throw new ExceptionEntityNotExist(id, AiModel.class);
 			}
+			String apiKey = aiModel.getApiKey();
 			String name = aiModel.getName();
 			if(BooleanUtils.isTrue(aiModel.getAsDefault()) && BooleanUtils.isNotTrue(wi.getAsDefault())){
 				throw new ExceptionCustom("请设置一个启用的模型.");
@@ -58,6 +59,9 @@ class ActionUpdateModel extends BaseAction {
 
 			emc.beginTransaction(AiModel.class);
 			Wi.copier.copy(wi, aiModel);
+			if(StringUtils.isNotBlank(wi.getApiKey()) && wi.getApiKey().contains("**")){
+				aiModel.setApiKey(apiKey);
+			}
 			if(BooleanUtils.isTrue(aiModel.getAsDefault()) && !list.isEmpty()){
 				list.forEach(o -> o.setAsDefault(false));
 			}
