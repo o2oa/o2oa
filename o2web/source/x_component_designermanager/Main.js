@@ -34,13 +34,6 @@ MWF.xApplication.designermanager.Main = new Class({
 		this.nav = new o2DM.Nav(this);
 		this.nav.load();
 	},
-	// loadNav: function(){
-	// 	o2.Actions.load("x_processplatform_assemble_surface").TaskAction.listMyPaging(1,5, function(json){
-	// 		this.nav.loadHtml(this.path+this.options.style+"/taskView.html", {"bind": {"lp": this.lp, "data": json.data}, "module": this}, function(){
-	// 			this.doSomething();
-	// 		}.bind(this));
-	// 	}.bind(this));
-	// },
 	openApp: function(path, options, status, callback){
 		this._openApp(path, options, status, callback);
 	},
@@ -61,14 +54,28 @@ MWF.xApplication.designermanager.Main = new Class({
 				opt.embededParent = node;
 				var component = new clazz.Main(this.desktop, opt);
 
-				component.appId = opt.appId ?
-					opt.appId :
-					(clazz.options.multitask ? path + "-" + new o2.widget.UUID() : path);
+				let appId, id;
+				if(clazz.options.multitask){
+					appId = opt.appId || status?.appId;
+					id = opt.id || status?.id || status?.application || status?.column;
+					if( !appId && id && component.options.name ){
+						appId = `${component.options.name}${id}`;
+					}else{
+						appId = path + "-" + new o2.widget.UUID();
+					}
+				}else{
+					appId = component.options.name || path;
+				}
+				component.appId = appId;
+
+				console.log(component.appId, opt, status, component);
+
+				if(o2DM.appMap[component.appId]){
+					o2DM.appMap[component.appId].dm_active();
+					return;
+				}
+
 				component.options.appId = component.appId;
-				// o2DM.appMap[component.appId] = {
-				// 	tag: this.createTag(component),
-				// 	app: component
-				// };
 
 				component.status = status;
 
@@ -97,15 +104,16 @@ MWF.xApplication.designermanager.Main = new Class({
 					component.options.title = str;
 				};
 
-				component.dm_close = ()=>{
-					if(o2DM.currentApp === component){
+				component.dm_close = (ignore)=>{
+					if(!ignore && o2DM.currentApp === component){
 						o2DM.currentApp = null;
 						var index = o2DM.apps.indexOf(component);
 						var lastApp = index > 0 ? o2DM.apps[index-1] : o2DM.apps[0];
 						if(lastApp){
-							lastApp._tag.setAttribute('type', 'current');
-							lastApp._container.show();
-							o2DM.currentApp = lastApp;
+							lastApp.dm_active();
+							// lastApp._tag.setAttribute('type', 'current');
+							// lastApp._container.show();
+							// o2DM.currentApp = lastApp;
 						}else{
 							o2DM.currentApp = null;
 						}
@@ -113,12 +121,13 @@ MWF.xApplication.designermanager.Main = new Class({
 					o2DM.apps.erase(component);
 					delete o2DM.appMap[component.appId];
 					tag.remove();
+					node.remove();
 					component.close();
-					node.destroy();
 				};
 
 				component.dm_hide = ()=>{
 					component._tag.setAttribute('type', 'default');
+					component._tag.oomenu?.hide();
 					component._container.hide();
 				};
 
@@ -126,6 +135,7 @@ MWF.xApplication.designermanager.Main = new Class({
 					if(o2DM.currentApp === component) return;
 					o2DM.currentApp?.dm_hide();
 					tag.setAttribute('type', 'current');
+					tag.oomenu?.hide();
 					node.show();
 					o2DM.currentApp = component;
 					this.addToHistory( component );
@@ -158,6 +168,7 @@ MWF.xApplication.designermanager.Main = new Class({
 		var tag = new Element('oo-tag', {
 			text: component.options.title,
 			close: 'on',
+			menu: 'on',
 			type: 'current'
 		}).inject(this.taskBar);
 		tag.component = component;
@@ -168,15 +179,46 @@ MWF.xApplication.designermanager.Main = new Class({
 		tag.addEventListener("click", function (e) {
 			component.dm_active();
 		});
+		tag.addEventListener("menu", function (e){
+			if(!tag.oomenu){
+				tag.oomenu = new $OOUI.Menu(tag._elements.menu, {
+					area: this.content,
+					styles: { width: '8.75rem' },
+					items: [{
+						label: '刷新', icon: 'reset',
+						command: ()=>{
+							component.refresh();
+						}
+					},{
+						label: '全部关闭', icon: 'switch',
+						command: ()=>{
+							while (o2DM.apps.length){
+								o2DM.apps[0].dm_close(true);
+							}
+							o2DM.currentApp = null;
+						}
+					},{
+						label: '关闭其他', icon: 'process-monitor',
+						command: ()=>{
+							while (o2DM.apps.length > 1){
+								var cmpt = o2DM.apps[0] === component ? o2DM.apps[1] : o2DM.apps[0];
+								cmpt.dm_close(true);
+							}
+							component.dm_active();
+						}
+					}]
+				});
+				tag.oomenu.show();
+			}
+		});
 		return tag;
 	},
 	addToHistory: function(component){
 		const status = component.recordStatus && component.recordStatus();
 		if( status && status.id ){
 			o2.UD.getDataJson(o2DM._HISTORY_DESIGNER_NAME, (items)=>{
-				(items) => {
 					var list = o2DM._sort(items || [], 'time', true).filter((item) => {
-						return item.id !== path.id;
+					return item.id !== status.id;
 					});
 					const config = o2DM._findConfig(component.options.name);
 					list.unshift({
@@ -191,9 +233,38 @@ MWF.xApplication.designermanager.Main = new Class({
 					});
 					(list.length > o2DM._HISTORY_DESIGNER_MAX_COUNT) && (list.length = o2DM._HISTORY_DESIGNER_MAX_COUNT);
 					o2.UD.putData(o2DM._HISTORY_DESIGNER_NAME, list);
-				};
 			});
 		}
+	},
+	searchDesigner: function (){
+		o2DM._openApp('FindDesigner');
+	},
+	openHistory: function (e){
+		if(this.historyMenu){
+			this.historyMenu.destroy();
+		}
+		o2.UD.getDataJson(o2DM._HISTORY_DESIGNER_NAME, (items) => {
+			const list = o2DM._sort(items || [], 'time', true).map((item) => {
+				return {
+					...item,
+					_pinyin: o2DM._toPY(item),
+					icon: o2DM._ooiconMap[item.componentName] || '',
+					name: o2DM._appNameMap[item.componentName] + ' ' + item.componentName,
+					label: o2DM._appNameMap[item.componentName] + ' ' + item.componentName
+				};
+			});
+			const menu = new $OOUI.Menu(e.target, {
+				area: this.content,
+				styles: { width: '8.75rem' },
+				items: list
+			});
+			menu.show();
+			menu.menu.addEventListener('command', (e)=>{
+				const d = e.detail;
+				o2DM._openApp(d.componentName, null, { id: d.id, application: {id: d.appid} });
+			});
+			this.historyMenu = menu;
+		});
 	}
 });
 
@@ -288,21 +359,21 @@ o2DM.Nav = new Class({
 			hasUncategorized && this.categories.push({value: o2DM._UNCATEGORIZED, label: '未分类'});
 		}
 	},
-	checkCondition: function (e, data){
+	checkToolCondition: function (e, tool, data){
 		debugger;
-		if( !data.condition ){
+		if( !tool.condition ){
 			return true;
 		}
 		var flag = true;
-		switch(data._type){
+		switch(tool._type){
 			case 'app-tool':
-				flag = data.condition(data, this.getAppdata(data));
+				flag = tool.condition(data, data);
 				break;
 			case 'designer-tool':
-				flag = data.condition(this.getDesignerData(data), this.getAppdata(data));
+				flag = tool.condition(data, this.getAppdata(data));
 				break;
 		}
-		!flag && e.currentTarget.addClass('hide');
+		!flag && e?.currentTarget?.addClass('hide');
 		return flag;
 	},
 	getDesignerData : function(data){
@@ -322,9 +393,9 @@ o2DM.Nav = new Class({
 			return;
 		}
 		data.loaded = true;
-		if( !this.checkCondition(e, data) ){
-			return;
-		}
+		// if( !this.checkCondition(e, data) ){
+		// 	return;
+		// }
 		if( data.children && data.children.length > 0 ){
 			var template = Array.clone(data.children);
 			Promise.resolve(this.getList( template, data.appid || data.id )).then((children)=>{
@@ -344,7 +415,9 @@ o2DM.Nav = new Class({
 					node.menu = new $OOUI.Menu(node, {
 						area: this.app.content,
 						styles: { width: '8.75rem' },
-						items: (data._type === 'app' ? o2DM._appTools : o2DM._designerTools).map((tool)=>{
+						items: (data._type === 'app' ? o2DM._appTools : o2DM._designerTools).filter(tool=>{
+							return this.checkToolCondition(null, tool, data);
+						}).map((tool)=>{
 							tool.label = tool.name;
 							tool.icon = tool.ooicon;
 							return tool;
