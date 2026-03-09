@@ -11,6 +11,7 @@
 }
 header{
     grid-area: header;
+    display: flex;
 }
 nav{
     grid-area: nav;
@@ -32,6 +33,7 @@ footer{
     height: 100%;
 }
 .o2-task-bar{
+    flex: 1;
     min-height: 3em;
     background: #fff;
     border-bottom: 1px solid rgba(0, 0, 0, 0.25);
@@ -43,4 +45,13 @@ footer{
 }
 .o2-task-bar oo-tag{
     height: 2em;
+}
+.o2-task-toolbar{
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    background: #fff;
+}
+.o2-task-toolbar div{
+
 }

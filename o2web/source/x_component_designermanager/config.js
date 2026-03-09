@@ -1103,41 +1103,44 @@ o2DM._config = {
                 }]
         },
         //{_type: 'separator'},
-        {
-            name: '搜索设计',
-            title: '根据关键字搜索具体设计',
-            componentName: 'FindDesigner',
-            ooicon: 'search',
-            handleClick: (item) => {
-                o2DM._openApp('FindDesigner');
-            }
-        },
-        {
-            name: '最近打开',
-            title: '最近打开的设计元素',
-            componentName: 'historyOpened',
-            ooicon: 'clock',
-            _type: 'app-category',
-            autoRefresh: true,
-            children: [{
-                label: '最近打开',
-                _type: 'designer',
-                handleClick: (item) => {
-                    o2DM._openApp(item.componentName, null, { id: item.id, application: {id: item.appid} });
-                },
-                listAction: () => {
-                    return o2.UD.getDataJson(o2DM._HISTORY_DESIGNER_NAME).then((items) => {
-                        return o2DM._sort(items || [], 'time', true).map((item) => {
-                            return {
-                                ...item,
-                                _pinyin: o2DM._toPY(item),
-                                icon: o2DM._ooiconMap[item.componentName] || '',
-                                name: o2DM._appNameMap[item.componentName] + ' ' + item.componentName
-                            };
-                        });
-                    })
-                }
-            }]
-        },
+        // {
+        //     name: '搜索设计',
+        //     title: '根据关键字搜索具体设计',
+        //     componentName: 'FindDesigner',
+        //     ooicon: 'search',
+        //     handleClick: (item) => {
+        //         o2DM._openApp('FindDesigner');
+        //     }
+        // },
+        // {
+        //     name: '最近打开',
+        //     title: '最近打开的设计元素',
+        //     componentName: 'historyOpened',
+        //     ooicon: 'clock',
+        //     _type: 'app-category',
+        //     autoRefresh: true,
+        //     children: [{
+        //         label: '最近打开',
+        //         _type: 'designer',
+        //         handleClick: (item) => {
+        //             o2DM._openApp(item.componentName, null, { id: item.id, application: {id: item.appid} });
+        //         },
+        //         listAction: () => {
+        //             return new Promise((resolve, reject)=>{
+        //                 o2.UD.getDataJson(o2DM._HISTORY_DESIGNER_NAME, (items) => {
+        //                     const list = o2DM._sort(items || [], 'time', true).map((item) => {
+        //                         return {
+        //                             ...item,
+        //                             _pinyin: o2DM._toPY(item),
+        //                             icon: o2DM._ooiconMap[item.componentName] || '',
+        //                             name: o2DM._appNameMap[item.componentName] + ' ' + item.componentName
+        //                         };
+        //                     });
+        //                     resolve(list);
+        //                 }, reject);
+        //             });
+        //         }
+        //     }]
+        // },
     ]
 };
