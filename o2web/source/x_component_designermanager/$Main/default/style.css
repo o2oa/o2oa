@@ -4,4 +4,43 @@
         "header header"
         "nav main"
         "footer footer";
+    grid-template-columns: 20em 1fr;
+    grid-template-rows: auto 1fr auto;
+    height: 100vh;
+    margin: 0;
+}
+header{
+    grid-area: header;
+}
+nav{
+    grid-area: nav;
+    overflow: auto;
+    background: #ffffff;
+}
+oo-nav .slot{
+    padding: 0.5rem;
+}
+main{
+    grid-area: main;
+    overflow: auto;
+}
+footer{
+    grid-area: footer;
+}
+.app-content{
+    width: 100%;
+    height: 100%;
+}
+.o2-task-bar{
+    min-height: 3em;
+    background: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    align-items: center;
+    padding: 0.5em;
+}
+.o2-task-bar oo-tag{
+    height: 2em;
 }

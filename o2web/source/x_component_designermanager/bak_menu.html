@@ -1,0 +1,96 @@
+<div class="breadcrumb-menu-wrap">
+    {{if ($._type === 'app' || $._type === 'designer')}}
+    <div class="breadcrumb-top" data-o2-element="topNode">
+        <div class="breadcrumb-top-tools">
+            {{if $.data.length > 2}}
+            <oo-input
+                    data-o2-element="searchInput"
+                    placeholder="输入名称、别名和id搜索"
+                    left-icon="search"
+                    style="flex: 1"
+                    data-o2-events="o2load:loadSearchInput">
+                <div
+                        slot="after-inner-before"
+                        class="ooicon-close clear-search hide"
+                        data-o2-element="clearSearchNode"
+                        data-o2-events="click:clearSearch"
+                ></div>
+            </oo-input>
+            {{end if}}
+            {{if $.categories.length > 0}}
+            <i class="ooicon-bujianpeizhi" data-o2-events="click:switchCategoryArea" title="分类"></i>
+            {{end if}}
+            <i class="ooicon-reload" data-o2-events="click:reload" title="刷新"></i>
+        </div>
+        {{if $.categories.length > 0}}
+        <div class="breadcrumb-categorys-wrap hide" data-o2-element="categoryArea">
+            <div class="breadcrumb-categorys">
+                {{each $.categories}}
+                <div class="breadcrumb-category" data-value="{{$.value}}" data-o2-events="click:filterByCategory">
+                    {{$.label}}
+                </div>
+                {{end each}}
+            </div>
+        </div>
+        {{end if}}
+    </div>
+    {{end if}}
+
+    <div class="breadcrumb-menu" data-o2-element="menuNode">
+        {{each $.data}}
+        {{if $._type !== 'separator'}}
+        <div
+                title="{{$.title}}"
+                data-id="{{$.id}}"
+                data-name="{{$.name}}"
+                data-alias="{{$.alias}}"
+                data-category="{{$.category}}"
+                data-pinyin="{{$._pinyin}}"
+                class="breadcrumb-menu-item"
+                data-o2-events="click:handleClick;
+                                    mouseleave:handleMouseLeave;
+                                    mouseenter:handleMouseEnter;
+                                    o2load:handleLoadItem;">
+            {{if $.ooicon}}
+            <i class="breadcrumb-menu-item-ooicon ooicon-{{$.ooicon}} {{!!$.handleCreate ? 'has-create' : ''}}"></i>
+            {{end if}}
+            {{if $.icon}}
+            <i class="breadcrumb-menu-item-icon {{!!$.handleCreate ? 'has-create' : ''}}" style="background-image:url(data:image/png;base64,{{$.icon}});"></i>
+            {{end if}}
+            {{if !$.icon && $.defaultIcon}}
+            <i class="breadcrumb-menu-item-icon" style="background-image:url({{$.defaultIcon}});"></i>
+            {{end if}}
+
+            {{if $.handleCreate}}
+            <i class="breadcrumb-menu-item-create ooicon-create"
+               data-o2-events="click:handleCreate;" title="创建">
+            </i>
+            {{end if}}
+
+            <span class="breadcrumb-menu-item-text">{{$.name}}{{($.alias && $.alias!==$.name) ? ` - ${$.alias}` : '' }}</span>
+
+            {{if $.id && $._.pathData.id === $.id && ( !$.appid || ($.appid === $._.editingAppid )) }}
+            <i class="ooicon-pentagram_fill current-icon"></i>
+            {{end if}}
+
+            <!--                {{if ($._type === 'app' || $._type === 'designer')}}-->
+            <!--                <div class="more-action-area" data-o2-element="actionMenu" data-o2-events="o2load:loadActionMenu" >-->
+            <!--                    <i class="ooicon-point3"></i>-->
+            <!--                </div>-->
+            <!--                {{end if}}-->
+        </div>
+        {{end if}}
+
+        {{if $._type === 'separator'}}
+        <div class="breadcrumb-menu-separator"></div>
+        {{end if}}
+        {{end each}}
+
+        {{if !$.data.length}}
+        <div class="breadcrumb-menu-empty">
+            <div class="breadcrumb-menu-item-ooicon ooicon-empty"></div>
+            <div class="breadcrumb-menu-item-text">未找到内容</div>
+        </div>
+        {{end if}}
+    </div>
+</div>
