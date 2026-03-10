@@ -497,8 +497,10 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     hide: function(){
         var dsp = this.node.getStyle("display");
         if (dsp!=="none") this.node.store("mwf_display", dsp);
-        this.node.setStyle("display", "none");
-        if (this.iconNode) this.iconNode.setStyle("display", "none");
+        //this.node.setStyle("display", "none");
+        this.node.style.setProperty('display', 'none', 'important');
+        //if (this.iconNode) this.iconNode.setStyle("display", "none");
+        if (this.iconNode) this.iconNode.style.setProperty('display', 'none', 'important');
     },
     /**
      * @summary 显示组件.
@@ -1473,5 +1475,63 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 this.node.setStyle('padding-right', '0');
             }
         }
+    },
+    _loadOONodeDownloading: function (){
+        this.node.setStyle('display', 'none');
+        let valueNode, labelNode;
+        const node = new Element('div.oo-node-downloading', {
+            'id': this.json.id,
+            'MWFType': this.json.type
+        }).inject(this.node, 'after');
+        Array.from(this.node.classList).forEach(clazz=>{
+            node.addClass(clazz);
+        })
+        this.node.destroy();
+
+        node.setStyles(this.form.css.OODownloadingNodeStyle);
+
+        if (this.json.styles) {
+            node.setStyles(this.json.styles);
+        }
+
+        if (this.json.label) {
+            labelNode = new Element('div.item-label',{
+                text: this.json.label
+            }).inject(node);
+        }
+
+        valueNode = new Element('div').inject(node);
+
+        if(this.json.properties){
+            if(labelNode) {
+                if(this.json.properties['label-style']){
+                    labelNode.setAttribute('style', this.json.properties['label-style']);
+                }
+                if(this.json.properties['label-Align']){
+                    let justifyContent;
+                    switch (this.json.properties['label-Align']) {
+                        case 'right': justifyContent = 'flex-end'; break;
+                        case 'center': justifyContent = 'center';  break;
+                        default: justifyContent = 'flex-start'; break;
+                    }
+                    labelNode.setStyle('justify-content', justifyContent);
+                }
+            }
+            if(!this.json.inDatatable && this.json.properties['view-style']) {
+                valueNode.setAttribute('style', this.json.properties['view-style']);
+            }
+        }
+        if(labelNode){
+            labelNode.setStyles(this.form.css.OODownloadingLabelNodeStyle);
+        }
+        valueNode.setStyles(this.form.css.OODownloadingValueNodeStyle);
+
+        this.downloadingNode = node;
+        this.downloadingLabelNode = labelNode;
+        this.downloadingValueNode = valueNode;
+
+        this._afterLoadOONodeDownloading();
+    },
+    _afterLoadOONodeDownloading: function (){
     }
 });

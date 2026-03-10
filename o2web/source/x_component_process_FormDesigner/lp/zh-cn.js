@@ -235,6 +235,8 @@ MWF.xApplication.process.FormDesigner.LP = {
 
     clearNoDomModuleTitle: '清除未在HTML树中的组件配置',
     clearNoDomModuleContent: '是否清除未在HTML树中的组件配置？清除后需要保存生效。',
+    copyFormDataTitle: "拷贝组件",
+    copyFormDataContent: "移动端表单还没有组件，是否从PC端表单拷贝？",
 
     selectCopyModule: '请选择需要复制属性的组件',
     selectCopyModuleNotice: '请先选择组件！',

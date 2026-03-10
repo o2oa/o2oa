@@ -5,7 +5,7 @@ MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
         this._loadUserInterface();
     },
     _loadUserInterface: function(){
-        if (!this.isReadable){
+        if (!this.isReadable || layout.mobile){
             this.node.setStyle('display', 'none');
             return '';
         }
@@ -17,6 +17,11 @@ MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
         this.toolbarNode = this.node.getFirst("div");
         if (!this.toolbarNode)  this.toolbarNode = this.node;
         if (this.toolbarNode) this.toolbarNode.empty();
+
+        if(this.downloading){
+            this.node.style.setProperty('display', 'none', 'important');
+            return;
+        }
 
         //this.node.empty();
 

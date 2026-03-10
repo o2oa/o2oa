@@ -342,7 +342,6 @@ MWF.xApplication.Selector.Person = new Class({
         } else {
             this.css.maskNode["z-index"] = this.options.zIndex;
             var position = this.container.getPosition(this.container.getOffsetParent());
-            debugger;
             this.mask = new Mask(this.container, {
                 "destroyOnHide": true,
                 "style": this.css.maskNode,
@@ -350,7 +349,6 @@ MWF.xApplication.Selector.Person = new Class({
                 "iframeShimOptions": {"browsers": true},
                 "inject": {"where":"bottom"},
                 "onShow": function () {
-                    debugger;
                     this.shim.shim.setStyles({
                         "opacity": 0,
                         "top": "" + (position.y || 0) + "px",
@@ -1354,7 +1352,8 @@ MWF.xApplication.Selector.Person = new Class({
                 var id = obj.data.distinguishedName || obj.data.id || obj.data.name || obj.data.text;
                 if (text.indexOf(word)!==-1){
                     if (createdId.indexOf( id )===-1){
-                        this._newItem(obj.data, this, this.itemSearchAreaNode);
+                        var searchItem = this._newItemSearch(obj.data, this, this.itemSearchAreaNode);
+                        this.searchItems.push(searchItem);
                         createdId.push( id );
                     }
                 }
@@ -2378,6 +2377,9 @@ MWF.xApplication.Selector.Person.Item = new Class({
         }
     },
     _init: function (){},
+    _setShowName: function (){
+        this.textNode.set('text', this._getShowName())
+    },
     _getShowName: function(){
         return this.data.name + ( this.data.employee ? ("("+this.data.employee+")") : "" );
     },

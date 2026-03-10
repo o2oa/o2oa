@@ -170,6 +170,8 @@ MWF.APPPOD.LP = {
     "clearNoDomModuleTitle" : "清除未在HTML树中的组件配置",
     "clearNoDomModuleContent" : "是否清除未在HTML树中的组件配置？清除后需要保存生效。",
 
+    "copyFormDataTitle": "拷贝组件",
+    "copyFormDataContent": "移动端表单还没有组件，是否从PC端表单拷贝？",
 
     "design": "设计",
     "script": "脚本",

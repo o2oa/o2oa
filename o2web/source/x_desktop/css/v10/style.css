@@ -421,6 +421,9 @@ oo-nav{
   -moz-osx-font-smoothing: grayscale;
 }
 
+.ooicon-move:before {
+  content: "\e799";
+}
 .ooempty-wushuju:before {
   content: "\e900";
 }

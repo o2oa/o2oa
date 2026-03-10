@@ -8,7 +8,7 @@
     box-sizing: border-box !important;
     display: grid !important;
     /* align-items: start; */
-    gap: 2em;
+    gap: 1em;
     padding: 1em;
 }
 
@@ -338,6 +338,12 @@
     .page-widget-title > div:first-child > div {
         display: none;
     }
+    .page-widget-title > .page-widget-drag-area{
+        display: none;
+    }
+    .page-widget-title > .page-widget-tab-line{
+        display: none;
+    }
     .page-index-content {
         min-width: 100% !important;
     }
@@ -386,6 +392,10 @@
 
     .form-layout .page-widget-text-item {
         gap: 0.5em !important;
+    }
+
+    .form-layout .page-widget-text-item-activity {
+        display: none !important;
     }
 
     .form-layout .page-widget-text-item > .line-text.processName,

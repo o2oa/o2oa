@@ -186,6 +186,8 @@ MWF.xApplication.process.FormDesigner.LP={
 	"imageClipper": "Editor de imágenes",
 	"clearNoDomModuleTitle": "Eliminar configuraciones de componentes fuera de la estructura HTML",
 	"clearNoDomModuleContent": "¿Quieres eliminar las configuraciones de los componentes que no están en la estructura HTML? Después de borrar, debe guardar para que los cambios tengan efecto.",
+	"copyFormDataTitle": "Copiar componente",
+	"copyFormDataContent": "Aún no hay componentes en el formulario móvil. ¿Deseas copiar desde el formulario de PC?",
 	"refreshDatatemplateImpExpTitle": "Confirmación de importación de campos",
 	"refreshDatatemplateImpExpContent": "Esta operación obtiene campos del componente interno de la plantilla de datos. Si realiza esta operación, los campos configurados anteriormente se reemplazarán, ¿desea continuar?",
 	"handWriting": "Escritura manual",

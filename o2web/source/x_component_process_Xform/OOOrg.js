@@ -4,11 +4,13 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
     Extends: MWF.APPOrg,
     iconStyle: 'textFieldIcon',
     options: {
-        "moduleEvents": ["load", "queryLoad", "postLoad", "select", "removeItem"]
+        "moduleEvents": ["load", "queryLoad", "postLoad", "select", "removeItem", "change"]
     },
     _loadNode: function () {
         if (!this.isReadable && !!this.isHideUnreadable){
             this.node?.addClass('hide');
+        }else if(this.downloading){
+            this._loadOONodeDownloading();
         }else{
             this._getOrgOptions();
             this._loadNodeEdit();
@@ -344,6 +346,11 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
         }
         return readonly || !!this.isSectionMergeRead();
     },
+    _afterLoadOONodeDownloading: function (){
+        const value = this._getBusinessData();
+        this.downloadingValueNode.set('text',
+            Array.isArray(value) ? value.map(v=>v.split('@')[0]).join( ' ') || '-' : value.split('@')[0] || '-' );
+    }
     // addModuleEvent: function(key, fun){
     //     if (this.options.moduleEvents.indexOf(key)!==-1){
     //         this.addEvent(key, function(event){

@@ -12,44 +12,24 @@
             <div>{{$.config.title}}</div>
         </div>
         <div class="chat-desc">{{$.config.desc}}</div>
-        <div class="chat-hot">
+        <div class="chat-hot {{if !$.config.o2AiEnable}} hide {{end if}}">
             <div class="chat-hot-l">
                 <img src="../x_component_AI/$Main/default/images/bg_o2.png">
             </div>
             <div class="chat-hot-r">
-                <div class="chat-hot-item" data-o2-events="click:quickChat:meeting;">
-                    <div class="chat-hot-item-title">
-                        <i class="ooicon-meeting"></i>
-                        <span>会议预定</span>
-                    </div>
-                    <div class="chat-hot-item-desc">快速预定会议室或在线会议，选择时间、参会人一键安排。
-                    </div>
-                </div>
-                <div class="chat-hot-item"  data-o2-events="click:quickChat:process;">
-                    <div class="chat-hot-item-title">
-                        <i class="ooicon-process-submit"></i>
-                        <span>发起流程</span>
-                    </div>
-                    <div class="chat-hot-item-desc">提交审批、申请等各类业务流程，自动推送到相关人员处理。</div>
-                </div>
-                <div class="chat-hot-item"  data-o2-events="click:quickChat:task;">
-                    <div class="chat-hot-item-title">
-                        <i class="ooicon-news1"></i>
-                        <span>待办查询</span>
-                    </div>
-                    <div class="chat-hot-item-desc">集中查看所有待处理的任务、审批及会议，轻松跟进进度。
 
-                    </div>
-                </div>
-                <div class="chat-hot-item"  data-o2-events="click:quickChat:attendance;">
+                {{each $.mcpList}}
+                <div class="chat-hot-item" data-o2-events="click:quickChat:{{$.extra.indexPrompt}};">
                     <div class="chat-hot-item-title">
-                        <i class="ooicon-a-attendanceprocess-invoke"></i>
-                        <span>我的考勤</span>
+                        <i class="ooicon-{{$.extra.icon}}"></i>
+                        <span>{{$.displayName}}</span>
                     </div>
-                    <div class="chat-hot-item-desc">查询打卡记录、请假、加班等出勤情况，随时掌握工作日程。
-
+                    <div class="chat-hot-item-desc">{{$.extra.indexDesc}}
                     </div>
                 </div>
+                {{end each}}
+
+
             </div>
         </div>
         <div class="chat-wrap">
@@ -68,10 +48,13 @@
                         <div class="ooicon-clock "></div><div>深度思考</div>
                     </div>
                 </div>
-                {{if $.config.o2AiEnable}}
-                <div class="ooicon-fujian" style="width: 2.3rem;font-size: 1.8rem;cursor: pointer;"
-                     data-o2-events="click:addAtt" data-o2-element="addAttNode"></div>
-                {{end if}}
+
+                <div class="ooicon-fujian chat-tools-icon"
+                     data-o2-events="click:addAtt" data-o2-element="addAttNode" title="本地上传"></div>
+                <div class="ooicon-files chat-tools-icon"
+                     data-o2-events="click:addAtt:drive" data-o2-element="addDriveNode" title="从网盘中选择"></div>
+
+
                 <div data-o2-element="btnSendNode" data-o2-events="click:sendNew">
                     <div class="btn">
                         <i class="ooicon-send1"></i>

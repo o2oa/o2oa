@@ -45,6 +45,10 @@ MWF.xApplication.AI.Setting = new Class({
         this.app.rootNode.show();
     },
     openKnowledge : function (){
+        if(!this.config.o2AiEnable){
+            $OOUI.notice.warn(this.lp.common.tip, this.lp.o2AiEnableTip);
+            return;
+        }
         this.rootNode.destroy();
         o2.requireApp("AI", "Knowledge", function(){
             new MWF.xApplication.AI.Knowledge(this.app, this.container);
@@ -131,6 +135,7 @@ MWF.xApplication.AI.Setting = new Class({
             "knowledgeIndexAppList" :knowledgeIndexAppList.get("v")!==""?knowledgeIndexAppList.get("v").split(","):[],
             "questionsIndexAppList" :questionsIndexAppList.get("v")!==""?questionsIndexAppList.get("v").split(","):[]
         }, function( json ){
+            this.config.o2AiEnable = o2AiEnable.get("value").toLowerCase() === 'true';
             $OOUI.notice.success(this.lp.common.tip, this.lp.common.savesuccess);
         }.bind(this));
     }

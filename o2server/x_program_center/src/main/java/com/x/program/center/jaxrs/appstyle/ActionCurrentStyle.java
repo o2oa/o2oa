@@ -121,8 +121,8 @@ class ActionCurrentStyle extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Page> root = cq.from(Page.class);
-		// Predicate p = cb.conjunction();
-		Predicate p = cb.equal(root.get(Page_.hasMobile), true);
+		 Predicate p = cb.conjunction();
+		//Predicate p = cb.equal(root.get(Page_.hasMobile), true);
 		List<String> os = em.createQuery(cq.select(root.get(Page_.id)).where(p)).getResultList();
 		return os;
 	}

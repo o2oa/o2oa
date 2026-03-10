@@ -69,10 +69,10 @@
                     <div class="ooicon-clock "></div><div>深度思考</div>
                 </div>
             </div>
-            {{if $.config.o2AiEnable}}
-            <div class="ooicon-fujian" style="width: 2.3rem;font-size: 1.8rem;cursor: pointer;"
-                 data-o2-events="click:addAtt" data-o2-element="addAttNode"></div>
-            {{end if}}
+            <div class="ooicon-fujian chat-tools-icon"
+                 data-o2-events="click:addAtt" data-o2-element="addAttNode" title="{{$.lp.common.uploadLocal}}"></div>
+            <div class="ooicon-files chat-tools-icon"
+             data-o2-events="click:addAtt:drive" data-o2-element="addDriveNode" title="{{$.lp.common.uploadDrive}}"></div>
             <div data-o2-element="btnSendNode" data-o2-events="click:send:">
                 <div class="btn">
                     <i class="ooicon-send1"></i>

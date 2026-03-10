@@ -55,6 +55,9 @@ MWF.xApplication.Selector.CMSCategory = new Class({
     },
     _newItem: function(data, selector, container, level){
         return new MWF.xApplication.Selector.CMSCategory.Item(data, selector, container, level);
+    },
+    _newItemSearch: function(data, selector, container, level){
+        return new MWF.xApplication.Selector.CMSCategory.SearchItem(data, selector, container, level);
     }
 });
 MWF.xApplication.Selector.CMSCategory.Item = new Class({
@@ -113,9 +116,22 @@ MWF.xApplication.Selector.CMSCategory.Item = new Class({
             //selectedItem[0].item = this;
             selectedItem[0].addItem(this);
             this.selectedItem = selectedItem[0];
+            this.selectedItem._setText(this);
             this.setSelected();
         }
     }
+});
+
+MWF.xApplication.Selector.CMSCategory.SearchItem = new Class({
+    Extends: MWF.xApplication.Selector.CMSCategory.Item,
+    _getShowName: function(){
+        return this.data.name+((this.data.appName) ? "("+this.data.appName+")" : "");
+    },
+    _getTtiteText: function(){
+        return `${MWF.xApplication.Selector.LP.application}:${this.data.appName}
+${MWF.xApplication.Selector.LP.name}:${this.data.name}
+${MWF.xApplication.Selector.LP.alias}:${this.data.categoryAlias}`;
+    },
 });
 
 MWF.xApplication.Selector.CMSCategory.ItemSelected = new Class({
@@ -130,6 +146,9 @@ MWF.xApplication.Selector.CMSCategory.ItemSelected = new Class({
         var style = "default";
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
     },
+    _setText: function(item){
+          this.textNode.set("text", item.data.name+((item.data.appName) ? "("+item.data.appName+")" : ""));
+    },
     check: function(){
         if (this.selector.items.length){
             var items = this.selector.items.filter(function(item, index){
@@ -141,6 +160,7 @@ MWF.xApplication.Selector.CMSCategory.ItemSelected = new Class({
             }.bind(this));
             this.items = items;
             if (items.length){
+                this._setText(items[0]);
                 items.each(function(item){
                     item.selectedItem = this;
                     item.setSelected();

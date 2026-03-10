@@ -39,6 +39,8 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "remove": "移除",
     "selected2": "已选",
     "searchResult": "搜索结果",
+    "name": "名称",
+    "alias": "别名",
 
     "identity" : "身份",
     "person" : "个人",

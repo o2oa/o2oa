@@ -767,7 +767,7 @@ MWF.xApplication.Org.$Explorer.Item = new Class({
                     this.contentNode.setStyles(this.style.nodeOver);
                     this.contentNode.addClass("mainColor_bg_opacity");
                     if (!this.deleteSelected) if (this.data.id) this.actionNode.fade("in");
-                    if (this.deleteNode)this.deleteNode.addClass("mainColor_color");
+                    //if (this.deleteNode)this.deleteNode.addClass("mainColor_color");
                     if (this.addNode)this.addNode.addClass("mainColor_color");
                 }
             }.bind(this),
@@ -810,7 +810,7 @@ MWF.xApplication.Org.$Explorer.Item = new Class({
             if (this.deleteNode) this.deleteNode.setStyles(this.style.actionDeleteNode);
             this.contentNode.removeClass("mainColor_bg_opacity");
             this.contentNode.removeClass("mainColor_bg");
-            if (this.deleteNode)this.deleteNode.removeClass("mainColor_color");
+            //if (this.deleteNode)this.deleteNode.removeClass("mainColor_color");
             if (this.addNode)this.addNode.removeClass("mainColor_color");
         }
 
@@ -831,7 +831,7 @@ MWF.xApplication.Org.$Explorer.Item = new Class({
         if (this.deleteNode) this.deleteNode.setStyles(this.style.actionDeleteNode_selected);
         this.contentNode.removeClass("mainColor_bg_opacity");
         this.contentNode.addClass("mainColor_bg");
-        if (this.deleteNode)this.deleteNode.removeClass("mainColor_color");
+        //if (this.deleteNode)this.deleteNode.removeClass("mainColor_color");
         if (this.addNode)this.addNode.removeClass("mainColor_color");
         this.showItemProperty();
     },

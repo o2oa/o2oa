@@ -396,5 +396,13 @@ if (!layout.isReady) {
                 }
             }
         }, 1000 * 30);
+
+        layout.addReady(()=>{
+            //判断是否在微信内置浏览器，钉钉内置浏览器中打开，O2OA APP内置浏览器中打开
+            //如果是，给body加上相应的class
+            if (o2.thirdparty.isWeiXinMobile() || o2.thirdparty.isQywxMobile() || o2.thirdparty.isDingdingMobile() || window.o2android || window.flutter_inappwebview) {
+                document.body.addClass("o2_thirdparty_mobile_browser");
+            }
+        })
     });
 }

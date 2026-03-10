@@ -33,6 +33,11 @@ MWF.xApplication.portal.Portal.Main = new Class({
             this.options.widgetId = this.status.widgetId;
             this.options.parameters = this.status.parameters;
         }
+        if (this.options.parameters){
+            for (var k in this.options.parameters){
+                if (!this.options[k]) this.options[k] = this.options.parameters[k];
+            }
+        }
     },
     loadApplication: function(callback){
         this.node = new Element("div", {"styles": this.css.content}).inject(this.content);

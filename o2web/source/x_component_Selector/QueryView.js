@@ -18,7 +18,24 @@ MWF.xApplication.Selector.QueryView = new Class({
         this.selectType = "queryview";
         this.className = "QueryView";
     },
+    checkInValues: function(data){
+      const index = this.values.findIndex((v)=>v === data.id);
+      if( index > -1 ){
+          this.values[index] = data;
+
+          const selectedItem = this.selectedItems[index];
+          if(selectedItem){
+              selectedItem.data.applicationName = data.applicationName;
+              selectedItem._setShowName();
+          }
+      }
+    },
     loadSelectItems: function(addToNext){
+        if( !this.values ){
+            this.values = (this.options.values || []).map((v)=>{
+                return typeof v === 'string' ? v : v.id;
+            });
+        }
         this.queryAction.listApplication(function(json){
             if (json.data.length){
                 json.data.each(function(data){
@@ -28,6 +45,7 @@ MWF.xApplication.Selector.QueryView = new Class({
                             d.applicationName = data.name;
                             var item = this._newItem(d, this, category.children);
                             this.items.push(item);
+                            this.checkInValues(d);
                         }.bind(this));
                     }
                 }.bind(this));
@@ -61,7 +79,10 @@ MWF.xApplication.Selector.QueryView = new Class({
     },
     _newItem: function(data, selector, container, level){
         return new MWF.xApplication.Selector.QueryView.Item(data, selector, container, level);
-    }
+    },
+    _newItemSearch: function(data, selector, container, level){
+        return new MWF.xApplication.Selector.QueryView.SearchItem(data, selector, container, level);
+    },
 });
 MWF.xApplication.Selector.QueryView.Item = new Class({
 	Extends: MWF.xApplication.Selector.Person.Item,
@@ -111,10 +132,21 @@ MWF.xApplication.Selector.QueryView.Item = new Class({
     }
 });
 
+MWF.xApplication.Selector.QueryView.SearchItem = new Class({
+    Extends: MWF.xApplication.Selector.QueryView.Item,
+    _getShowName: function(){
+        return this.data.name+((this.data.applicationName) ? "("+this.data.applicationName+")" : "");
+    },
+    _getTtiteText: function(){
+        return `${MWF.xApplication.Selector.LP.application}:${this.data.applicationName}
+${MWF.xApplication.Selector.LP.name}:${this.data.name}`;
+    },
+});
+
 MWF.xApplication.Selector.QueryView.ItemSelected = new Class({
 	Extends: MWF.xApplication.Selector.Person.ItemSelected,
     _getShowName: function(){
-        return this.data.name;
+        return this.data.name + (this.data.applicationName ? `(${this.data.applicationName})` : "");
     },
     _setIcon: function(){
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/view.png)");
@@ -156,5 +188,11 @@ MWF.xApplication.Selector.QueryView.ItemCategory = new Class({
     _hasChild: function(){
         return (this.data.viewList && this.data.viewList.length);
     },
-    check: function(){}
+    check: function(){
+        const views =  this.data.viewList.map(v=>v.id);
+        const index = views.findIndex(id=>this.selector.values.includes(id));
+        if(index > -1 && !this.isExpand){
+            this.clickItem();
+        }
+    }
 });

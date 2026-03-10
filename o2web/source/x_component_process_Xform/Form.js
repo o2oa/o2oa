@@ -492,6 +492,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     this.container.set("html", this.html);
                     this.node = this.container.getFirst();
 
+                    if(this.options.downloading){
+                        this.node.addClass("downloading");
+                    }
+
                     if (cssClass && !this.node.hasClass(cssClass)) this.node.addClass(cssClass);
 
                     this._loadEvents();
@@ -873,12 +877,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }
                 }
             } else {
-                // app上用原来的按钮样式
-                if (window.o2android || window.flutter_inappwebview || (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.o2mLog)) {
-                    if (node) this._createMobileActions(node, tools);
-                } else {
-                    if (node) this._createMobileActionsDingdingStyle(node, tools);
-                }
+                if (node) this._createMobileActionsDingdingStyle(node, tools);
             }
             if (callback) callback();
         }.bind(this));
@@ -1434,6 +1433,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (replace || !this.forms[json.id]) this.forms[json.id] = module;
         }
         module.readonly = this.options.readonly;
+        module.downloading = this.options.downloading;
         module.load();
         return module;
     },
@@ -4649,39 +4649,117 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             });
         }
     },
+    //downloadAll: function (){
+        // if( this.options.readonly || this.json.isReadonly ){
+        //     this._downloadAll();
+        // }else{
+        //     this._downloadAllEditMode();
+        // }
+    //},
     downloadAll: function (){
-        if( this.options.readonly || this.json.isReadonly ){
-            this._downloadAll();
-        }else{
-            this._downloadAllEditMode();
+        var iframe, iframeDoc;
+        var _loadCss = (urls, callback) => {
+            const ps = urls.map(async (url) => {
+                const res = await fetch(url);
+                const styleElement = iframeDoc.createElement('style');
+                styleElement.type = 'text/css';
+                styleElement.textContent = await res.text();
+                iframeDoc.head.appendChild(styleElement);
+            });
+            Promise.all(ps).then(()=>{
+                callback()
+            });
         }
-    },
-    _downloadAllEditMode: function (){
-        var iframe;
-        var downloadWithIframe = (appForm)=>{
-            var html = appForm.app.content.get('html');
+        var _replaceV10FontUrl = ()=>{
+            const allStyleList = iframeDoc.querySelectorAll('style');
+
+            //匹配@font-face{}内的所有url(./xxx)
+            const fontReg = /url\(['"]?\.\/([^'")]+)['"]?\)(?=[\s\S]*?\})/g;
+
+            var port = layout.port === "" ? "" : ":" + layout.port;
+            const FONT_BASE_URL = "http://127.0.0.1" + port + "/x_desktop/css/v10/";
+            allStyleList.forEach(styleEl => {
+               styleEl.textContent = styleEl.textContent.replace(fontReg, `url("${FONT_BASE_URL}$1")`);
+            });
+        }
+        var _download = ()=>{
             setTimeout(()=>{
+                const html = iframeDoc.documentElement.outerHTML;
+                //const html = this.app.content.get("html");
                 this._downloadAll(html, ()=>{
-                    iframe?.destroy();
+                    //iframe?.destroy();
                     if (this.mask) { this.mask.hide(); this.mask = null; }
                 });
             }, 2000)
         }
-        var openFormInIframe = ()=>{
+        var _removeEl = (selector)=>{
+            iframeDoc.querySelectorAll(selector).forEach(function (el) { el.destroy(); })
+        }
+        var downloadWithIframe = (appForm)=>{
+            iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+            if( this.json.formStyleType === 'v10' ) {
+                iframeDoc.querySelector('head').empty();
+
+                _removeEl('script');
+                _removeEl('style');
+                _removeEl('link');
+
+                _loadCss([
+                    '../x_desktop/css/v10/style.css',
+                    '../x_component_process_FormDesigner/Module/Form/skin/v10/form.css',
+                    '../x_component_process_FormDesigner/Module/Form/skin/v10/view.css'
+                ],  ()=>{
+                    _removeEl('template');
+                    _removeEl('.form-side-content');
+                    _replaceV10FontUrl();
+
+                    const formContentWorkStatus = iframeDoc.querySelector('.form-content-work-status');
+                    if(formContentWorkStatus){
+                        formContentWorkStatus.setStyle('margin-bottom', 0);
+                    }
+
+                    const formContentChild = iframeDoc.querySelector('.form-content')?.firstElementChild;
+                    formContentChild && formContentChild.setStyles({
+                        'width': '793.7px'
+                    });
+
+                    //页边距
+                    const cssRules = `
+                    @page {
+                        size: A4;
+                        margin: 0;
+                    }`;
+                    const styleElement = iframeDoc.createElement('style');
+                    styleElement.innerHTML = cssRules;
+                    iframeDoc.head.appendChild(styleElement);
+
+                    _download();
+                });
+            }else{
+                _download();
+            }
+        }
+        var _openFormInIframe = ()=>{
             MWF.require("MWF.widget.Mask", null, false);
             this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
             this.mask.loadNode(this.app.content);
+
+            let src = this.app.options.name === 'cms.Document' ?
+                `../x_desktop/cmsdoc.html?documentId=${this.businessData.document.id}&readonly=true&downloading=true` :
+                `../x_desktop/work.html?workid=${this.businessData.work.id}&readonly=true&downloading=true`;
+
             iframe = new Element('iframe', {
-                src: `../x_desktop/${layout.mobile?'workmobile.html':'work.html'}?workid=${this.businessData.work.id}&readonly=true`,
-                "width": "100%",
+                src: src,
+                "width": "793.7px",
                 "height": "100%",
                 "frameborder": "0px",
                 "scrolling": "auto",
                 "seamless": "seamless",
                 "styles": {
                     "position": "absolute",
-                    "top": "0px",
-                    "left": "0px",
+                    "top": "10000px",
+                    "left": "0",
                     "z-index": 2,
                     "background-color": "#fff"
                 }
@@ -4715,30 +4793,35 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
         };
         var _self = this;
-        this.app.confirm("infor", event, MWF.xApplication.process.Xform.LP.downloadAllTitle, MWF.xApplication.process.Xform.LP.downloadAllText, 300, 120, function () {
-            _self.saveFormData(
-                function(json){
-                    openFormInIframe();
-                }.bind(this),
-                function (xhr, text, error) {
-                    if (failure) failure(xhr, text, error);
+        if(_self.isReadonly() || _self.isCompletedWork()){
+            _openFormInIframe();
+        }else{
+            this.app.confirm("infor", event, MWF.xApplication.process.Xform.LP.form.downloadAllTitle, MWF.xApplication.process.Xform.LP.form.downloadAllText, 300, 120, function () {
+                _self.saveFormData(
+                    function(json){
+                        _openFormInIframe();
+                    }.bind(this),
+                    function (xhr, text, error) {
+                        if (failure) failure(xhr, text, error);
                 });
                 this.close();
-        }, function () {
-            this.close();
-        }, null, null, this.json.confirmStyle);
+            }, function () {
+                this.close();
+            }, null, null, this.json.confirmStyle);
+        }
     },
     _downloadAll: function (htmlString, callback) {
 
         var htmlFormId = "";
-        var html = htmlString || this.app.content.get("html");
-        var port = layout.port === "" ? "" : ":" + port;
-
-        html = html.replace(/\.\.\/(x_|o2_)/g, "http://127.0.0.1" + port + "/$1");
-
+        var html = htmlString || document.documentElement.outerHTML; //this.app.content.get("html");
+        var port = layout.port === "" ? "" : ":" + layout.port;
+        var orginUrl = "http://127.0.0.1" + port;
+        html = html.replace(/\.\.\/(x_|o2_)/g, orginUrl + "/$1");
+        html = html.replaceAll(window.location.origin, orginUrl);
+        
         o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id, "pdf", {
             "workHtml": encodeURIComponent(html),
-            "pageWidth": 1000
+            "pageWidth": 793.7
         }, function (json) {
             htmlFormId = json.data.id;
             if(callback)callback();

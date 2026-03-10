@@ -1191,8 +1191,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this.loadDocumentEditor(callback);
             }
         // }
-       
-        o2.loadCss('../x_desktop/fonts/fonts.css');
+
+        //if( !this.downloading ){
+            o2.loadCss('../x_desktop/fonts/fonts.css');
+        //}
     },
     loadDocumentEditor: function(callback){
         this._loadToolbars();
@@ -1219,7 +1221,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }
             //if (!layout.mobile) this.loadSideToolbar();
 
-            o2.load("../o2_lib/diff-match-patch/diff_match_patch.js");
+            if(!this.downloading){
+                o2.load("../o2_lib/diff-match-patch/diff_match_patch.js");
+            }
 
             if (this.form.businessData.data["$work"]){
                 var id = this.form.businessData.data["$work"].job;
@@ -1234,6 +1238,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }.bind(this));
             }
 
+            this.setDownloadingStyle()
 
             if (callback) callback();
         }.bind(this));
@@ -1241,7 +1246,21 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (!this.form.documenteditorList) this.form.documenteditorList=[];
         this.form.documenteditorList.push(this);
     },
-
+    setDownloadingStyle: function(){
+        if( this.downloading ){
+            this.contentNode.setStyle('padding', '0');
+            this.contentNode.querySelectorAll("div.doc_layout_page").forEach(function(page){
+                page.setStyles({
+                    margin: '0',
+                    transform: 'none'
+                })
+            })
+            this.node.setStyles({
+                'border': '0',
+                'height': 'auto'
+            });
+        }
+    },
     getFiletextText: function(data){
         // var div = new Element("div", {
         //     "html": data
@@ -1475,6 +1494,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
     },
     zoom: function(scale){
+        if( this.downloading ){
+            return;
+        }
+
         if (scale) this.scale = scale;
 
         if (this.zoomSelectAction){
@@ -1960,6 +1983,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.toolbarNode = new Element("div.o2-documentEditor-toolbar", {"styles": this.css.doc_toolbar_node}).inject(this.toolNode);
         this.toolbarNode.set("html", html);
 
+        if(this.downloading)this.toolNode.hide();
+
         MWF.require("MWF.widget.Toolbar", function() {
             this.toolbar = new MWF.widget.Toolbar(this.toolbarNode, {"style": "documentEdit"}, this);
             this.toolbar.load();
@@ -2355,6 +2380,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.doublePageAction.set("text", MWF.xApplication.process.Xform.LP.doublePage);
     },
     resetNodeSize: function(){
+        if(this.downloading)return;
         //var contentSize = this.contentNode.getSize();
         var contentHeight = this.contentNode.offsetHeight;
         var toolbarSize = this.toolNode.getSize();

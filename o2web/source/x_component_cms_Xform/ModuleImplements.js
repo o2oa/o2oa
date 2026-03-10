@@ -22,7 +22,7 @@ if( !MWF.CMS$Input_Process ){
             if (this.json.styles) this.node.setStyles(this.json.styles);
             if( this.readonly ){
                 var parent = this.node.parentNode;
-                if( parent.tagName.toLowerCase() == "td" ){
+                if( parent?.tagName.toLowerCase() == "td" ){
                     var border = parent.getStyle("borderBottomWidth");
                     if( border.toInt() > 0 ){
                         this.node.setStyle("border","0px");

@@ -10,6 +10,8 @@ MWF.xApplication.process.Xform.OOAddress = MWF.APPOOAddress = new Class({
     _loadNode: function () {
         if (!this.isReadable && !!this.isHideUnreadable) {
             this.node?.addClass('hide');
+        }else if(this.downloading){
+            this._loadOONodeDownloading();
         } else {
             this._loadNodeEdit();
         }
@@ -136,7 +138,6 @@ MWF.xApplication.process.Xform.OOAddress = MWF.APPOOAddress = new Class({
 
         this.setOptions();
     },
-
     _createOptionItem: function (o, node) {
         var option = new Element('oo-option');
 		option.setAttribute('value', o.name);
@@ -259,5 +260,5 @@ MWF.xApplication.process.Xform.OOAddress = MWF.APPOOAddress = new Class({
             this.validationText = '';
             this.node.unInvalidStyle();
         }
-    },
+    }
 });

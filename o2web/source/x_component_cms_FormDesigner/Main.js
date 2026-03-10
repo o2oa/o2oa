@@ -155,16 +155,20 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
             if (MWF.clipboard.data.type === "form") {
                 this._pasteModule();
             }else if(MWF.clipboard.data.type === "page"){
-                MWF.getJSON('../x_component_cms_FormDesigner/$Main/default/tools.json',
-                    {
-                        "onSuccess": function(responseJSON){
-                            const classNames = Object.values(responseJSON).map((obj)=>{
+                var classNames = [], jsons = [];
+                var callback =  (responseJSON)=>{
+                    jsons.push(responseJSON);
+                    if(jsons.length === 2){
+                        jsons.forEach(function(json){
+                             classNames.push(...Object.values(json).map((obj)=>{
                                 return obj.className;
-                            });
-                            this._pasteModule(classNames);
-                        }.bind(this)
+                            }));
+                        })
+                        this._pasteModule(classNames);
                     }
-                );
+                };
+                MWF.getJSON('../x_component_cms_FormDesigner/$Main/default/tools-o2oa.json', {"onSuccess": callback} );
+                MWF.getJSON('../x_component_cms_FormDesigner/$Main/default/tools.json', {"onSuccess": callback});
             }
         }
     },
@@ -488,7 +492,37 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         this.currentHistoryNode = this.historyArea;
     },
 
-    changeDesignerModeToMobile: function(){
+    changeDesignerModeToMobile: function (){
+        debugger;
+        this._checkMobileFormData(function (){
+            this._changeDesignerModeToMobile();
+        }.bind(this))
+    },
+    _checkMobileFormData: function( callback ){
+        var _self = this;
+        if (!this.mobileForm && !Object.keys(this.formMobileData.json.moduleList).length){
+            var p = MWF.getCenterPosition(this.content, 460, 120);
+            var event = {
+                "event": {
+                    "x": p.x,
+                    "y": p.y - 200,
+                    "clientX": p.x,
+                    "clientY": p.y - 200
+                }
+            }
+            this.confirm("warn", event,  MWF.APPFD.LP.copyFormDataTitle, MWF.APPFD.LP.copyFormDataContent, 460, 120, function(){
+                _self.formMobileData = Object.clone(_self.formData);
+                this.close();
+                callback();
+            }, function(){
+                this.close();
+                callback();
+            }, null, this.content);
+        }else{
+            callback();
+        }
+    },
+    _changeDesignerModeToMobile: function(){
         this.pcDesignerActionNode.setStyles(this.css.designerActionNode);
         this.mobileDesignerActionNode.setStyles(this.css.designerActionNode_current);
 
@@ -513,9 +547,9 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
 
         if (!this.mobileForm){
             this.mobileForm = new MWF.CMSFCForm(this, this.designMobileNode, {"mode": "Mobile"});
-            if (!Object.keys(this.formMobileData.json.moduleList).length){
-                this.formMobileData = Object.clone(this.formData);
-            }
+            // if (!Object.keys(this.formMobileData.json.moduleList).length){
+            //     this.formMobileData = Object.clone(this.formData);
+            // }
             this.mobileForm.load(this.formMobileData);
         }else{
             this.mobileForm.showDomTree();

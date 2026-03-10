@@ -224,7 +224,7 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
                 var body = {
                     type: "openO2CmsApplication",
                     data: {
-                        appId : options.columnId,
+                        appId : options.columnId || options.columnAlias,
                         title: options.title || "",
                         categoryId: options.categoryId || ""
                     }
@@ -300,6 +300,7 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
                         appKey: 'portal',
                         portalFlag: options.portalId,
                         portalPage: options.pageId,
+                        parameters: options.parameters || {}
                     }
                 }
                 window.flutter_inappwebview.callHandler('o2mUtil', JSON.stringify(body));
@@ -310,6 +311,7 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
                         appKey: 'portal',
                         portalFlag: options.portalId,
                         portalPage: options.pageId,
+                        parameters: options.parameters || {}
                     }
                 }
                 window.o2mUtil.postMessage(JSON.stringify(body));
@@ -337,6 +339,7 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
                     _openCalendar(appNames, options, statusObj);
                     break;
                 case "process.TaskCenter":
+                case "process.workcenter":
                     _openTaskCenter(appNames, options, statusObj);
                     break;
                 case "portal.Portal":
