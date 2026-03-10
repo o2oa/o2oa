@@ -30,7 +30,6 @@ MWF.xApplication.Selector.CMSFormField = new Class({
             "array": ["ooaddress", "dddress","checkbox","oocheckbox","elcascader","elcheckbox"]
         };
         fieldList = [];
-        debugger;
         Object.each( this.relativeFormData.json.moduleList, function(moudle){
             var key = "";
             for (k in dataTypes){

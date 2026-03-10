@@ -28,6 +28,7 @@ MWF.xApplication.Selector.Widget = new Class({
                         data.widgetList = widgets;
                         const category = this._newItemCategory(data, this, this.itemAreaNode);
                         widgets.each(function(widget){
+                            widget.applicationName = data.name;
                             const item = this._newItem(widget, this, category.children);
                             this.items.push(item);
                         }.bind(this));
@@ -64,7 +65,10 @@ MWF.xApplication.Selector.Widget = new Class({
     },
     _newItem: function(data, selector, container, level){
         return new MWF.xApplication.Selector.Widget.Item(data, selector, container, level);
-    }
+    },
+    _newItemSearch: function(data, selector, container, level){
+        return new MWF.xApplication.Selector.Widget.SearchItem(data, selector, container, level);
+    },
 });
 MWF.xApplication.Selector.Widget.Item = new Class({
 	Extends: MWF.xApplication.Selector.Person.Item,
@@ -115,6 +119,17 @@ MWF.xApplication.Selector.Widget.Item = new Class({
             this.setSelected();
         }
     }
+});
+
+MWF.xApplication.Selector.Widget.SearchItem = new Class({
+    Extends: MWF.xApplication.Selector.Widget.Item,
+    _getShowName: function(){
+        return this.data.name+((this.data.applicationName) ? "("+this.data.applicationName+")" : "");
+    },
+    _getTtiteText: function(){
+        return `${MWF.xApplication.Selector.LP.application}:${this.data.applicationName}
+${MWF.xApplication.Selector.LP.name}:${this.data.name}`;
+    },
 });
 
 MWF.xApplication.Selector.Widget.ItemSelected = new Class({
