@@ -96,12 +96,15 @@ MWF.xApplication.designermanager.Main = new Class({
 				component._tag = tag;
 				component._container = node;
 
-				component.setTitle = function (str) {
+				component.setTitle =  (str)=> {
 					// tag.setAttribute('text', str);
 					// tag._elements.text.textContent = str;
 					tag.innerHTML = str;
 					tag.setAttribute('title', str + ((component.appId) ? "-" + component.appId : ""));
 					component.options.title = str;
+					if(clazz.options.multitask){
+						this.addToHistory(component, str);
+					}
 				};
 
 				component.dm_close = (ignore)=>{
@@ -138,7 +141,9 @@ MWF.xApplication.designermanager.Main = new Class({
 					tag.oomenu?.hide();
 					node.show();
 					o2DM.currentApp = component;
-					this.addToHistory( component );
+					if(!clazz.options.multitask){
+						this.addToHistory( component );
+					}
 				};
 
 				o2DM.appMap[component.appId] = component;
@@ -213,58 +218,77 @@ MWF.xApplication.designermanager.Main = new Class({
 		});
 		return tag;
 	},
-	addToHistory: function(component){
-		const status = component.recordStatus && component.recordStatus();
-		if( status && status.id ){
-			o2.UD.getDataJson(o2DM._HISTORY_DESIGNER_NAME, (items)=>{
-					var list = o2DM._sort(items || [], 'time', true).filter((item) => {
-					return item.id !== status.id;
-					});
-					const config = o2DM._findConfig(component.options.name);
-					list.unshift({
-						isHistory: true,
-						_appType: config?._appType,
-						_type: config?._type || 'designer',
-						componentName: component.options.name,
-						id: status.id,
-						status: status,
-						time: new Date().getTime(),
-						timeString: new Date().format('db')
-					});
-					(list.length > o2DM._HISTORY_DESIGNER_MAX_COUNT) && (list.length = o2DM._HISTORY_DESIGNER_MAX_COUNT);
-					o2.UD.putData(o2DM._HISTORY_DESIGNER_NAME, list);
-			});
-		}
-	},
 	searchDesigner: function (){
 		o2DM._openApp('FindDesigner');
+	},
+	addToHistory: function(component, title){
+		let status;
+		try{
+			status = component.recordStatus && component.recordStatus();
+		}catch(e){
+			setTimeout( ()=>{
+				this.addToHistory(component, title);
+			},500);
+			return;
+		}
+		if( status && status.id ){
+			o2.UD.getDataJson(o2DM._HISTORY_DESIGNER_NAME, (items)=>{
+				var list = o2DM._sort(items || [], 'time', true).filter((item) => {
+					return item.id !== status.id;
+				});
+				const config = o2DM._findConfig(component.options.name);
+				const obj = {
+					isHistory: true,
+					_appType: config?._appType,
+					_type: config?._type || 'designer',
+					componentName: component.options.name,
+					title: title || component.lp.title,
+					id: status.id,
+					status: status,
+					time: new Date().getTime(),
+					timeString: new Date().format('db')
+				};
+				console.log(obj);
+				list.unshift(obj);
+				(list.length > o2DM._HISTORY_DESIGNER_MAX_COUNT) && (list.length = o2DM._HISTORY_DESIGNER_MAX_COUNT);
+				o2.UD.putData(o2DM._HISTORY_DESIGNER_NAME, list);
+			});
+		}
 	},
 	openHistory: function (e){
 		if(this.historyMenu){
 			this.historyMenu.destroy();
 		}
 		o2.UD.getDataJson(o2DM._HISTORY_DESIGNER_NAME, (items) => {
-			const list = o2DM._sort(items || [], 'time', true).map((item) => {
-				return {
-					...item,
-					_pinyin: o2DM._toPY(item),
-					icon: o2DM._ooiconMap[item.componentName] || '',
-					name: o2DM._appNameMap[item.componentName] + ' ' + item.componentName,
-					label: o2DM._appNameMap[item.componentName] + ' ' + item.componentName
-				};
-			});
 			const menu = new $OOUI.Menu(e.target, {
 				area: this.content,
 				styles: { width: '8.75rem' },
-				items: list
+				items: o2DM._sort(items || [], 'time', true).map((item) => {
+					return {
+						...item,
+						_pinyin: o2DM._toPY(item),
+						icon: o2DM._ooiconMap[item.componentName] || '',
+						name: o2DM._appNameMap[item.componentName] + ' ' + item.componentName,
+						label: item.title || o2DM._appNameMap[item.componentName] + ' ' + item.componentName
+					};
+				})
 			});
 			menu.show();
 			menu.menu.addEventListener('command', (e)=>{
 				const d = e.detail;
-				o2DM._openApp(d.componentName, null, { id: d.id, application: {id: d.appid} });
+				o2DM._openApp(d.componentName, null, d.status || { id: d.id, application: {id: d.appid} });
 			});
 			this.historyMenu = menu;
 		});
+	},
+	locateToCurrent: function (e){
+		this.nav.locateToCurrent(e);
+	},
+	expandSelected: function (e){
+		this.nav.expandSelected(e);
+	},
+	collapseSelected: function (e){
+		this.nav.collapseSelected(e);
 	}
 });
 
@@ -400,13 +424,35 @@ o2DM.Nav = new Class({
 			var template = Array.clone(data.children);
 			Promise.resolve(this.getList( template, data.appid || data.id )).then((children)=>{
 				this.parseCategory();
+
 				data.children = children || [];
+
+				this._setToolEvents(data);
+
+				if(e.target.afterExpand){
+					e.target.afterExpand();
+				}
 			});
 		}
 	},
+	_setToolEvents: function (data){
+		data.children.map(child=>{
+			const itemEl = this.oonav.getItem(child.id).itemEl;
+			itemEl.addEventListener('mouseenter',(e)=>{
+				this.oonav.querySelectorAll(`div[slot="${child.id}-inner"]`).forEach(
+					slot=>slot.removeClass('hide')
+				);
+			});
+			itemEl.addEventListener('mouseleave',(e)=>{
+				this.oonav.querySelectorAll(`div[slot="${child.id}-inner"]`).forEach(
+					slot=>slot.addClass('hide')
+				);
+			});
+		});
+	},
 	_checkTools: function (data){
 		if(data._type === 'app' || data._type === 'designer'){
-			const node = new Element('div.slot.ooicon-point3',{
+			const node = new Element('div.slot.hide.ooicon-point3',{
 				slot: `${data.id}-inner`
 			}).inject(this.oonav);
 			node.addEventListener('click', (e)=>{
@@ -438,7 +484,7 @@ o2DM.Nav = new Class({
 	},
 	_checkCreate: function (data){
 		if(data.handleCreate){
-			new Element('div.slot.ooicon-create',{
+			new Element('div.slot.hide.ooicon-create',{
 				slot: `${data.id}-inner`,
 				events: {
 					click: (e)=>{
@@ -460,5 +506,106 @@ o2DM.Nav = new Class({
 		}else{
 			data.handleClick(data, data.appid || this.getAppid(data), this.getAppdata(data));
 		}
+	},
+	locateToCurrent: function (e){
+
+		const doLocate = (item)=>{
+			let parentItem = item.parentItem;
+			const parents = [];
+			while(parentItem){
+				parents.push(parentItem);
+				parentItem = parentItem.parentItem;
+			}
+			parents.reverse().forEach(item=>item.expand(false));
+			item.itemEl.scrollIntoView({
+				behavior: 'smooth', block: 'nearest', inline: 'nearest'
+			});
+		};
+
+		const app = o2DM.currentApp;
+		if( app ){
+			let item = this.oonav.getItem(app.options.id || app.options.name);
+			if(!item){
+				const configs = o2DM._findAllParentConfigs(app.options.name, false) || [];
+				const id = app.options.id;
+				const appid = app.application ? app.application.id : '';
+
+				const getKey = (config)=>{
+					switch (config._type){
+						case 'app-category':
+						case 'designer-category':
+							return config.componentName;
+						case 'app':
+							return id || appid;
+						case 'designer':
+							return id;
+					}
+				};
+
+				const doExpand = ()=>{
+					if( configs.length > 0 ){
+						const config = configs.pop();
+						this._expandItem(getKey(config), doExpand);
+					}else{
+						let item = this.oonav.getItem(app.options.id || app.options.name);
+						!!item && doLocate(item);
+					}
+				};
+
+				doExpand();
+			}else{
+				doLocate(item);
+			}
+		}
+	},
+	_expandItem: function (key, callback){
+		const item = this.oonav.getItem(key);
+		if(item){
+			item.afterExpand = ()=>{
+				callback();
+				item.afterExpand = null;
+			};
+			item.expand();
+		}
+	},
+	expandSelected: function (e){
+		const app = o2DM.currentApp;
+		if( app ){
+			let item = this.oonav.getItem(app.options.id || app.options.name);
+			if(!item){
+				const configs = o2DM._findAllParentConfigs(app.options.name) || [];
+				const id = app.options.id;
+				const appid = app.application ? app.application.id : '';
+				configs.reverse().forEach(config=>{
+					let key;
+					switch (config._type){
+						case 'app-category':
+						case 'designer-category':
+							key = config.componentName;
+							break;
+						case 'app':
+							key = id || appid;
+							break;
+						case 'designer':
+							key = id;
+							break;
+					}
+					if( this.oonav.getItem(key) ){
+						item.expand(false);
+					}
+				})
+			}else{
+				let parentItem = item.parentItem;
+				const parents = [];
+				while(parentItem){
+					parents.push(parentItem);
+					parentItem = parentItem.parentItem;
+				}
+				parents.reverse().forEach(item=>item.expand(false));
+			}
+		}
+	},
+	collapseSelected: function (e){
+
 	}
 });

@@ -105,6 +105,31 @@ o2DM._findConfig = (componentName, rootObj = o2DM._config)=>{
     return null;
 };
 
+o2DM._findAllParentConfigs = (componentName, includeSelf = false, rootObj = o2DM._config, parents = [])=>{
+    if (!rootObj) return null;
+
+    if (rootObj.componentName === componentName) {
+        let result = includeSelf ? [rootObj, ...parents] : [...parents];
+        if (result.length === 0) return null;
+        return result;
+    }
+
+    if (rootObj.children && Array.isArray(rootObj.children) && rootObj.children.length > 0) {
+        const newParents = rootObj.componentName
+      ? [rootObj, ...parents]
+      : [...parents];
+
+        for (const child of rootObj.children) {
+            const result = o2DM._findAllParentConfigs(componentName, includeSelf, child, newParents);
+            if (result) {
+                return result;
+            }
+        }
+    }
+
+    return null;
+};
+
 o2DM._copyTextToClipboard=(text)=>{
     try{
         navigator.clipboard.writeText(text);

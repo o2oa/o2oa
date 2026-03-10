@@ -18,8 +18,8 @@ header{
 }
 nav{
     grid-area: nav;
-    overflow: auto;
     background: #ffffff;
+    overflow: auto;
 }
 oo-nav .slot{
     padding: 0.5rem;
@@ -58,10 +58,18 @@ footer{
     margin: 0 0.25em;
     background: rgba(0, 0, 0, 0.25);
 }
-.o2-task-toolbar div{
+.o2-designer-nav-toolbar div, .o2-task-toolbar div{
     padding: 0.5em;
     cursor: pointer;
 }
-.o2-task-toolbar div:hover{
+.o2-designer-nav-toolbar div:hover, .o2-task-toolbar div:hover{
     color: var(--oo-color-main);
+}
+.o2-designer-nav-toolbar{
+    display: flex;
+    align-items: center;
+    font-size: 1.125em;
+    justify-content: flex-end;
+    padding-right: 0.5em;
+    border-bottom: 1px solid #e6e6e6;
 }
