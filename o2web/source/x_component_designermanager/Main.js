@@ -52,40 +52,40 @@ MWF.xApplication.designermanager.Main = new Class({
 			if( clazz.Main ){
 				var opt = options || {};
 				opt.embededParent = node;
-				var component = new clazz.Main(this.desktop, opt);
+				var app = new clazz.Main(this.desktop, opt);
 
 				let appId, id;
 				if(clazz.options.multitask){
 					appId = opt.appId || status?.appId;
 					id = opt.id || status?.id || status?.application || status?.column;
-					if( !appId && id && component.options.name ){
-						appId = `${component.options.name}${id}`;
+					if( !appId && id && app.options.name ){
+						appId = `${app.options.name}${id}`;
 					}else{
 						appId = path + "-" + new o2.widget.UUID();
 					}
 				}else{
-					appId = component.options.name || path;
+					appId = app.options.name || path;
 				}
-				component.appId = appId;
+				app.appId = appId;
 
-				console.log(component.appId, opt, status, component);
+				console.log(app.appId, opt, status, app);
 
-				if(o2DM.appMap[component.appId]){
-					o2DM.appMap[component.appId].dm_active();
+				if(o2DM.appMap[app.appId]){
+					o2DM.appMap[app.appId].dm_active();
 					return;
 				}
 
-				component.options.appId = component.appId;
+				app.options.appId = app.appId;
 
-				component.status = status;
+				app.status = status;
 
-				var tag = this.createTag(component, node);
+				var tag = this.createTag(app, node);
 
-				//this.fireEvent("queryLoadApplication", component);
-				component.load();
-				component.setEventTarget(this);
+				//this.fireEvent("queryLoadApplication", app);
+				app.load();
+				app.setEventTarget(this);
 				var _self = this;
-				// this.component.refresh = function () {
+				// this.app.refresh = function () {
 				//     if( layout.inBrowser ){
 				//         window.location.reload();
 				//     }else{
@@ -93,24 +93,24 @@ MWF.xApplication.designermanager.Main = new Class({
 				//     }
 				// };
 
-				component._tag = tag;
-				component._container = node;
+				app._tag = tag;
+				app._container = node;
 
-				component.setTitle =  (str)=> {
+				app.setTitle =  (str)=> {
 					// tag.setAttribute('text', str);
 					// tag._elements.text.textContent = str;
 					tag.innerHTML = str;
-					tag.setAttribute('title', str + ((component.appId) ? "-" + component.appId : ""));
-					component.options.title = str;
+					tag.setAttribute('title', str + ((app.appId) ? "-" + app.appId : ""));
+					app.options.title = str;
 					if(clazz.options.multitask){
-						this.addToHistory(component, str);
+						this.addToHistory(app, str);
 					}
 				};
 
-				component.dm_close = (ignore)=>{
-					if(!ignore && o2DM.currentApp === component){
+				app.dm_close = (ignore)=>{
+					if(!ignore && o2DM.currentApp === app){
 						o2DM.currentApp = null;
-						var index = o2DM.apps.indexOf(component);
+						var index = o2DM.apps.indexOf(app);
 						var lastApp = index > 0 ? o2DM.apps[index-1] : o2DM.apps[0];
 						if(lastApp){
 							lastApp.dm_active();
@@ -121,37 +121,37 @@ MWF.xApplication.designermanager.Main = new Class({
 							o2DM.currentApp = null;
 						}
 					}
-					o2DM.apps.erase(component);
-					delete o2DM.appMap[component.appId];
+					o2DM.apps.erase(app);
+					delete o2DM.appMap[app.appId];
 					tag.remove();
 					node.remove();
-					component.close();
+					app.close();
 				};
 
-				component.dm_hide = ()=>{
-					component._tag.setAttribute('type', 'default');
-					component._tag.oomenu?.hide();
-					component._container.hide();
+				app.dm_hide = ()=>{
+					app._tag.setAttribute('type', 'default');
+					app._tag.oomenu?.hide();
+					app._container.hide();
 				};
 
-				component.dm_active = ()=>{
-					if(o2DM.currentApp === component) return;
+				app.dm_active = ()=>{
+					if(o2DM.currentApp === app) return;
 					o2DM.currentApp?.dm_hide();
 					tag.setAttribute('type', 'current');
 					tag.oomenu?.hide();
 					node.show();
-					o2DM.currentApp = component;
+					o2DM.currentApp = app;
 					if(!clazz.options.multitask){
-						this.addToHistory( component );
+						this.addToHistory( app );
 					}
 				};
 
-				o2DM.appMap[component.appId] = component;
-				o2DM.apps.push(component);
+				o2DM.appMap[app.appId] = app;
+				o2DM.apps.push(app);
 
 				debugger;
 
-				component.dm_active();
+				app.dm_active();
 			}else{
 				console.log('应用未找到：'+path, 'error');
 			}
@@ -169,20 +169,20 @@ MWF.xApplication.designermanager.Main = new Class({
 			_load();
 		}
 	},
-	createTag: function (component){
+	createTag: function (app){
 		var tag = new Element('oo-tag', {
-			text: component.options.title,
+			text: app.options.title,
 			close: 'on',
 			menu: 'on',
 			type: 'current'
 		}).inject(this.taskBar);
-		tag.component = component;
+		tag.app = app;
 		tag.addEventListener("close", function (e) {
-			component.dm_close();
+			app.dm_close();
 			e.stopPropagation();
 		});
 		tag.addEventListener("click", function (e) {
-			component.dm_active();
+			app.dm_active();
 		});
 		tag.addEventListener("menu", function (e){
 			if(!tag.oomenu){
@@ -192,7 +192,7 @@ MWF.xApplication.designermanager.Main = new Class({
 					items: [{
 						label: '刷新', icon: 'reset',
 						command: ()=>{
-							component.refresh();
+							app.refresh();
 						}
 					},{
 						label: '全部关闭', icon: 'switch',
@@ -206,10 +206,10 @@ MWF.xApplication.designermanager.Main = new Class({
 						label: '关闭其他', icon: 'process-monitor',
 						command: ()=>{
 							while (o2DM.apps.length > 1){
-								var cmpt = o2DM.apps[0] === component ? o2DM.apps[1] : o2DM.apps[0];
+								var cmpt = o2DM.apps[0] === app ? o2DM.apps[1] : o2DM.apps[0];
 								cmpt.dm_close(true);
 							}
-							component.dm_active();
+							app.dm_active();
 						}
 					}]
 				});
@@ -221,13 +221,13 @@ MWF.xApplication.designermanager.Main = new Class({
 	searchDesigner: function (){
 		o2DM._openApp('FindDesigner');
 	},
-	addToHistory: function(component, title){
+	addToHistory: function(app, title){
 		let status;
 		try{
-			status = component.recordStatus && component.recordStatus();
+			status = app.recordStatus && app.recordStatus();
 		}catch(e){
 			setTimeout( ()=>{
-				this.addToHistory(component, title);
+				this.addToHistory(app, title);
 			},500);
 			return;
 		}
@@ -236,13 +236,13 @@ MWF.xApplication.designermanager.Main = new Class({
 				var list = o2DM._sort(items || [], 'time', true).filter((item) => {
 					return item.id !== status.id;
 				});
-				const config = o2DM._findConfig(component.options.name);
+				const config = o2DM._findConfig(app.options.name);
 				const obj = {
 					isHistory: true,
 					_appType: config?._appType,
 					_type: config?._type || 'designer',
-					componentName: component.options.name,
-					title: title || component.lp.title,
+					componentName: app.options.name,
+					title: title || app.lp.title,
 					id: status.id,
 					status: status,
 					time: new Date().getTime(),
@@ -362,7 +362,9 @@ o2DM.Nav = new Class({
 							child.selectable = 'yes';
 							child.id = `${child.componentName}`; break;
 						case 'designer-category':
-							child.id = `${child.componentName}.${appid}`;
+							child.id = appid === 'service.ServiceManager' ?
+								`${child.componentName}` :
+								`${child.componentName}.${appid}`;
 							break;
 					}
 				}
@@ -414,12 +416,12 @@ o2DM.Nav = new Class({
 	},
 	handleExpand: function (e, data){
 		if(!data._type || data.loaded){
+			if(this.afterExpand){
+				this.afterExpand();
+			}
 			return;
 		}
 		data.loaded = true;
-		// if( !this.checkCondition(e, data) ){
-		// 	return;
-		// }
 		if( data.children && data.children.length > 0 ){
 			var template = Array.clone(data.children);
 			Promise.resolve(this.getList( template, data.appid || data.id )).then((children)=>{
@@ -429,8 +431,8 @@ o2DM.Nav = new Class({
 
 				this._setToolEvents(data);
 
-				if(e.target.afterExpand){
-					e.target.afterExpand();
+				if(this.afterExpand){
+					this.afterExpand();
 				}
 			});
 		}
@@ -508,8 +510,59 @@ o2DM.Nav = new Class({
 		}
 	},
 	locateToCurrent: function (e){
+		const app = o2DM.currentApp;
+		if( app ){
+			this._expandToApp(app, ()=>{
+				let item = this.oonav.getItem(app.options.id || app.options.name);
+				if(item){
+					item.itemEl.scrollIntoView({
+						behavior: 'smooth', block: 'center', inline: 'center'
+					});
+					item.select();
+				}
+				this.afterExpand = null;
+			});
+		}
+	},
+	_expandToApp: function (app, callback){
+		const key = app.options.id || app.options.name;
+		let item = this.oonav.getItem(key);
+		if(!item){
+			debugger;
+			const configs = o2DM._findAllParentConfigs(app.options.name) || [];
+			const id = app.options.id;
+			const appid = app.application ? app.application.id : '';
 
-		const doLocate = (item)=>{
+			const getKey = (config)=>{
+				switch (config._type){
+					case 'app-category':
+						return config.componentName;
+					case 'designer-category':
+						return config.componentName.startsWith('service.') ?
+							`${config.componentName}` :
+							`${config.componentName}.${appid}`;
+					case 'app':
+						return appid || id;
+					case 'designer':
+						return id;
+				}
+			};
+
+			const doExpand = ()=>{
+				if( configs.length > 0 ){
+					const config = configs.shift();
+					const item = this.oonav.getItem(getKey(config));
+					if(item){
+						this.afterExpand = ()=>{
+							configs.length === 0 ? callback() : doExpand();
+						};
+						item.expand(false);
+					}
+				}
+			};
+
+			doExpand();
+		}else{
 			let parentItem = item.parentItem;
 			const parents = [];
 			while(parentItem){
@@ -517,93 +570,11 @@ o2DM.Nav = new Class({
 				parentItem = parentItem.parentItem;
 			}
 			parents.reverse().forEach(item=>item.expand(false));
-			item.itemEl.scrollIntoView({
-				behavior: 'smooth', block: 'nearest', inline: 'nearest'
-			});
-		};
-
-		const app = o2DM.currentApp;
-		if( app ){
-			let item = this.oonav.getItem(app.options.id || app.options.name);
-			if(!item){
-				const configs = o2DM._findAllParentConfigs(app.options.name, false) || [];
-				const id = app.options.id;
-				const appid = app.application ? app.application.id : '';
-
-				const getKey = (config)=>{
-					switch (config._type){
-						case 'app-category':
-						case 'designer-category':
-							return config.componentName;
-						case 'app':
-							return id || appid;
-						case 'designer':
-							return id;
-					}
-				};
-
-				const doExpand = ()=>{
-					if( configs.length > 0 ){
-						const config = configs.pop();
-						this._expandItem(getKey(config), doExpand);
-					}else{
-						let item = this.oonav.getItem(app.options.id || app.options.name);
-						!!item && doLocate(item);
-					}
-				};
-
-				doExpand();
-			}else{
-				doLocate(item);
-			}
-		}
-	},
-	_expandItem: function (key, callback){
-		const item = this.oonav.getItem(key);
-		if(item){
-			item.afterExpand = ()=>{
-				callback();
-				item.afterExpand = null;
-			};
-			item.expand();
+			callback();
 		}
 	},
 	expandSelected: function (e){
-		const app = o2DM.currentApp;
-		if( app ){
-			let item = this.oonav.getItem(app.options.id || app.options.name);
-			if(!item){
-				const configs = o2DM._findAllParentConfigs(app.options.name) || [];
-				const id = app.options.id;
-				const appid = app.application ? app.application.id : '';
-				configs.reverse().forEach(config=>{
-					let key;
-					switch (config._type){
-						case 'app-category':
-						case 'designer-category':
-							key = config.componentName;
-							break;
-						case 'app':
-							key = id || appid;
-							break;
-						case 'designer':
-							key = id;
-							break;
-					}
-					if( this.oonav.getItem(key) ){
-						item.expand(false);
-					}
-				})
-			}else{
-				let parentItem = item.parentItem;
-				const parents = [];
-				while(parentItem){
-					parents.push(parentItem);
-					parentItem = parentItem.parentItem;
-				}
-				parents.reverse().forEach(item=>item.expand(false));
-			}
-		}
+
 	},
 	collapseSelected: function (e){
 

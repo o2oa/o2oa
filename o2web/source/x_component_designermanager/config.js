@@ -105,13 +105,12 @@ o2DM._findConfig = (componentName, rootObj = o2DM._config)=>{
     return null;
 };
 
-o2DM._findAllParentConfigs = (componentName, includeSelf = false, rootObj = o2DM._config, parents = [])=>{
+o2DM._findAllParentConfigs = (componentName, rootObj = o2DM._config, parents = [])=>{
     if (!rootObj) return null;
 
     if (rootObj.componentName === componentName) {
-        let result = includeSelf ? [rootObj, ...parents] : [...parents];
-        if (result.length === 0) return null;
-        return result;
+        const result = [rootObj, ...parents];
+        return result.length > 0 ? result.reverse() : null;
     }
 
     if (rootObj.children && Array.isArray(rootObj.children) && rootObj.children.length > 0) {
@@ -120,7 +119,7 @@ o2DM._findAllParentConfigs = (componentName, includeSelf = false, rootObj = o2DM
       : [...parents];
 
         for (const child of rootObj.children) {
-            const result = o2DM._findAllParentConfigs(componentName, includeSelf, child, newParents);
+            const result = o2DM._findAllParentConfigs(componentName, child, newParents);
             if (result) {
                 return result;
             }
@@ -1036,7 +1035,7 @@ o2DM._config = {
             },
                 {
                     name: '接口配置',
-                    componentName: 'portal.InvokeDesigner',
+                    componentName: 'service.InvokeDesigner',
                     _type: 'designer-category',
                     label: '接口',
                     ooicon: 'jiekoupeizhi21',
