@@ -148,16 +148,20 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
             if (MWF.clipboard.data.type === "page") {
                 this._pasteModule();
             }else if(MWF.clipboard.data.type === "form"){
-                MWF.getJSON('../x_component_portal_PageDesigner/$Main/default/tools.json',
-                    {
-                        "onSuccess": function(responseJSON){
-                            const classNames = Object.values(responseJSON).map((obj)=>{
+                var classNames = [], jsons = [];
+                var callback =  (responseJSON)=>{
+                    jsons.push(responseJSON);
+                    if(jsons.length === 2){
+                        jsons.forEach(function(json){
+                             classNames.push(...Object.values(json).map((obj)=>{
                                 return obj.className;
-                            });
-                            this._pasteModule(classNames);
-                        }.bind(this)
+                            }));
+                        })
+                        this._pasteModule(classNames);
                     }
-                );
+                };
+                MWF.getJSON('../x_component_portal_PageDesigner/$Main/default/tools-o2oa.json', {"onSuccess": callback} );
+                MWF.getJSON('../x_component_portal_PageDesigner/$Main/default/tools.json', {"onSuccess": callback});
             }
         }
     },
