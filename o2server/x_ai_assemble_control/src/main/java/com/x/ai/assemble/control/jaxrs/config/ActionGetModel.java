@@ -10,6 +10,7 @@ import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionGetModel extends BaseAction {
 
@@ -25,6 +26,9 @@ class ActionGetModel extends BaseAction {
 				throw new ExceptionEntityNotExist(id, AiModel.class);
 			}
 			Wo wo = Wo.copier.copy(aiModel);
+			if(StringUtils.isNotBlank(wo.getApiKey())) {
+				wo.setApiKey("*****");
+			}
 			result.setData(wo);
 			return result;
 		}

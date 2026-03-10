@@ -48,7 +48,7 @@ class ActionListModelPaging extends BaseAction {
     public static class Wo extends AiModel {
 
         static WrapCopier<AiModel, Wo> copier = WrapCopierFactory.wo(AiModel.class, Wo.class, null,
-                ListTools.toList(JpaObject.FieldsInvisible, "createDateTime", "updateDateTime"));
+                ListTools.toList(JpaObject.FieldsInvisible, "createDateTime", "updateDateTime", AiModel.apiKey_FIELDNAME));
     }
 
 }
