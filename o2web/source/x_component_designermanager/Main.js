@@ -217,24 +217,54 @@ MWF.xApplication.designermanager.Main = new Class({
 		const status = component.recordStatus && component.recordStatus();
 		if( status && status.id ){
 			o2.UD.getDataJson(o2DM._HISTORY_DESIGNER_NAME, (items)=>{
-				var list = o2DM._sort(items || [], 'time', true).filter((item) => {
+					var list = o2DM._sort(items || [], 'time', true).filter((item) => {
 					return item.id !== status.id;
-				});
-				const config = o2DM._findConfig(component.options.name);
-				list.unshift({
-					isHistory: true,
-					_appType: config?._appType,
-					_type: config?._type || 'designer',
-					componentName: component.options.name,
-					id: status.id,
-					status: status,
-					time: new Date().getTime(),
-					timeString: new Date().format('db')
-				});
-				(list.length > o2DM._HISTORY_DESIGNER_MAX_COUNT) && (list.length = o2DM._HISTORY_DESIGNER_MAX_COUNT);
-				o2.UD.putData(o2DM._HISTORY_DESIGNER_NAME, list);
+					});
+					const config = o2DM._findConfig(component.options.name);
+					list.unshift({
+						isHistory: true,
+						_appType: config?._appType,
+						_type: config?._type || 'designer',
+						componentName: component.options.name,
+						id: status.id,
+						status: status,
+						time: new Date().getTime(),
+						timeString: new Date().format('db')
+					});
+					(list.length > o2DM._HISTORY_DESIGNER_MAX_COUNT) && (list.length = o2DM._HISTORY_DESIGNER_MAX_COUNT);
+					o2.UD.putData(o2DM._HISTORY_DESIGNER_NAME, list);
 			});
 		}
+	},
+	searchDesigner: function (){
+		o2DM._openApp('FindDesigner');
+	},
+	openHistory: function (e){
+		if(this.historyMenu){
+			this.historyMenu.destroy();
+		}
+		o2.UD.getDataJson(o2DM._HISTORY_DESIGNER_NAME, (items) => {
+			const list = o2DM._sort(items || [], 'time', true).map((item) => {
+				return {
+					...item,
+					_pinyin: o2DM._toPY(item),
+					icon: o2DM._ooiconMap[item.componentName] || '',
+					name: o2DM._appNameMap[item.componentName] + ' ' + item.componentName,
+					label: o2DM._appNameMap[item.componentName] + ' ' + item.componentName
+				};
+			});
+			const menu = new $OOUI.Menu(e.target, {
+				area: this.content,
+				styles: { width: '8.75rem' },
+				items: list
+			});
+			menu.show();
+			menu.menu.addEventListener('command', (e)=>{
+				const d = e.detail;
+				o2DM._openApp(d.componentName, null, { id: d.id, application: {id: d.appid} });
+			});
+			this.historyMenu = menu;
+		});
 	}
 });
 
