@@ -68,7 +68,10 @@ MWF.xApplication.Selector.Process = new Class({
     },
     _newItem: function(data, selector, container, level){
         return new MWF.xApplication.Selector.Process.Item(data, selector, container, level);
-    }
+    },
+    _newItemSearch: function(data, selector, container, level){
+        return new MWF.xApplication.Selector.Process.SearchItem(data, selector, container, level);
+    },
 });
 MWF.xApplication.Selector.Process.Item = new Class({
 	Extends: MWF.xApplication.Selector.Person.Item,
@@ -115,9 +118,22 @@ MWF.xApplication.Selector.Process.Item = new Class({
             //selectedItem[0].item = this;
             selectedItem[0].addItem(this);
             this.selectedItem = selectedItem[0];
+            this.selectedItem._setText(this);
             this.setSelected();
         }
     }
+});
+
+MWF.xApplication.Selector.Process.SearchItem = new Class({
+    Extends: MWF.xApplication.Selector.Process.Item,
+    _getShowName: function(){
+        return this.data.name+((this.data.applicationName) ? "("+this.data.applicationName+")" : "");
+    },
+    _getTtiteText: function(){
+        return `${MWF.xApplication.Selector.LP.application}:${this.data.applicationName}
+${MWF.xApplication.Selector.LP.name}:${this.data.name}
+${MWF.xApplication.Selector.LP.alias}:${this.data.alias}`;
+    },
 });
 
 MWF.xApplication.Selector.Process.ItemSelected = new Class({
@@ -127,6 +143,9 @@ MWF.xApplication.Selector.Process.ItemSelected = new Class({
     },
     _setIcon: function(){
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/processicon.png)");
+    },
+    _setText: function(item){
+        this.textNode.set("text", item.data.name+((item.data.applicationName) ? "("+item.data.applicationName+")" : ""));
     },
     check: function(){
         if (this.selector.items.length){
@@ -139,6 +158,7 @@ MWF.xApplication.Selector.Process.ItemSelected = new Class({
             }.bind(this));
             this.items = items;
             if (items.length){
+                this._setText(items[0]);
                 items.each(function(item){
                     item.selectedItem = this;
                     item.setSelected();

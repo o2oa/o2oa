@@ -142,7 +142,10 @@ MWF.xApplication.Selector.Script = new Class({
     },
     _newItem: function(data, selector, container, level){
         return new MWF.xApplication.Selector.Script.Item(data, selector, container, level);
-    }
+    },
+    _newItemSearch: function(data, selector, container, level){
+        return new MWF.xApplication.Selector.Script.SearchItem(data, selector, container, level);
+    },
 });
 MWF.xApplication.Selector.Script.Item = new Class({
     Extends: MWF.xApplication.Selector.Person.Item,
@@ -183,9 +186,23 @@ MWF.xApplication.Selector.Script.Item = new Class({
             //selectedItem[0].item = this;
             selectedItem[0].addItem(this);
             this.selectedItem = selectedItem[0];
+            this.selectedItem._setText(this);
             this.setSelected();
         }
     }
+});
+
+MWF.xApplication.Selector.Script.SearchItem = new Class({
+    Extends: MWF.xApplication.Selector.Script.Item,
+    _getShowName: function(){
+        var surfix = [this.data.appName, this.data.alias].filter(n=>!!n).join('/');
+        return this.data.name+((surfix) ? "("+surfix+")" : "");
+    },
+    _getTtiteText: function(){
+        return `${MWF.xApplication.Selector.LP.application}:${this.data.appName}
+${MWF.xApplication.Selector.LP.name}:${this.data.name}
+${MWF.xApplication.Selector.LP.alias}:${this.data.alias||''}`;
+    },
 });
 
 MWF.xApplication.Selector.Script.ItemSelected = new Class({
@@ -195,6 +212,10 @@ MWF.xApplication.Selector.Script.ItemSelected = new Class({
     },
     _setIcon: function(){
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/attr.png)");
+    },
+    _setText: function (item){
+        var surfix = [item.data.appName, this.data.alias].filter(n=>!!n).join('/');
+        this.textNode.set('text', this.data.name+((surfix) ? "("+surfix+")" : ""));
     },
     check: function(){
         if (this.selector.items.length){
@@ -206,6 +227,7 @@ MWF.xApplication.Selector.Script.ItemSelected = new Class({
             }.bind(this));
             this.items = items;
             if (items.length){
+                this._setText(items[0]);
                 items.each(function(item){
                     item.selectedItem = this;
                     item.setSelected();

@@ -66,8 +66,12 @@ MWF.xApplication.Selector.QueryImportModel = new Class({
     },
     _newItem: function(data, selector, container, level){
         return new MWF.xApplication.Selector.QueryImportModel.Item(data, selector, container, level);
-    }
+    },
+    _newItemSearch: function(data, selector, container, level){
+        return new MWF.xApplication.Selector.QueryImportModel.SearchItem(data, selector, container, level);
+    },
 });
+
 MWF.xApplication.Selector.QueryImportModel.Item = new Class({
     Extends: MWF.xApplication.Selector.Person.Item,
     _getShowName: function(){
@@ -111,9 +115,22 @@ MWF.xApplication.Selector.QueryImportModel.Item = new Class({
             //selectedItem[0].item = this;
             selectedItem[0].addItem(this);
             this.selectedItem = selectedItem[0];
+            this.selectedItem._setText(this);
             this.setSelected();
         }
     }
+});
+
+MWF.xApplication.Selector.QueryImportModel.SearchItem = new Class({
+    Extends: MWF.xApplication.Selector.QueryImportModel.Item,
+    _getShowName: function(){
+        return this.data.name+((this.data.applicationName) ? "("+this.data.applicationName+")" : "");
+    },
+    _getTtiteText: function(){
+        return `${MWF.xApplication.Selector.LP.application}:${this.data.applicationName}
+${MWF.xApplication.Selector.LP.name}:${this.data.name}
+${MWF.xApplication.Selector.LP.alias}:${this.data.alias}`;
+    },
 });
 
 MWF.xApplication.Selector.QueryImportModel.ItemSelected = new Class({
@@ -123,6 +140,9 @@ MWF.xApplication.Selector.QueryImportModel.ItemSelected = new Class({
     },
     _setIcon: function(){
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/view.png)");
+    },
+    _setText: function (item){
+        this.textNode.set('text', this.data.name+((item.data.applicationName) ? "("+item.data.applicationName+")" : ""));
     },
     check: function(){
         if (this.selector.items.length){
@@ -136,6 +156,7 @@ MWF.xApplication.Selector.QueryImportModel.ItemSelected = new Class({
             }.bind(this));
             this.items = items;
             if (items.length){
+                this._setText(items[0]);
                 items.each(function(item){
                     item.selectedItem = this;
                     item.setSelected();
