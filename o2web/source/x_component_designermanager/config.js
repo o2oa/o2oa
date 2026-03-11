@@ -264,7 +264,7 @@ o2DM._config = {
                 children: [
                     {
                         name: '页面配置',
-                        componentName: 'portal.PageManager',
+                        componentName: 'portal.PageDesigner',
                         _type: 'designer-category',
                         ooicon: 'pagepeizhi',
                         handleClick: (item, appid) => {

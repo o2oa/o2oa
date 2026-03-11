@@ -20,6 +20,7 @@ MWF.xApplication.designermanager.Main = new Class({
 		this.lp = MWF.xApplication.designermanager.LP;
 	},
 	loadApplication: function(callback){
+		if(!this.desktop.appCurrentList)this.desktop.appCurrentList = [];
 		o2DM._openApp = this.openApp.bind(this);
 		layout.openApplication = (e, appNames, options, statusObj)=>{
 			o2DM._openApp(appNames, options, statusObj);
@@ -72,6 +73,7 @@ MWF.xApplication.designermanager.Main = new Class({
 
 				if(o2DM.appMap[app.appId]){
 					o2DM.appMap[app.appId].dm_active();
+					node.destroy();
 					return;
 				}
 
@@ -79,19 +81,17 @@ MWF.xApplication.designermanager.Main = new Class({
 
 				app.status = status;
 
+				app.desktop = this.desktop;
+
 				var tag = this.createTag(app, node);
 
 				//this.fireEvent("queryLoadApplication", app);
 				app.load();
 				app.setEventTarget(this);
 				var _self = this;
-				// this.app.refresh = function () {
-				//     if( layout.inBrowser ){
-				//         window.location.reload();
-				//     }else{
-				//         _self.form.app.refresh();
-				//     }
-				// };
+				app.refresh = function () {
+
+				};
 
 				app._tag = tag;
 				app._container = node;
@@ -108,23 +108,28 @@ MWF.xApplication.designermanager.Main = new Class({
 				};
 
 				app.dm_close = (ignore)=>{
+					debugger;
 					if(!ignore && o2DM.currentApp === app){
 						o2DM.currentApp = null;
 						var index = o2DM.apps.indexOf(app);
-						var lastApp = index > 0 ? o2DM.apps[index-1] : o2DM.apps[0];
+						let lastApp;
+						if( index === 0 ){
+							lastApp = o2DM.apps[index+1];
+						}else if(index > 0){
+							lastApp = o2DM.apps[index-1];
+						}else if(index === -1){
+							if(o2DM.apps.length > 0){
+								lastApp = o2DM.apps[0];
+							}
+						}
 						if(lastApp){
 							lastApp.dm_active();
-							// lastApp._tag.setAttribute('type', 'current');
-							// lastApp._container.show();
-							// o2DM.currentApp = lastApp;
-						}else{
-							o2DM.currentApp = null;
 						}
 					}
 					o2DM.apps.erase(app);
 					delete o2DM.appMap[app.appId];
-					tag.remove();
-					node.remove();
+					app._tag.remove();
+					app._container.destroy();
 					app.close();
 				};
 
@@ -132,6 +137,7 @@ MWF.xApplication.designermanager.Main = new Class({
 					app._tag.setAttribute('type', 'default');
 					app._tag.oomenu?.hide();
 					app._container.hide();
+					app.setUncurrent();
 				};
 
 				app.dm_active = ()=>{
@@ -140,6 +146,7 @@ MWF.xApplication.designermanager.Main = new Class({
 					tag.setAttribute('type', 'current');
 					tag.oomenu?.hide();
 					node.show();
+					app.setCurrent();
 					o2DM.currentApp = app;
 					if(!clazz.options.multitask){
 						this.addToHistory( app );
@@ -148,8 +155,6 @@ MWF.xApplication.designermanager.Main = new Class({
 
 				o2DM.appMap[app.appId] = app;
 				o2DM.apps.push(app);
-
-				debugger;
 
 				app.dm_active();
 			}else{
@@ -516,7 +521,7 @@ o2DM.Nav = new Class({
 				let item = this.oonav.getItem(app.options.id || app.options.name);
 				if(item){
 					item.itemEl.scrollIntoView({
-						behavior: 'smooth', block: 'center', inline: 'center'
+						behavior: 'smooth', block: 'end', inline: 'end'
 					});
 					item.select();
 				}

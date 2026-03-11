@@ -1,0 +1,57 @@
+.content{
+    height: 100%;
+}
+.box{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.navContent{
+    height: calc(100% - 3em);
+    padding: 0;
+}
+.children{
+    overflow: hidden;
+}
+.children.show{
+  overflow: visible;
+}
+.children.expanding{
+    overflow: hidden !important;
+    /*display: none !important;*/
+    /*visibility: hidden !important;*/
+}
+.children.collapsing{
+    overflow: hidden !important;
+    /*display: none !important;*/
+    /*visibility: hidden !important;*/
+}
+.item{
+    background: #fff;
+}
+.children.expanding .item{
+    position: static !important;
+    /*display: none !important;*/
+}
+.children.collapsing .item{
+    position: static !important;
+    /*display: none;*/
+}
+.level1{
+    position: sticky;
+    background: #fff;
+    top: 0;
+    z-index: 3;
+}
+.level2{
+    position: sticky;
+    background: #fff;
+    top: 2.678125em;
+    z-index: 2;
+}
+.level3{
+    position: sticky;
+    background: #fff;
+    top: 5.178125em;
+    z-index: 1;
+}
