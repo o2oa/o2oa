@@ -83,3 +83,20 @@ footer{
     padding-right: 0.5em;
     border-bottom: 1px solid #e6e6e6;
 }
+.o2-designer-refresh-node {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: #666666;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    z-index: 300000;
+    top: -40px;
+    opacity: 0;
+    box-shadow: 3PX 3PX 10px #999999;
+}
+.icon-refresh{
+    background-image: url(../o2_core/o2/xDesktop/$Default/red/icons/icon_shuaxin.png) !important;
+}

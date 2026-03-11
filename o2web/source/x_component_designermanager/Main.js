@@ -35,12 +35,11 @@ MWF.xApplication.designermanager.Main = new Class({
 		this.nav = new o2DM.Nav(this);
 		this.nav.load();
 	},
-	openApp: function(path, options, status, callback){
-		this._openApp(path, options, status, callback);
+	openApp: function(path, options, status, callback, param){
+		this._openApp(path, options, status, callback, param);
 	},
-	_openApp: function(path, options, status, callback){
+	_openApp: function(path, options, status, callback, param){
 		debugger;
-		var node = new Element('div.app-content').inject(this.applicationNode);
 		var clazz = MWF.xApplication;
 		if( o2.typeOf(path) !== "string" )return;
 		path.split(".").each(function (a) {
@@ -49,33 +48,43 @@ MWF.xApplication.designermanager.Main = new Class({
 		});
 		clazz.options = clazz.options || {};
 
+		var _getAppid = ()=>{
+			var opt = options || {};
+			var sta = status || {};
+			let appId, id;
+			if(clazz.options.multitask){
+				id = opt.id || sta.id || sta.application || sta.column;
+				if(opt.appId || sta.appId){
+					appId = opt.appId || sta.appId;
+				}else if( id && path ){
+					appId = `${path}${id}`;
+				}else{
+					appId = path + "-" + new o2.widget.UUID();
+				}
+			}else{
+				appId = path;
+			}
+			return appId;
+		};
+
 		var _load = function () {
 			if( clazz.Main ){
+				var appId = _getAppid();
+
+				if(o2DM.appMap[appId]){
+					o2DM.appMap[appId].dm_active();
+					return;
+				}
+
+				var node = new Element('div.app-content').inject(this.applicationNode);
+
 				var opt = options || {};
 				opt.embededParent = node;
 				var app = new clazz.Main(this.desktop, opt);
 
-				let appId, id;
-				if(clazz.options.multitask){
-					appId = opt.appId || status?.appId;
-					id = opt.id || status?.id || status?.application || status?.column;
-					if( !appId && id && app.options.name ){
-						appId = `${app.options.name}${id}`;
-					}else{
-						appId = path + "-" + new o2.widget.UUID();
-					}
-				}else{
-					appId = app.options.name || path;
-				}
 				app.appId = appId;
 
 				console.log(app.appId, opt, status, app);
-
-				if(o2DM.appMap[app.appId]){
-					o2DM.appMap[app.appId].dm_active();
-					node.destroy();
-					return;
-				}
 
 				app.options.appId = app.appId;
 
@@ -83,14 +92,34 @@ MWF.xApplication.designermanager.Main = new Class({
 
 				app.desktop = this.desktop;
 
-				var tag = this.createTag(app, node);
+				var tag = param?.tag ? param.tag : this.createTag(app);
+				this.bindAppToTag(tag, app);
 
 				//this.fireEvent("queryLoadApplication", app);
 				app.load();
 				app.setEventTarget(this);
-				var _self = this;
-				app.refresh = function () {
-
+				app.refresh = ()=> {
+					if(o2DM.currentApp === app){
+						o2DM.currentApp = null;
+					}
+					if(this.desktop.currentApp === app){
+						this.desktop.currentApp = null;
+					}
+					var tag = this.createTag(app).inject(app._tag, 'before');
+					var appStatus ={
+						"id": app.options.id,
+						"name": app.options.name,
+						"style": app.options.style,
+						"appId": app.appId
+					};
+					var status = (app.recordStatus) ? app.recordStatus() : null;
+					var index = o2DM.apps.indexOf(app);
+					app.dm_close(true);
+					this.openApp(appStatus.name, appStatus, status, null, {
+						isRefresh: true,
+						index: index,
+						tag: tag
+					});
 				};
 
 				app._tag = tag;
@@ -108,22 +137,26 @@ MWF.xApplication.designermanager.Main = new Class({
 				};
 
 				app.dm_close = (ignore)=>{
-					debugger;
-					if(!ignore && o2DM.currentApp === app){
+					if(this.desktop.currentApp === app){
+						this.desktop.currentApp = null;
+					}
+					if(o2DM.currentApp === app){
 						o2DM.currentApp = null;
-						var index = o2DM.apps.indexOf(app);
-						let lastApp;
-						if( index === 0 ){
-							lastApp = o2DM.apps[index+1];
-						}else if(index > 0){
-							lastApp = o2DM.apps[index-1];
-						}else if(index === -1){
-							if(o2DM.apps.length > 0){
-								lastApp = o2DM.apps[0];
+						if(!ignore ){
+							var index = o2DM.apps.indexOf(app);
+							let lastApp;
+							if( index === 0 ){
+								lastApp = o2DM.apps[index+1];
+							}else if(index > 0){
+								lastApp = o2DM.apps[index-1];
+							}else if(index === -1){
+								if(o2DM.apps.length > 0){
+									lastApp = o2DM.apps[0];
+								}
 							}
-						}
-						if(lastApp){
-							lastApp.dm_active();
+							if(lastApp){
+								lastApp.dm_active();
+							}
 						}
 					}
 					o2DM.apps.erase(app);
@@ -154,7 +187,9 @@ MWF.xApplication.designermanager.Main = new Class({
 				};
 
 				o2DM.appMap[app.appId] = app;
-				o2DM.apps.push(app);
+				param?.index > -1 ?
+					(o2DM.apps[param.index] = app) :
+					o2DM.apps.push(app);
 
 				app.dm_active();
 			}else{
@@ -175,12 +210,14 @@ MWF.xApplication.designermanager.Main = new Class({
 		}
 	},
 	createTag: function (app){
-		var tag = new Element('oo-tag', {
+		return new Element('oo-tag', {
 			text: app.options.title,
 			close: 'on',
 			menu: 'on',
 			type: 'current'
-		}).inject(this.taskBar);
+		}).inject(this.taskbar);
+	},
+	bindAppToTag: function (tag, app){
 		tag.app = app;
 		tag.addEventListener("close", function (e) {
 			app.dm_close();
@@ -205,7 +242,7 @@ MWF.xApplication.designermanager.Main = new Class({
 							while (o2DM.apps.length){
 								o2DM.apps[0].dm_close(true);
 							}
-							o2DM.currentApp = null;
+							//o2DM.currentApp = null;
 						}
 					},{
 						label: '关闭其他', icon: 'process-monitor',
@@ -214,6 +251,7 @@ MWF.xApplication.designermanager.Main = new Class({
 								var cmpt = o2DM.apps[0] === app ? o2DM.apps[1] : o2DM.apps[0];
 								cmpt.dm_close(true);
 							}
+							//o2DM.currentApp = null;
 							app.dm_active();
 						}
 					}]
@@ -221,7 +259,6 @@ MWF.xApplication.designermanager.Main = new Class({
 				tag.oomenu.show();
 			}
 		});
-		return tag;
 	},
 	searchDesigner: function (){
 		o2DM._openApp('FindDesigner');
@@ -294,6 +331,65 @@ MWF.xApplication.designermanager.Main = new Class({
 	},
 	collapseSelected: function (e){
 		this.nav.collapseSelected(e);
+	},
+	createRefreshNode: function(){
+		this.refreshNode = new Element("div.o2-designer-refresh-node.icon-refresh").inject(this.content);
+		this.refreshNode.set("morph", {
+			"duration": 100,
+			"transition": Fx.Transitions.Quart.easeOut
+		});
+		this.refreshNode.addEvent("click", function(){
+			if (o2DM.currentApp) o2DM.currentApp.refresh();
+			this.hideRefresh();
+		}.bind(this));
+	},
+	showRefresh: function(){
+		debugger;
+		if (!this.refreshNodeShow){
+			if (!this.refreshNode) this.createRefreshNode();
+			var size = this.taskbar.getSize();
+			var nodeSize = this.refreshNode.getSize();
+			var top = size.y;
+			var left = size.x/2-nodeSize.x/2;
+			this.refreshNode.setStyles({
+				"left": left,
+				"top": 0-nodeSize.y,
+				"opacity": 0
+			});
+
+			this.refreshNode.morph({
+				"top": top,
+				"left": left,
+				"opacity": 0.9
+			});
+			this.refreshNodeShow = true;
+
+			this.refreshTimeoutId = window.setTimeout(function(){
+				this.hideRefresh();
+			}.bind(this), 2000);
+		}
+	},
+	hideRefresh: function(){
+		if (this.refreshNodeShow){
+			if (this.refreshNode){
+				var size = this.taskbar.getSize();
+				var nodeSize = this.refreshNode.getSize();
+				var top = size.y;
+				var left = size.x/2-nodeSize.x/2;
+				this.refreshNode.morph({
+					"top": 0-nodeSize.y,
+					"left": left,
+					"opacity": 0
+				});
+				window.setTimeout(function(){
+					this.refreshNodeShow = false;
+				}.bind(this), 100);
+			}
+		}
+		if (this.refreshTimeoutId){
+			window.clearTimeout(this.refreshTimeoutId);
+			this.refreshTimeoutId = "";
+		}
 	}
 });
 
