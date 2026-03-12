@@ -860,3 +860,678 @@ o2DM.TaskItem = new Class({
 	}
 
 });
+
+
+/********
+ {
+ "icon": "workcenter",     //图标
+ "name": "home",           //唯一名称
+ "selected": true,         //默认选中
+ "expanded": true,         //默认展开
+ "text": "公文首页",       //显示文本
+ "title": "公文首页",      //html的title文本
+ "disabled": false,        //是否禁用
+
+ "type": "app",            //app, portal, widget, script, none
+ "app": "",                 //打开应用名称
+ "appOptions": "",          //应用参数
+
+ "portal": "",                 //打开门户名称
+ "portalOptions": "",          //门户参数
+
+ "widget": "",                 //打开部件名称
+ "widgetOptions": "",          //部件参数
+
+ "hide": false,                //是否隐藏
+
+ "allow": []                   //允许访问列表
+ "reject": []                  //拒绝访问列表
+ }
+
+ ************/
+const { type, application, name } = this.page.getWidgetPrameters();
+const naviDict = new this.Dict({ type, application, name: name || 'appNavi' });
+const node = this.target.node;
+const createNaviButton = this.form.get('createNaviButton').node;
+
+const html = `
+    <div class="config-navi-item" style="display: contents">
+        <div data-o2-events="click:editNavi" style="cursor: pointer; padding-left: {{$.level*2+1}}rem; gap: 0.5rem"><div class="ooicon-{{$.icon}}"></div><div>{{$.text}}</div></div>
+        <div data-o2-events="click:editNavi">{{$.name}}</div>
+        <div style="cursor: pointer;">{{(function(){ switch ($.actionType) { case 'app': return '打开应用'; case 'portal': return '打开门户'; case 'widget': return '打开部件'; case 'view': return '打开视图'; case 'statement': return '打开查询视图'; case 'none': return '无操作'; default: return '执行脚本';} })()}}</div>
+        <div>{{(function(){ switch ($.actionType) { case 'app': return $.app; case 'portal': return $.portal;case 'view': return $.view.includes('@') ? $.view.split('@')[0] : $.view ; case 'statement': return $.statement.includes('@') ? $.statement.split('@')[0] : $.statement ; case 'widget': return $.widget.indexOf('@')!==-1 ? $.widget.split('@')[0] : $.widget; case 'none': return ''; default: return $.script || ''; } })()}}</div>
+        <div style="color: var(--oo-color-error)" class="{{$.hide ? 'ooicon-process-cancel' : ''}}"></div>
+        <div style='gap: 0.5rem; justify-content: space-around; padding-left: {{$.level*2+1}}rem'>
+            <div>
+                <oo-button data-o2-events="click:createNavi" class="config-navi-item-create" left-icon="create" title="添加下级导航" type="icon-light"></oo-button>
+                <oo-button data-o2-events="click:deleteNavi" class="config-navi-item-delete" left-icon="delete" title="删除当前导航" type="icon-light"></oo-button>
+            </div>
+            <div>
+                <oo-button data-o2-events="click:itemMoveUp;o2load:checkMoveUp" style="visibility: hidden" class="config-navi-item-up" left-icon="a-moveup" title="导航上移" type="icon-light"></oo-button>
+                <oo-button data-o2-events="click:itemMoveDown;o2load:checkMoveDown" style="visibility: hidden" class="config-navi-item-down" left-icon="a-movedown" title="导航下移" type="icon-light"></oo-button>
+            </div>
+        </div>
+        <div class="config-navi-item-children" style="display: contents"></div>
+    </div>
+`
+
+const getNewTitle = (data) => {
+	let title = '新建导航';
+	if (data) {
+		let n = 1;
+		let idx = data.findIndex(d => title === d.title);
+		while (idx !== -1) {
+			title = title + n;
+			n++;
+			idx = data.findIndex(d => title === d.title);
+		}
+	}
+	return title;
+}
+const checkUpDownAction = (node, data, p) => {
+	const i = p.findIndex((d) => {
+		return data.title === d.title;
+	});
+
+	node.querySelector('.config-navi-item-up').setStyle('visibility', ((i !== -1 && i > 0) ? 'visible' : 'hidden'));
+	node.querySelector('.config-navi-item-down').setStyle('visibility', ((i !== -1 && i < p.length - 1) ? 'visible' : 'hidden'));
+}
+
+const _self = this;
+
+const getItemModule = (item, pdata) => {
+	return {
+		naviEditHtml: `
+        <div class="config-navi-item-editor">
+            <div class="config-navi-item-editor-title">基本配置</div>
+            <div class="config-navi-item-editor-fields">
+                <oo-input required="true" validity-blur="true" class="config-navi-item-name" label='唯一标识' placeholder='输入导航菜单唯一标识' value={{$.name}}></oo-input>
+                <oo-input required="true" validity-blur="true" class="config-navi-item-text" label='显示文本' placeholder='输入导航菜单显示文本' value={{$.text}}></oo-input>
+                <oo-input class="config-navi-item-title" label='导航标题' placeholder='输入导航菜单标题' value={{$.title}}></oo-input>
+                <oo-input class="config-navi-item-icon" autocomplete="off" label='导航图标' value={{$.icon}} left-icon="{{$.icon}}" onchange="this.setAttribute('left-icon', this.value)"></oo-input>
+                <oo-switch class="config-navi-item-selected" label='默认选中' value="{{$.selected}}" true-text="是" false-text="否"></oo-switch>
+                <oo-switch class="config-navi-item-expanded" label='默认展开' value="{{$.expanded}}" true-text="是" false-text="否"></oo-switch>
+                <oo-switch class="config-navi-item-selectable" label='允许选中' value="{{$.selectable !== false}}" true-text="是" false-text="否"></oo-switch>
+                <oo-radio-group label='导航操作' value="{{$.actionType}}" style="flex:100%">
+                    <oo-radio value='app' text="打开应用"></oo-radio>
+                    <oo-radio value='portal' text="打开门户"></oo-radio>
+                    <oo-radio value='view' text="打开视图"></oo-radio>
+                    <oo-radio value='statement' text="打开查询视图"></oo-radio>
+                    <oo-radio value='widget' text="打开部件"></oo-radio>
+                    <oo-radio value='script' text="执行脚本"></oo-radio>
+                    <oo-radio value='none' text="无操作"></oo-radio>
+                </oo-radio-group>
+                <div class="config-navi-item-app" style="display: {{$.actionType==='app' ? 'contents' : 'none'}};">
+                    <oo-select allow-input="true" label="应用" value="{{$.app}}" style="flex:100%"></oo-select>
+                    <oo-input validity-blur="true" label="参数" value="{{$.appOptions ? JSON.stringify($.appOptions) : ''}}" style="flex:100%"></oo-input>
+                </div>
+                <div class="config-navi-item-portal" style="display: {{$.actionType==='portal' ? 'contents' : 'none'}}">
+                    <oo-selector class="config-navi-item-portal-sel" label="门户" value="{{$.portal}}" style="flex:100%"></oo-selector>
+                    <oo-input validity-blur="true" label="参数" value="{{$.portalOptions ? JSON.stringify($.portalOptions) : ''}}" style="flex:100%"></oo-input>
+                </div>
+                <div class="config-navi-item-view" style="display: {{$.actionType==='view' ? 'contents' : 'none'}}">
+                    <oo-selector class="config-navi-item-view-obj" class="config-navi-item-portal-sel" label="视图" value="{{$.view}}" style="flex:100%"></oo-selector>
+                    <oo-input validity-blur="true" label="参数" value="{{$.viewOptions ? JSON.stringify($.viewOptions) : ''}}" style="flex:100%"></oo-input>
+                </div>
+                <div class="config-navi-item-statement" style="display: {{$.actionType==='statement' ? 'contents' : 'none'}}">
+                    <oo-selector class="config-navi-item-statement-obj" class="config-navi-item-portal-sel" label="查询" value="{{$.statement}}" style="flex:100%"></oo-selector>
+                    <oo-input validity-blur="true" label="参数" value="{{$.statementOptions ? JSON.stringify($.statementOptions) : ''}}" style="flex:100%"></oo-input>
+                </div>
+                <div class="config-navi-item-widget" style="display: {{$.actionType==='widget' ? 'contents' : 'none'}}">
+                    <oo-selector class="config-navi-item-widget-obj" label="部件" value="{{$.widget}}" style="flex:100%"></oo-selector>
+                    <oo-input validity-blur="true" label="参数" value="{{$.widgetOptions ? JSON.stringify($.widgetOptions) : ''}}" style="flex:100%"></oo-input>
+                </div>
+
+                <div class="config-navi-item-script" style="display: {{($.actionType!=='app' && $.actionType!=='portal' && $.actionType!=='view' && $.actionType!=='statement' && $.actionType!=='widget' && $.actionType!=='none') ? 'block' : 'none'}}; overflow: hidden; flex:100%; height: 14em;">
+                    <div class="config--navi-item-codeEditor"></div>
+                </div>
+            </div>
+            
+
+            <div class="config-navi-item-editor-title">权限配置</div>
+
+            <div class="config-navi-item-editor-fields">
+                <oo-switch class="config-navi-item-disabled" label='禁用导航' value="{{$.disabled}}" true-text="是" false-text="否"></oo-switch>
+                <oo-switch class="config-navi-item-hide" label='隐藏导航' value="{{$.hide}}" true-text="是" false-text="否"></oo-switch>
+                <oo-selector class="config-navi-item-allow" label="允许访问" value="{{$.allow}}" style="flex:100%"></oo-selector>
+                <oo-selector class="config-navi-item-reject" label="禁止访问" value="{{$.reject}}" style="flex:100%"></oo-selector>
+                <oo-checkbox-group class="config-navi-item-disabled-group" label='导航禁用' value="{{$.disabledGroup}}">
+                    <oo-checkbox text="移动端禁用" value="mobile"></oo-checkbox>
+                    <oo-checkbox text="PC端禁用" value="pc"></oo-checkbox>
+                </oo-checkbox-group>
+            </div>
+
+        </div>
+        `,
+		createNavi(e) {
+			const newData = {
+				text: getNewTitle(item.children),
+				icon: 'menu',
+				actionType: 'none',
+				level: item.level + 1
+			}
+			if (!item.children) item.children = [];
+
+			const itemNode = e.target.closest('.config-navi-item');
+			const childrenNode = itemNode.querySelector('.config-navi-item-children');
+			const otherItemNode = (item.children.length) ? childrenNode.lastElementChild : null;
+			const otherData = (item.children.length) ? item.children.at(-1) : null;
+
+			item.children.push(newData);
+
+			const module = getItemModule(newData, item.children);
+			childrenNode.loadHtmlText(html, { bind: newData, module });
+
+			naviDict.set('appNavis', _self.naviData);
+
+			const newItemNode = childrenNode.lastElementChild;
+			newItemNode.addClass('config-navi-item-created')
+			newItemNode.firstElementChild.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			window.setTimeout(() => {
+				try {
+					newItemNode?.removeClass('config-navi-item-created')
+				} catch (e) { }
+			}, 5000);
+
+			if (otherItemNode) checkUpDownAction(otherItemNode, otherData, item.children);
+		},
+		deleteNavi(e) {
+			const itemNode = e.target.closest('.config-navi-item');
+			itemNode.addClass('config-navi-item-deleting');
+			$OOUI.confirm.warn('删除导航确认', `您确定要删除导航“${item.title}”吗？`, _self.form.node(), e.target).then(({ dlg, status }) => {
+				itemNode.removeClass('config-navi-item-deleting');
+				if (status === 'ok') {
+					debugger;
+					const idx = pdata.findIndex((d) => {
+						return item.text === d.text;
+					});
+
+					pdata.splice(idx, 1);
+					itemNode.remove();
+					naviDict.set('appNavis', _self.naviData);
+				}
+				dlg.close();
+			});
+		},
+		checkMoveUp(e) {
+			const idx = pdata.findIndex((d) => {
+				return item.text === d.text;
+			});
+			if (idx !== -1 && idx > 0) {
+				e.target.setStyle('visibility', 'visible')
+			} else {
+				e.target.setStyle('visibility', 'hidden')
+			}
+		},
+		checkMoveDown(e) {
+			const idx = pdata.findIndex((d) => {
+				return item.text === d.text;
+			});
+			if (idx !== -1 && idx < pdata.length - 1) {
+				e.target.setStyle('visibility', 'visible')
+			} else {
+				e.target.setStyle('visibility', 'hidden')
+			}
+		},
+		editNavi(event) {
+			const content = new Element('div', { styles: { 'position': 'relative' } });
+			content.loadHtmlText(this.naviEditHtml, { bind: item });
+			const appNode = content.querySelector('.config-navi-item-app');
+			const portalNode = content.querySelector('.config-navi-item-portal');
+			const viewNode = content.querySelector('.config-navi-item-view');
+			const statementNode = content.querySelector('.config-navi-item-statement');
+			const widgetNode = content.querySelector('.config-navi-item-widget');
+			const scriptNode = content.querySelector('.config-navi-item-script');
+			const actionTypeNode = content.querySelector('oo-radio-group');
+
+			const name = content.querySelector('.config-navi-item-name');
+			const text = content.querySelector('.config-navi-item-text');
+			const title = content.querySelector('.config-navi-item-title');
+			const icon = content.querySelector('.config-navi-item-icon');
+
+			let iconMenu;
+			o2.require("o2.widget.IconMenu", () => {
+				iconMenu = new o2.widget.IconMenu({
+					zIndex: 500001,
+					onClick: (ev, iconClass) => {
+						icon.value = iconClass;
+						icon.setAttribute('left-icon', iconClass);
+					}
+				});
+				iconMenu.load(icon, document.body);
+			}, false);
+
+			const selected = content.querySelector('.config-navi-item-selected');
+			const expanded = content.querySelector('.config-navi-item-expanded');
+			const selectable = content.querySelector('.config-navi-item-selectable');
+			const app = appNode.firstElementChild;
+			const appOptions = appNode.lastElementChild;
+			const portal = portalNode.firstElementChild;
+			const portalOptions = portalNode.lastElementChild;
+
+			const view = viewNode.firstElementChild;
+			const viewOptions = viewNode.lastElementChild;
+
+			const statement = statementNode.firstElementChild;
+			const statementOptions = statementNode.lastElementChild;
+
+			const widget = widgetNode.firstElementChild;
+			const widgetOptions = widgetNode.lastElementChild;
+
+			const widgetObj = content.querySelector('.config-navi-item-widget-obj');
+
+			const disabled = content.querySelector('.config-navi-item-disabled');
+			const hide = content.querySelector('.config-navi-item-hide');
+			const allow = content.querySelector('.config-navi-item-allow');
+			const reject = content.querySelector('.config-navi-item-reject');
+			const disabledGroup = content.querySelector('.config-navi-item-disabled-group');
+
+			const idx = pdata.findIndex((d) => {
+				return item.title === d.title;
+			});
+
+			name.addEventListener('validity', (e) => {
+				const i = pdata.findIndex((d) => {
+					return name.value === d.name;
+				});
+				if (i !== -1 && i !== idx) {
+					e.target.setCustomValidity(`标识为“${name.value}”的导航已存在！`);
+				}
+			});
+
+			text.addEventListener('validity', (e) => {
+				const i = pdata.findIndex((d) => {
+					return text.value === d.text;
+				});
+				if (i !== -1 && i !== idx) {
+					e.target.setCustomValidity(`显示文本为“${text.value}”的导航已存在！`);
+				}
+			});
+
+			const validityBind = (input) => {
+				input.addEventListener('validity', (e) => {
+					if (input.value) {
+						try {
+							JSON.parse(input.value);
+						} catch (err) {
+							e.target.setCustomValidity(`参数JSON格式有错误`);
+						}
+					}
+				});
+			}
+
+			validityBind(appOptions);
+			validityBind(portalOptions);
+			validityBind(viewOptions);
+			validityBind(statementOptions);
+			validityBind(widgetOptions);
+
+			o2.Actions.load('x_component_assemble_control').ComponentAction.listAll().then((json) => {
+				json.data.forEach((data) => {
+					const op = new Element('oo-option', {
+						value: data.path
+					});
+					op.setAttribute('value', data.path);
+					op.setAttribute('text', data.title + '(' + data.path + ')');
+					app.appendChild(op);
+				})
+			});
+
+			const selectorBind = (node, op) => {
+				node.addEventListener('click', () => {
+					const options = Object.assign({
+						"values": op.values || node.value,
+						"style": "v10",
+						"count": 0,
+						"onComplete": function (items) {
+							if (items.length) {
+								node.value = items.map(i => i.data.distinguishedName)
+							} else {
+								node.value = '';
+							}
+						}.bind(this)
+					}, op || {});
+					new o2.O2Selector(content.parentElement.shadowRoot.querySelector('div'), options);
+				});
+
+
+
+			}
+
+			selectorBind(allow, {
+				"title": "选择允许访问列表",
+				"types": ['unit', 'group', 'identity', 'role']
+			});
+
+			selectorBind(reject, {
+				"title": "选择拒绝访问列表",
+				"types": ['unit', 'group', 'identity', 'role']
+			});
+
+			selectorBind(portal, {
+				"title": "选择门户",
+				"type": 'portal',
+				"expand": true,
+				"count": 1,
+				"onComplete": function (items) {
+					if (items.length) {
+						portal.value = items[0].data.name
+					} else {
+						portal.value = '';
+					}
+				}.bind(this)
+			});
+
+			selectorBind(view, {
+				"title": "选择视图",
+				"type": 'QueryView',
+				"expand": true,
+				"count": 1,
+				"values": (view.value && view.value.length) ? view.value.map(w => w.split('@')[1]) : [],
+				"onComplete": function (items) {
+					if (items.length) {
+						debugger;
+						view.value = items.map(i => `${i.data.name}@${i.data.id}@${i.data.query}@view`);
+					} else {
+						view.value = '';
+					}
+				}.bind(this)
+			});
+
+			selectorBind(statement, {
+				"title": "选择查询视图",
+				"type": 'QueryStatement',
+				"expand": true,
+				"count": 1,
+				"values": (statement.value && statement.value.length) ? statement.value.map(w => w.split('@')[1]) : [],
+				"onComplete": function (items) {
+					if (items.length) {
+						statement.value = items.map(i => `${i.data.name}@${i.data.id}@${i.data.query}@statement`);
+					} else {
+						statement.value = '';
+					}
+				}.bind(this)
+			});
+
+			selectorBind(widgetObj, {
+				"title": "选择部件",
+				"type": 'widget',
+				"expand": true,
+				"values": (widgetObj.value && widgetObj.value.length) ? widgetObj.value.map(w => w.split('@')[1]) : [],
+				"count": 1,
+				"onComplete": function (items) {
+					if (items.length) {
+						widgetObj.value = items.map(i => `${i.data.name}@${i.data.id}@${i.data.portal}@widget`);
+					} else {
+						widgetObj.value = '';
+					}
+				}.bind(this)
+			});
+
+			actionTypeNode.addEventListener('change', (e) => {
+				const v = e.target.value;
+				appNode.setStyle('display', 'none');
+				portalNode.setStyle('display', 'none');
+				viewNode.setStyle('display', 'none');
+				statementNode.setStyle('display', 'none');
+				widgetNode.setStyle('display', 'none');
+				scriptNode.setStyle('display', 'none');
+
+				switch (e.target.value) {
+					case 'app':
+						appNode.setStyle('display', 'contents');
+						break;
+					case 'portal':
+						portalNode.setStyle('display', 'contents');
+						break;
+					case 'view':
+						viewNode.setStyle('display', 'contents');
+						break;
+					case 'statement':
+						statementNode.setStyle('display', 'contents');
+						break;
+					case 'widget':
+						widgetNode.setStyle('display', 'contents');
+						break;
+					case 'none':
+						break;
+					default:
+						scriptNode.setStyle('display', 'block');
+				}
+			});
+
+			const options = {
+				events: {
+					ok: (e) => {
+						if (title.checkValidity()) {
+							item.name = name.value;
+							item.text = text.value;
+							item.title = title.value;
+							item.icon = icon.value;
+							item.selected = selected.value;
+							item.expanded = expanded.value;
+							item.selectable = selectable.value;
+
+							item.actionType = actionTypeNode.value;
+
+							item.app = app.value;
+							item.appOptions = appOptions.value ? JSON.parse(appOptions.value) : {};
+							item.portal = portal.value;
+							item.portalOptions = portalOptions.value ? JSON.parse(portalOptions.value) : {};
+
+							debugger;
+							item.view = view.value[0];
+							item.viewOptions = viewOptions.value ? JSON.parse(viewOptions.value) : {};
+
+							item.statement = statement.value[0];
+							item.statementOptions = statementOptions.value ? JSON.parse(statementOptions.value) : {};
+
+							item.widget = widget.value[0];
+							item.widgetOptions = widgetOptions.value ? JSON.parse(widgetOptions.value) : {};
+
+							item.disabled = disabled.value;
+							item.hide = hide.value;
+							item.allow = allow.value;
+							item.reject = reject.value;
+							item.disabledGroup = disabledGroup.value;
+							if (this.editor) {
+								item.script = this.editor?.getData?.();
+								this.editor.destroy?.();
+							}
+							if (o2.typeOf(item.script) === 'object' && (Object.keys(item.script).length === 0 || !item.script.code)) {
+								item.script = ''
+							}
+
+							naviDict.set('appNavis', _self.naviData);
+
+							const itemNode = event.target.closest('.config-navi-item');
+							this.reloadItem(itemNode, item);
+
+							if (iconMenu) iconMenu.hide();
+							e.target.close();
+						}
+					},
+					cancel: (e) => {
+						if (this.editor) {
+							this.editor.destroy?.();
+						}
+						if (iconMenu) iconMenu.hide();
+						e.target.close();
+					},
+					show: (e) => {
+						if (iconMenu) {
+							e.target.addEvent('click', () => { iconMenu.hide() })
+						}
+						const scriptArea = scriptNode.firstElementChild;
+						const intersectionObserver = new IntersectionObserver((entries) => {
+							// 如果 intersectionRatio 为 0，则目标在视野外，
+							// 我们不需要做任何事情。
+							if (entries[0].intersectionRatio <= 0) return;
+
+							MWF.require("MWF.widget.ScriptArea", () => {
+								this.editor = new MWF.widget.ScriptArea(scriptArea, {
+									"isbind": false,
+									"mode": "javascript",
+									"maxObj": content,
+									"maxPosition": "absolute",
+									"style": "v10"
+								});
+								this.editor.load({ code: item.script });
+							});
+							intersectionObserver.disconnect();
+						});
+						intersectionObserver.observe(scriptArea);
+					}
+				},
+				zIndex: 500000,
+				width: '60rem',
+				canResize: true
+			}
+			$OOUI.dialog('编辑导航', content, _self.form.node(), options);
+		},
+		cancelMove() {
+			try {
+				this.removeClass('config-navi-item-moving');
+			} catch (e) { }
+		},
+		itemMove(e, upOrDown) {
+			const idx = pdata.findIndex((d) => {
+				return item.text === d.text;
+			});
+			const flag = (upOrDown == 'up') ? (idx !== -1 && idx > 0) : (idx !== -1 && idx < pdata.length - 1);
+			if (flag) {
+				const otherIdx = (upOrDown == 'up') ? idx - 1 : idx + 1;
+				[pdata[idx], pdata[otherIdx]] = [pdata[otherIdx], pdata[idx]];
+
+				const itemNode = e.target.closest('.config-navi-item');
+
+				if (_self.movingNaviItem) {
+					_self.movingNaviItem.removeClass('config-navi-item-moving');
+				}
+				itemNode.addClass('config-navi-item-moving');
+				o2.defer(this.cancelMove, 5000, itemNode);
+				_self.movingNaviItem = itemNode;
+
+				const otherItemNode = (upOrDown == 'up') ? itemNode.previousElementSibling : itemNode.nextElementSibling;
+				if (itemNode && otherItemNode) {
+					const position = (upOrDown == 'up') ? 'beforebegin' : 'afterend';
+					otherItemNode.insertAdjacentElement(position, itemNode);
+
+					checkUpDownAction(itemNode, item, pdata);
+					checkUpDownAction(otherItemNode, pdata[idx], pdata);
+				}
+				naviDict.set('appNavis', _self.naviData);
+			}
+
+		},
+		itemMoveDown(e) {
+			this.itemMove(e, 'down');
+		},
+		itemMoveUp(e) {
+			this.itemMove(e, 'up');
+		},
+
+		getActionTypeText(type) {
+			switch (type) {
+				case 'app':
+					return '打开应用';
+				case 'portal':
+					return '打开门户';
+				case 'view':
+					return '打开视图';
+				case 'statement':
+					return '打开查询视图';
+				case 'widget':
+					return '打开部件';
+				case 'none':
+					return '无操作';
+				default:
+					return '执行脚本';
+			}
+		},
+		getActionParText(type, data) {
+			switch (type) {
+				case 'app':
+					return data.app;
+				case 'portal':
+					return data.portal;
+
+				case 'view':
+					return data.view.indexOf('@') !== -1 ? data.view.split('@')[0] : data.view;;
+				case 'statement':
+					return data.statement.indexOf('@') !== -1 ? data.statement.split('@')[0] : data.statement;;
+
+				case 'widget':
+					return data.widget.indexOf('@') !== -1 ? data.widget.split('@')[0] : data.widget;
+				case 'none':
+					return '';
+				default:
+					return data.script || '';
+			}
+		},
+		reloadItem(node, data) {
+			const text = node.firstElementChild;
+			const name = text.nextElementSibling;
+			const actionType = name.nextElementSibling;
+			const par = actionType.nextElementSibling;
+
+			text.firstElementChild.className = 'ooicon-' + data.icon;
+			text.lastElementChild.textContent = data.text;
+			name.textContent = data.name;
+			actionType.textContent = this.getActionTypeText(data.actionType);
+			par.textContent = this.getActionParText(data.actionType, data);
+		}
+	}
+}
+
+const createNaviItem = (data, area = node, level = 0) => {
+	data.forEach((d, i) => {
+		d.level = level;
+		area.loadHtmlText(html, { bind: d, module: getItemModule(d, data) });
+		const createAction = area.getLast('.config-navi-item .config-navi-item-create');
+		const deleteAction = area.getLast('.config-navi-item .config-navi-item-delete');
+		const upAction = area.getLast('.config-navi-item .config-navi-item-up');
+		const downAction = area.getLast('.config-navi-item .config-navi-item-down');
+
+		if (d.children) {
+			const subArea = area.getLast('.config-navi-item').getLast('.config-navi-item-children');
+			createNaviItem(d.children, subArea, level + 1);
+		}
+	});
+}
+
+
+naviDict.get('appNavis', null, null, true).then((data) => {
+	this.naviData = data.map(d => Object.clone(d));
+	createNaviItem(this.naviData);
+
+	createNaviButton.addEventListener('click', () => {
+		const newData = {
+			text: getNewTitle(this.naviData),
+			icon: 'menu',
+			actionType: 'none',
+			level: 0
+		}
+		const otherItemNode = (this.naviData.length) ? node.lastElementChild : null;
+		const otherData = (this.naviData.length) ? this.naviData.at(-1) : null;
+
+		this.naviData.push(newData);
+
+		const module = getItemModule(newData, this.naviData);
+		node.loadHtmlText(html, { bind: newData, module });
+
+		naviDict.set('appNavis', _self.naviData);
+
+		const newItemNode = node.lastElementChild;
+		newItemNode.addClass('config-navi-item-created')
+		newItemNode.firstElementChild.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		window.setTimeout(() => {
+			try {
+				newItemNode?.removeClass('config-navi-item-created')
+			} catch (e) { }
+		}, 5000);
+
+		if (otherItemNode) checkUpDownAction(otherItemNode, otherData, this.naviData);
+	})
+});
+

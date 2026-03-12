@@ -9,7 +9,6 @@
         </div>
     </header>
     <nav>
-<!--        <oo-tabs><oo-tab label="收藏"></oo-tab><oo-tab label="设计"></oo-tab></oo-tabs>-->
         <div class="o2-designer-tabs" data-o2-element="tabs">
             <div data-o2-element="tabDesigner" class="current" data-o2-events="click:toDesignerNav">设计</div>
             <div data-o2-element="tabCollection" data-o2-events="click:toCollectionNav">收藏</div>
@@ -22,9 +21,9 @@
         </oo-nav>
         <oo-nav class="hide" data-o2-element="oonavCollection" key="id" css-link="../x_component_designermanager/$Main/default/nav.css" >
             <div slot="before-outer" class="o2-designer-nav-toolbar">
+                <div class="ooicon-edit" data-o2-events="click:configCollection" title="配置导航"></div>
                 <div class="ooicon-process-monitor" data-o2-events="click:locateToCurrent" title="定位到当前应用"></div>
                 <div class="ooicon-zhedie" data-o2-events="click:collapseNav" title="折叠"></div>
-                <div class="ooicon-create" title="addCollection"></div>
             </div>
         </oo-nav>
     </nav>
