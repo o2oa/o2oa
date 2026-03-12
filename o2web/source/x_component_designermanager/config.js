@@ -5,7 +5,7 @@ o2DM._processAction = o2.Actions.load('x_processplatform_assemble_designer');
 o2DM._cmsAction = o2.Actions.load('x_cms_assemble_control');
 o2DM._queryAction = o2.Actions.load('x_query_assemble_designer');
 o2DM._serviceAction = o2.Actions.load('x_program_center');
-//o2DM._openApp = o2.api.page.openApplication;
+//o2DM.openApp = o2.api.page.openApplication;
 
 o2DM._UNCATEGORIZED = 'uncategorized';
 o2DM._ALL = 'all';
@@ -143,23 +143,23 @@ o2DM._appTools = [
         ooicon: 'window-max',
         _type: 'app-tool',
         name: '复制名称',
-        handleClick: (data, appid, appdata)=>{ o2DM._copyTextToClipboard(appdata.name); },
+        handleClick: (data, appId, appdata)=>{ o2DM._copyTextToClipboard(appdata.name); },
     },{
         ooicon: 'window-max',
         _type: 'app-tool',
         name: '复制别名',
         condition: (data, appdata)=>{ return !!appdata.alias; },
-        handleClick: (data, appid, appdata)=>{ o2DM._copyTextToClipboard(appdata.alias); },
+        handleClick: (data, appId, appdata)=>{ o2DM._copyTextToClipboard(appdata.alias); },
     },{
         ooicon: 'window-max',
         _type: 'app-tool',
         name: '复制id',
-        handleClick: (data, appid, appdata)=>{ o2DM._copyTextToClipboard(appdata.id); },
+        handleClick: (data, appId, appdata)=>{ o2DM._copyTextToClipboard(appdata.id); },
     },{
         ooicon: 'window-max',
         _type: 'app-tool',
         name: '复制对象',
-        handleClick: (data, appid, appdata)=>{
+        handleClick: (data, appId, appdata)=>{
             var {name, alias, id} = appdata;
             o2DM._copyTextToClipboard(
                 JSON.stringify({name, alias, id}, null, 2)
@@ -215,7 +215,7 @@ o2DM._designerTools = [
     //     ooicon: 'window-max',
     //     _type: 'designer-tool',
     //     name: '拷贝到其他应用',
-    //     handleClick: (data, appid, appdata)=>{
+    //     handleClick: (data, appId, appdata)=>{
     //         var {name, alias, id} = appdata;
     //         o2DM._copyTextToClipboard(
     //             JSON.stringify({name, alias, id}, null, 2)
@@ -229,7 +229,7 @@ o2DM._config = {
     children: [
         {
             handleClick: () => {
-                o2DM._openApp('portal.PortalExplorer');
+                o2DM.openApp('portal.PortalExplorer');
             },
             name: '门户管理',
             componentName: 'portal.PortalExplorer',
@@ -243,10 +243,10 @@ o2DM._config = {
                 _appType: 'portal',
                 categorized: true,
                 handleClick: (item) => {
-                    o2DM._openApp('portal.PortalManager', null, {application: item.id});
+                    o2DM.openApp('portal.PortalManager', null, {application: item.id});
                 },
-                getAction: (appid)=>{
-                    return o2DM._portalAction.PortalAction.get(appid);
+                getAction: (appId)=>{
+                    return o2DM._portalAction.PortalAction.get(appId);
                 },
                 listAction: () => {
                     return o2DM._portalAction.PortalAction.list().then((json) => {
@@ -267,26 +267,26 @@ o2DM._config = {
                         componentName: 'portal.PageDesigner',
                         _type: 'designer-category',
                         ooicon: 'pagepeizhi',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('portal.PortalManager', null, {navi: 0, application: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('portal.PortalManager', null, {navi: 0, application: appId});
                         },
-                        handleCreate: (appid, appname)=>{
-                            var opt = {application: {id: appid, name: appname}};
-                            o2DM._openApp('portal.PageDesigner', opt, opt);
+                        handleCreate: (appId, appname)=>{
+                            var opt = {application: {id: appId, name: appname}};
+                            o2DM.openApp('portal.PageDesigner', opt, opt);
                         },
                         children: [{
                             label: '页面',
                             _type: 'designer',
                             categorized: true,
                             handleClick: (page) => {
-                                o2DM._openApp('portal.PageDesigner', null, {id: page.id});
+                                o2DM.openApp('portal.PageDesigner', null, {id: page.id});
                             },
-                            listAction: (appid) => {
-                                return o2DM._portalAction.PageAction.listWithPortal(appid).then((pages) => {
+                            listAction: (appId) => {
+                                return o2DM._portalAction.PageAction.listWithPortal(appId).then((pages) => {
                                     return o2DM._sort(pages.data).map((page) => {
                                         return {
                                             ...page,
-                                            appid: appid,
+                                            appId: appId,
                                             _pinyin: o2DM._toPY(page)
                                         };
                                     });
@@ -300,26 +300,26 @@ o2DM._config = {
                         _type: 'designer-category',
                         label: '部件',
                         ooicon: 'app-center',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('portal.PortalManager', null, {navi: 1, application: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('portal.PortalManager', null, {navi: 1, application: appId});
                         },
-                        handleCreate: (appid, appname)=>{
-                            var opt = {application: {id: appid, name: appname}};
-                            o2DM._openApp('portal.WidgetDesigner', opt, opt);
+                        handleCreate: (appId, appname)=>{
+                            var opt = {application: {id: appId, name: appname}};
+                            o2DM.openApp('portal.WidgetDesigner', opt, opt);
                         },
                         children: [{
                             label: '部件',
                             _type: 'designer',
                             categorized: true,
                             handleClick: (portal) => {
-                                o2DM._openApp('portal.WidgetDesigner', null, {id: portal.id});
+                                o2DM.openApp('portal.WidgetDesigner', null, {id: portal.id});
                             },
-                            listAction: (appid) => {
-                                return o2DM._portalAction.WidgetAction.listWithPortal(appid).then((widgets) => {
+                            listAction: (appId) => {
+                                return o2DM._portalAction.WidgetAction.listWithPortal(appId).then((widgets) => {
                                     return o2DM._sort(widgets.data).map((widget) => {
                                         return {
                                             ...widget,
-                                            appid: appid,
+                                            appId: appId,
                                             _pinyin: o2DM._toPY(widget)
                                         };
                                     });
@@ -332,27 +332,27 @@ o2DM._config = {
                         _type: 'designer-category',
                         label: '数据字典',
                         ooicon: 'js',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('portal.PortalManager', null, {navi: 2, application: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('portal.PortalManager', null, {navi: 2, application: appId});
                         },
-                        handleCreate: (appid, appname)=>{
-                            var opt = {application: {id: appid, name: appname}};
-                            o2DM._openApp('portal.DictionaryDesigner', opt, opt);
+                        handleCreate: (appId, appname)=>{
+                            var opt = {application: {id: appId, name: appname}};
+                            o2DM.openApp('portal.DictionaryDesigner', opt, opt);
                         },
                         children: [{
                             label: '数据字典',
                             _type: 'designer',
                             handleClick: (dict) => {
-                                o2DM._openApp('portal.DictionaryDesigner', null, {
-                                    id: dict.id, application: { id: dict.appid }
+                                o2DM.openApp('portal.DictionaryDesigner', null, {
+                                    id: dict.id, application: { id: dict.appId }
                                 });
                             },
-                            listAction: (appid) => {
-                                return o2DM._portalAction.DictAction.listWithApplication(appid).then((dicts) => {
+                            listAction: (appId) => {
+                                return o2DM._portalAction.DictAction.listWithApplication(appId).then((dicts) => {
                                     return o2DM._sort(dicts.data).map((dict) => {
                                         return {
                                             ...dict,
-                                            appid: appid,
+                                            appId: appId,
                                             _pinyin: o2DM._toPY(dict)
                                         };
                                     });
@@ -365,28 +365,28 @@ o2DM._config = {
                         _type: 'designer-category',
                         label: '脚本配置',
                         ooicon: 'jiaoben',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('portal.PortalManager', null, {navi: 3, application: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('portal.PortalManager', null, {navi: 3, application: appId});
                         },
-                        handleCreate: (appid, appname)=>{
-                            var opt = {application: {id: appid, name: appname}};
-                            o2DM._openApp('portal.ScriptDesigner', opt, opt);
+                        handleCreate: (appId, appname)=>{
+                            var opt = {application: {id: appId, name: appname}};
+                            o2DM.openApp('portal.ScriptDesigner', opt, opt);
                         },
                         children: [{
                             label: '脚本配置',
                             _type: 'designer',
                             handleClick: (script) => {
-                                o2DM._openApp('portal.ScriptDesigner', null, {
+                                o2DM.openApp('portal.ScriptDesigner', null, {
                                     id: script.id,
-                                    application: {id: script.appid}
+                                    application: {id: script.appId}
                                 });
                             },
-                            listAction: (appid) => {
-                                return o2DM._portalAction.ScriptAction.listWithPortal(appid).then((scripts) => {
+                            listAction: (appId) => {
+                                return o2DM._portalAction.ScriptAction.listWithPortal(appId).then((scripts) => {
                                     return o2DM._sort(scripts.data).map((script) => {
                                         return {
                                             ...script,
-                                            appid: appid,
+                                            appId: appId,
                                             _pinyin: o2DM._toPY(script)
                                         };
                                     });
@@ -398,23 +398,23 @@ o2DM._config = {
                         componentName: 'portal.FileDesigner',
                         _type: 'designer-category',
                         ooicon: 'folder-open',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('portal.PortalManager', null, {navi: 4, application: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('portal.PortalManager', null, {navi: 4, application: appId});
                         }
                     }, {
                         name: '门户属性',
                         componentName: 'portal.Property',
                         _type: 'designer-category',
                         ooicon: 'jiekoupeizhi2',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('portal.PortalManager', null, {navi: 5, application: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('portal.PortalManager', null, {navi: 5, application: appId});
                         }
                     }]
             }]
         },
         {
             handleClick: () => {
-                o2DM._openApp('process.ApplicationExplorer');
+                o2DM.openApp('process.ApplicationExplorer');
             },
             name: '流程管理',
             componentName: 'process.ApplicationExplorer',
@@ -428,10 +428,10 @@ o2DM._config = {
                 _appType: 'process',
                 categorized: true,
                 handleClick: (item) => {
-                    o2DM._openApp('process.ProcessManager', null, {application: item.id});
+                    o2DM.openApp('process.ProcessManager', null, {application: item.id});
                 },
-                getAction: (appid)=>{
-                    return o2DM._processAction.ApplicationAction.get(appid);
+                getAction: (appId)=>{
+                    return o2DM._processAction.ApplicationAction.get(appId);
                 },
                 listAction: () => {
                     return o2DM._processAction.ApplicationAction.listSummary().then((json) => {
@@ -452,26 +452,26 @@ o2DM._config = {
                         componentName: 'process.FormManager',
                         _type: 'designer-category',
                         ooicon: 'biaodan',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('process.ProcessManager', null, {navi: 0, application: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('process.ProcessManager', null, {navi: 0, application: appId});
                         },
-                        handleCreate: (appid, appname)=>{
-                            var opt = {application: {id: appid, name: appname}};
-                            o2DM._openApp('process.FormDesigner', opt, opt);
+                        handleCreate: (appId, appname)=>{
+                            var opt = {application: {id: appId, name: appname}};
+                            o2DM.openApp('process.FormDesigner', opt, opt);
                         },
                         children: [{
                             label: '表单',
                             _type: 'designer',
                             categorized: true,
                             handleClick: (form) => {
-                                o2DM._openApp('process.FormDesigner', null, {id: form.id});
+                                o2DM.openApp('process.FormDesigner', null, {id: form.id});
                             },
-                            listAction: (appid) => {
-                                return o2DM._processAction.FormAction.listWithApplication(appid).then((forms) => {
+                            listAction: (appId) => {
+                                return o2DM._processAction.FormAction.listWithApplication(appId).then((forms) => {
                                     return o2DM._sort(forms.data).map((form) => {
                                         return {
                                             ...form,
-                                            appid: appid,
+                                            appId: appId,
                                             _pinyin: o2DM._toPY(form)
                                         };
                                     });
@@ -485,26 +485,26 @@ o2DM._config = {
                         _type: 'designer-category',
                         label: '流程',
                         ooicon: 'a-flowprocess',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('process.ProcessManager', null, {navi: 1, application: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('process.ProcessManager', null, {navi: 1, application: appId});
                         },
-                        handleCreate: (appid, appname)=>{
-                            var opt = {application: {id: appid, name: appname}};
-                            o2DM._openApp('process.ProcessDesigner', opt, opt);
+                        handleCreate: (appId, appname)=>{
+                            var opt = {application: {id: appId, name: appname}};
+                            o2DM.openApp('process.ProcessDesigner', opt, opt);
                         },
                         children: [{
                             label: '流程',
                             _type: 'designer',
                             categorized: true,
                             handleClick: (process) => {
-                                o2DM._openApp('process.ProcessDesigner', null, {id: process.id});
+                                o2DM.openApp('process.ProcessDesigner', null, {id: process.id});
                             },
-                            listAction: (appid) => {
-                                return o2DM._processAction.ProcessAction.listWithApplication(appid).then((processes) => {
+                            listAction: (appId) => {
+                                return o2DM._processAction.ProcessAction.listWithApplication(appId).then((processes) => {
                                     return o2DM._sort(processes.data).map((process) => {
                                         return {
                                             ...process,
-                                            appid: appid,
+                                            appId: appId,
                                             _pinyin: o2DM._toPY(process)
                                         };
                                     });
@@ -517,25 +517,25 @@ o2DM._config = {
                         _type: 'designer-category',
                         label: '数据字典',
                         ooicon: 'js',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('process.ProcessManager', null, {navi: 2, application: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('process.ProcessManager', null, {navi: 2, application: appId});
                         },
-                        handleCreate: (appid, appname)=>{
-                            var opt = {application: {id: appid, name: appname}};
-                            o2DM._openApp('process.DictionaryDesigner', opt, opt);
+                        handleCreate: (appId, appname)=>{
+                            var opt = {application: {id: appId, name: appname}};
+                            o2DM.openApp('process.DictionaryDesigner', opt, opt);
                         },
                         children: [{
                             label: '数据字典',
                             _type: 'designer',
                             handleClick: (dict) => {
-                                o2DM._openApp('process.DictionaryDesigner', null, { id: dict.id, application: { id: dict.appid } });
+                                o2DM.openApp('process.DictionaryDesigner', null, { id: dict.id, application: { id: dict.appId } });
                             },
-                            listAction: (appid) => {
-                                return o2DM._processAction.ApplicationDictAction.listWithApplication(appid).then((dicts) => {
+                            listAction: (appId) => {
+                                return o2DM._processAction.ApplicationDictAction.listWithApplication(appId).then((dicts) => {
                                     return o2DM._sort(dicts.data).map((dict) => {
                                         return {
                                             ...dict,
-                                            appid: appid,
+                                            appId: appId,
                                             _pinyin: o2DM._toPY(dict)
                                         };
                                     });
@@ -548,28 +548,28 @@ o2DM._config = {
                         _type: 'designer-category',
                         label: '脚本配置',
                         ooicon: 'jiaoben',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('process.ProcessManager', null, {navi: 3, application: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('process.ProcessManager', null, {navi: 3, application: appId});
                         },
-                        handleCreate: (appid, appname)=>{
-                            var opt = {application: {id: appid, name: appname}};
-                            o2DM._openApp('process.ScriptDesigner', opt, opt);
+                        handleCreate: (appId, appname)=>{
+                            var opt = {application: {id: appId, name: appname}};
+                            o2DM.openApp('process.ScriptDesigner', opt, opt);
                         },
                         children: [{
                             label: '脚本配置',
                             _type: 'designer',
                             handleClick: (script) => {
-                                o2DM._openApp('process.ScriptDesigner', null, {
+                                o2DM.openApp('process.ScriptDesigner', null, {
                                     id: script.id,
-                                    application: {id: script.appid}
+                                    application: {id: script.appId}
                                 });
                             },
-                            listAction: (appid) => {
-                                return o2DM._processAction.ScriptAction.listWithApplication(appid).then((scripts) => {
+                            listAction: (appId) => {
+                                return o2DM._processAction.ScriptAction.listWithApplication(appId).then((scripts) => {
                                     return o2DM._sort(scripts.data).map((script) => {
                                         return {
                                             ...script,
-                                            appid: appid,
+                                            appId: appId,
                                             _pinyin: o2DM._toPY(script)
                                         };
                                     });
@@ -581,23 +581,23 @@ o2DM._config = {
                         componentName: 'process.FileDesigner',
                         _type: 'designer-category',
                         ooicon: 'folder-open',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('process.ProcessManager', null, {navi: 4, application: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('process.ProcessManager', null, {navi: 4, application: appId});
                         }
                     }, {
                         name: '应用属性',
                         componentName: 'process.Property',
                         _type: 'designer-category',
                         ooicon: 'jiekoupeizhi2',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('process.ProcessManager', null, {navi: 5, application: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('process.ProcessManager', null, {navi: 5, application: appId});
                         }
                     }]
             }]
         },
         {
             handleClick: () => {
-                o2DM._openApp('cms.Column');
+                o2DM.openApp('cms.Column');
             },
             name: '内容管理',
             componentName: 'cms.Column',
@@ -611,10 +611,10 @@ o2DM._config = {
                 _appType: 'cms',
                 categorized: true,
                 handleClick: (item) => {
-                    o2DM._openApp('cms.ColumnManager', null, {column: item.id});
+                    o2DM.openApp('cms.ColumnManager', null, {column: item.id});
                 },
-                getAction: (appid)=>{
-                    return o2DM._cmsAction.AppInfoAction.getAppInfo(appid).then((item) => {
+                getAction: (appId)=>{
+                    return o2DM._cmsAction.AppInfoAction.getAppInfo(appId).then((item) => {
                         item.data = {
                             ...item.data,
                             alias: item.appAlias,
@@ -645,27 +645,27 @@ o2DM._config = {
                         componentName: 'cms.CategoryManager',
                         _type: 'designer-category',
                         ooicon: 'bujianpeizhi',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('cms.ColumnManager', null, {navi: 'categoryConfig', column: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('cms.ColumnManager', null, {navi: 'categoryConfig', column: appId});
                         },
                         children: [{
                             label: '分类',
                             _type: 'designer',
                             handleClick: (category) => {
-                                o2DM._openApp('cms.ColumnManager', null, {
+                                o2DM.openApp('cms.ColumnManager', null, {
                                     navi: 'categoryConfig',
-                                    column: category.appid,
+                                    column: category.appId,
                                     categoryId: category.id
                                 });
                             },
-                            listAction: (appid) => {
-                                return o2DM._cmsAction.CategoryInfoAction.listViewableCategoryInfo_AllType(appid).then((categorys) => {
+                            listAction: (appId) => {
+                                return o2DM._cmsAction.CategoryInfoAction.listViewableCategoryInfo_AllType(appId).then((categorys) => {
                                     return o2DM._sort(categorys.data).map((category) => {
                                         return {
                                             ...category,
                                             alias: category.categoryAlias,
                                             name: category.categoryName,
-                                            appid: category.appId,
+                                            appId: category.appId,
                                             _pinyin: o2DM._toPY({alias: category.categoryAlias, name: category.categoryName})
                                         };
                                     });
@@ -679,25 +679,25 @@ o2DM._config = {
                         _type: 'designer-category',
                         label: '表单',
                         ooicon: 'biaodan',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('cms.ColumnManager', null, {navi: 'formConfig', column: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('cms.ColumnManager', null, {navi: 'formConfig', column: appId});
                         },
-                        handleCreate: (appid, appname)=>{
-                            var opt = {application: {id: appid, name: appname}};
-                            o2DM._openApp('cms.FormDesigner', opt, opt);
+                        handleCreate: (appId, appname)=>{
+                            var opt = {application: {id: appId, name: appname}};
+                            o2DM.openApp('cms.FormDesigner', opt, opt);
                         },
                         children: [{
                             label: '表单',
                             _type: 'designer',
                             handleClick: (form) => {
-                                o2DM._openApp('cms.FormDesigner', null, {id: form.id});
+                                o2DM.openApp('cms.FormDesigner', null, {id: form.id});
                             },
-                            listAction: (appid) => {
-                                return o2DM._cmsAction.FormAction.listFormByAppId(appid).then((forms) => {
+                            listAction: (appId) => {
+                                return o2DM._cmsAction.FormAction.listFormByAppId(appId).then((forms) => {
                                     return o2DM._sort(forms.data).map((form) => {
                                         return {
                                             ...form,
-                                            appid: appid,
+                                            appId: appId,
                                             _pinyin: o2DM._toPY(form)
                                         };
                                     });
@@ -710,27 +710,27 @@ o2DM._config = {
                         _type: 'designer-category',
                         label: '数据字典',
                         ooicon: 'js',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('cms.ColumnManager', null, {navi: 'dataConfig', column: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('cms.ColumnManager', null, {navi: 'dataConfig', column: appId});
                         },
-                        handleCreate: (appid, appname)=>{
-                            var opt = {application: {id: appid, name: appname}};
-                            o2DM._openApp('cms.DictionaryDesigner', opt, opt);
+                        handleCreate: (appId, appname)=>{
+                            var opt = {application: {id: appId, name: appname}};
+                            o2DM.openApp('cms.DictionaryDesigner', opt, opt);
                         },
                         children: [{
                             label: '数据字典',
                             _type: 'designer',
                             handleClick: (dict) => {
-                                o2DM._openApp('cms.DictionaryDesigner', null, {
-                                    id: dict.id, application: { id: dict.appid }
+                                o2DM.openApp('cms.DictionaryDesigner', null, {
+                                    id: dict.id, application: { id: dict.appId }
                                 });
                             },
-                            listAction: (appid) => {
-                                return o2DM._cmsAction.AppDictDesignAction.listWithAppInfo(appid).then((dicts) => {
+                            listAction: (appId) => {
+                                return o2DM._cmsAction.AppDictDesignAction.listWithAppInfo(appId).then((dicts) => {
                                     return o2DM._sort(dicts.data).map((dict) => {
                                         return {
                                             ...dict,
-                                            appid: appid,
+                                            appId: appId,
                                             _pinyin: o2DM._toPY(dict)
                                         };
                                     });
@@ -743,25 +743,25 @@ o2DM._config = {
                         _type: 'designer-category',
                         label: '脚本配置',
                         ooicon: 'jiaoben',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('cms.ColumnManager', null, {navi: 'scriptConfig', column: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('cms.ColumnManager', null, {navi: 'scriptConfig', column: appId});
                         },
-                        handleCreate: (appid, appname)=>{
-                            var opt = {application: {id: appid, name: appname}};
-                            o2DM._openApp('cms.ScriptDesigner', opt, opt);
+                        handleCreate: (appId, appname)=>{
+                            var opt = {application: {id: appId, name: appname}};
+                            o2DM.openApp('cms.ScriptDesigner', opt, opt);
                         },
                         children: [{
                             label: '脚本配置',
                             _type: 'designer',
                             handleClick: (script) => {
-                                o2DM._openApp('cms.ScriptDesigner', null, {id: script.id, application: {id: script.appid}});
+                                o2DM.openApp('cms.ScriptDesigner', null, {id: script.id, application: {id: script.appId}});
                             },
-                            listAction: (appid) => {
-                                return o2DM._cmsAction.ScriptAction.listWithApplication(appid).then((scripts) => {
+                            listAction: (appId) => {
+                                return o2DM._cmsAction.ScriptAction.listWithApplication(appId).then((scripts) => {
                                     return o2DM._sort(scripts.data).map((script) => {
                                         return {
                                             ...script,
-                                            appid: appid,
+                                            appId: appId,
                                             _pinyin: o2DM._toPY(script)
                                         };
                                     });
@@ -773,23 +773,23 @@ o2DM._config = {
                         componentName: 'cms.FileDesigner',
                         _type: 'designer-category',
                         ooicon: 'folder-open',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('cms.ColumnManager', null, {navi: 'fileConfig', column: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('cms.ColumnManager', null, {navi: 'fileConfig', column: appId});
                         }
                     }, {
                         name: '栏目属性',
                         componentName: 'cms.Property',
                         _type: 'designer-category',
                         ooicon: 'jiekoupeizhi2',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('cms.ColumnManager', null, {navi: 'applicationProperty', column: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('cms.ColumnManager', null, {navi: 'applicationProperty', column: appId});
                         }
                     }]
             }]
         },
         {
             handleClick: () => {
-                o2DM._openApp('query.QueryExplorer');
+                o2DM.openApp('query.QueryExplorer');
             },
             name: '数据中心',
             componentName: 'query.QueryExplorer',
@@ -803,10 +803,10 @@ o2DM._config = {
                 _appType: 'query',
                 categorized: true,
                 handleClick: (item) => {
-                    o2DM._openApp('query.QueryManager', null, {application: item.id});
+                    o2DM.openApp('query.QueryManager', null, {application: item.id});
                 },
-                getAction: (appid)=>{
-                    return o2DM._queryAction.QueryAction.get(appid);
+                getAction: (appId)=>{
+                    return o2DM._queryAction.QueryAction.get(appId);
                 },
                 listAction: () => {
                     return o2DM._queryAction.QueryAction.listAll().then((json) => {
@@ -827,25 +827,25 @@ o2DM._config = {
                         componentName: 'query.ViewDesigner',
                         _type: 'designer-category',
                         ooicon: 'shitupeizhi3',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('query.QueryManager', null, {navi: 0, application: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('query.QueryManager', null, {navi: 0, application: appId});
                         },
-                        handleCreate: (appid, appname)=>{
-                            var opt = {application: {id: appid, name: appname}};
-                            o2DM._openApp('query.ViewDesigner', opt, opt);
+                        handleCreate: (appId, appname)=>{
+                            var opt = {application: {id: appId, name: appname}};
+                            o2DM.openApp('query.ViewDesigner', opt, opt);
                         },
                         children: [{
                             label: '视图',
                             _type: 'designer',
                             handleClick: (view) => {
-                                o2DM._openApp('query.ViewDesigner', null, {id: view.id, application: {id: view.appid}});
+                                o2DM.openApp('query.ViewDesigner', null, {id: view.id, application: {id: view.appId}});
                             },
-                            listAction: (appid) => {
-                                return o2DM._queryAction.ViewAction.listWithQuery(appid).then((views) => {
+                            listAction: (appId) => {
+                                return o2DM._queryAction.ViewAction.listWithQuery(appId).then((views) => {
                                     return o2DM._sort(views.data).map((view) => {
                                         return {
                                             ...view,
-                                            appid: appid,
+                                            appId: appId,
                                             _pinyin: o2DM._toPY(view)
                                         };
                                     });
@@ -859,25 +859,25 @@ o2DM._config = {
                         _type: 'designer-category',
                         label: '统计',
                         ooicon: 'shujubiao2',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('query.QueryManager', null, {navi: 1, application: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('query.QueryManager', null, {navi: 1, application: appId});
                         },
-                        handleCreate: (appid, appname)=>{
-                            var opt = {application: {id: appid, name: appname}};
-                            o2DM._openApp('query.StatDesigner', opt, opt);
+                        handleCreate: (appId, appname)=>{
+                            var opt = {application: {id: appId, name: appname}};
+                            o2DM.openApp('query.StatDesigner', opt, opt);
                         },
                         children: [{
                             label: '统计',
                             _type: 'designer',
                             handleClick: (stat) => {
-                                o2DM._openApp('query.StatDesigner', null, {id: stat.id, application: {id: stat.appid}});
+                                o2DM.openApp('query.StatDesigner', null, {id: stat.id, application: {id: stat.appId}});
                             },
-                            listAction: (appid) => {
-                                return o2DM._queryAction.StatAction.listWithQuery(appid).then((stats) => {
+                            listAction: (appId) => {
+                                return o2DM._queryAction.StatAction.listWithQuery(appId).then((stats) => {
                                     return o2DM._sort(stats.data).map((stat) => {
                                         return {
                                             ...stat,
-                                            appid: appid,
+                                            appId: appId,
                                             _pinyin: o2DM._toPY(stat)
                                         };
                                     });
@@ -890,27 +890,27 @@ o2DM._config = {
                         _type: 'designer-category',
                         label: '数据表',
                         ooicon: 'shujubiao',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('query.QueryManager', null, {navi: 2, application: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('query.QueryManager', null, {navi: 2, application: appId});
                         },
-                        handleCreate: (appid, appname)=>{
-                            var opt = {application: {id: appid, name: appname}};
-                            o2DM._openApp('query.TableDesigner', opt, opt);
+                        handleCreate: (appId, appname)=>{
+                            var opt = {application: {id: appId, name: appname}};
+                            o2DM.openApp('query.TableDesigner', opt, opt);
                         },
                         children: [{
                             label: '数据表',
                             _type: 'designer',
                             handleClick: (table) => {
-                                o2DM._openApp('query.TableDesigner', null, {
-                                    id: table.id, application: { id: table.appid }
+                                o2DM.openApp('query.TableDesigner', null, {
+                                    id: table.id, application: { id: table.appId }
                                 });
                             },
-                            listAction: (appid) => {
-                                return o2DM._queryAction.TableAction.listWithQuery(appid).then((tables) => {
+                            listAction: (appId) => {
+                                return o2DM._queryAction.TableAction.listWithQuery(appId).then((tables) => {
                                     return o2DM._sort(tables.data).map((table) => {
                                         return {
                                             ...table,
-                                            appid: appid,
+                                            appId: appId,
                                             _pinyin: o2DM._toPY(table)
                                         };
                                     });
@@ -923,28 +923,28 @@ o2DM._config = {
                         _type: 'designer-category',
                         label: '脚本配置',
                         ooicon: 'chaxunpeizhi',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('query.QueryManager', null, {navi: 3, application: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('query.QueryManager', null, {navi: 3, application: appId});
                         },
-                        handleCreate: (appid, appname)=>{
-                            var opt = {application: {id: appid, name: appname}};
-                            o2DM._openApp('query.StatementDesigner', opt, opt);
+                        handleCreate: (appId, appname)=>{
+                            var opt = {application: {id: appId, name: appname}};
+                            o2DM.openApp('query.StatementDesigner', opt, opt);
                         },
                         children: [{
                             label: '查询配置',
                             _type: 'designer',
                             handleClick: (statement) => {
-                                o2DM._openApp('query.StatementDesigner', null, {
+                                o2DM.openApp('query.StatementDesigner', null, {
                                     id: statement.id,
-                                    application: {id: statement.appid}
+                                    application: {id: statement.appId}
                                 });
                             },
-                            listAction: (appid) => {
-                                return o2DM._queryAction.StatementAction.listWithQuery(appid).then((statements) => {
+                            listAction: (appId) => {
+                                return o2DM._queryAction.StatementAction.listWithQuery(appId).then((statements) => {
                                     return o2DM._sort(statements.data).map((statement) => {
                                         return {
                                             ...statement,
-                                            appid: appid,
+                                            appId: appId,
                                             _pinyin: o2DM._toPY(statement)
                                         };
                                     });
@@ -956,28 +956,28 @@ o2DM._config = {
                         componentName: 'query.ImporterDesigner',
                         _type: 'designer-category',
                         ooicon: 'file_upload',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('query.QueryManager', null, {navi: 4, application: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('query.QueryManager', null, {navi: 4, application: appId});
                         },
-                        handleCreate: (appid, appname)=>{
-                            var opt = {application: {id: appid, name: appname}};
-                            o2DM._openApp('query.ImporterDesigner', opt, opt);
+                        handleCreate: (appId, appname)=>{
+                            var opt = {application: {id: appId, name: appname}};
+                            o2DM.openApp('query.ImporterDesigner', opt, opt);
                         },
                         children: [{
                             label: '导入模型',
                             _type: 'designer',
                             handleClick: (importer) => {
-                                o2DM._openApp('query.ImporterDesigner', null, {
+                                o2DM.openApp('query.ImporterDesigner', null, {
                                     id: importer.id,
-                                    application: {id: importer.appid}
+                                    application: {id: importer.appId}
                                 });
                             },
-                            listAction: (appid) => {
-                                return o2DM._queryAction.ImportModelAction.listWithQuery(appid).then((items) => {
+                            listAction: (appId) => {
+                                return o2DM._queryAction.ImportModelAction.listWithQuery(appId).then((items) => {
                                     return o2DM._sort(items.data).map((item) => {
                                         return {
                                             ...item,
-                                            appid: appid,
+                                            appId: appId,
                                             _pinyin: o2DM._toPY(item)
                                         };
                                     });
@@ -989,15 +989,15 @@ o2DM._config = {
                         componentName: 'query.Property',
                         _type: 'designer-category',
                         ooicon: 'jiekoupeizhi2',
-                        handleClick: (item, appid) => {
-                            o2DM._openApp('query.QueryManager', null, {navi: 5, application: appid});
+                        handleClick: (item, appId) => {
+                            o2DM.openApp('query.QueryManager', null, {navi: 5, application: appId});
                         }
                     }]
             }]
         },
         {
             handleClick: () => {
-                o2DM._openApp('service.ServiceManager');
+                o2DM.openApp('service.ServiceManager');
             },
             name: '服务管理',
             componentName: 'service.ServiceManager',
@@ -1008,17 +1008,17 @@ o2DM._config = {
                 componentName: 'service.AgentDesigner',
                 _type: 'designer-category',
                 ooicon: 'dailipeizhi1',
-                handleClick: (item, appid) => {
-                    o2DM._openApp('service.ServiceManager', null, {navi: 0});
+                handleClick: (item, appId) => {
+                    o2DM.openApp('service.ServiceManager', null, {navi: 0});
                 },
                 handleCreate: ()=>{
-                    o2DM._openApp('service.AgentDesigner', null, {});
+                    o2DM.openApp('service.AgentDesigner', null, {});
                 },
                 children: [{
                     label: '代理',
                     _type: 'designer',
                     handleClick: (item) => {
-                        o2DM._openApp('service.AgentDesigner', null, {id: item.id});
+                        o2DM.openApp('service.AgentDesigner', null, {id: item.id});
                     },
                     listAction: () => {
                         return o2DM._serviceAction.AgentAction.list().then((agents) => {
@@ -1039,18 +1039,18 @@ o2DM._config = {
                     _type: 'designer-category',
                     label: '接口',
                     ooicon: 'jiekoupeizhi21',
-                    handleClick: (item, appid) => {
-                        o2DM._openApp('service.ServiceManager', null, {navi: 1});
+                    handleClick: (item, appId) => {
+                        o2DM.openApp('service.ServiceManager', null, {navi: 1});
                     },
                     handleCreate: ()=>{
-                        o2DM._openApp('service.InvokeDesigner', null, {});
+                        o2DM.openApp('service.InvokeDesigner', null, {});
                     },
                     children: [{
                         label: '接口',
                         _type: 'designer',
                         categorized: true,
                         handleClick: (item) => {
-                            o2DM._openApp('service.InvokeDesigner', null, {id: item.id});
+                            o2DM.openApp('service.InvokeDesigner', null, {id: item.id});
                         },
                         listAction: () => {
                             return o2DM._serviceAction.InvokeAction.list().then((items) => {
@@ -1070,17 +1070,17 @@ o2DM._config = {
                     _type: 'designer-category',
                     label: '脚本配置',
                     ooicon: 'jiaoben',
-                    handleClick: (item, appid) => {
-                        o2DM._openApp('service.ServiceManager', null, {navi: 2});
+                    handleClick: (item, appId) => {
+                        o2DM.openApp('service.ServiceManager', null, {navi: 2});
                     },
                     handleCreate: ()=>{
-                        o2DM._openApp('service.ScriptDesigner', null, {});
+                        o2DM.openApp('service.ScriptDesigner', null, {});
                     },
                     children: [{
                         label: '脚本配置',
                         _type: 'designer',
                         handleClick: (item) => {
-                            o2DM._openApp('service.ScriptDesigner', null, { id: item.id });
+                            o2DM.openApp('service.ScriptDesigner', null, { id: item.id });
                         },
                         listAction: () => {
                             return o2DM._serviceAction.ScriptAction.list().then((items) => {
@@ -1101,16 +1101,16 @@ o2DM._config = {
                     label: '数据配置',
                     ooicon: 'js',
                     handleClick: () => {
-                        o2DM._openApp('service.ServiceManager', null, {navi: 3});
+                        o2DM.openApp('service.ServiceManager', null, {navi: 3});
                     },
                     handleCreate: ()=>{
-                        o2DM._openApp('service.DictionaryDesigner', null, {});
+                        o2DM.openApp('service.DictionaryDesigner', null, {});
                     },
                     children: [{
                         label: '数据配置',
                         _type: 'designer',
                         handleClick: (item) => {
-                            o2DM._openApp('service.DictionaryDesigner', null, {id: item.id});
+                            o2DM.openApp('service.DictionaryDesigner', null, {id: item.id});
                         },
                         listAction: () => {
                             return o2DM._serviceAction.DictAction.list().then((items) => {
@@ -1133,7 +1133,7 @@ o2DM._config = {
         //     componentName: 'FindDesigner',
         //     ooicon: 'search',
         //     handleClick: (item) => {
-        //         o2DM._openApp('FindDesigner');
+        //         o2DM.openApp('FindDesigner');
         //     }
         // },
         // {
@@ -1147,7 +1147,7 @@ o2DM._config = {
         //         label: '最近打开',
         //         _type: 'designer',
         //         handleClick: (item) => {
-        //             o2DM._openApp(item.componentName, null, { id: item.id, application: {id: item.appid} });
+        //             o2DM.openApp(item.componentName, null, { id: item.id, application: {id: item.appId} });
         //         },
         //         listAction: () => {
         //             return new Promise((resolve, reject)=>{

@@ -20,26 +20,46 @@ MWF.xApplication.designermanager.Main = new Class({
 		this.lp = MWF.xApplication.designermanager.LP;
 	},
 	loadApplication: function(callback){
+		this.addEvents();
 		if(!this.desktop.appCurrentList)this.desktop.appCurrentList = [];
-		o2DM._openApp = this.openApp.bind(this);
+		o2DM.openApp = this.openApp.bind(this);
 		layout.openApplication = (e, appNames, options, statusObj)=>{
-			o2DM._openApp(appNames, options, statusObj);
+			o2DM.openApp(appNames, options, statusObj);
 		};
 
 		var url = this.path+this.options.style+"/main.html";
 		this.content.loadHtml(url, {"bind": {"lp": this.lp}, "module": this}, function(){
 			this.loadNav();
+			this.restoreApps();
 		}.bind(this));
 	},
 	loadNav: function(){
-		this.nav = new o2DM.Nav(this);
-		this.nav.load();
+		this.designerNav = new o2DM.DesingerNav(this);
+		this.designerNav.load();
+		this.nav = this.designerNav;
+
+		this.collectionNav = new o2DM.CollectionNav(this);
+		this.collectionNav.load();
 	},
-	openApp: function(path, options, status, callback, param){
-		this._openApp(path, options, status, callback, param);
+	_getAppId: function(path, options, status, clazz){
+		var opt = options || {};
+		var sta = status || {};
+		let appId, id;
+		if(clazz.options.multitask){
+			id = opt.id || sta.id || sta.application || sta.column;
+			if(opt.appId || sta.appId){
+				appId = opt.appId || sta.appId;
+			}else if( id && path ){
+				appId = `${path}${id}`;
+			}else{
+				appId = path + "-" + new o2.widget.UUID();
+			}
+		}else{
+			appId = path;
+		}
+		return appId;
 	},
-	_openApp: function(path, options, status, callback, param){
-		debugger;
+	_loadClazz: function (path, callback){
 		var clazz = MWF.xApplication;
 		if( o2.typeOf(path) !== "string" )return;
 		path.split(".").each(function (a) {
@@ -48,37 +68,38 @@ MWF.xApplication.designermanager.Main = new Class({
 		});
 		clazz.options = clazz.options || {};
 
-		var _getAppid = ()=>{
-			var opt = options || {};
-			var sta = status || {};
-			let appId, id;
-			if(clazz.options.multitask){
-				id = opt.id || sta.id || sta.application || sta.column;
-				if(opt.appId || sta.appId){
-					appId = opt.appId || sta.appId;
-				}else if( id && path ){
-					appId = `${path}${id}`;
-				}else{
-					appId = path + "-" + new o2.widget.UUID();
-				}
+		MWF.xDesktop.requireApp(path, "lp."+o2.language, null, false);
+		MWF.xDesktop.requireApp(path, "Main", null, false);
+		if (clazz.loading && clazz.loading.then){
+			clazz.loading.then(function(){
+				if(callback)callback(clazz);
+			});
+		}else{
+			if(callback)callback(clazz);
+		}
+	},
+	openApp: function(path, options, status, callback, param){
+		this._loadClazz(path, (clazz)=>{
+			var appId = this._getAppId(path, options, status, clazz);
+			if(appId && o2DM.appMap[appId]){
+				var taskItem = o2DM.appMap[appId].taskItem;
+				taskItem.active();
+				if(callback)callback();
 			}else{
-				appId = path;
+				this._openApp(path, options, status, callback, param);
 			}
-			return appId;
-		};
-
-		var _load = function () {
+		})
+	},
+	_openApp: function(path, options, status, callback, param){
+		this._loadClazz(path, (clazz)=>{
 			if( clazz.Main ){
-				var appId = _getAppid();
+				var appId = this._getAppId(path, options, status, clazz);
 
-				if(o2DM.appMap[appId]){
-					o2DM.appMap[appId].dm_active();
-					return;
-				}
-
-				var node = new Element('div.app-content').inject(this.applicationNode);
+				var node = new Element('div.app-content');
+				node.inject(this.applicationNode);
 
 				var opt = options || {};
+				opt.taskItem = null;
 				opt.embededParent = node;
 				var app = new clazz.Main(this.desktop, opt);
 
@@ -92,176 +113,35 @@ MWF.xApplication.designermanager.Main = new Class({
 
 				app.desktop = this.desktop;
 
-				var tag = param?.tag ? param.tag : this.createTag(app);
-				this.bindAppToTag(tag, app);
+				var taskItem;
+				if( param?.taskItem ){
+					taskItem = param.taskItem;
+					taskItem.node = node;
+					taskItem.clazz = clazz;
+				}else{
+					taskItem = new o2DM.TaskItem(this, app, node, param?.tag, clazz)
+				}
 
-				//this.fireEvent("queryLoadApplication", app);
 				app.load();
 				app.setEventTarget(this);
-				app.refresh = ()=> {
-					if(o2DM.currentApp === app){
-						o2DM.currentApp = null;
-					}
-					if(this.desktop.currentApp === app){
-						this.desktop.currentApp = null;
-					}
-					var tag = this.createTag(app).inject(app._tag, 'before');
-					var appStatus ={
-						"id": app.options.id,
-						"name": app.options.name,
-						"style": app.options.style,
-						"appId": app.appId
-					};
-					var status = (app.recordStatus) ? app.recordStatus() : null;
-					var index = o2DM.apps.indexOf(app);
-					app.dm_close(true);
-					this.openApp(appStatus.name, appStatus, status, null, {
-						isRefresh: true,
-						index: index,
-						tag: tag
-					});
-				};
-
-				app._tag = tag;
-				app._container = node;
-
-				app.setTitle =  (str)=> {
-					// tag.setAttribute('text', str);
-					// tag._elements.text.textContent = str;
-					tag.innerHTML = str;
-					tag.setAttribute('title', str + ((app.appId) ? "-" + app.appId : ""));
-					app.options.title = str;
-					if(clazz.options.multitask){
-						this.addToHistory(app, str);
-					}
-				};
-
-				app.dm_close = (ignore)=>{
-					if(this.desktop.currentApp === app){
-						this.desktop.currentApp = null;
-					}
-					if(o2DM.currentApp === app){
-						o2DM.currentApp = null;
-						if(!ignore ){
-							var index = o2DM.apps.indexOf(app);
-							let lastApp;
-							if( index === 0 ){
-								lastApp = o2DM.apps[index+1];
-							}else if(index > 0){
-								lastApp = o2DM.apps[index-1];
-							}else if(index === -1){
-								if(o2DM.apps.length > 0){
-									lastApp = o2DM.apps[0];
-								}
-							}
-							if(lastApp){
-								lastApp.dm_active();
-							}
-						}
-					}
-					o2DM.apps.erase(app);
-					delete o2DM.appMap[app.appId];
-					app._tag.remove();
-					app._container.destroy();
-					app.close();
-				};
-
-				app.dm_hide = ()=>{
-					app._tag.setAttribute('type', 'default');
-					app._tag.oomenu?.hide();
-					app._container.hide();
-					app.setUncurrent();
-				};
-
-				app.dm_active = ()=>{
-					if(o2DM.currentApp === app) return;
-					o2DM.currentApp?.dm_hide();
-					tag.setAttribute('type', 'current');
-					tag.oomenu?.hide();
-					node.show();
-					app.setCurrent();
-					o2DM.currentApp = app;
-					if(!clazz.options.multitask){
-						this.addToHistory( app );
-					}
-				};
 
 				o2DM.appMap[app.appId] = app;
 				param?.index > -1 ?
 					(o2DM.apps[param.index] = app) :
 					o2DM.apps.push(app);
 
-				app.dm_active();
+				app.loaded = true;
+
+				if(callback)callback(app, node);
+
+				taskItem.active();
 			}else{
 				console.log('应用未找到：'+path, 'error');
-			}
-			this.loaded = true;
-			if(callback)callback();
-		}.bind(this);
-
-		MWF.xDesktop.requireApp(path, "lp."+o2.language, null, false);
-		MWF.xDesktop.requireApp(path, "Main", null, false);
-		if (clazz.loading && clazz.loading.then){
-			clazz.loading.then(function(){
-				_load();
-			});
-		}else{
-			_load();
-		}
-	},
-	createTag: function (app){
-		return new Element('oo-tag', {
-			text: app.options.title,
-			close: 'on',
-			menu: 'on',
-			type: 'current'
-		}).inject(this.taskbar);
-	},
-	bindAppToTag: function (tag, app){
-		tag.app = app;
-		tag.addEventListener("close", function (e) {
-			app.dm_close();
-			e.stopPropagation();
-		});
-		tag.addEventListener("click", function (e) {
-			app.dm_active();
-		});
-		tag.addEventListener("menu", function (e){
-			if(!tag.oomenu){
-				tag.oomenu = new $OOUI.Menu(tag._elements.menu, {
-					area: this.content,
-					styles: { width: '8.75rem' },
-					items: [{
-						label: '刷新', icon: 'reset',
-						command: ()=>{
-							app.refresh();
-						}
-					},{
-						label: '全部关闭', icon: 'switch',
-						command: ()=>{
-							while (o2DM.apps.length){
-								o2DM.apps[0].dm_close(true);
-							}
-							//o2DM.currentApp = null;
-						}
-					},{
-						label: '关闭其他', icon: 'process-monitor',
-						command: ()=>{
-							while (o2DM.apps.length > 1){
-								var cmpt = o2DM.apps[0] === app ? o2DM.apps[1] : o2DM.apps[0];
-								cmpt.dm_close(true);
-							}
-							//o2DM.currentApp = null;
-							app.dm_active();
-						}
-					}]
-				});
-				tag.oomenu.show();
 			}
 		});
 	},
 	searchDesigner: function (){
-		o2DM._openApp('FindDesigner');
+		o2DM.openApp('FindDesigner');
 	},
 	addToHistory: function(app, title){
 		let status;
@@ -318,19 +198,100 @@ MWF.xApplication.designermanager.Main = new Class({
 			menu.show();
 			menu.menu.addEventListener('command', (e)=>{
 				const d = e.detail;
-				o2DM._openApp(d.componentName, null, d.status || { id: d.id, application: {id: d.appid} });
+				o2DM.openApp(d.componentName, null, d.status || { id: d.id, application: {id: d.appId} });
 			});
 			this.historyMenu = menu;
 		});
 	},
+	restoreApps: function (){
+		o2.UD.getDataJson("designers", (json)=>{
+			Object.keys(json.appMap).forEach(appId=>{
+				const obj = json.appMap[appId];
+				const app = {
+					options: obj,
+					status: obj.status,
+					appId: appId
+				};
+				new o2DM.TaskItem(this, app);
+				o2DM.appMap[appId] = app;
+				o2DM.apps.push(app);
+			});
+			debugger;
+			if(json.currentApp && o2DM.appMap[json.currentApp]){
+				o2DM.appMap[json.currentApp].taskItem.active();
+			}
+		});
+	},
+	addEvents: function (){
+		window.onbeforeunload = (e)=>{
+			if (!this.isLogout){
+				this.recordDesktopStatus();
+
+				e = e || window.event;
+				e.returnValue = '如果关闭或刷新当前页面，未保存的内容会丢失，请确定您的操作';
+				return '如果关闭或刷新当前页面，未保存的内容会丢失，请确定您的操作';
+			}
+		};
+	},
+	recordDesktopStatus: function(callback){
+		Object.each(o2DM.appMap, (app, id)=>{
+			if (!app.options.desktopReload){
+				app.taskItem?.close();
+			}
+		});
+		var status = this.getLayoutStatusData();
+		console.log(status);
+
+		try{
+			o2.UD.putData("designers", status, function(){
+				if (callback) callback();
+			});
+		}catch(e){}
+
+	},
+	getLayoutStatusData: function(){
+		var status = {
+			"currentApp": (o2DM.currentApp) ? o2DM.currentApp.appId : "",
+			"appMap": {}
+		};
+		Object.each(o2DM.appMap, (app, id)=>{
+			var appStatus = this.getAppStatusData(app, id);
+			if (appStatus) status.appMap[id] = appStatus;
+		});
+		return status;
+	},
+	getAppStatusData: function(app){
+		debugger;
+		var appStatus;
+		if (app.window){
+			if (app.options.desktopReload){
+				appStatus = {
+					"isStatus": true,
+					"desktopReload": true,
+					"appId": app.appId,
+					"componentName": app.options.name,
+					"name": app.options.name,
+					"style": app.options.style,
+					"title": app.options.title,
+					"window": {}
+				};
+				if (app.recordStatus){
+					appStatus.status = app.recordStatus();
+				}
+			}
+		}else{
+			if (app.options){
+				app.options.isStatus = true;
+				appStatus = app.options;
+			}
+		}
+		return appStatus;
+	},
 	locateToCurrent: function (e){
 		this.nav.locateToCurrent(e);
 	},
-	expandSelected: function (e){
-		this.nav.expandSelected(e);
-	},
-	collapseSelected: function (e){
-		this.nav.collapseSelected(e);
+	collapseNav: function (e){
+		this.nav.collapseLevel1(e);
 	},
 	createRefreshNode: function(){
 		this.refreshNode = new Element("div.o2-designer-refresh-node.icon-refresh").inject(this.content);
@@ -344,7 +305,9 @@ MWF.xApplication.designermanager.Main = new Class({
 		}.bind(this));
 	},
 	showRefresh: function(){
-		debugger;
+		if( !o2DM.currentApp ){
+			return;
+		}
 		if (!this.refreshNodeShow){
 			if (!this.refreshNode) this.createRefreshNode();
 			var size = this.taskbar.getSize();
@@ -390,13 +353,27 @@ MWF.xApplication.designermanager.Main = new Class({
 			window.clearTimeout(this.refreshTimeoutId);
 			this.refreshTimeoutId = "";
 		}
+	},
+	toDesignerNav: function (e){
+		this.nav = this.designerNav;
+		this.tabDesigner.addClass('current');
+		this.tabCollection.removeClass('current');
+		this.oonavDesigner.removeClass('hide');
+		this.oonavCollection.addClass('hide');
+	},
+	toCollectionNav: function (e){
+		this.nav = this.collectionNav;
+		this.tabDesigner.removeClass('current');
+		this.tabCollection.addClass('current');
+		this.oonavDesigner.addClass('hide');
+		this.oonavCollection.removeClass('hide');
 	}
 });
 
-o2DM.Nav = new Class({
-	initialize: function (app){
-		this.app = app;
-		this.oonav = app.oonav;
+o2DM.DesingerNav = new Class({
+	initialize: function (main){
+		this.main = main;
+		this.oonav = main.oonavDesigner;
 	},
 	load: function (){
 		this.oonav.addEventListener('select', (e)=>{
@@ -412,18 +389,18 @@ o2DM.Nav = new Class({
 			this.oonav.setMenu(data);
 		});
 	},
-	getList: function ( template, appid ) {
+	getList: function ( template, appId ) {
 		var list = template;
 		this.categories = [];
-		//var appid = this.getAppid();
+		//var appId = this.getAppId();
 		if( list.length === 1 && list[0].listAction){
-			return list[0].listAction( appid ).then((data)=>{
+			return list[0].listAction( appId ).then((data)=>{
 				return data.map(d=>{
 					const tmplt = Object.clone(list[0]);
 					switch ( tmplt._type ){
 						case 'app':
 							d.children = tmplt.children.map((child)=>{
-								child.appid = d.id;
+								child.appId = d.id;
 								//child._parent = d;
 								return child;
 							});
@@ -433,14 +410,14 @@ o2DM.Nav = new Class({
 							// d.children.push(...o2DM._appTools);
 							break;
 						case 'designer':
-							d.appid = appid;
+							d.appId = appId;
 							// d.children = [...o2DM._designerTools];
 							break;
 					}
 					d.text = d.name;
 					if(d.ooicon) d.icon = d.ooicon;
 					d.handleClick = ()=>{
-						tmplt.handleClick(d, appid);
+						tmplt.handleClick(d, appId);
 					};
 					if( tmplt.categorized ){
 						(!d.category || d.category==='未分类') && (d.category = o2DM._UNCATEGORIZED);
@@ -463,9 +440,9 @@ o2DM.Nav = new Class({
 							child.selectable = 'yes';
 							child.id = `${child.componentName}`; break;
 						case 'designer-category':
-							child.id = appid === 'service.ServiceManager' ?
+							child.id = appId === 'service.ServiceManager' ?
 								`${child.componentName}` :
-								`${child.componentName}.${appid}`;
+								`${child.componentName}.${appId}`;
 							break;
 					}
 				}
@@ -507,9 +484,9 @@ o2DM.Nav = new Class({
 		return this.oonav.getItem(data.id)?.data;
 	},
 	getAppdata: function(data){
-		return this.oonav.getItem(data.appid)?.data;
+		return this.oonav.getItem(data.appId)?.data;
 	},
-	getAppid: function(data){
+	getAppId: function(data){
 		return this.getAppdata(data)?.id;
 	},
 	getAppname: function(data){
@@ -525,7 +502,7 @@ o2DM.Nav = new Class({
 		data.loaded = true;
 		if( data.children && data.children.length > 0 ){
 			var template = Array.clone(data.children);
-			Promise.resolve(this.getList( template, data.appid || data.id )).then((children)=>{
+			Promise.resolve(this.getList( template, data.appId || data.id )).then((children)=>{
 				this.parseCategory();
 
 				data.children = children || [];
@@ -562,7 +539,7 @@ o2DM.Nav = new Class({
 				e.stopPropagation();
 				if(!node.menu){
 					node.menu = new $OOUI.Menu(node, {
-						area: this.app.content,
+						area: this.main.content,
 						styles: { width: '8.75rem' },
 						items: (data._type === 'app' ? o2DM._appTools : o2DM._designerTools).filter(tool=>{
 							return this.checkToolCondition(null, tool, data);
@@ -591,7 +568,7 @@ o2DM.Nav = new Class({
 				slot: `${data.id}-inner`,
 				events: {
 					click: (e)=>{
-						data.handleCreate(data.appid || this.getAppid(data), this.getAppname(data));
+						data.handleCreate(data.appId || this.getAppId(data), this.getAppname(data));
 						e.stopPropagation();
 					}
 				}
@@ -599,7 +576,7 @@ o2DM.Nav = new Class({
 		}
 	},
 	// handleCreate: function (e, data){
-	// 	data.handleCreate(data.appid || this.getAppid(data), this.getAppname(data));
+	// 	data.handleCreate(data.appId || this.getAppId(data), this.getAppname(data));
 	// 	e.stopPropagation();
 	// },
 	handleClick: function (e, data){
@@ -607,7 +584,7 @@ o2DM.Nav = new Class({
 			var d = this.getDesignerData(data);
 			data.handleClick(d, d.isHistory ? d.appData : this.getAppdata(data));
 		}else{
-			data.handleClick(data, data.appid || this.getAppid(data), this.getAppdata(data));
+			data.handleClick(data, data.appId || this.getAppId(data), this.getAppdata(data));
 		}
 	},
 	locateToCurrent: function (e){
@@ -632,7 +609,7 @@ o2DM.Nav = new Class({
 			debugger;
 			const configs = o2DM._findAllParentConfigs(app.options.name) || [];
 			const id = app.options.id;
-			const appid = app.application ? app.application.id : '';
+			const appId = app.application ? app.application.id : '';
 
 			const getKey = (config)=>{
 				switch (config._type){
@@ -641,9 +618,9 @@ o2DM.Nav = new Class({
 					case 'designer-category':
 						return config.componentName.startsWith('service.') ?
 							`${config.componentName}` :
-							`${config.componentName}.${appid}`;
+							`${config.componentName}.${appId}`;
 					case 'app':
-						return appid || id;
+						return appId || id;
 					case 'designer':
 						return id;
 				}
@@ -677,7 +654,209 @@ o2DM.Nav = new Class({
 	expandSelected: function (e){
 
 	},
-	collapseSelected: function (e){
-
+	collapseLevel1: function (e){
+		this.oonav.data.children.forEach(child=>{
+			child.expanded = false;
+		});
 	}
+});
+
+o2DM.CollectionNav = new Class({
+	Extends: o2DM.DesingerNav,
+	initialize: function (main){
+		this.main = main;
+		this.oonav = main.oonavCollection;
+	},
+});
+
+o2DM.TaskItem = new Class({
+	initialize: function (main, app, node, tag, clazz){
+		this.app = app;
+		this.main = main;
+		this.node = node;
+		this.desktop = main.desktop;
+		this.taskbar = main.taskbar;
+		this.clazz = clazz;
+
+		//??
+		//this.node = new Element('div.app-content').inject(this.main.applicationNode);
+
+		this.node?.inject(this.main.applicationNode);
+
+		this.bindThisToApp();
+		this.tag = tag || this.createTag('default');
+		this.bindAppToTag();
+	},
+	isApploaded: function (){
+		const app = this.app;
+		return !app.options.isStatus;
+	},
+	bindThisToApp: function(){
+		var app = this.app;
+		app.taskItem = this;
+		app.refresh = ()=> {
+			this.refresh();
+		};
+
+		app.setTitle =  (str)=> {
+			this.setTitle(str);
+		};
+	},
+	setTitle: function (str){
+		const {app, tag, clazz} = this;
+		tag.innerHTML = str;
+		tag.setAttribute('title', str + ((app.appId) ? "-" + app.appId : ""));
+		app.options.title = str;
+		if(clazz?.options.multitask){
+			this.main.addToHistory(app, str);
+		}
+	},
+	refresh: function (){
+		const app = this.app;
+		if(o2DM.currentApp === app){
+			o2DM.currentApp = null;
+		}
+		if(this.desktop.currentApp === app){
+			this.desktop.currentApp = null;
+		}
+		var appStatus ={
+			"id": app.options.id,
+			"componentName": app.options.name,
+			"name": app.options.name,
+			"style": app.options.style,
+			"appId": app.appId
+		};
+		var status = (app.recordStatus) ? app.recordStatus() : null;
+		var index = o2DM.apps.indexOf(app);
+		var tag = this.createTag('default').inject(this.tag, 'before');
+		this.close(true);
+		o2DM.openApp(appStatus.componentName, appStatus, status, null, {
+			isRefresh: true,
+			index: index,
+			tag: tag
+		});
+	},
+	close: function (ignore){
+		const app = this.app;
+		if(this.desktop.currentApp === app){
+			this.desktop.currentApp = null;
+		}
+		if(o2DM.currentApp === app){
+			o2DM.currentApp = null;
+			if(!ignore ){
+				var index = o2DM.apps.indexOf(app);
+				let lastApp;
+				if( index === 0 ){
+					lastApp = o2DM.apps[index+1];
+				}else if(index > 0){
+					lastApp = o2DM.apps[index-1];
+				}else if(index === -1){
+					if(o2DM.apps.length > 0){
+						lastApp = o2DM.apps[0];
+					}
+				}
+				if(lastApp){
+					lastApp.taskItem?.active();
+				}
+			}
+		}
+		o2DM.apps.erase(app);
+		delete o2DM.appMap[app.appId];
+		this.tag.remove();
+		this.node?.destroy();
+		app.close && app.close();
+	},
+	hide: function (){
+		var {app, tag, node} = this;
+		tag.setAttribute('type', 'default');
+		tag.oomenu?.hide();
+		node?.hide();
+		if(this.isApploaded()){
+			app.setUncurrent();
+		}
+	},
+	active: function (){
+		var app = this.app;
+		if( app.options.isStatus ){
+			//const appId = app.options.appId;
+			const index = o2DM.apps.indexOf(app);
+			this.main._openApp(app.options.componentName, app.options, app.status, (newApp, node)=>{
+				newApp.options.isStatus = false;
+				this.node = node;
+				this.app = newApp;
+				// o2DM.apps[index] = newApp;
+				// o2DM.appMap[appId] = newApp;
+				this.bindThisToApp();
+			}, {
+				taskItem: this,
+				index: index
+			});
+		}else{
+			var {tag, node, clazz} = this;
+			if(o2DM.currentApp === app) return;
+			o2DM.currentApp?.taskItem.hide();
+			tag.setAttribute('type', 'current');
+			tag.oomenu?.hide();
+			node?.show();
+			app.setCurrent();
+			o2DM.currentApp = app;
+			if(!clazz.options.multitask){
+				this.main.addToHistory( app );
+			}
+		}
+	},
+	createTag: function (type){
+		return new Element('oo-tag', {
+			text: this.app?.options?.title || '',
+			close: 'on',
+			menu: 'on',
+			type: type || 'current'
+		}).inject(this.taskbar);
+	},
+	bindAppToTag: function (){
+		const {tag, app} = this;
+		tag.taskItem = this;
+		tag.app = app;
+		tag.addEventListener("close",  (e)=>{
+			this.close();
+			e.stopPropagation();
+		});
+		tag.addEventListener("click", (e)=>{
+			this.active();
+		});
+		tag.addEventListener("menu", (e)=>{
+			if(!tag.oomenu){
+				tag.oomenu = new $OOUI.Menu(tag._elements.menu, {
+					area: this.content,
+					styles: { width: '8.75rem' },
+					items: [{
+						label: '刷新', icon: 'reset',
+						command: ()=>{
+							this.refresh();
+						}
+					},{
+						label: '全部关闭', icon: 'switch',
+						command: ()=>{
+							while (o2DM.apps.length){
+								o2DM.apps[0].taskItem?.close(true);
+							}
+							//o2DM.currentApp = null;
+						}
+					},{
+						label: '关闭其他', icon: 'process-monitor',
+						command: ()=>{
+							while (o2DM.apps.length > 1){
+								var cmpt = o2DM.apps[0] === app ? o2DM.apps[1] : o2DM.apps[0];
+								cmpt.taskItem?.close(true);
+							}
+							//o2DM.currentApp = null;
+							this.active();
+						}
+					}]
+				});
+				tag.oomenu.show();
+			}
+		});
+	}
+
 });

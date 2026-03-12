@@ -23,6 +23,7 @@ nav{
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    position: relative;
     /*overflow: auto;*/
 }
 nav > oo-nav {
@@ -82,6 +83,9 @@ footer{
     justify-content: flex-end;
     padding-right: 0.5em;
     border-bottom: 1px solid #e6e6e6;
+    position: absolute;
+    top: 0.25em;
+    right: 0.25em;
 }
 .o2-designer-refresh-node {
     width: 40px;
@@ -99,4 +103,18 @@ footer{
 }
 .icon-refresh{
     background-image: url(../o2_core/o2/xDesktop/$Default/red/icons/icon_shuaxin.png) !important;
+}
+.o2-designer-tabs{
+    display: flex;
+    border-bottom: 1px solid var(--oo-color-gray1);
+    padding: 0 0.5em;
+}
+.o2-designer-tabs div{
+    padding: 0.5em;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.o2-designer-tabs .current{
+    color: var(--oo-color-main);
+    border-bottom: 2px solid var(--oo-color-main);
 }
