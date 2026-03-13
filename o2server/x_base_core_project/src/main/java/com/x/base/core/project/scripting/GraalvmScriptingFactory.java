@@ -1,5 +1,17 @@
 package com.x.base.core.project.scripting;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.reflect.TypeToken;
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -18,7 +30,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -27,19 +38,6 @@ import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.Value;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.reflect.TypeToken;
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 
 public class GraalvmScriptingFactory {
 
@@ -146,9 +144,8 @@ public class GraalvmScriptingFactory {
 		if(denyClassList.contains(className)){
 			return false;
 		}
-		return className.startsWith("com.x.base.core.project.tools")
-				|| className.startsWith("com.x.base.core.project.connection")
-				|| className.startsWith("com.x.organization")
+		return className.startsWith("com.x.base.core.project.connection")
+				|| className.startsWith("com.x.organization.core")
 				|| getScriptingAllowedClasses().contains(className);
 	}
 
