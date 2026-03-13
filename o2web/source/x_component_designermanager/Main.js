@@ -504,6 +504,18 @@ o2DM.DesingerNav = new Class({
         return this.getAppdata(data)?.name;
     },
     handleExpand: function (e, data) {
+        if(data._type === "app-category"){
+            e.target.data.children.forEach(child=>{
+               if(child.id !== data.id){
+                   if( child.expanded){
+                       this._findMiddleItem(e);
+                       setTimeout(()=>{
+                           child.expanded = false;
+                       }, 0);
+                   }
+               }
+            });
+        }
         if (!data._type || data.loaded) {
             if (this.afterExpand) {
                 this.afterExpand();
@@ -525,6 +537,34 @@ o2DM.DesingerNav = new Class({
                 }
             });
         }
+    },
+    _findMiddleItem: function (e){
+        const scrollContainer = this.oonav._elements.navContent;
+        const targetDivs = this.oonav.getItem(e.detail.data.id).childrenEl.querySelectorAll('div');
+
+        function hasScrollbar(container) {
+            return container.scrollHeight > container.clientHeight;
+        }
+
+        if (!hasScrollbar(scrollContainer)) {
+            return;
+        }
+
+        const containerRect = scrollContainer.getBoundingClientRect();
+        const middleY = containerRect.top + containerRect.height / 2;
+
+        let middleDiv = null;
+        targetDivs.forEach(div => {
+            const divRect = div.getBoundingClientRect();
+            if (divRect.top <= middleY && divRect.bottom >= middleY) {
+                middleDiv = div;
+            }
+        });
+
+        if (middleDiv) {
+            console.log('当前中间的DIV是：', middleDiv);
+        }
+
     },
     _setToolEvents: function (data) {
         data.children.map(child => {
@@ -605,7 +645,7 @@ o2DM.DesingerNav = new Class({
                 let item = this.oonav.getItem(app.options.id || app.options.name);
                 if (item) {
                     item.itemEl.scrollIntoView({
-                        behavior: 'smooth', block: 'end', inline: 'end'
+                        behavior: 'smooth', block: 'end', inline: 'nearest', preventScroll: true
                     });
                     item.select();
                 }
@@ -1245,12 +1285,82 @@ o2DM.CollectionListLine = new Class({
     },
     edit: function (e) {
 		new o2DM.CollectionForm(this);
-    }
+    },
 })
 
 o2DM.CollectionForm = new Class({
-    initialize: function (line, node, options) {
+    initialize: function (line, node) {
 		this.line = line;
+        this.list = this.line.list;
+        this.node = node;
+    },
+    load: function (){
+        const options = {
+            events: {
+                ok: (e) => {
+                    if (title.checkValidity()) {
+                        e.target.close();
+                    }
+                },
+                cancel: (e) => {
+                    if (iconMenu) iconMenu.hide();
+                    e.target.close();
+                },
+                show: (e) => {
+                    this.loadContent(e.target);
+                }
+            },
+            zIndex: 500000,
+            width: '60rem',
+            canResize: true
+        };
+        $OOUI.dialog('编辑导航', content, this.list.node, options);
+    },
+    loadContent: function (dialog) {
+        const content = new Element('div', {styles: {'position': 'relative'}});
+
+        var html =
+            `<div class="config-navi-item-editor">
+    			<div class="config-navi-item-editor-title">基本配置</div>
+    			<div class="config-navi-item-editor-fields">
+    				<div item="name"></div>
+    				<div item="text"></div>
+    				<div item="title"></div>
+    				<div item="icon"></div>
+    				<div item="selected"></div>
+    				<div item="expanded"></div>
+    				<div item="appType"></div>
+    				<div item="designerType"></div>
+    				<div item="data"></div>
+				</div>
+    		</div>`;
+        content.set("html", html);
+
+        MWF.xDesktop.requireApp("Template", "MForm", function () {
+            this.form = new MForm(content, this.line.data, {
+                style: "v10",
+                isEdited: true,
+                itemTemplate: {
+                    name: { type:'oo-input', label : '唯一标识', notEmpty : true },
+                    text: { type:'oo-input', label : '显示文本', notEmpty : true },
+                    title: { type:'oo-input', label : '导航标题', notEmpty : true },
+                    icon: { type:'oo-input', label : '导航图标', notEmpty : true },
+                    selected: { type:'oo-input', label : '默认选中'},
+                    expanded: { type:'oo-input', label : '默认展开'},
+                    appType: {
+                        type:'oo-radiogroup', label : '应用类型', notEmpty : true,
+                        selectValue: Object.keys(o2DM._appTypeMap),
+                        selectText: Object.values(o2DM._appTypeMap),
+                        event: {
+                            change: (item, ev)=>{ console.log(item, ev) }
+                        }
+                    },
+                    designerType: { type:'oo-radiogroup', label : '设计类型', notEmpty : true },
+                }
+            });
+            this.form.load();
+            this.createIconNode();
+        }.bind(this), true);
     },
     editNavi: function (event) {
         const content = new Element('div', {styles: {'position': 'relative'}});
