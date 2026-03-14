@@ -12,20 +12,13 @@ o2DM._ALL = 'all';
 o2DM._HISTORY_DESIGNER_NAME = 'HistoryOpenedDesigner';
 o2DM._HISTORY_DESIGNER_MAX_COUNT = 20; //最近打开的设计元素数量
 
-o2DM._selectorTypeMap = {
-    portal: 'Portal',
-    process: 'Application',
-    cms: 'CMSApplication',
-    query: 'Query',
-    'portal.PageDesigner': '',
-};
 
 o2DM._appTypeMap = {
-    portal: '门户管理',
-    process: '流程管理',
-    cms: '内容管理',
-    query: '数据中心',
-    service: '服务管理'
+    'portal.PortalManager': '门户管理',
+    'process.processManager': '流程管理',
+    'cms.Column': '内容管理',
+    'query.Query': '数据中心',
+    'service.ServiceManager': '服务管理'
 };
 
 o2DM._ooiconMap = {

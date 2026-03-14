@@ -391,6 +391,9 @@ o2DM.DesingerNav = new Class({
         this.oonav.addEventListener('expand', (e) => {
             this.handleExpand(e, e.detail.data)
         });
+        this.oonav.addEventListener('beforeExpand', (e) => {
+            this.handleBeforeExpand(e, e.detail.data)
+        });
         var template = Array.clone(o2DM._config.children);
         Promise.resolve(this.getList(template)).then((data) => {
             this.parseCategory();
@@ -503,22 +506,44 @@ o2DM.DesingerNav = new Class({
     getAppname: function (data) {
         return this.getAppdata(data)?.name;
     },
-    handleExpand: function (e, data) {
+    recordScrollTop: function (data){
+        if(!this.scrollPositionMap)this.scrollPositionMap = {};
+        const scrollContainer = this.oonav._elements.navContent;
+        if (scrollContainer) {
+            this.scrollPositionMap[data.id] = scrollContainer.scrollTop;
+            console.log(data.text, this.scrollPositionMap[data.id])
+        }
+    },
+    restoreScrollTop: function (data){
+        const scrollContainer = this.oonav._elements.navContent;
+        if (this.scrollPositionMap[data.id] !== undefined) {
+            //有滚动条
+            if (scrollContainer.scrollHeight > scrollContainer.clientHeight) {
+                scrollContainer.scrollTo(0, this.scrollPositionMap[data.id]);
+                console.log(data.text, this.scrollPositionMap[data.id])
+            }
+        }
+    },
+    handleBeforeExpand: function (e, data){
         if(data._type === "app-category"){
             e.target.data.children.forEach(child=>{
-               if(child.id !== data.id){
-                   if( child.expanded){
-                       this._findMiddleItem(e);
-                       setTimeout(()=>{
-                           child.expanded = false;
-                       }, 0);
-                   }
-               }
+                if(child.id !== data.id){
+                    if( child.expanded){
+                        this.recordScrollTop(child);
+                        setTimeout(()=>{
+                            child.expanded = false;
+                        }, 0);
+                    }
+                }
             });
         }
+    },
+    handleExpand: function (e, data) {
         if (!data._type || data.loaded) {
             if (this.afterExpand) {
                 this.afterExpand();
+            }else{
+                this.restoreScrollTop(data);
             }
             return;
         }
@@ -537,34 +562,6 @@ o2DM.DesingerNav = new Class({
                 }
             });
         }
-    },
-    _findMiddleItem: function (e){
-        const scrollContainer = this.oonav._elements.navContent;
-        const targetDivs = this.oonav.getItem(e.detail.data.id).childrenEl.querySelectorAll('div');
-
-        function hasScrollbar(container) {
-            return container.scrollHeight > container.clientHeight;
-        }
-
-        if (!hasScrollbar(scrollContainer)) {
-            return;
-        }
-
-        const containerRect = scrollContainer.getBoundingClientRect();
-        const middleY = containerRect.top + containerRect.height / 2;
-
-        let middleDiv = null;
-        targetDivs.forEach(div => {
-            const divRect = div.getBoundingClientRect();
-            if (divRect.top <= middleY && divRect.bottom >= middleY) {
-                middleDiv = div;
-            }
-        });
-
-        if (middleDiv) {
-            console.log('当前中间的DIV是：', middleDiv);
-        }
-
     },
     _setToolEvents: function (data) {
         data.children.map(child => {
@@ -978,15 +975,17 @@ o2DM.CollectionList = new Class({
             this._loadChildren();
         });
 	},
-    _loadChildren: function () {
+    _loadChildren: function (callback) {
         if(this.naviData && this.htmlLoaded && this.lineTemplate){
+            this.childrenNode.empty();
             this.naviData.forEach((d, i)=> {
                 const line = new o2DM.CollectionListLine(this, this.childrenNode, d);
                 line.first = i === 0;
-                line.last = i === this.data.children.length-1;
+                line.last = i === this.naviData.length-1;
                 line.load();
                 this.children.push(d);
             });
+            if(callback)callback();
         }
     },
     getNewTitle: function (data = this.naviData) {
@@ -1002,34 +1001,28 @@ o2DM.CollectionList = new Class({
         }
         return title;
     },
-    createNav: function () {
+    createChild: function () {
         const newData = {
             text: this.getNewTitle(this.naviData),
             icon: 'menu',
             actionType: 'none',
             level: 0
-        }
-        const otherItemNode = (this.naviData.length) ? node.lastElementChild : null;
-        const otherData = (this.naviData.length) ? this.naviData.at(-1) : null;
-
+        };
         this.naviData.push(newData);
 
-        const module = getItemModule(newData, this.naviData);
-        node.loadHtmlText(html, {bind: newData, module});
+        this.saveData();
 
-        naviDict.set('appNavis', _self.naviData);
-
-        const newItemNode = node.lastElementChild;
-        newItemNode.addClass('config-navi-item-created')
-        newItemNode.firstElementChild.scrollIntoView({behavior: 'smooth', block: 'center'});
-        window.setTimeout(() => {
-            try {
-                newItemNode?.removeClass('config-navi-item-created')
-            } catch (e) {
-            }
-        }, 5000);
-
-        if (otherItemNode) checkUpDownAction(otherItemNode, otherData, this.naviData);
+        this._loadChildren(()=>{
+            const lastLine = this.children[this.naviData.length-1];
+            lastLine.itemNode.addClass('config-navi-item-created');
+            lastLine.itemNode.scrollIntoView({behavior: 'smooth', block: 'center'});
+            window.setTimeout(() => {
+                try {
+                    lastLine.itemNode?.removeClass('config-navi-item-created');
+                } catch (e) {
+                }
+            }, 5000);
+        })
     },
     saveData: function () {
         this.dict.set('appNavis', this.naviData);
@@ -1041,7 +1034,7 @@ o2DM.CollectionListLine = new Class({
 		this.list = list;
         this.node = node;
         this.data = data;
-        this.html = list.itemTemplate;
+        this.html = list.lineTemplate;
         this.parentLine = parentLine;
         this.children = [];
         this.level = parentLine?.level ?? 0;
@@ -1049,7 +1042,7 @@ o2DM.CollectionListLine = new Class({
         this.last = false;
 	},
     load: function (callback) {
-		this.node.loadHtmlText(this.list.itemTemplate, {bind: this.data, module: this}, ()=>{
+		this.node.loadHtmlText(this.html, {bind: this.data, module: this}, ()=>{
             this.data.children?.forEach((d, i)=> {
                 var line = new o2DM.CollectionListLine(this.list, this.childrenNode, d, this);
                 line.first = i === 0;
@@ -1097,6 +1090,14 @@ o2DM.CollectionListLine = new Class({
     //         }
     //     });
     // },
+    edit: function (){
+        debugger;
+        new o2DM.CollectionForm(this, (newData)=>{
+            Object.assign(this.data, newData);
+            this.reload();
+            this.list.saveData();
+        }).load();
+    },
     cancelMove: function () {
         try {
             this.itemNode.removeClass('config-navi-item-moving');
@@ -1116,20 +1117,18 @@ o2DM.CollectionListLine = new Class({
             o2.defer(this.cancelMove, 5000, this.itemNode);
             this.list.movingLine = this.itemNode;
 
-            const position = (upOrDown == 'up') ? 'beforebegin' : 'afterend';
-            targetLine.itemNode.insertAdjacentElement(position, this.itemNode);
+            targetLine.itemNode.insertAdjacentElement('beforebegin', this.itemNode);
 
             if(targetLine.first){
                 targetLine.first = false;
                 this.first = true;
             }
 
-            const upData = parentData[ idx - 1];
-            parentData[idx] = upData;
+            parentData[idx] = parentData[ idx - 1];
             parentData[idx - 1] = this.data;
 
             this.checkMoveUp();
-            this.checkMoveDown()
+            this.checkMoveDown();
 
             targetLine.checkMoveUp();
             targetLine.checkMoveDown();
@@ -1157,8 +1156,7 @@ o2DM.CollectionListLine = new Class({
                 this.last = true;
             }
 
-            const downData = parentData[ idx + 1 ];
-            parentData[idx] = downData;
+            parentData[idx] = parentData[ idx + 1 ];
             parentData[idx + 1] = this.data;
 
             this.checkMoveUp();
@@ -1238,7 +1236,7 @@ o2DM.CollectionListLine = new Class({
             lastLine.itemNode.scrollIntoView({behavior: 'smooth', block: 'center'});
 			window.setTimeout(() => {
 				try {
-					newItemNode?.removeClass('config-navi-item-created')
+                    lastLine.itemNode?.removeClass('config-navi-item-created')
 				} catch (e) {
 				}
 			}, 5000);
@@ -1283,18 +1281,20 @@ o2DM.CollectionListLine = new Class({
     checkMoveDown: function (e) {
         (this.moveDownAction || e.target).setStyle('visibility', this.last ? 'hidden' : 'visible');
     },
-    edit: function (e) {
-		new o2DM.CollectionForm(this);
-    },
 })
 
 o2DM.CollectionForm = new Class({
     initialize: function (line, node) {
 		this.line = line;
         this.list = this.line.list;
-        this.node = node;
+        this.main = this.list.main;
+        //this.node = node;
+        this.content = new Element('div', {styles: {'position': 'relative'}});
+        const baseUrl = this.main.path + this.main.options.style;
+        this.content.loadCss(baseUrl+'/collectionList.css');
     },
     load: function (){
+        this.loadContent();
         const options = {
             events: {
                 ok: (e) => {
@@ -1303,25 +1303,23 @@ o2DM.CollectionForm = new Class({
                     }
                 },
                 cancel: (e) => {
-                    if (iconMenu) iconMenu.hide();
+                    //if (iconMenu) iconMenu.hide();
                     e.target.close();
                 },
                 show: (e) => {
-                    this.loadContent(e.target);
+
                 }
             },
-            zIndex: 500000,
+            zIndex: 50,
             width: '60rem',
             canResize: true
         };
-        $OOUI.dialog('编辑导航', content, this.list.node, options);
+        $OOUI.dialog('编辑导航', this.content, this.main.content, options);
     },
-    loadContent: function (dialog) {
-        const content = new Element('div', {styles: {'position': 'relative'}});
-
+    loadContent: function () {
+        var d = this.line.data;
         var html =
             `<div class="config-navi-item-editor">
-    			<div class="config-navi-item-editor-title">基本配置</div>
     			<div class="config-navi-item-editor-fields">
     				<div item="name"></div>
     				<div item="text"></div>
@@ -1329,15 +1327,18 @@ o2DM.CollectionForm = new Class({
     				<div item="icon"></div>
     				<div item="selected"></div>
     				<div item="expanded"></div>
-    				<div item="appType"></div>
-    				<div item="designerType"></div>
-    				<div item="data"></div>
+    				<div item="appType" style="flex:100%;"></div>
+    				<div item="portal.PortalManager" style="flex:100%;display:${d.appType!=='portal.PortalManager'?'none':''}"></div>
+    				<div item="process.processManager" style="flex:100%;display:${d.appType!=='process.processManager'?'none':''}"></div>
+    				<div item="cms.Column" style="flex:100%;display:${d.appType!=='cms.Column'?'none':''}"></div>
+    				<div item="query.Query" style="flex:100%;display:${d.appType!=='query.Query'?'none':''}"></div>
+    				<div item="service.ServiceManager" style="flex:100%;display:${d.appType!=='service.ServiceManager'?'none':''}"></div>
 				</div>
     		</div>`;
-        content.set("html", html);
+        this.content.set("html", html);
 
         MWF.xDesktop.requireApp("Template", "MForm", function () {
-            this.form = new MForm(content, this.line.data, {
+            this.form = new MForm(this.content, d, {
                 style: "v10",
                 isEdited: true,
                 itemTemplate: {
@@ -1345,21 +1346,50 @@ o2DM.CollectionForm = new Class({
                     text: { type:'oo-input', label : '显示文本', notEmpty : true },
                     title: { type:'oo-input', label : '导航标题', notEmpty : true },
                     icon: { type:'oo-input', label : '导航图标', notEmpty : true },
-                    selected: { type:'oo-input', label : '默认选中'},
-                    expanded: { type:'oo-input', label : '默认展开'},
+                    selected: { type:'oo-radiogroup', label : '默认选中',
+                        selectText: ['是','否'], selectValue: [true, false], defaultValue: false
+                    },
+                    expanded: { type:'oo-radiogroup', label : '默认展开',
+                        selectText: ['是','否'], selectValue: [true, false], defaultValue: false
+                    },
                     appType: {
                         type:'oo-radiogroup', label : '应用类型', notEmpty : true,
                         selectValue: Object.keys(o2DM._appTypeMap),
                         selectText: Object.values(o2DM._appTypeMap),
                         event: {
-                            change: (item, ev)=>{ console.log(item, ev) }
+                            change: (item, e)=>{
+                                Object.keys(o2DM._appTypeMap).forEach((type)=>{
+                                    this.form.getItem(type).node.setStyle(
+                                        'display', type === item.getValue() ? 'block' : 'none'
+                                    )
+                                })
+                            }
                         }
                     },
-                    designerType: { type:'oo-radiogroup', label : '设计类型', notEmpty : true },
+                    'portal.PortalManager': {
+                        label: '选择门户应用', type: 'oo-org',
+                        orgOptions: {title: '选择门户应用', type: 'Portal'}
+                    },
+                    'process.processManager': {
+                        label: '选择流程应用', type: 'oo-org',
+                        orgOptions: { title: '选择流程应用', type: 'Application' }
+                    },
+                    'cms.Column': {
+                        label: '选择内容管理栏目', type: 'oo-org',
+                        orgOptions: { title: '选择内容管理', type: 'CMSApplication' }
+                    },
+                    'query.Query': {
+                        label: '选择数据中心', type: 'oo-org',
+                        orgOptions: { title: '选择数据中心', type: 'Query' }
+                    },
+                    'service.ServiceManager': {
+                        label: '选择服务管理', type: 'oo-org',
+                        orgOptions: { title: '选择服务管理', types: ['Invoke','Agent','Dictionary','Script'], appType : ["service"], count: 1 }
+                    }
                 }
-            });
+            }, this.main);
             this.form.load();
-            this.createIconNode();
+            //this.createIconNode();
         }.bind(this), true);
     },
     editNavi: function (event) {

@@ -26,6 +26,8 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "selectImportModel": "选择导入模型",
     "selectFieldProperty": "选择字段属性",
     "selectPanFile": "选择网盘文件",
+    "selectInvoke": "选择接口",
+    "selectAgent": "选择代理",
 
     "personFile": "个人文件",
     "unitFile": "企业文件",
@@ -56,6 +58,10 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "systemList" : "系统列表",
     "processActivity" : "流程活动",
     "activity" : "流程活动",
+    "Dictionary": '数据字典',
+    "Script": '脚本',
+    "Invoke": "接口",
+    "Agent": "接口",
 
     "quantifier": {
         "person": "个人",
