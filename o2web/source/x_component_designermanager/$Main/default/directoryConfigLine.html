@@ -1,0 +1,25 @@
+
+    <div data-o2-events="click:edit" style="cursor: pointer; padding-left: {{$.level*2+1}}rem; gap: 0.5rem">
+        <div class="ooicon-{{$.icon}}"></div>
+        <div>{{$.text}}</div>
+    </div>
+    <div data-o2-events="click:edit" style="cursor: pointer;">{{(function(){ return o2DM._appTypeMap[$.appType] })()}}
+    </div>
+    <div data-o2-events="click:edit" style="cursor: pointer;">{{$.name}}</div>
+    <div style='gap: 0.5rem; justify-content: space-around; padding-left: {{$.level*2+1}}rem'>
+        <div>
+            <oo-button data-o2-events="click:createChild" class="config-dir-item-create" left-icon="create"
+                       title="添加下级" type="icon-light"></oo-button>
+            <oo-button data-o2-events="click:remove" class="config-dir-item-delete" left-icon="delete"
+                       title="删除当前" type="icon-light"></oo-button>
+        </div>
+        <div>
+            <oo-button data-o2-events="click:itemMoveUp;o2load:checkMoveUp" style="visibility: hidden" data-o2-element="moveUpAction"
+                       class="config-dir-item-up" left-icon="a-moveup" title="上移" type="icon-light"></oo-button>
+            <oo-button data-o2-events="click:itemMoveDown;o2load:checkMoveDown" style="visibility: hidden" data-o2-element="moveDownAction"
+                       class="config-dir-item-down" left-icon="a-movedown" title="下移"
+                       type="icon-light"></oo-button>
+        </div>
+    </div>
+    <div class="config-dir-item-children" style="display: contents" data-o2-element="childrenNode"></div>
+

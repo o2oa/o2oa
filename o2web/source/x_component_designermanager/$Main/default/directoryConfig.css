@@ -1,11 +1,12 @@
-.config-navi-area{
+.config-dir-area{
     display: flex !important;
     flex-direction: column;
     position: relative !important;
     overflow: hidden;
-    gap: 1em;
+    gap: 0.5em;
+    margin: 0.5em;
 }
-.config-navi-section {
+.config-dir-section {
     background-color: #ffffff;
     border-radius: var(--oo-default-radius);
     padding: 1rem;
@@ -15,36 +16,36 @@
     overflow: auto;
 }
 .config-title{
-    font-size: 1.3em;
+    font-size: 1.125em;
     font-weight: bold;
 }
-.config-navi-content{
+.config-dir-content{
     flex: 1 1 100%;
     padding: 0 1rem;
     gap: 2.25rem;
     overflow: auto;
     height: 100%;
 }
-.config-navi-toolabr{
+.config-dir-toolabr{
     margin-bottom: 1rem;
     text-align: left;
 }
-.config-navi-table{
+.config-dir-table{
     flex: 1 1 0%;
     display: grid;
-    grid-template-columns: 2fr 2fr 2fr 4fr 4rem 14rem;
+    grid-template-columns: 2fr 2fr 2fr 14rem;
 }
-.config-navi-title{
+.config-dir-title{
     padding: 0.8rem;
     background-color: #f7f7f7;
     font-size: 1.1em;
     font-weight: bold;
 }
-.config-navi-item-moving>div{
+.config-dir-item-moving>div{
     background-color: var(--oo-color-warn-bg) !important;
 }
 
-.config-navi-item>div{
+.config-dir-item>div{
     display: flex;
     gap: 0.2rem;
     padding: 0.5rem 1rem;
@@ -52,38 +53,38 @@
     align-items: center;
     transition: background-color 0.3s;
 }
-.config-navi-item:hover>div{
+.config-dir-item:hover>div{
     background-color: var(--oo-color-hover);
 }
 
-.config-navi-item-editor{
+.config-dir-item-editor{
     display: flex;
     flex-direction: column;
     gap: 1rem;
     padding: 2rem;
 }
-.config-navi-item-editor>*{
+.config-dir-item-editor>*{
     flex: 1;
 }
 
-.config-navi-item-editor-title{
+.config-dir-item-editor-title{
     padding: 0.8em 1em;
     font-size: 1.142857rem;
     font-weight: bold;
     border-left: 4px solid var(--oo-color-main);
     background-color: #f9f9f9;
 }
-.config-navi-item-deleting>div{
+.config-dir-item-deleting>div{
     background-color: var(--oo-color-error-bg) !important;
 }
-.config-navi-item-created>div{
+.config-dir-item-created>div{
     background-color: var(--oo-color-success-bg) !important;
 }
-.config-navi-item-editor-fields{
+.config-dir-item-editor-fields{
     display:flex;
     flex-wrap: wrap;
     gap: 1rem;
 }
-.config-navi-item-editor-fields>*{
+.config-dir-item-editor-fields>*{
     flex: 45%;
 }
