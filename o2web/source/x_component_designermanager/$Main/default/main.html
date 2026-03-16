@@ -10,16 +10,24 @@
     </header>
     <nav>
         <div class="o2-designer-tabs" data-o2-element="tabs">
-            <div data-o2-element="tabDesigner" class="current" data-o2-events="click:toDesignerNav">设计</div>
-            <div data-o2-element="tabDirectory" data-o2-events="click:toDirectoryNav">目录</div>
+            <div data-o2-element="tabDesigner"
+                 class="{{$.status?.currentNavType!=='directory'?'current':''}}"
+                 data-o2-events="click:toDesignerNav">设计</div>
+            <div data-o2-element="tabDirectory"
+                 class="{{$.status?.currentNavType==='directory'?'current':''}}"
+                 data-o2-events="click:toDirectoryNav">目录</div>
         </div>
-        <oo-nav data-o2-element="oonavDesigner" key="id" searchable="false" css-link="../x_component_designermanager/$Main/default/designerNav.css" >
+        <oo-nav data-o2-element="oonavDesigner" key="id" searchable="false"
+                class="{{$.status?.currentNavType!=='directory'?'':'hide'}}"
+                css-link="../x_component_designermanager/$Main/default/designerNav.css" >
             <div slot="before-outer" class="o2-designer-nav-toolbar">
                 <div class="ooicon-process-monitor" data-o2-events="click:locateToCurrent" title="定位到当前应用"></div>
                 <div class="ooicon-zhedie" data-o2-events="click:collapseNav" title="折叠"></div>
             </div>
         </oo-nav>
-        <oo-nav class="hide" data-o2-element="oonavDirectory" searchable="false" key="id" css-link="../x_component_designermanager/$Main/default/directoryNav.css" >
+        <oo-nav data-o2-element="oonavDirectory" searchable="false" key="id"
+                class="{{$.status?.currentNavType==='directory'?'':'hide'}}"
+                css-link="../x_component_designermanager/$Main/default/directoryNav.css" >
             <div slot="before-outer" class="o2-designer-nav-toolbar">
                 <div class="ooicon-edit" data-o2-events="click:configDirectory" title="编辑目录"></div>
                 <div class="ooicon-process-monitor" data-o2-events="click:locateToCurrent" title="定位到当前应用"></div>

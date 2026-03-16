@@ -1,6 +1,8 @@
 
     <div data-o2-events="click:edit" style="cursor: pointer; padding-left: {{$.level*2+1}}rem; gap: 0.5rem">
-        <div class="ooicon-{{$.icon}}"></div>
+        <div class="{{!$.icon.startsWith('data:')? 'ooicon-'+$.icon : '' }}">
+            <img src="{{$.icon}}" style="width:1.5em;height:1.5em;display:{{!$.icon.startsWith('data:')? 'none' : '' }}" />
+        </div>
         <div>{{$.text}}</div>
     </div>
     <div data-o2-events="click:edit" style="cursor: pointer;">{{(function(){ return o2DM._appTypeMap[$.appType] })()}}

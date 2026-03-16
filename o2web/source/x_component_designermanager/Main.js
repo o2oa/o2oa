@@ -27,19 +27,23 @@ MWF.xApplication.designermanager.Main = new Class({
             o2DM.openApp(appNames, options, statusObj);
         };
 
-        var url = this.path + this.options.style + "/main.html";
-        this.content.loadHtml(url, {"bind": {"lp": this.lp}, "module": this}, function () {
-            this.loadNav();
-            this.restoreApps();
-        }.bind(this));
+        o2.UD.getDataJson("designers", (json) => {
+            this.statusData = json || {};
+            var url = this.path + this.options.style + "/main.html";
+            this.content.loadHtml(url, {"bind": {"lp": this.lp, status: json}, "module": this}, function () {
+                    this.loadNav();
+                    this.restoreApps();
+            }.bind(this));
+        });
     },
     loadNav: function () {
         this.designerNav = new o2DM.DesingerNav(this);
         this.designerNav.load();
-        this.nav = this.designerNav;
 
         this.directoryNav = new o2DM.DirectoryNav(this);
         this.directoryNav.load();
+
+        this.nav = this.statusData.currentNavType === 'directory' ? this.directoryNav : this.designerNav;
     },
     _getAppId: function (path, options, status, clazz) {
         var opt = options || {};
@@ -204,23 +208,21 @@ MWF.xApplication.designermanager.Main = new Class({
         });
     },
     restoreApps: function () {
-        o2.UD.getDataJson("designers", (json) => {
-            Object.keys(json.appMap).forEach(appId => {
-                const obj = json.appMap[appId];
-                const app = {
-                    options: obj,
-                    status: obj.status,
-                    appId: appId
-                };
-                new o2DM.TaskItem(this, app);
-                o2DM.appMap[appId] = app;
-                o2DM.apps.push(app);
-            });
-            debugger;
-            if (json.currentApp && o2DM.appMap[json.currentApp]) {
-                o2DM.appMap[json.currentApp].taskItem.active();
-            }
+        const json = this.statusData;
+        Object.keys(json.appMap).forEach(appId => {
+            const obj = json.appMap[appId];
+            const app = {
+                options: obj,
+                status: obj.status,
+                appId: appId
+            };
+            new o2DM.TaskItem(this, app);
+            o2DM.appMap[appId] = app;
+            o2DM.apps.push(app);
         });
+        if (json.currentApp && o2DM.appMap[json.currentApp]) {
+            o2DM.appMap[json.currentApp].taskItem.active();
+        }
     },
     addEvents: function () {
         window.onbeforeunload = (e) => {
@@ -240,7 +242,6 @@ MWF.xApplication.designermanager.Main = new Class({
             }
         });
         var status = this.getLayoutStatusData();
-        console.log(status);
 
         try {
             o2.UD.putData("designers", status, function () {
@@ -259,6 +260,12 @@ MWF.xApplication.designermanager.Main = new Class({
             var appStatus = this.getAppStatusData(app, id);
             if (appStatus) status.appMap[id] = appStatus;
         });
+        debugger;
+        if(this.nav === this.designerNav){
+            status.currentNavType = 'designer';
+        }else{
+            status.currentNavType = 'directory';
+        }
         return status;
     },
     getAppStatusData: function (app) {
@@ -374,8 +381,10 @@ MWF.xApplication.designermanager.Main = new Class({
             o2DM.currentApp.taskItem?.hide();
             o2DM.currentApp = null;
         }
-        var directoryNode = new Element("div", {}).inject(this.applicationNode);
-        this.directoryConfig = new o2DM.DirectoryConfig(this, directoryNode, {});
+        if(!this.directoryConfig){
+            var directoryNode = new Element("div", {}).inject(this.applicationNode);
+            this.directoryConfig = new o2DM.DirectoryConfig(this, directoryNode, {});
+        }
     },
     closeDirectory: function (){
         if(this.directoryConfig){
@@ -409,6 +418,60 @@ o2DM.DesingerNav = new Class({
             this.handleBeforeExpand(e, e.detail.data)
         });
     },
+    _parseAppAndDesigner: function(tmplt, appId, d){
+        switch (tmplt._type) {
+            case 'app':
+                d.children = tmplt.children.map((child) => {
+                    child.appId = d.id;
+                    return child;
+                });
+                d.img = d.icon ? `data:image/png;base64,${d.icon}` : d.defaultIcon;
+                d.icon = null;
+                // d.children.push({_type: 'separator'});
+                // d.children.push(...o2DM._appTools);
+                break;
+            case 'designer':
+                d.appId = appId;
+                // d.children = [...o2DM._designerTools];
+                break;
+        }
+        d.text = d.name;
+        if (d.ooicon) d.icon = d.ooicon;
+        d.handleClick = () => {
+            tmplt.handleClick(d, appId);
+        };
+        if (tmplt.categorized) {
+            (!d.category || d.category === '未分类') && (d.category = o2DM._UNCATEGORIZED);
+            !this.categories.includes(d.category) && this.categories.push(d.category);
+        }
+        d._type = tmplt._type;
+        d._config = tmplt;
+        //d._parent = data;
+        this._checkCreate(d);
+        this._checkTools(d);
+        return d;
+    },
+    _parseCategory: function(child, appId){
+        if (child.ooicon) child.icon = child.ooicon;
+        if (!child.id) {
+            switch (child._type) {
+                case 'app-category':
+                    child.selectable = 'yes';
+                    child.id = `${child.componentName}`;
+                    break;
+                case 'designer-category':
+                    child.id = appId === 'service.ServiceManager' ?
+                        `${child.componentName}` :
+                        `${child.componentName}.${appId}`;
+                    break;
+            }
+        }
+        child.text = child.name;
+        //child._parent = list;
+        this._checkCreate(child);
+        this._checkTools(child);
+        return child;
+    },
     getList: function (template, appId) {
         var list = template;
         this.categories = [];
@@ -417,61 +480,12 @@ o2DM.DesingerNav = new Class({
             return list[0].listAction(appId).then((data) => {
                 return data.map(d => {
                     const tmplt = Object.clone(list[0]);
-                    switch (tmplt._type) {
-                        case 'app':
-                            d.children = tmplt.children.map((child) => {
-                                child.appId = d.id;
-                                //child._parent = d;
-                                return child;
-                            });
-                            d.img = d.icon ? `data:image/png;base64,${d.icon}` : d.defaultIcon;
-                            d.icon = null;
-                            // d.children.push({_type: 'separator'});
-                            // d.children.push(...o2DM._appTools);
-                            break;
-                        case 'designer':
-                            d.appId = appId;
-                            // d.children = [...o2DM._designerTools];
-                            break;
-                    }
-                    d.text = d.name;
-                    if (d.ooicon) d.icon = d.ooicon;
-                    d.handleClick = () => {
-                        tmplt.handleClick(d, appId);
-                    };
-                    if (tmplt.categorized) {
-                        (!d.category || d.category === '未分类') && (d.category = o2DM._UNCATEGORIZED);
-                        !this.categories.includes(d.category) && this.categories.push(d.category);
-                    }
-                    d._type = tmplt._type;
-                    d._config = tmplt;
-                    //d._parent = data;
-                    this._checkCreate(d);
-                    this._checkTools(d);
-                    return d;
+                    return this._parseAppAndDesigner(tmplt, appId, d)
                 });
             });
         } else {
             return list.map(child => {
-                if (child.ooicon) child.icon = child.ooicon;
-                if (!child.id) {
-                    switch (child._type) {
-                        case 'app-category':
-                            child.selectable = 'yes';
-                            child.id = `${child.componentName}`;
-                            break;
-                        case 'designer-category':
-                            child.id = appId === 'service.ServiceManager' ?
-                                `${child.componentName}` :
-                                `${child.componentName}.${appId}`;
-                            break;
-                    }
-                }
-                child.text = child.name;
-                //child._parent = list;
-                this._checkCreate(child);
-                this._checkTools(child);
-                return child;
+                return this._parseCategory(child, appId);
             });
         }
     },
@@ -735,8 +749,24 @@ o2DM.DirectoryNav = new Class({
             type: 'service',
             name: 'directoryNav'
         });
+
+        var parse = (d)=>{
+            if( (d.icon || '').startsWith('data:') ){
+                d.img = d.icon;
+                d.icon = null;
+            }
+            d.expanded = d.expanded === 'true' || d.expanded === true;
+            d.selected = d.selected === 'true' || d.selected === true;
+            d.from = 'dict';
+            d.children?.forEach((child)=>{
+                parse(child);
+            })
+        }
         this.dict.get('dirNavis', (data)=>{
             this.dirData = (data || []).map(d => Object.clone(d));
+            this.dirData.forEach(d=>{
+                parse(d);
+            })
             this.oonav.setMenu(this.dirData);
         });
     },
@@ -754,29 +784,81 @@ o2DM.DirectoryNav = new Class({
         //     });
         // }
     },
+    // getList: function (template, appId) {
+    //     var list = template;
+    //     this.categories = [];
+    //     //var appId = this.getAppId();
+    //     if (list.length === 1 && list[0].listAction) {
+    //         return list[0].listAction(appId).then((data) => {
+    //             return data.map(d => {
+    //                 const tmplt = Object.clone(list[0]);
+    //                 return this._parseAppAndDesigner(tmplt, appId, d)
+    //             });
+    //         });
+    //     } else {
+    //         return list.map(child => {
+    //             return this._parseCategory(child, appId);
+    //         });
+    //     }
+    // },
     handleExpand: function (e, data) {
-        if (!data._type || data.loaded) {
-            if (this.afterExpand) {
-                this.afterExpand();
-            }else{
-                //this.restoreScrollTop(data);
-            }
+        // if (!data._type || data.loaded) {
+        //     if (this.afterExpand) {
+        //         this.afterExpand();
+        //     }else{
+        //         //this.restoreScrollTop(data);
+        //     }
+        //     return;
+        // }
+        if(data.loaded){
             return;
         }
         data.loaded = true;
+
+        console.log(data);
+
         if (data.children && data.children.length > 0) {
-            var template = Array.clone(data.children);
-            // Promise.resolve(this.getList(template, data.appId || data.id)).then((children) => {
-            //     this.parseCategory();
-            //
-            //     data.children = children || [];
-            //
-            //     this._setToolEvents(data);
-            //
-            //     if (this.afterExpand) {
-            //         this.afterExpand();
-            //     }
-            // });
+            debugger;
+            if(data.from === 'dict') {
+                const ps = data.children.map((d, i)=>{
+                    if(d.appType && d.appType !== 'none' && d.name){
+                        const appId = d.name;
+                        const config = o2DM._findConfig(d.appType);
+                        if(!!config?.getAction){
+                           return config.getAction(appId).then((json) => {
+                                const appData = this._parseAppAndDesigner(Object.clone(config), appId, json.data);
+                                Object.assign(appData, {
+                                    text: d.text
+                                });
+                               console.log('handleExpand', d, config, appData);
+
+                                return appData;
+                            });
+                        }else{
+                            console.log('noconfig', d);
+                            return d;
+                        }
+                    }
+                })
+                Promise.all(ps).then((children)=>{
+                    debugger;
+                    data.children = children || [];
+                    console.log('....', children)
+                })
+            }else{
+                var template = Array.clone(data.children);
+                Promise.resolve(this.getList(template, data.appId || data.id)).then((children) => {
+                    //this.parseCategory();
+
+                    data.children = children || [];
+
+                    //this._setToolEvents(data);
+
+                    // if (this.afterExpand) {
+                    //     this.afterExpand();
+                    // }
+                });
+            }
         }
     },
     _checkCreate: function (data) {
@@ -1359,10 +1441,13 @@ o2DM.DirectoryConfigForm = new Class({
         const options = {
             events: {
                 ok: (e) => {
+                    this.iconMenu?.hide();
+                    this.iconMenu = null;
                     this.save(e);
                 },
                 cancel: (e) => {
-                    //if (iconMenu) iconMenu.hide();
+                    this.iconMenu?.hide();
+                    this.iconMenu = null;
                     e.target.close();
                 },
                 show: (e) => {
@@ -1397,12 +1482,47 @@ o2DM.DirectoryConfigForm = new Class({
         this.content.set("html", html);
 
         var changeApp = (item, e) => {
+            const appType = this.form.get('appType').getValue() || '';
+            const appTypeText = o2DM._appTypeMap[appType] || '';
             var d = item?.orgObject?.length ? item.orgObject[0].data : {};
             this.form.getItem('name')?.setValue(d.id || '');
-            this.form.getItem('text')?.setValue(d.name || '');
-            this.form.getItem('title')?.setValue(d.name || '');
-            this.form.getItem('icon')?.setValue(d.ooicon || d.icon || '');
+            this.form.getItem('text')?.setValue(d.name ? [appTypeText,d.name].filter(t=>!!t).join('-') : '');
+            this.form.getItem('title')?.setValue(d.name ? [appTypeText,d.name].filter(t=>!!t).join('-') : '');
+            if(d.icon){
+                setIcon(`data:image/png;base64,${d.icon}`);
+            }
         };
+
+        var setIcon = (icon) => {
+            const iconItem = this.form.getItem('icon');
+            const input = iconItem?.items[0];
+            input.removeAttribute('left-icon');
+            input.querySelector('before-inner-before')?.remove();
+            if(icon.startsWith('data:')){
+                iconItem.setValue(icon);
+                new Element('img', {
+                    'slot': 'before-inner-before',
+                    'style': 'width: 1.5em;height: 1.5em;',
+                    'src': icon
+                }).inject(input);
+            }else{
+                iconItem.setValue(icon);
+                input.setAttribute('left-icon', icon);
+            }
+        }
+
+        o2.require("o2.widget.IconMenu", ()=>{
+            this.iconMenu = new o2.widget.IconMenu({
+                zIndex: 500001,
+                onClick: (ev, iconClass)=>{
+                    setIcon(iconClass);
+                }
+            });
+            this.iconMenu.load(this.content.querySelector(`[item=icon]`), this.main.content);
+            this.content.addEvent("click", e => {
+                this.iconMenu.hide(e);
+            })
+        }, false);
 
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.content, d, {
@@ -1470,7 +1590,10 @@ o2DM.DirectoryConfigForm = new Class({
         var data = this.form.getResult(true,null,true);
         if (data) {
             for(let key in data){
-                this.line.data[key] = data[key];
+                let value = data[key];
+                if(value === 'false')value = false;
+                if(value === 'true')value = true;
+                this.line.data[key] = value;
             }
             this.config.saveData(()=>{
                 this.line.reload()
