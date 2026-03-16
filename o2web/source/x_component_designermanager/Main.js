@@ -260,7 +260,6 @@ MWF.xApplication.designermanager.Main = new Class({
             var appStatus = this.getAppStatusData(app, id);
             if (appStatus) status.appMap[id] = appStatus;
         });
-        debugger;
         if(this.nav === this.designerNav){
             status.currentNavType = 'designer';
         }else{
@@ -269,7 +268,6 @@ MWF.xApplication.designermanager.Main = new Class({
         return status;
     },
     getAppStatusData: function (app) {
-        debugger;
         var appStatus;
         if (app.window) {
             if (app.options.desktopReload) {
@@ -435,7 +433,7 @@ o2DM.DesingerNav = new Class({
                 // d.children = [...o2DM._designerTools];
                 break;
         }
-        d.text = d.name;
+        if (!d.text)d.text = d.name;
         if (d.ooicon) d.icon = d.ooicon;
         d.handleClick = () => {
             tmplt.handleClick(d, appId);
@@ -466,7 +464,7 @@ o2DM.DesingerNav = new Class({
                     break;
             }
         }
-        child.text = child.name;
+        if(!child.text)child.text = child.name;
         //child._parent = list;
         this._checkCreate(child);
         this._checkTools(child);
@@ -575,6 +573,7 @@ o2DM.DesingerNav = new Class({
             Promise.resolve(this.getList(template, data.appId || data.id)).then((children) => {
                 this.parseCategory();
 
+                debugger;
                 data.children = children || [];
 
                 this._setToolEvents(data);
