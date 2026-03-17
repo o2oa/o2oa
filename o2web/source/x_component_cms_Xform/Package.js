@@ -129,6 +129,10 @@ MWF.xDesktop.requireApp("process.Xform", "OOSelect", null, false);
 MWF.xApplication.cms.Xform.OOSelect = MWF.CMSOOSelect =  new Class({
     Extends: MWF.APPOOSelect
 });
+MWF.xDesktop.requireApp("process.Xform", "OOCascade", null, false);
+MWF.xApplication.cms.Xform.OOCascade = MWF.CMSOOCascade =  new Class({
+    Extends: MWF.APPOOCascade
+});
 MWF.xDesktop.requireApp("process.Xform", "OOAddress", null, false);
 MWF.xApplication.cms.Xform.OOAddress = MWF.CMSOOAddress =  new Class({
     Extends: MWF.APPOOAddress
