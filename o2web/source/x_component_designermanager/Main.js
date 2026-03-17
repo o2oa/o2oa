@@ -404,6 +404,9 @@ o2DM.DesingerNav = new Class({
         Promise.resolve(this.getList(template)).then((data) => {
             this.parseCategory();
             this.oonav.setMenu(data);
+            data.forEach(d => {
+                this._setToolEvents(d);
+            })
         });
     },
     setEvents: function (){
@@ -452,6 +455,7 @@ o2DM.DesingerNav = new Class({
         return d;
     },
     _parseCategory: function(child, appId){
+        debugger;
         if (child.ooicon) child.icon = child.ooicon;
         if (!child.id) {
             switch (child._type) {
@@ -577,7 +581,9 @@ o2DM.DesingerNav = new Class({
                 this.parseCategory();
                 data.children = children || [];
 
-                this._setToolEvents(data);
+                data.children.forEach(child => {
+                    this._setToolEvents(child);
+                });
 
                 if (this.afterExpand) {
                     this.afterExpand();
@@ -586,19 +592,19 @@ o2DM.DesingerNav = new Class({
         }
     },
     _setToolEvents: function (data) {
-        data.children.map(child => {
-            const itemEl = this.oonav.getItem(child.id).itemEl;
+        const itemEl = this.oonav.getItem(data.id)?.itemEl;
+        if(itemEl){
             itemEl.addEventListener('mouseenter', (e) => {
-                this.oonav.querySelectorAll(`div[slot="${child.id}-inner"]`).forEach(
+                this.oonav.querySelectorAll(`div[slot="${data.id}-inner"]`).forEach(
                     slot => slot.removeClass('hide')
                 );
             });
             itemEl.addEventListener('mouseleave', (e) => {
-                this.oonav.querySelectorAll(`div[slot="${child.id}-inner"]`).forEach(
+                this.oonav.querySelectorAll(`div[slot="${data.id}-inner"]`).forEach(
                     slot => slot.addClass('hide')
                 );
             });
-        });
+        }
     },
     _checkTools: function (data) {
         if (data._type === 'app' || data._type === 'designer') {
@@ -633,7 +639,8 @@ o2DM.DesingerNav = new Class({
         }
     },
     _checkClick: function (data) {
-        if(data.children && data.handleClick){
+        debugger;
+        if(data.children?.length && data.handleClick){
             new Element('div.slot.hide.ooicon-click', {
                 slot: `${data.id}-inner`,
                 events: {
@@ -865,7 +872,9 @@ o2DM.DirectoryNav = new Class({
                 })
                 Promise.all(ps).then((children)=>{
                     data.children = children || [];
-                    this._setToolEvents(data);
+                    data.children.forEach(child => {
+                        this._setToolEvents(child);
+                    })
                 })
             }else{
                 var template = Array.clone(data.children);
@@ -874,7 +883,9 @@ o2DM.DirectoryNav = new Class({
 
                     data.children = children || [];
 
-                    this._setToolEvents(data);
+                    data.children.forEach(child => {
+                        this._setToolEvents(child);
+                    })
 
                     // if (this.afterExpand) {
                     //     this.afterExpand();
