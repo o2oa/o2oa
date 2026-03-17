@@ -34,6 +34,8 @@ MWF.xApplication.cms.FormDesigner.Script = new Class({
             case "OOSelect":
             case "Select":
                 this.loadSelectScript(v); break;
+            case "OOCascade":
+                this.loadSelectScript(v); break;
             case "Source":
                 this.loadSourceScript(v); break;
             case "SourceText":

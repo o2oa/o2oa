@@ -90,6 +90,7 @@ MWF.xDesktop.requireApp('process.FormDesigner', 'Module.OOButton', null, false);
 MWF.xDesktop.requireApp('process.FormDesigner', 'Module.OORadioGroup', null, false);
 MWF.xDesktop.requireApp('process.FormDesigner', 'Module.OOCheckGroup', null, false);
 MWF.xDesktop.requireApp('process.FormDesigner', 'Module.OOSelect', null, false);
+MWF.xDesktop.requireApp('process.FormDesigner', 'Module.OOCascade', null, false);
 MWF.xDesktop.requireApp('process.FormDesigner', 'Module.OOTextarea', null, false);
 MWF.xDesktop.requireApp('process.FormDesigner', 'Module.OODatetime', null, false);
 MWF.xDesktop.requireApp('process.FormDesigner', 'Module.OOOrg', null, false);

@@ -24,6 +24,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_select,
     "className": "OOSelect"
   },
+  "OOCascade": {
+    "fontIcon": "ooicon-arrow_right",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_cascade,
+    "className": "OOCascade"
+  },
   "OOTextarea": {
     "fontIcon": "ooicon-multiline",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.oo_textarea,

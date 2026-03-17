@@ -70,6 +70,7 @@
 .form-layout .form-content-area oo-input,
 .form-layout .form-content-area oo-files,
 .form-layout .form-content-area oo-selector,
+.form-layout .form-content-area oo-cascade,
 .form-layout .form-content-area oo-textarea,
 .form-layout .form-content-area oo-radio-group,
 .form-layout .form-content-area oo-checkbox-group,
@@ -947,6 +948,7 @@
     div[mwftype='datatable'] oo-radio-group,
     div[mwftype='datatable'] oo-checkbox-group,
     div[mwftype='datatable'] oo-select,
+    div[mwftype='datatable'] oo-cascade,
     div[mwftype='datatable'] oo-currency,
     div[mwftype='datatable'] oo-datetime {
         white-space: nowrap !important;
@@ -1079,6 +1081,7 @@
     div[mwftype='datatable'].datatable_edit_mode oo-radio-group,
     div[mwftype='datatable'].datatable_edit_mode oo-checkbox-group,
     div[mwftype='datatable'].datatable_edit_mode oo-select,
+    div[mwftype='datatable'].datatable_edit_mode oo-cascade,
     div[mwftype='datatable'].datatable_edit_mode oo-currency,
     div[mwftype='datatable'].datatable_edit_mode oo-datetime {
         white-space: normal !important;
@@ -1088,6 +1091,7 @@
     div[mwftype='datatable'].datatable_edit_mode oo-selector[readmode='false'],
     div[mwftype='datatable'].datatable_edit_mode oo-textarea[readmode='false'],
     div[mwftype='datatable'].datatable_edit_mode oo-select[readmode='false'],
+    div[mwftype='datatable'].datatable_edit_mode oo-cascade[readmode='false'],
     div[mwftype='datatable'].datatable_edit_mode oo-currency[readmode='false'],
     div[mwftype='datatable'].datatable_edit_mode oo-datetime[readmode='false'] {
         background-color: #ffffff;

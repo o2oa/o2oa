@@ -518,7 +518,7 @@ public class Business {
                     o = service().pick(id);
                     break;
                 case split:
-                    o = service().pick(id);
+                    o = split().pick(id);
                     break;
                 default:
                     break;
