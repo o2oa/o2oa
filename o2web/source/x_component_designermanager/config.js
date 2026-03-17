@@ -15,9 +15,9 @@ o2DM._HISTORY_DESIGNER_MAX_COUNT = 20; //最近打开的设计元素数量
 
 o2DM._appTypeMap = {
     'portal.PortalManager': '门户管理',
-    'process.processManager': '流程管理',
-    'cms.Column': '内容管理',
-    'query.Query': '数据中心',
+    'process.ProcessManager': '流程管理',
+    'cms.ColumnManager': '内容管理',
+    'query.QueryManager': '数据中心',
     'service.ServiceManager': '服务管理'
 };
 
@@ -623,7 +623,7 @@ o2DM._config = {
                     o2DM.openApp('cms.ColumnManager', null, {column: item.id});
                 },
                 getAction: (appId)=>{
-                    return o2DM._cmsAction.AppInfoAction.getAppInfo(appId).then((item) => {
+                    return o2DM._cmsAction.AppInfoAction.get(appId).then((item) => {
                         item.data = {
                             ...item.data,
                             alias: item.appAlias,
@@ -1029,6 +1029,9 @@ o2DM._config = {
                     handleClick: (item) => {
                         o2DM.openApp('service.AgentDesigner', null, {id: item.id});
                     },
+                    getAction: (appId)=>{
+                        return o2DM._serviceAction.AgentAction.get(appId);
+                    },
                     listAction: () => {
                         return o2DM._serviceAction.AgentAction.list().then((agents) => {
                             return o2DM._sort(agents.data).map(agent=>{
@@ -1060,6 +1063,9 @@ o2DM._config = {
                         categorized: true,
                         handleClick: (item) => {
                             o2DM.openApp('service.InvokeDesigner', null, {id: item.id});
+                        },
+                        getAction: (appId)=>{
+                            return o2DM._serviceAction.InvokeAction.get(appId);
                         },
                         listAction: () => {
                             return o2DM._serviceAction.InvokeAction.list().then((items) => {

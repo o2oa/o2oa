@@ -396,6 +396,7 @@ o2DM.DesingerNav = new Class({
     initialize: function (main) {
         this.main = main;
         this.oonav = main.oonavDesigner;
+        this.scrollPositionMap = {};
     },
     load: function () {
         this.setEvents();
@@ -433,7 +434,7 @@ o2DM.DesingerNav = new Class({
                 // d.children = [...o2DM._designerTools];
                 break;
         }
-        if (!d.text)d.text = d.name;
+        d.text = d.name;
         if (d.ooicon) d.icon = d.ooicon;
         d.handleClick = () => {
             tmplt.handleClick(d, appId);
@@ -445,6 +446,7 @@ o2DM.DesingerNav = new Class({
         d._type = tmplt._type;
         d._config = tmplt;
         //d._parent = data;
+        this._checkClick(d);
         this._checkCreate(d);
         this._checkTools(d);
         return d;
@@ -454,7 +456,7 @@ o2DM.DesingerNav = new Class({
         if (!child.id) {
             switch (child._type) {
                 case 'app-category':
-                    child.selectable = 'yes';
+                    //child.selectable = 'yes';
                     child.id = `${child.componentName}`;
                     break;
                 case 'designer-category':
@@ -466,6 +468,7 @@ o2DM.DesingerNav = new Class({
         }
         if(!child.text)child.text = child.name;
         //child._parent = list;
+        this._checkClick(child);
         this._checkCreate(child);
         this._checkTools(child);
         return child;
@@ -527,7 +530,6 @@ o2DM.DesingerNav = new Class({
         return this.getAppdata(data)?.name;
     },
     recordScrollTop: function (data){
-        if(!this.scrollPositionMap)this.scrollPositionMap = {};
         const scrollContainer = this.oonav._elements.navContent;
         if (scrollContainer) {
             this.scrollPositionMap[data.id] = scrollContainer.scrollTop;
@@ -545,6 +547,7 @@ o2DM.DesingerNav = new Class({
         }
     },
     handleBeforeExpand: function (e, data){
+        debugger;
         if(data._type === "app-category"){
             e.target.data.children.forEach(child=>{
                 if(child.id !== data.id){
@@ -572,8 +575,6 @@ o2DM.DesingerNav = new Class({
             var template = Array.clone(data.children);
             Promise.resolve(this.getList(template, data.appId || data.id)).then((children) => {
                 this.parseCategory();
-
-                debugger;
                 data.children = children || [];
 
                 this._setToolEvents(data);
@@ -629,6 +630,19 @@ o2DM.DesingerNav = new Class({
                     });
                 }
             });
+        }
+    },
+    _checkClick: function (data) {
+        if(data.children && data.handleClick){
+            new Element('div.slot.hide.ooicon-click', {
+                slot: `${data.id}-inner`,
+                events: {
+                    click: (e) => {
+                        this.handleClick(e, data);
+                        e.stopPropagation();
+                    }
+                }
+            }).inject(this.oonav);
         }
     },
     _checkCreate: function (data) {
@@ -730,6 +744,7 @@ o2DM.DirectoryNav = new Class({
     initialize: function (main) {
         this.main = main;
         this.oonav = main.oonavDirectory;
+        this.categories = [];
     },
     setEvents: function (){
         this.oonav.addEventListener('select', (e) => {
@@ -738,9 +753,9 @@ o2DM.DirectoryNav = new Class({
         this.oonav.addEventListener('expand', (e) => {
             this.handleExpand(e, e.detail.data)
         });
-        this.oonav.addEventListener('beforeExpand', (e) => {
-            this.handleBeforeExpand(e, e.detail.data)
-        });
+        // this.oonav.addEventListener('beforeExpand', (e) => {
+        //     this.handleBeforeExpand(e, e.detail.data)
+        // });
     },
     load: function () {
         this.setEvents();
@@ -752,7 +767,9 @@ o2DM.DirectoryNav = new Class({
         var parse = (d)=>{
             if( (d.icon || '').startsWith('data:') ){
                 d.img = d.icon;
-                d.icon = null;
+                //d.icon = null;
+            }else if(d.icon){
+                d.ooicon = d.icon;
             }
             d.expanded = d.expanded === 'true' || d.expanded === true;
             d.selected = d.selected === 'true' || d.selected === true;
@@ -769,37 +786,42 @@ o2DM.DirectoryNav = new Class({
             this.oonav.setMenu(this.dirData);
         });
     },
-    handleBeforeExpand: function (e, data){
-        // if(data._type === "app-category"){
-        //     e.target.data.children.forEach(child=>{
-        //         if(child.id !== data.id){
-        //             if( child.expanded){
-        //                 this.recordScrollTop(child);
-        //                 setTimeout(()=>{
-        //                     child.expanded = false;
-        //                 }, 0);
-        //             }
-        //         }
-        //     });
-        // }
+    _parseAppAndDesigner: function(tmplt, appId, d){
+        switch (tmplt._type) {
+            case 'app':
+                d.children = tmplt.children.map((child) => {
+                    child.appId = d.id;
+                    return child;
+                });
+                if(!d.img){
+                    d.img = d.icon ? `data:image/png;base64,${d.icon}` : d.defaultIcon;
+                    d.icon = null;
+                }
+                // d.children.push({_type: 'separator'});
+                // d.children.push(...o2DM._appTools);
+                break;
+            case 'designer':
+                d.appId = appId;
+                // d.children = [...o2DM._designerTools];
+                break;
+        }
+        if (!d.text)d.text = d.name;
+        if (d.ooicon) d.icon = d.ooicon;
+        d.handleClick = () => {
+            tmplt.handleClick(d, appId);
+        };
+        if (tmplt.categorized) {
+            (!d.category || d.category === '未分类') && (d.category = o2DM._UNCATEGORIZED);
+            !this.categories.includes(d.category) && this.categories.push(d.category);
+        }
+        d._type = tmplt._type;
+        d._config = tmplt;
+        //d._parent = data;
+        this._checkClick(d);
+        this._checkCreate(d);
+        this._checkTools(d);
+        return d;
     },
-    // getList: function (template, appId) {
-    //     var list = template;
-    //     this.categories = [];
-    //     //var appId = this.getAppId();
-    //     if (list.length === 1 && list[0].listAction) {
-    //         return list[0].listAction(appId).then((data) => {
-    //             return data.map(d => {
-    //                 const tmplt = Object.clone(list[0]);
-    //                 return this._parseAppAndDesigner(tmplt, appId, d)
-    //             });
-    //         });
-    //     } else {
-    //         return list.map(child => {
-    //             return this._parseCategory(child, appId);
-    //         });
-    //     }
-    // },
     handleExpand: function (e, data) {
         // if (!data._type || data.loaded) {
         //     if (this.afterExpand) {
@@ -809,40 +831,41 @@ o2DM.DirectoryNav = new Class({
         //     }
         //     return;
         // }
-        if(data.loaded){
+        if(data.loaded || data.id === "oo-nav-root"){
             return;
         }
         data.loaded = true;
 
-        console.log(data);
-
         if (data.children && data.children.length > 0) {
-            debugger;
             if(data.from === 'dict') {
                 const ps = data.children.map((d, i)=>{
                     if(d.appType && d.appType !== 'none' && d.name){
                         const appId = d.name;
-                        const config = o2DM._findConfig(d.appType);
+                        let config = d.appType === "service.ServiceManager" ?
+                            o2DM._findConfig(d.designerType)?.children[0] :
+                            o2DM._findConfig(d.appType);
                         if(!!config?.getAction){
-                           return config.getAction(appId).then((json) => {
+                            return config.getAction(appId).then((json) => {
                                 const appData = this._parseAppAndDesigner(Object.clone(config), appId, json.data);
+                                if(!appData.icon){
+                                    appData.icon = d.icon;
+                                }
                                 Object.assign(appData, {
-                                    text: d.text
+                                    text: d.text,
+                                    appId: appData.appId || appId,
                                 });
-                               console.log('handleExpand', d, config, appData);
-
                                 return appData;
                             });
                         }else{
-                            console.log('noconfig', d);
                             return d;
                         }
+                    }else{
+                        return d;
                     }
                 })
                 Promise.all(ps).then((children)=>{
-                    debugger;
                     data.children = children || [];
-                    console.log('....', children)
+                    this._setToolEvents(data);
                 })
             }else{
                 var template = Array.clone(data.children);
@@ -851,97 +874,13 @@ o2DM.DirectoryNav = new Class({
 
                     data.children = children || [];
 
-                    //this._setToolEvents(data);
+                    this._setToolEvents(data);
 
                     // if (this.afterExpand) {
                     //     this.afterExpand();
                     // }
                 });
             }
-        }
-    },
-    _checkCreate: function (data) {
-        if (data.handleCreate) {
-            new Element('div.slot.hide.ooicon-create', {
-                slot: `${data.id}-inner`,
-                events: {
-                    click: (e) => {
-                        data.handleCreate(data.appId || this.getAppId(data), this.getAppname(data));
-                        e.stopPropagation();
-                    }
-                }
-            }).inject(this.oonav);
-        }
-    },
-    handleClick: function (e, data) {
-        // if (data._type === 'designer-tool') {
-        //     var d = this.getDesignerData(data);
-        //     data.handleClick(d, d.isHistory ? d.appData : this.getAppdata(data));
-        // } else {
-        //     data.handleClick(data, data.appId || this.getAppId(data), this.getAppdata(data));
-        // }
-    },
-    locateToCurrent: function (e) {
-        const app = o2DM.currentApp;
-        if (app) {
-            this._expandToApp(app, () => {
-                let item = this.oonav.getItem(app.options.id || app.options.name);
-                if (item) {
-                    item.itemEl.scrollIntoView({
-                        behavior: 'smooth', block: 'end', inline: 'nearest', preventScroll: true
-                    });
-                    item.select();
-                }
-                this.afterExpand = null;
-            });
-        }
-    },
-    _expandToApp: function (app, callback) {
-        const key = app.options.id || app.options.name;
-        let item = this.oonav.getItem(key);
-        if (!item) {
-            const configs = o2DM._findAllParentConfigs(app.options.name) || [];
-            const id = app.options.id;
-            const appId = app.application ? app.application.id : '';
-
-            const getKey = (config) => {
-                switch (config._type) {
-                    case 'app-category':
-                        return config.componentName;
-                    case 'designer-category':
-                        return config.componentName.startsWith('service.') ?
-                            `${config.componentName}` :
-                            `${config.componentName}.${appId}`;
-                    case 'app':
-                        return appId || id;
-                    case 'designer':
-                        return id;
-                }
-            };
-
-            const doExpand = () => {
-                if (configs.length > 0) {
-                    const config = configs.shift();
-                    const item = this.oonav.getItem(getKey(config));
-                    if (item) {
-                        this.afterExpand = () => {
-                            configs.length === 0 ? callback() : doExpand();
-                        };
-                        item.expand(false);
-                    }
-                }
-            };
-
-            doExpand();
-        } else {
-            let parentItem = item.parentItem;
-            const parents = [];
-            while (parentItem) {
-                parents.push(parentItem);
-                parentItem = parentItem.parentItem;
-            }
-            parents.reverse().forEach(item => item.expand(false));
-            callback();
         }
     },
 });
@@ -1268,7 +1207,6 @@ o2DM.DirectoryConfigLine = new Class({
         if(callback)callback();
     },
     reload: function (callback) {
-        debugger;
         this.children = [];
         this.itemNode.empty();
         this.load(callback);
@@ -1326,7 +1264,6 @@ o2DM.DirectoryConfigLine = new Class({
         }
     },
     itemMoveDown: function (e) {
-        debugger;
         const parentChildren = (this.parentLine || this.config).children;
         const parentData = this.parentLine ? this.parentLine.data.children : this.config.dirData;
         const idx = parentChildren.findIndex(line => line === this);
@@ -1466,9 +1403,9 @@ o2DM.DirectoryConfigForm = new Class({
     			<div class="config-dir-item-editor-fields">
     				<div item="appType" style="flex:100%;"></div>
     				<div item="portal.PortalManager" style="flex:100%;display:${d.appType!=='portal.PortalManager'?'none':''}"></div>
-    				<div item="process.processManager" style="flex:100%;display:${d.appType!=='process.processManager'?'none':''}"></div>
-    				<div item="cms.Column" style="flex:100%;display:${d.appType!=='cms.Column'?'none':''}"></div>
-    				<div item="query.Query" style="flex:100%;display:${d.appType!=='query.Query'?'none':''}"></div>
+    				<div item="process.ProcessManager" style="flex:100%;display:${d.appType!=='process.processManager'?'none':''}"></div>
+    				<div item="cms.ColumnManager" style="flex:100%;display:${d.appType!=='cms.Column'?'none':''}"></div>
+    				<div item="query.QueryManager" style="flex:100%;display:${d.appType!=='query.Query'?'none':''}"></div>
     				<div item="service.ServiceManager" style="flex:100%;display:${d.appType!=='service.ServiceManager'?'none':''}"></div>
     				<div item="name"></div>
     				<div item="text"></div>
@@ -1481,9 +1418,27 @@ o2DM.DirectoryConfigForm = new Class({
         this.content.set("html", html);
 
         var changeApp = (item, e) => {
+            debugger;
             const appType = this.form.get('appType').getValue() || '';
             const appTypeText = o2DM._appTypeMap[appType] || '';
-            var d = item?.orgObject?.length ? item.orgObject[0].data : {};
+            var orgObj = item?.orgObject?.length ? item.orgObject[0] : {};
+            var d = orgObj.data || {};
+
+            var designerType = '';
+            if(orgObj.selector){
+                switch(orgObj.selector.className){
+                    case 'Invoke':
+                        designerType = 'service.InvokeDesigner'; break;
+                    case 'Agent':
+                        designerType = 'service.AgentDesigner'; break;
+                    case 'Dictionary':
+                        designerType = 'service.DictionaryDesigner'; break;
+                    case 'Script':
+                        designerType = 'service.ScriptDesigner'; break;
+                }
+            }
+            this.line.data.designerType = designerType;
+
             this.form.getItem('name')?.setValue(d.id || '');
             this.form.getItem('text')?.setValue(d.name ? [appTypeText,d.name].filter(t=>!!t).join('-') : '');
             this.form.getItem('title')?.setValue(d.name ? [appTypeText,d.name].filter(t=>!!t).join('-') : '');

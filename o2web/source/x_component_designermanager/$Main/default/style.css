@@ -23,7 +23,7 @@ nav{
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    position: relative;
+    /*position: relative;*/
     /*overflow: auto;*/
 }
 nav > oo-nav {
@@ -70,23 +70,27 @@ footer{
     margin: 0 0.25em;
     background: rgba(0, 0, 0, 0.25);
 }
-.o2-designer-nav-toolbar div, .o2-task-toolbar div{
+.o2-designer-nav-toolbar > div, .o2-task-toolbar div{
     padding: 0.5em;
     cursor: pointer;
+    color: var(--oo-color-text);
 }
-.o2-designer-nav-toolbar div:hover, .o2-task-toolbar div:hover{
+.o2-designer-nav-toolbar > div:hover, .o2-task-toolbar div:hover{
     color: var(--oo-color-main);
 }
 .o2-designer-nav-toolbar{
-    display: flex;
+    display: none;
     align-items: center;
     font-size: 1.125em;
     justify-content: flex-end;
     padding-right: 0.5em;
     border-bottom: 1px solid #e6e6e6;
     position: absolute;
-    top: 0.25em;
+    top: 0.2em;
     right: 0.25em;
+}
+.current .o2-designer-nav-toolbar{
+    display: flex;
 }
 .o2-designer-refresh-node {
     width: 40px;
@@ -111,8 +115,9 @@ footer{
     display: flex;
     border-bottom: 1px solid var(--oo-color-gray1);
     padding: 0 0.5em;
+    position: relative;
 }
-.o2-designer-tabs div{
+.o2-designer-tabs > div{
     padding: 0.5em;
     cursor: pointer;
     transition: color 0.2s;
