@@ -1,5 +1,6 @@
 package com.x.organization.assemble.control.jaxrs.unit;
 
+import com.x.base.core.project.tools.Crypto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -284,6 +285,12 @@ class ActionGet extends BaseAction {
 			throw new ExceptionPersonNotExist(woIdentity.getPerson());
 		}
 		WoPerson woPerson = WoPerson.copier.copy(person);
+		if(StringUtils.isNotBlank(woPerson.getMobile())){
+			woPerson.setMobile(Crypto.base64Encode(Crypto.base64Encode(woPerson.getMobile())));
+		}
+		if(StringUtils.isNotBlank(woPerson.getMail())){
+			woPerson.setMail(Crypto.base64Encode(Crypto.base64Encode(woPerson.getMail())));
+		}
 		woIdentity.setWoPerson(woPerson);
 	}
 

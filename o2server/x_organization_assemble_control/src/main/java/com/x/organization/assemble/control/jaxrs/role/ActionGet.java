@@ -11,6 +11,7 @@ import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Group;
@@ -18,6 +19,7 @@ import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Role;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionGet extends BaseAction {
 
@@ -62,6 +64,14 @@ class ActionGet extends BaseAction {
 	private void referencePerson(Business business, Wo wo) throws Exception {
 		List<Person> os = business.person().pick(wo.getPersonList());
 		List<WoPerson> wos = WoPerson.copier.copy(os);
+		for (WoPerson woPerson : wos) {
+			if(StringUtils.isNotBlank(woPerson.getMobile())) {
+				woPerson.setMobile(Crypto.base64Encode(Crypto.base64Encode(woPerson.getMobile())));
+			}
+			if(StringUtils.isNotBlank(woPerson.getMail())) {
+				woPerson.setMail(Crypto.base64Encode(Crypto.base64Encode(woPerson.getMail())));
+			}
+		}
 		wo.setWoPersonList(wos);
 	}
 
