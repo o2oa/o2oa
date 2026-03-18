@@ -2,12 +2,13 @@
     display: grid;
     grid-template-areas:
         "header header"
-        "nav main"
+        "aside main"
         "footer footer";
-    grid-template-columns: 20em 1fr;
+    grid-template-columns: var(--nav-width, 20em) 1fr;
     grid-template-rows: auto 1fr auto;
     height: 100%;
     margin: 0;
+    transition: grid-template-columns 0.2s ease;
 }
 header{
     grid-area: header;
@@ -15,10 +16,20 @@ header{
     background: #fff;
     border-bottom: 1px solid rgba(0, 0, 0, 0.25);
     align-items: center;
+    position: relative;
+}
+aside{
+    grid-area: aside;
+    height: 100%;
+    display: flex;
+    overflow: hidden;
+}
+aside.collapsed nav {
+    display: none;
 }
 nav{
-    grid-area: nav;
-    background: #ffffff;
+    flex: 1;
+    background: var(--oo-color-bg-white);
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -31,6 +42,7 @@ nav > oo-nav {
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
 }
 oo-nav .slot{
     padding: 0.5rem;
@@ -71,7 +83,7 @@ footer{
     background: rgba(0, 0, 0, 0.25);
 }
 .o2-designer-nav-toolbar > div, .o2-task-toolbar div{
-    padding: 0.5em;
+    padding: 0.25em;
     cursor: pointer;
     color: var(--oo-color-text);
 }
@@ -84,10 +96,9 @@ footer{
     font-size: 1.125em;
     justify-content: flex-end;
     padding-right: 0.5em;
-    border-bottom: 1px solid #e6e6e6;
     position: absolute;
-    top: 0.2em;
-    right: 0.25em;
+    top: 0.3em;
+    right: 0;
 }
 .current .o2-designer-nav-toolbar{
     display: flex;
@@ -126,3 +137,53 @@ footer{
     color: var(--oo-color-main);
     border-bottom: 2px solid var(--oo-color-main);
 }
+
+/* 拖动手柄样式 */
+.nav-resizer {
+    width: 3px;
+    height: 100%;
+    background-color: transparent;
+    cursor: col-resize; /* 横向调整光标 */
+    z-index: 10;
+    /* 默认隐藏拖动手柄 */
+    opacity: 0;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+    pointer-events: none; /* 默认不响应鼠标事件 */
+}
+aside:hover .nav-resizer {
+    opacity: 1;
+    pointer-events: auto; /* 恢复鼠标事件响应 */
+}
+
+/* 鼠标悬停和拖动时的高亮效果 */
+.nav-resizer:hover,
+.resizing .nav-resizer {
+    background-color: var(--oo-color-text3);
+}
+
+.nav-toggle {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0.5em;
+    width: 1.5em;
+    height: 1.5em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 15;
+    transition: left 0.2s ease;
+    color: var(--oo-color-main);
+    background-color: var(--oo-color-bg-white);
+}
+
+/*!* 收起状态下调整按钮位置 *!*/
+/*aside.collapsed .nav-toggle {*/
+/*    right: -12px;*/
+/*}*/
+
+/*.nav-toggle:hover {*/
+/*    background: #e0e0e0;*/
+/*}*/

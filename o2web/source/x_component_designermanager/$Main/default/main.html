@@ -1,5 +1,5 @@
 
-<div class="o2-designer-container">
+<div class="o2-designer-container" data-o2-element="designerContainer">
     <header>
         <div class="o2-task-bar" data-o2-element="taskbar" data-o2-events="mouseover:showRefresh"></div>
         <div class="o2-task-separator"></div>
@@ -7,38 +7,44 @@
             <div class="ooicon-search" data-o2-events="click:searchDesigner" title="搜索设计"></div>
             <div class="ooicon-clock" data-o2-events="click:openHistory" title="打开历史"></div>
         </div>
+        <div class="nav-toggle ooicon-menu hide" data-o2-element="navToggler" data-o2-events="click:showNav"></div>
     </header>
-    <nav>
-        <div class="o2-designer-tabs" data-o2-element="tabs">
-            <div data-o2-element="tabDesigner"
-                 class="{{$.status?.currentNavType!=='directory'?'current':''}}"
-                 data-o2-events="click:toDesignerNav">
-                <div>设计</div>
-                <div slot="before-outer" class="o2-designer-nav-toolbar">
-                    <div class="ooicon-process-monitor" data-o2-events="click:locateToCurrent" title="定位到当前应用"></div>
-                    <div class="ooicon-zhedie" data-o2-events="click:collapseNav" title="折叠"></div>
+    <aside>
+        <nav>
+            <div class="o2-designer-tabs" data-o2-element="tabs">
+                <div data-o2-element="tabDesigner"
+                     class="{{$.status?.currentNavType!=='directory'?'current':''}}"
+                     data-o2-events="click:toDesignerNav">
+                    <div>设计</div>
+                    <div class="o2-designer-nav-toolbar">
+                        <div class="ooicon-process-monitor" data-o2-events="click:locateToCurrent" title="定位到当前应用"></div>
+                        <div class="ooicon-zhedie" data-o2-events="click:collapseNav" title="折叠"></div>
+                        <div class="ooicon-arrow_back" data-o2-events="click:hideNav" title="隐藏导航"></div>
+                    </div>
+                </div>
+                <div data-o2-element="tabDirectory"
+                     class="{{$.status?.currentNavType==='directory'?'current':''}}"
+                     data-o2-events="click:toDirectoryNav">
+                    <div>目录</div>
+                    <div class="o2-designer-nav-toolbar">
+                        <div class="ooicon-edit" data-o2-events="click:configDirectory" title="编辑目录"></div>
+                        <div class="ooicon-process-monitor" data-o2-events="click:locateToCurrent" title="定位到当前应用"></div>
+                        <div class="ooicon-zhedie" data-o2-events="click:collapseNav" title="折叠"></div>
+                        <div class="ooicon-arrow_back" data-o2-events="click:hideNav" title="隐藏导航"></div>
+                    </div>
                 </div>
             </div>
-            <div data-o2-element="tabDirectory"
-                 class="{{$.status?.currentNavType==='directory'?'current':''}}"
-                 data-o2-events="click:toDirectoryNav">
-                <div>目录</div>
-                <div slot="before-outer" class="o2-designer-nav-toolbar">
-                    <div class="ooicon-edit" data-o2-events="click:configDirectory" title="编辑目录"></div>
-                    <div class="ooicon-process-monitor" data-o2-events="click:locateToCurrent" title="定位到当前应用"></div>
-                    <div class="ooicon-zhedie" data-o2-events="click:collapseNav" title="折叠"></div>
-                </div>
-            </div>
-        </div>
-        <oo-nav data-o2-element="oonavDesigner" key="id" searchable="false"
-                class="{{$.status?.currentNavType!=='directory'?'':'hide'}}"
-                css-link="../x_component_designermanager/$Main/default/designerNav.css" >
-        </oo-nav>
-        <oo-nav data-o2-element="oonavDirectory" searchable="false" key="id"
-                class="{{$.status?.currentNavType==='directory'?'':'hide'}}"
-                css-link="../x_component_designermanager/$Main/default/directoryNav.css" >
-        </oo-nav>
-    </nav>
+            <oo-nav data-o2-element="oonavDesigner" key="id" searchable="false"
+                    class="{{$.status?.currentNavType!=='directory'?'':'hide'}}"
+                    css-link="../x_component_designermanager/$Main/default/designerNav.css" >
+            </oo-nav>
+            <oo-nav data-o2-element="oonavDirectory" searchable="false" key="id"
+                    class="{{$.status?.currentNavType==='directory'?'':'hide'}}"
+                    css-link="../x_component_designermanager/$Main/default/directoryNav.css" >
+            </oo-nav>
+        </nav>
+        <div class="nav-resizer" data-o2-element="navResizer" data-o2-events="mousedown:resizeDown;"></div>
+    </aside>
     <main data-o2-element="applicationNode">
 
     </main>

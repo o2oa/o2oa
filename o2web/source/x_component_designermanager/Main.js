@@ -4,6 +4,7 @@ MWF.xDesktop.requireApp("designermanager", "config", null, false);
 o2DM.apps = [];
 o2DM.appMap = {};
 o2DM.currentApp = null;
+o2DM.navWidth = 20;
 MWF.xApplication.designermanager.Main = new Class({
     Extends: MWF.xApplication.Common.Main,
     Implements: [Options, Events],
@@ -33,6 +34,7 @@ MWF.xApplication.designermanager.Main = new Class({
             this.content.loadHtml(url, {"bind": {"lp": this.lp, status: json}, "module": this}, function () {
                     this.loadNav();
                     this.restoreApps();
+                    this.restoreNavStatus();
             }.bind(this));
         });
     },
@@ -254,7 +256,12 @@ MWF.xApplication.designermanager.Main = new Class({
     getLayoutStatusData: function () {
         var status = {
             "currentApp": (o2DM.currentApp) ? o2DM.currentApp.appId : "",
-            "appMap": {}
+            "appMap": {},
+            "nav": {
+                status: this.navStatus || 'show',
+                lastWidth: this.navLastWidth,
+                width: this.navWidth,
+            },
         };
         Object.each(o2DM.appMap, (app, id) => {
             var appStatus = this.getAppStatusData(app, id);
@@ -389,6 +396,80 @@ MWF.xApplication.designermanager.Main = new Class({
             this.directoryConfig.close();
             this.directoryConfig = null;
         }
+    },
+    resizeDown: function (e){
+        e.preventDefault();
+        e.stopPropagation();
+
+        const MIN_WIDTH = 15; // 最小宽度(em)
+        const MAX_WIDTH = 40; // 最大宽度(em)
+
+        let startX, startWidth;
+
+        const designerContainer = this.designerContainer;
+
+        const handleMouseMove = (e)=> {
+            const deltaX = (e.clientX - startX) / 16;
+            let newWidth = startWidth + deltaX;
+
+            newWidth = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, newWidth));
+
+            designerContainer.style.setProperty('--nav-width', `${newWidth}em`);
+
+            this.navWidth = newWidth;
+        }
+
+        const handleMouseUp = ()=> {
+            document.body.classList.remove('resizing');
+
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        }
+
+        const currentWidth = parseFloat(getComputedStyle(designerContainer).getPropertyValue('--nav-width') || o2DM.navWidth);
+
+        startX = e.clientX;
+        startWidth = currentWidth;
+
+        document.body.classList.add('resizing');
+
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+
+
+    },
+    hideNav: function (e) {
+        debugger;
+        const designerContainer = this.designerContainer;
+        const currentWidth = this.navWidth || o2DM.navWidth;
+        this.navLastWidth = currentWidth; // 保存收起前的宽度
+
+        // 转换px为em（1em=16px）
+        const collapsedWidth = 0;
+        designerContainer.style.setProperty('--nav-width', `${collapsedWidth}`);
+        this.navToggler.removeClass('hide');
+        this.navStatus = 'hide';
+    },
+    showNav: function (e){
+        debugger;
+        this.designerContainer.style.setProperty('--nav-width', `${this.navLastWidth || this.navWidth || o2DM.navWidth}em`);
+        this.navToggler.addClass('hide');
+        this.navStatus = 'show';
+        this.navLastWidth = null;
+    },
+    restoreNavStatus: function () {
+        if(!this.statusData?.nav)return;
+        const {status, lastWidth, width} = this.statusData.nav || {};
+        this.navStatus = status;
+        this.navLastWidth = lastWidth;
+        this.navWidth = width;
+        if(status === 'hide'){
+            this.designerContainer.style.setProperty('--nav-width', `0`);
+            this.navToggler.removeClass('hide');
+        }else if(width){
+            this.designerContainer.style.setProperty('--nav-width', `${width}em`);
+        }
+
     }
 });
 
