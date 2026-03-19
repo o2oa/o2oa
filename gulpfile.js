@@ -70,12 +70,13 @@ var scripts = {
 };
 
 var o_options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
-    string: ["e", "lp", "w", "m", "d"]
+    string: ["e", "lp", "w", "m", "d", "v"]
 });
 var options = {};
 options.ev = o_options.e || "all";
 options.lp = o_options.lp || "zh-cn";
 options.webSite = o_options.w || "https://www.o2oa.net";
+options.historyVersion = o_options.v || "";
 options.mirrorSite = o_options.m || "http://mirror1.o2oa.net";
 options.downloadSite = o_options.d || "https://download.o2oa.net";
 var jvmUrl = jvmUrls[options.ev];
@@ -1237,7 +1238,8 @@ function createHistoryJsonFile(url, fileName, host){
 async function createHistroyJson(cb) {
     const host = options.webSite;
     const mirrorHost = options.mirrorSite;
-    const downloadHost = options.downloadSite
+    const downloadHost = options.downloadSite;
+    const hv = options.historyVersion;
 
     if (host) {
         const url = host + "/website/history.json?t=" + (new Date()).getTime();
@@ -1248,8 +1250,8 @@ async function createHistroyJson(cb) {
         var check = function () {
             if (doneWebSite && doneMirror) cb();
         };
-        await createHistoryJsonFile(url, 'history.json', downloadHost);
-        await createHistoryJsonFile(mirrorUrl, 'download-history.json', mirrorHost);
+        await createHistoryJsonFile(url, 'history'+hv+'.json', downloadHost);
+        await createHistoryJsonFile(mirrorUrl, 'download-history'+hv+'.json', mirrorHost);
     }
     cb();
 }
