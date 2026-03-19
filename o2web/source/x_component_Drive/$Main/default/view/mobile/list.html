@@ -1,0 +1,38 @@
+<div>
+{{if $.data.length}}
+{{each $.data}}
+<div class="m-list-item">
+    <div class="m-list-item-checkbox listItem">
+        <div class="selectFlag"  data-o2-events="o2load:loadItemFlag">
+            <div class="selectFlagArea" style="cursor: pointer"data-o2-events="click:selectFile:{{$.id}}">
+                <div class="selectFlagIcon"></div>
+            </div>
+        </div>
+    </div>
+    <div class="m-list-item-l"><img src="../x_component_Drive/$Main/default/filetype/{{$.fileType}}.png" class="{{$.id}}">
+    </div>
+    <div class="m-list-item-c" data-o2-events="click:open:{{$.id}}">
+        <div class="m-list-item-c-text" > {{$.name}}</div>
+        <div class="m-list-item-c-date">{{$.updateTime}}</div>
+
+    </div>
+    <div class="m-list-item-r">
+        {{if $.type!=="folder"}}
+        <div>{{$.length}}</div>
+        {{end if}}
+        {{if $.type==="folder"}}
+        <div class="ooicon-arrow_forward"></div>
+        {{end if}}
+    </div>
+</div>
+{{end each}}
+{{end if}}
+{{if !$.data.length}}
+<div class="emptyListArea">
+    <div class="emptyListIcon"></div>
+    <div class="emptyListText">
+        {{$.lp.noFile}}
+    </div>
+</div>
+{{end if}}
+</div>

@@ -1,0 +1,52 @@
+[
+  {
+    "title": "待办工作",
+    "module": "task",
+    "action" : "openTask"
+  },
+  {
+    "title": "已办工作",
+    "module": "taskDone",
+    "action" : "openTaskDone"
+  },
+  {
+    "title": "待阅工作",
+    "module": "read",
+    "action" : "openRead"
+  },
+  {
+    "title": "已阅工作",
+    "module": "readDone",
+    "action" : "openReadDone"
+  },
+  {
+    "title": "流转中工作",
+    "module": "work",
+    "action" : "openWork"
+  },
+  {
+    "title": "已完成工作",
+    "module": "workCompleted",
+    "action" : "openWorkCompleted"
+  },
+  {
+    "title": "授权管理",
+    "module": "auth",
+    "action" : "openEmpower"
+  },
+  {
+    "title": "授权日志",
+    "module": "authLog",
+    "action" : "openEmpowerLog"
+  },
+  {
+    "title": "快照管理",
+    "module": "snap",
+    "action" : "openSnap"
+  },
+  {
+    "title": "权限交接",
+    "module": "handover",
+    "action" : "openHandover"
+  }
+]

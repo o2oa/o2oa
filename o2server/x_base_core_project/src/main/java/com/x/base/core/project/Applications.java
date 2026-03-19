@@ -1,25 +1,5 @@
 package com.x.base.core.project;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.zip.CRC32;
-
-import org.apache.commons.collections4.list.UnmodifiableList;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
@@ -38,6 +18,24 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.zip.CRC32;
+import org.apache.commons.collections4.list.UnmodifiableList;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList<Application>> {
 
@@ -56,7 +54,10 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			x_meeting_assemble_control.class.getName(), x_mind_assemble_control.class.getName(),
 			x_hotpic_assemble_control.class.getName(), x_query_service_processing.class.getName(),
 			x_query_assemble_designer.class.getName(), x_query_assemble_surface.class.getName(),
-			x_ai_assemble_control.class.getName()));
+			x_ai_assemble_control.class.getName(), x_pan_assemble_control.class.getName(),
+			x_custom_index_assemble_control.class.getName(), x_onlyofficefile_assemble_control.class.getName(),
+			x_teamwork_assemble_control.class.getName()));
+
 
 	private static final long serialVersionUID = -2416559829493154858L;
 

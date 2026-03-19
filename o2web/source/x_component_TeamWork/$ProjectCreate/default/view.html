@@ -1,0 +1,49 @@
+<div class="create_container">
+    <div class="create_topContainer">
+        <div class="create_topTitle">{{ $.lp.name }}</div>
+        <div class="create_topClose" data-o2-events="click:projectClose"></div>
+    </div>
+    <div class="create_middleContainer">
+        <div class="create_item">
+            <div class="create_itemTitle">{{ $.lp.title }}</div>
+            <div class="create_itemContent"><input data-o2-element="title" value = "{{ $.data.title }}" data-o2-events="blur:blurValue;" /></div>
+        </div>
+        <div class="create_item">
+            <div class="create_itemTitle">{{ $.lp.source }}</div>
+            <div class="create_itemContent"><input data-o2-element="source" value = "{{ $.data.source }}" data-o2-events="blur:blurValue;" /></div>
+        </div>
+        <div class="create_item">
+            <div class="create_itemTitle">{{ $.lp.objective }}</div>
+            <div class="create_itemContent"><textarea data-o2-element="objective" value = "{{ $.data.objective }}" data-o2-events="blur:blurValue;"></textarea></div>
+        </div>
+        <div class="create_item">
+            <div class="create_itemTitle">{{ $.lp.description }}</div>
+            <div class="create_itemContent"><textarea data-o2-element="description" value = "{{ $.data.description }}" data-o2-events="blur:blurValue;"></textarea></div>
+        </div>
+        <!-- <div class="item">
+            <div class="itemTitle">{{ $.lp.executor }}</div>
+            <div class="itemContent"><div class="itemPersonSingle" data-o2-element="executor"></div></div>
+        </div> -->
+        <div class="create_item">
+            <div class="create_itemTitle">{{ $.lp.participant }}</div>
+            <div class="create_itemContent"><div class="create_itemPersonMult" data-o2-element="participantList"></div></div>
+        </div>
+        <div class="create_item">
+            <div class="create_itemTitle" style="line-height:36px;">{{ $.lp.cycle }}</div>
+            <div class="create_itemContent">
+                <span data-o2-element="startTime">{{ $.data.startTime }}</span> - <span class="create_time" data-o2-element="endTime">{{ $.data.endTime }}</span>
+            </div>
+        </div>
+        <!-- <div class="item">
+            <div class="itemTitle">{{ $.lp.group }}</div>
+            <div class="itemContent">
+                <div class="itemGroup" data-o2-element="group"></div>
+            </div>
+        </div> -->
+        
+    </div>
+    <div class="create_bottomContainer">
+        <div data-o2-events="click:projectCreate">{{ $.lp.add }}</div>
+        <div data-o2-events="click:projectClose">{{ $.lp.cancel }}</div>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+{
+	"maskDiv":{
+        "position":"absolute",
+        "left":"0px",
+        "top":"0px",
+        "right":"0px",
+        "bottom":"0px",
+        "z-index":"9998",
+        "opacity":"0.3",
+        "background":"url('../x_component_TeamWork/$Minder/default/icon/icon_off_click40.png') no-repeat 99% 1%",
+        "background-color":"#000000"
+    },
+    "container":{
+        "position":"absolute",
+        "width":"1200px",
+        "height":"900px",
+        "left":"100px",
+        "top":"100px",
+        "border-radius":"5px",
+        "z-index":"9999",
+        "background-color":"#cccccc"
+    }
+
+}

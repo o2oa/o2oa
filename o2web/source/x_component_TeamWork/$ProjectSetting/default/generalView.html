@@ -1,0 +1,126 @@
+<div class="general_content">
+
+    <div class="general_middle">
+        <div class="general_item">
+            <div class="general_itemTitle">{{ $.lp.projectGenerals.title }}</div>
+            <div class="general_itemContent">
+                {{if $.data.control.edit}}
+                    <input data-o2-element="title" value = "{{ $.data.title }}" />
+                {{end if}}
+                {{if !$.data.control.edit}}
+                    <div class="general_valueRead">{{ $.data.title }}</div>
+                {{end if}}
+            </span>
+        </div>
+        <div class="general_item">
+            <div class="general_itemTitle" style="line-height:36px;">{{ $.lp.projectGenerals.cycle }}</div>
+            <div class="general_itemContent">
+                {{if $.data.control.edit}}
+                    <span data-o2-element="startTime">{{
+                        (function(){
+                            var dstr = $.data.startTime;
+                            dstr = dstr.split(" ")[0]
+                            return dstr
+                        })() 
+                    }}
+                    </span> - <span class="general_time" data-o2-element="endTime">{{
+                        (function(){
+                            var dstr = $.data.endTime;
+                            dstr = dstr.split(" ")[0]
+                            return dstr
+                        })() 
+                    }}
+                    </span>
+                {{end if}}
+                {{if !$.data.control.edit}}
+                    <div class="general_valueRead">
+                        {{
+                            (function(){
+                                var dstr_s = $.data.startTime;
+                                var dstr_e = $.data.endTime || "";
+                                
+                                var res = dstr_s.split(" ")[0] + '  -  '
+                                if(dstr_e !=""){
+                                    res = res + dstr_e.split(" ")[0]
+                                }
+
+                                return res
+                            })()
+                        }}
+                    </div>
+                {{end if}}
+            </div>
+        </div>
+        <div class="general_item">
+            <div class="general_itemTitle">{{ $.lp.projectGenerals.manageablePersonList }}</div>
+            <div class="general_itemContent">
+                {{if $.data.control.edit}}
+                    <div class="general_itemPersonSingle" data-o2-element="manageablePersonList">{{
+                        (function(){
+                            var list = $.data.manageablePersonList;
+                            var res = [];
+                            list.forEach(function(p){
+                                res.push(p.split("@")[0])
+                            })
+                            return res.join()
+                        })()  
+                    }}</div>
+                {{end if}}
+                {{if !$.data.control.edit}}
+                    <div class="general_valueRead">{{
+                        (function(){
+                            var list = $.data.manageablePersonList;
+                            var res = [];
+                            list.forEach(function(p){
+                                res.push(p.split("@")[0])
+                            })
+                            return res.join()
+                        })()     
+                    }}</div>
+                {{end if}}
+            </div>
+        </div>
+        <div class="general_item">
+            <div class="general_itemTitle">{{ $.lp.projectGenerals.participant }}</div>
+            <div class="general_itemContent">
+                {{if $.data.control.edit}}
+                    <div class="general_itemPersonMult" data-o2-element="participantList">
+                        {{
+                            (function(){
+                                var list = $.data.participantList;
+                                var res = [];
+                                list.forEach(function(p){
+                                    res.push(p.split("@")[0])
+                                })
+                                return res.join()
+                            })()  
+                        }}
+                    </div>
+                {{end if}}
+                {{if !$.data.control.edit}}
+                    <div class="general_valueRead">
+                        {{
+                            (function(){
+                                var list = $.data.participantList;
+                                var res = [];
+                                list.forEach(function(p){
+                                    res.push(p.split("@")[0])
+                                })
+                                return res.join()
+                            })()  
+                        }}
+                    </div>
+                {{end if}}
+
+
+                
+            </div>
+        </div>
+        
+    </div>
+    <div class="general_bottom">
+        {{if $.data.control.edit}}
+        <div class="general_button" data-o2-events="click:projectSave;">{{ $.lp.confirm }}</div>
+        {{end if}}
+    </div>
+</div>

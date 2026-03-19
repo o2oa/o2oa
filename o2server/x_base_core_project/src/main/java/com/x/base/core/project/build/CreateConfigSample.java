@@ -29,6 +29,8 @@ import com.x.base.core.project.config.ConfigObject;
 import com.x.base.core.project.config.Dingding;
 import com.x.base.core.project.config.DumpRestoreData;
 import com.x.base.core.project.config.Exmail;
+import com.x.base.core.project.config.ExternalDataSource;
+import com.x.base.core.project.config.ExternalDataSources;
 import com.x.base.core.project.config.ExternalStorageSources;
 import com.x.base.core.project.config.General;
 import com.x.base.core.project.config.JpushConfig;
@@ -92,6 +94,7 @@ public class CreateConfigSample {
 			create(dir.toPath(), cls);
 		}
 		renameNode(dir);
+		createExternalDataSources(dir.toPath());
 	}
 
 	/**
@@ -113,6 +116,19 @@ public class CreateConfigSample {
 				+ ".json";
 		File file = new File(dir.toFile(), name);
 		FileUtils.write(file, XGsonBuilder.toJson(map), DefaultCharset.charset);
+	}
+
+	private static void createExternalDataSources(Path dir) throws Exception {
+		Object o = MethodUtils.invokeStaticMethod(ExternalDataSource.class, DEFAULTINSTANCE);
+		Map<String, Object> map = new LinkedHashMap<>();
+		map = XGsonBuilder.convert(o, map.getClass());
+		describe(ExternalDataSource.class, map);
+		List<Map<String, Object>> externalDataSources = new ArrayList<>();
+		externalDataSources.add(map);
+		String name = StringUtils.lowerCase(ExternalDataSources.class.getSimpleName().substring(0, 1))
+				+ ExternalDataSources.class.getSimpleName().substring(1) + ".json";
+		File file = new File(dir.toFile(), name);
+		FileUtils.write(file, XGsonBuilder.toJson(externalDataSources), DefaultCharset.charset);
 	}
 
 	private static void renameNode(File dir) throws IOException {

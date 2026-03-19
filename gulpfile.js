@@ -42,7 +42,8 @@ function check_language_pack(token){
 
 var downloadHost = "g.o2oa.net";
 var protocol = "https";
-var commonUrl = "/o2oa/evn-o2server-commons/-/archive/9.3/evn-o2server-commons-9.3.tar.gz?path=commons";
+// https://g.o2oa.net/o2oa/o2oa-ee/evn-o-2-server-commons/-/archive/9.3/evn-o-2-server-commons-9.3.tar.gz
+var commonUrl = "/o2oa/o2oa-ee/evn-o2server-commons/-/archive/9.3/evn-o2server-commons-9.3.tar.gz?path=commons";
 var jvmUrls = {
     "all": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm",
     "linux_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/linux_java11",
@@ -69,15 +70,18 @@ var scripts = {
     "sw": ["o2server/*sw*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"]
 };
 
-var o_options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
-    string: ["e", "lp", "w", "m", "d", "v"]
+// var o_options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
+//     string: ["e", "lp", "w", "m", "d"]
+// });
+var o_options = minimist(process.argv.slice(2), {
+    string: ["e", "lp", "w", "m", "d", "efd", "itai", "name", "uname", "email", "cmobile", "cname", "ver", "sec"]
 });
+
 var options = {};
 options.ev = o_options.e || "all";
 options.lp = o_options.lp || "zh-cn";
 options.webSite = o_options.w || "https://www.o2oa.net";
-options.historyVersion = o_options.v || "";
-options.mirrorSite = o_options.m || "http://mirror1.o2oa.net";
+options.mirrorSite = o_options.m || "https://mirror1.o2oa.net";
 options.downloadSite = o_options.d || "https://download.o2oa.net";
 var jvmUrl = jvmUrls[options.ev];
 var scriptSource = scripts[options.ev];
@@ -115,7 +119,7 @@ function ProgressBar(description, bar_length){
     };
 }
 
-function downloadFile_progress(path, filename, headcb, progresscb, cb){
+function downloadFile_progress(path, filename, headcb, progresscb, cb, url){
     var dest = `o2server/${filename}`;
 
     let stream = fs.createWriteStream(dest);
@@ -152,17 +156,98 @@ function downloadFile_progress(path, filename, headcb, progresscb, cb){
             });
             request.get(options).pipe(str).pipe(stream);
         } else {
-            downloadFile(path, filename, headcb, progresscb, cb)
+            // downloadFile(path, filename, headcb, progresscb, cb);
+            downloadFile(path, filename, headcb, progresscb, cb, url);
         }
     })
     req.on('error', (e) => {
-        downloadFile(path, filename, headcb, progresscb, cb)
+        // downloadFile(path, filename, headcb, progresscb, cb);
+        downloadFile(path, filename, headcb, progresscb, cb, url);
     });
     req.end();
     //    }
     //});
 }
-function downloadFile(path, filename, headcb, progresscb, cb){
+
+function dump_product_data(cb){
+    const url = 'https://product.o2oa.net/x_package_assemble_control/jaxrs/pack/dump/data/sec/o2oa-pro-2025';
+    var downloader = new Promise((resolve, reject) => {
+        downloadFile_progress("", "initData.zip", (length)=>{
+            commonsLength = +length;
+            initProgress();
+        }, (progress)=>{
+            commonsCurrentLength = progress.transferred;
+            currentLength = +commonsCurrentLength+jvmCurrentLength;
+        }, ()=>{
+            resolve();
+        }, url);
+    });
+    downloader.then(()=>{
+        gutil.log(gutil.colors.green("dump Product Data completed"));
+        cb();
+    });
+}
+
+function move_product_data(){
+    console.log(`---------------------------------------------------------------------
+  . move product data to o2server/localSample ...
+---------------------------------------------------------------------`);
+    return gulp.src("o2server/initData.zip")
+        .pipe(gulp.dest("target/o2server/localSample/"));
+}
+
+async function clear_product_data(cb) {
+    var dest = ['o2server/initData.zip'];
+    await del(dest, {force: true});
+    cb();
+}
+
+exports.dump_application_data = gulp.series(dump_product_data, move_product_data, clear_product_data);
+
+
+function create_license(cb){
+    const url = "http://collect.o2oa.net:20080/o2_collect_assemble/jaxrs/customer/create";
+
+    var data = {
+        effectiveDate: o_options.efd || 30,
+        isItai: !!o_options.itai,
+        secret: o_options.sec,
+        name: o_options.name,
+        unitName: o_options.uname,
+        email: o_options.email,
+        contactMobile: o_options.cmobile,
+        contactName: o_options.cname,
+        version: o_options.ver
+    };
+
+    request.post({ url: url, json: data, timeout: 30000 }, function(err, res, respBody){
+        if (err) {
+            gutil.log(gutil.colors.red("license request error:"), err);
+            throw err;
+        }
+        if (respBody.type === "error") {
+            gutil.log(gutil.colors.red("license request error:"), respBody.message);
+        }
+        try {
+            const licenseDir = path.resolve(process.cwd(), "target/o2server/configInit");
+    
+            // 递归创建目录
+            fs.mkdirSync(licenseDir, { recursive: true });
+
+            fs.writeFileSync(path.resolve(process.cwd(), licenseDir+"/o2.license"), respBody.data.license, "utf8");
+            fs.writeFileSync(path.resolve(process.cwd(), licenseDir+"/o2license.key"), respBody.data.licenseKey, "utf8");
+            gutil.log(gutil.colors.green("Created files: o2.license, o2license.key"));
+        } catch(e){
+            gutil.log(gutil.colors.red("write file error:"), e);
+            throw e;
+        }
+        cb();
+    });
+}
+exports.create_license = create_license;
+
+// function downloadFile(path, filename, headcb, progresscb, cb){
+function downloadFile(path, filename, headcb, progresscb, cb, url){
     var dest = `o2server/${filename}`;
 
     const spinner = ora({
@@ -174,7 +259,8 @@ function downloadFile(path, filename, headcb, progresscb, cb){
     }).start();
 
     let stream = fs.createWriteStream(dest);
-    var options = { url:protocol+"://"+downloadHost+path };
+    // var options = { url:protocol+"://"+downloadHost+path };
+    var options = url ? {url} : { url:protocol+"://"+downloadHost+path };
     var fileHost = downloadHost;
     var filePath =  path;
     stream.on('finish', () => {

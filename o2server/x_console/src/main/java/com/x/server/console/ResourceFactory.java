@@ -10,6 +10,9 @@ import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.DataServer;
+import com.x.base.core.project.config.ExternalDataSource;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ClassLoaderTools;
 import com.x.base.core.project.tools.H2Tools;
 import com.x.base.core.project.tools.JarTools;
@@ -41,6 +44,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.eclipse.jetty.plus.jndi.Resource;
 
 /**
@@ -49,6 +53,8 @@ import org.eclipse.jetty.plus.jndi.Resource;
  *
  */
 public class ResourceFactory {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ResourceFactory.class);
 
 	private static final int TOKENTHRESHOLDSMAXSIZE = 2000;
 
@@ -81,7 +87,26 @@ public class ResourceFactory {
 	 * @throws Exception
 	 */
 	private static void initDataSources() throws Exception {
-		internal();
+		if (!checkLicense()) {
+			LOGGER.print(Config.LICENSE_TIP);
+			return;
+		}
+		if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
+			external();
+		} else {
+			internal();
+		}
+	}
+
+	private static boolean checkLicense() {
+		try {
+			Class<?> licenseToolsCls = Class.forName("com.x.base.core.lc.LcTools");
+			Boolean result = (Boolean) MethodUtils.invokeStaticMethod(licenseToolsCls, "validate");
+			return BooleanUtils.isTrue(result);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		return false;
 	}
 
 	/**
@@ -165,6 +190,55 @@ public class ResourceFactory {
 			map.put(info.getName(), ListUtils.unmodifiableList(os));
 		}
 		new Resource(Config.RESOURCE_CONTAINERENTITIES, MapUtils.unmodifiableMap(map));
+	}
+
+	private static void external() throws Exception {
+		dataSources.addAll(externalDruidC3p0());
+	}
+
+	private static List<DruidDataSourceC3P0Adapter> externalDruidC3p0() throws Exception {
+		List<DruidDataSourceC3P0Adapter> list = new ArrayList<>();
+		for (ExternalDataSource ds : Config.externalDataSources()) {
+			if (BooleanUtils.isNotTrue(ds.getEnable())) {
+				continue;
+			}
+			DruidDataSourceC3P0Adapter dataSource = new DruidDataSourceC3P0Adapter();
+			dataSource.setJdbcUrl(ds.getUrl());
+			dataSource.setDriverClass(ds.getDriverClassName());
+			// dataSource.setPreferredTestQuery(SlicePropertiesBuilder.validationQueryOfUrl(ds.getUrl()));
+			dataSource.setUser(ds.getUsername());
+			dataSource.setPassword(ds.getPassword());
+			dataSource.setMaxPoolSize(ds.getMaxTotal());
+			dataSource.setMinPoolSize(ds.getMaxIdle());
+			// 增加校验
+			// dataSource.setTestConnectionOnCheckin(ds.getTestConnectionOnCheckin());
+			// dataSource.setTestConnectionOnCheckout(ds.getTestConnectionOnCheckout());
+			dataSource.setMaxIdleTime(ds.getMaxIdleTime());
+			dataSource.setAcquireIncrement(2);
+			DruidDataSource druidDataSource = (DruidDataSource) FieldUtils.readField(dataSource, "dataSource", true);
+			druidDataSource.setTestWhileIdle(false);
+			druidDataSource.setTestOnBorrow(false);
+			druidDataSource.setTestOnReturn(false);
+			if (BooleanUtils.isTrue(ds.getStatEnable())) {
+				dataSource.setFilters(ds.getStatFilter());
+				if (BooleanUtils.isTrue(ds.getSlowSqlEnable())) {
+					Properties properties = new Properties();
+					properties.setProperty("druid.stat.slowSqlMillis", ds.getSlowSqlThreshold().toString());
+					properties.setProperty("druid.stat.logSlowSql", "true");
+					dataSource.setProperties(properties);
+				}
+				if (BooleanUtils.isTrue(ds.getLogStatEnable())) {
+					druidDataSource.setStatLogger(new DruidStatLogger());
+					druidDataSource.setTimeBetweenLogStatsMillis(60000L * ds.getLogStatInterval());
+				}
+			}
+			// 增加autoCommit设置
+			dataSource.setAutoCommitOnClose(ds.getAutoCommit());
+			String name = Config.externalDataSources().name(ds);
+			new Resource(Config.RESOURCE_JDBC_PREFIX + name, dataSource);
+			list.add(dataSource);
+		}
+		return list;
 	}
 
 	/**

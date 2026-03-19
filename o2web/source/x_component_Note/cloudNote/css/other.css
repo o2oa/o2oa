@@ -1,0 +1,58 @@
+.main_side_user_container{
+    position: fixed;
+    width: 170px;
+    bottom: 0;
+    padding: 0 5px;
+    background: #fafafa;
+    margin-left: -8px;
+    height: 60px;
+    line-height: 60px;
+}
+.main_side_user {
+    position: relative;
+    width: 100%;
+    cursor: pointer;
+    text-align: left;
+    overflow: hidden;
+    border-top: 1px solid #ebebeb
+}
+.main_side_user_wrap{
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: Center;
+    align-items: Center
+}
+
+.main_side_user_icon {
+    display: block;
+    width:30px;
+    height: 30px;
+    border-radius: 50%;
+    float: left
+}
+
+.main_side_user_name{
+    font-size: 12px;
+    color: #464646;
+    margin-left: 8px;
+    width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
+.main_side_user_add{
+    background-color:#fff;
+    width: 120px;
+    height: 30px;
+    cursor: pointer;
+    box-shadow: 0 1px 3px 0 #d7dae0;
+    border-radius: 15px;
+    line-height: 30px;
+    padding: 0 30px;
+    font-size: 12px;
+    margin:0 auto;
+}
+.main_side_user_add:hover {
+    background: #f6f6f6
+}

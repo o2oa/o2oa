@@ -1,0 +1,31 @@
+<div>
+
+    {{if $.data.length}}
+    <div class="searchNode" style="border: 1px solid rgb(221, 221, 221);
+    border-radius: 20px;
+    margin: 5px 50px;
+    padding: 0px 0px 0px 10px;
+    overflow: hidden;">
+        <input data-o2-events="keyup:searchZone" data-o2-element="searchZoneNode"  placeholder="搜索"  style="width: calc(100% - 26px); height: 24px; line-height: 24px; font-size: 13px; color: rgb(102, 102, 102); border: 0px; float: left; background: inherit;">
+        <i class="o2icon-sousuo" style="cursor: pointer; line-height: 20px; font-size: 13px; color: rgb(204, 204, 204); float: right; margin-top: 3px; margin-right: 8px;"></i>
+    </div>
+    {{each $.data}}
+    <div style="padding-left:30px" class="menuItem"  data-o2-element="zone{{$.id}}MenuNode">
+        <div class="menuItemIcon"><icon class="o2Drive icon-commonshare"></icon></div>
+        <div class="menuItemText"  title = "{{$.name}}" data-o2-events="click:loadList:zone:{{$.id}}">{{$.name}}</div>
+        <div class="menuItemAction" data-o2-events="click:setZone" style="display: none">
+            <icon class="o2Drive icon-gengduo mainColor_color"></icon>
+        </div>
+
+    </div>
+    {{end each}}
+    {{end if}}
+    {{if !$.data.length}}
+    <div class="emptyListArea1">
+        <div class="emptyListIcon1"></div>
+        <div class="emptyListText" style="text-align: center;margin:10px">
+            暂无共享区
+        </div>
+    </div>
+    {{end if}}
+</div>

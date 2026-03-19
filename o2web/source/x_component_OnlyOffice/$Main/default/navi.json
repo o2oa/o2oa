@@ -1,0 +1,17 @@
+[
+  {
+    "title": "文档列表",
+    "module": "document",
+    "action" : "openDocument"
+  },
+  {
+    "title": "模板列表",
+    "module": "template",
+    "action" : "openTemplate"
+  },
+  {
+  "title": "系统设置",
+  "module": "setting",
+  "action" : "openSetting"
+}
+]

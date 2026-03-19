@@ -1,0 +1,24 @@
+<div class="comment_item">
+    <img class="comment_item_avatar" src="{{$.avatar}}" />
+    <div class="comment_item_content">
+        <div class="comment_item_title">
+            <span class="comment_item_ttle_name">{{$.shortPerson}}</span>
+        </div>
+        <div class="comment_replyed" style="display: none;">
+            <div class="comment_replyed_arrow"></div>
+            <div class="comment_replay">
+                {{$.content}}
+            </div>
+            <div class="comment_replyed_split"></div>
+            <div class="comment_replay">
+                {{$.shortOrignPerson}}：{{$.orignSummary}}
+            </div>
+        </div>
+        <div class="comment_replay noOrigin" style="display: none;">{{$.content}}</div>
+        <span class="comment_replay_time">{{$.createTime}}</span>
+        <span class="comment_replay_action">
+            <span class="comment_replay_btn open">回复</span>
+            <span class="comment_replay_btn close" style="display: none;">关闭回复</span>
+        </span>
+    </div>
+</div>
