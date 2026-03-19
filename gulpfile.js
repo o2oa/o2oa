@@ -1324,7 +1324,8 @@ function createHistoryJsonFile(url, fileName, host){
 async function createHistroyJson(cb) {
     const host = options.webSite;
     const mirrorHost = options.mirrorSite;
-    const downloadHost = options.downloadSite
+    const downloadHost = options.downloadSite;
+    const hv = options.historyVersion;
 
     if (host) {
         const url = host + "/website/history.json?t=" + (new Date()).getTime();
@@ -1335,8 +1336,8 @@ async function createHistroyJson(cb) {
         var check = function () {
             if (doneWebSite && doneMirror) cb();
         };
-        await createHistoryJsonFile(url, 'history.json', downloadHost);
-        await createHistoryJsonFile(mirrorUrl, 'download-history.json', mirrorHost);
+        await createHistoryJsonFile(url, 'history'+hv+'.json', downloadHost);
+        await createHistoryJsonFile(mirrorUrl, 'download-history'+hv+'.json', mirrorHost);
     }
     cb();
 }
