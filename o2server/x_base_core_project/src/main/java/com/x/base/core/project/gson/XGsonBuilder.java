@@ -292,6 +292,9 @@ public class XGsonBuilder {
 	private static JsonObject merge(JsonObject from, JsonObject to) {
 		for (Map.Entry<String, JsonElement> fromEntry : from.entrySet()) {
 			String key = fromEntry.getKey();
+			if(StringUtils.isBlank(key)){
+				continue;
+			}
 			JsonElement fromValue = fromEntry.getValue();
 			if (to.has(key)) {
 				JsonElement toValue = to.get(key);
@@ -554,10 +557,10 @@ public class XGsonBuilder {
 			}
 		}
 	}
-	
+
 	 /**
      * 将 JsonElement 对象拆分成六个 Map，分别存储字符串、数字、布尔、字符串列表、数字列表、布尔列表。
-     * 
+     *
      * @param prefix
      * @param jsonElement
      * @return
