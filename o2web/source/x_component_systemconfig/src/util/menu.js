@@ -22,7 +22,7 @@ function getMenuJson(){
                 // {'title': lp.centerServer, 'component': '', 'icon': 'center' },
                 // {'title': lp.appServer, 'component': '', 'icon': 'service' },
                 // {'title': lp.webServer, 'component': '', 'icon': 'web' },
-                {'title': lp.databaseServer, 'component': 'ServerDatabaseConfig', 'icon': 'database' },
+                // {'title': lp.databaseServer, 'component': 'ServerDatabaseConfig', 'icon': 'database' },
                 {'title': lp.storageServer, 'component': 'ServerStorageConfig', 'icon': 'download' },
                 {'title': lp.cloudConfig, 'component': 'ServerCloudConfig', 'icon': 'cloud' },
                 {'title': lp.processConfig, 'component': 'ServerProcessConfig', 'icon': 'flow' },
