@@ -41,6 +41,9 @@ class ActionGet extends BaseAction {
 				}else{
 					wo.setRoomLink(wo.getRoomLink() + "&userName=" + effectivePerson.getName());
 				}
+				if(StringUtils.isNotBlank(wo.getRoomInviteCode())){
+					wo.setRoomId(wo.getRoomInviteCode());
+				}
 			}
 			WrapTools.setAttachment(business, wo);
 			WrapTools.decorate(business, wo, effectivePerson);

@@ -260,6 +260,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 				} else {
 					wo.setRoomLink(wo.getRoomLink() + "&userName=" + effectivePerson.getName());
 				}
+				if(StringUtils.isNotBlank(wo.getRoomInviteCode())){
+					wo.setRoomId(wo.getRoomInviteCode());
+				}
 			}
 		}
 	}
