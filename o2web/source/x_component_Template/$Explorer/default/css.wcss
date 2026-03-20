@@ -314,7 +314,7 @@
     "width": "28px",
     "height": "32px",
     "float": "left",
-    "background": "url(../x_component_Execution/$WorkForm/default/icon/document.png) no-repeat center 4px"
+//    "background": "url(../x_component_Execution/$WorkForm/default/icon/document.png) no-repeat center 4px"
   },
   "formTopTextNode" : {
     "font-size": "16px",

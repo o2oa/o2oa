@@ -99,7 +99,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         this.selected();
     },
 
-	load : function(data){
+	load: function(data){
 		this.data = data;
 		this.json = data.json;
 		this.html = data.html;
@@ -171,6 +171,11 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 	},
 	_load : function( templateStyles, oldStyleValue ){
 		this.templateStyles = templateStyles;
+
+		if(templateStyles?.form?.cssLink){
+			this.container.loadCss(templateStyles.form.cssLink);
+		}
+
 		this.loadDomModules();
 
 		if (this.json.formStyleType && this.templateStyles && this.templateStyles["form"]){
