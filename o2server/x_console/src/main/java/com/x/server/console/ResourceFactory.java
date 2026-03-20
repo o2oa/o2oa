@@ -87,11 +87,26 @@ public class ResourceFactory {
 	 * @throws Exception
 	 */
 	private static void initDataSources() throws Exception {
+		if (!checkLicense()) {
+			LOGGER.print(Config.LICENSE_TIP);
+			return;
+		}
 		if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
 			external();
 		} else {
 			internal();
 		}
+	}
+
+	private static boolean checkLicense() {
+		try {
+			Class<?> licenseToolsCls = Class.forName("com.x.base.core.lc.LcTools");
+			Boolean result = (Boolean) MethodUtils.invokeStaticMethod(licenseToolsCls, "validate");
+			return BooleanUtils.isTrue(result);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		return false;
 	}
 
 	/**
