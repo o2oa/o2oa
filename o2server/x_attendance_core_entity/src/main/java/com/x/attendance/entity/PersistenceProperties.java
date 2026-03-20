@@ -163,5 +163,39 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
         public static final String table = "ATTEND_V2_GROUP_SCHEDULE_CONFIG";
     }
 
+    public static class AttendanceV2LeaveType {
+        public static final String table = "ATTEND_V2_LEAVE_TYPE";
+    }
+    public static class AttendanceV2LeavePolicy {
+        public static final String table = "ATTEND_V2_LEAVE_POLICY";
+    }
+    public static class AttendanceV2LeaveLedger {
+        public static final String table = "ATTEND_V2_LEAVE_LEDGER";
+    }
+    public static class AttendanceV2LeaveRequest {
+        public static final String table = "ATTEND_V2_LEAVE_REQUEST";
+    }
+    public static class AttendanceV2LeaveUsageDetail {
+        public static final String table = "ATTEND_V2_LEAVE_USAGE_DETAIL";
+    }
+    public static class AttendanceV2LeaveTransaction {
+        public static final String table = "ATTEND_V2_LEAVE_TRANSACTION";
+    }
+    public static class AttendanceV2LeaveGrantJob {
+        public static final String table = "ATTEND_V2_LEAVE_GRANT_JOB";
+    }
+    public static class AttendanceV2LeaveGrantRecord {
+        public static final String table = "ATTEND_V2_LEAVE_GRANT_RECORD";
+    }
+    public static class AttendanceV2LeaveAccount {
+        public static final String table = "ATTEND_V2_LEAVE_ACCOUNT";
+    }
+    public static class AttendanceV2LeaveCarryForward {
+        public static final String table = "ATTEND_V2_LEAVE_CARRY_FORWARD";
+    }
+
+
+
+
 
 }
