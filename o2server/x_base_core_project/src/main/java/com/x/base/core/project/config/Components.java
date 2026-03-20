@@ -31,7 +31,6 @@ public class Components extends ConfigObject {
     public static final String NAME_WORKCENTER = "WorkCenter";
     public static final String NAME_HOMEPAGE = "Homepage";
     public static final String NAME_HOTARTICLE = "HotArticle";
-    public static final String NAME_NOTE = "Note";
     public static final String NAME_MEETING = "Meeting";
     public static final String NAME_ATTENDANCE = "attendancev2";
     public static final String NAME_FORUM = "Forum";
@@ -44,7 +43,7 @@ public class Components extends ConfigObject {
     public static final List<String> SYSTEM_NAME_NAMES = ListTools.toList(NAME_SYSTEMCONFIG, NAME_ORG, NAME_CMSMANAGER,
             NAME_APPLICATIONEXPLORER, NAME_PORTALEXPLORER, NAME_DATAEXPLORER, NAME_SERVICEMANAGER, NAME_APPSTORE,
             NAME_APPCENTER, NAME_LOGVIEWER, NAME_PROFILE, NAME_BAM, NAME_CMS, NAME_WORKCENTER, NAME_HOMEPAGE,
-            NAME_HOTARTICLE, NAME_NOTE, NAME_MEETING, NAME_ATTENDANCE, NAME_FORUM, NAME_MINDER, NAME_CALENDAR,
+            NAME_HOTARTICLE, NAME_MEETING, NAME_ATTENDANCE, NAME_FORUM, NAME_MINDER, NAME_CALENDAR,
             NAME_FTSEARCH, NAME_IM, NAME_AI);
 
     public static final String APPICON_PNG = "appicon.png";
@@ -89,8 +88,6 @@ public class Components extends ConfigObject {
                 return new Component(NAME_HOMEPAGE, NAME_HOMEPAGE, "首页", APPICON_PNG, 14, Component.TYPE_SYSTEM);
             case NAME_HOTARTICLE:
                 return new Component(NAME_HOTARTICLE, NAME_HOTARTICLE, "热点", APPICON_PNG, 15, Component.TYPE_SYSTEM);
-            case NAME_NOTE:
-                return new Component(NAME_NOTE, NAME_NOTE, "便签", APPICON_PNG, 17, Component.TYPE_SYSTEM);
             case NAME_MEETING:
                 return new Component(NAME_MEETING, NAME_MEETING, "会议管理", APPICON_PNG, 18, Component.TYPE_SYSTEM);
             case NAME_ATTENDANCE:
@@ -129,7 +126,6 @@ public class Components extends ConfigObject {
         this.systems.add(systemComponent(NAME_WORKCENTER));
         this.systems.add(systemComponent(NAME_HOMEPAGE));
         this.systems.add(systemComponent(NAME_HOTARTICLE));
-        this.systems.add(systemComponent(NAME_NOTE));
         this.systems.add(systemComponent(NAME_MEETING));
         this.systems.add(systemComponent(NAME_ATTENDANCE));
         this.systems.add(systemComponent(NAME_FORUM));
