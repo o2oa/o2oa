@@ -389,7 +389,7 @@
     "width": "28px",
     "height": "32px",
     "float": "left",
-    "background": "url(../x_component_Execution/$WorkForm/default/icon/document.png) no-repeat center 4px"
+//    "background": "url(../x_component_Execution/$WorkForm/default/icon/document.png) no-repeat center 4px"
   },
   "formTopTextNode" : {
     "font-size": "16px",
@@ -405,7 +405,7 @@
     "float": "right",
     "padding-left" : "30px",
     "padding-right" : "10px",
-    "background": "url(../x_component_Execution/$WorkForm/default/icon/close.png) no-repeat center 4px",
+    "background": "url(../x_component_Template/$MPopupForm/attendanceV2/icon/icon_off_2.png) 42px 12px no-repeat",
     "cursor": "pointer"
   },
   "formTopContentNode" : {
