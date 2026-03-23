@@ -41,6 +41,9 @@ MWF.xApplication.OnlyOffice.Setting = new Class({
                 docserviceConverter: {"text": "转换地址", "type": "text","style": {"width": "90%"}},
                 downLoadUrl: {"text": "OnlyOffice访问O2地址", "type": "text","style": {"width": "90%"}},
                 secret: {"text": "OnlyOffice密钥", "type": "text","style": {"width": "90%"}},
+                docserviceViewedDocs: {"text": "查看类型", "type": "text","style": {"width": "90%"}},
+                docserviceEditedDocs: {"text": "编辑类型", "type": "text","style": {"width": "90%"}},
+
 
                 address: {"text": "地址", "type": "text","style": {"width": "90%"}},
                 info: {"text": "信息", "type": "text","style": {"width": "90%"}},
@@ -72,6 +75,18 @@ MWF.xApplication.OnlyOffice.Setting = new Class({
             "<tr ><td styles='formTableTitleRight' lable='docserviceApi'></td>" +
             "    <td styles='formTableValue' colspan='2'>" +
             "       <div item='docserviceApi'></div>" +
+            "   </td>" +
+            "</tr>" +
+
+            "<tr ><td styles='formTableTitleRight' lable='docserviceViewedDocs'></td>" +
+            "    <td styles='formTableValue' colspan='2'>" +
+            "       <div item='docserviceViewedDocs'></div>" +
+            "   </td>" +
+            "</tr>" +
+
+            "<tr ><td styles='formTableTitleRight' lable='docserviceEditedDocs'></td>" +
+            "    <td styles='formTableValue' colspan='2'>" +
+            "       <div item='docserviceEditedDocs'></div>" +
             "   </td>" +
             "</tr>" +
 
