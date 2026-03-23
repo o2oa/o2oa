@@ -1,0 +1,157 @@
+package com.x.pan.assemble.control.entities;
+
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.GsonPropertyObject;
+
+import java.util.Date;
+
+/**
+ * @author chengjian
+ * @date 2024/06/07 13:30
+ **/
+public class OnlineInfo extends GsonPropertyObject {
+
+    private static final long serialVersionUID = 1L;
+
+    @FieldDescribe("附件ID.")
+    private String id;
+    @FieldDescribe("任务.")
+    private String job;
+    @FieldDescribe("附件名称.")
+    private String name;
+    @FieldDescribe("扩展名.")
+    private String extension;
+    @FieldDescribe("附件大小.")
+    private Long length;
+    @FieldDescribe("创建用户ID.")
+    private String ownerId;
+    @FieldDescribe("创建用户名称.")
+    private String ownerName;
+    @FieldDescribe("当前用户ID.")
+    private String userId;
+    @FieldDescribe("当前用户名称.")
+    private String userName;
+    @FieldDescribe("文件下载地址.")
+    private String downloadUrl;
+    @FieldDescribe("创建时间.")
+    private Date createTime;
+    @FieldDescribe("最后更新时间.")
+    private Date lastUpdateTime;
+    @FieldDescribe("当前用户是否可编辑.")
+    private Boolean canEdit = false;
+    @FieldDescribe("当前用户是否可阅读.")
+    private Boolean canRead = false;
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getJob() {
+        return job;
+    }
+
+    public void setJob(String job) {
+        this.job = job;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getLength() {
+        return length;
+    }
+
+    public void setLength(Long length) {
+        this.length = length;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getDownloadUrl() {
+        return downloadUrl;
+    }
+
+    public void setDownloadUrl(String downloadUrl) {
+        this.downloadUrl = downloadUrl;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Boolean getCanEdit() {
+        return canEdit;
+    }
+
+    public void setCanEdit(Boolean canEdit) {
+        this.canEdit = canEdit;
+    }
+
+    public Boolean getCanRead() {
+        return canRead;
+    }
+
+    public void setCanRead(Boolean canRead) {
+        this.canRead = canRead;
+    }
+
+    public Date getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public void setLastUpdateTime(Date lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
+    }
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
+    }
+}
