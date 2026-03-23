@@ -1,0 +1,69 @@
+<div>
+    <div class="tableHeader">
+        <table style="width:100%">
+            <colgroup><col width="47%"><col width="47%"></colgroup>
+            <thead>
+            <tr class="nd-table__header-row">
+                <th class="nd-table__header-th cursor-p is-name" style="text-align: left;"><span>名称</span></th>
+                <th class="nd-table__header-th cursor-p" style="text-align: left;"><span>权限</span></th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+
+    {{if $.data.length}}
+
+    <div class="tableBody" style="height: 400px;
+            overflow: auto;
+            padding: 0 20px;
+            position: relative;
+        }">
+
+
+        <table>
+            <colgroup><col width="47%"><col width="47%"></colgroup>
+            <tbody>
+
+            {{each $.data}}
+
+            <tr class="listItem" data-o2-events="mouseover:overTaskItem; mouseout:outTaskItem; o2load:loadItemFlag">
+
+                <td><span>
+
+                         {{
+                        (function(){
+                            return $.showName?$.showName:$.name.split("@")[0]
+                        })() }}
+
+                </span></td>
+                <td title="点击修改"><span  data-o2-events="click:setRoleAcl:{{$.id}}" style="cursor:pointer;">
+                    <i class="o2Drive icon-rename"></i>
+                    {{$.roleName}}
+                </span></td>
+            </tr>
+            {{end each}}
+
+            </tbody>
+        </table>
+
+    </div>
+
+
+
+
+
+
+    <div class="batchAction mainColor_bg" data-o2-element="batchAction" data-o2-events="click:batchProcessTask">{{$.lp.batch}}</div>
+    {{end if}}
+    {{if !$.data.length}}
+    <div class="emptyListArea">
+        <div class="emptyListIcon"></div>
+        <div class="emptyListText">
+            无内容
+        </div>
+
+        <div class="emptyListAction mainColor_color" data-o2-events="click:startProcess">
+        </div>
+    </div>
+    {{end if}}
+</div>
