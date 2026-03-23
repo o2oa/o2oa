@@ -75,7 +75,7 @@ var scripts = {
 //     string: ["e", "lp", "w", "m", "d"]
 // });
 var o_options = minimist(process.argv.slice(2), {
-    string: ["e", "lp", "w", "m", "d", "efd", "itai", "name", "uname", "email", "cmobile", "cname", "ver", "sec"]
+    string: ["e", "lp", "w", "m", "d", "efd", "itai", "name", "uname", "email", "cmobile", "cname", "ver", "sec", "v"]
 });
 
 var options = {};
@@ -84,6 +84,7 @@ options.lp = o_options.lp || "zh-cn";
 options.webSite = o_options.w || "https://www.o2oa.net";
 options.mirrorSite = o_options.m || "https://mirror1.o2oa.net";
 options.downloadSite = o_options.d || "https://download.o2oa.net";
+options.historyVersion = o_options.v || "";
 var jvmUrl = jvmUrls[options.ev];
 var scriptSource = scripts[options.ev];
 
