@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>net.o2oa</groupId>
 		<artifactId>o2server</artifactId>
-		<version>10.0-ee</version>
+		<version>10.0</version>
 	</parent>
 	<artifactId>x_portal_assemble_designer</artifactId>
 	<packaging>war</packaging>
