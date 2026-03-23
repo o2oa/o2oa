@@ -1969,15 +1969,47 @@ MWF.xApplication.Selector.Identity.Include = new Class({
         //根据关键字获取组织和群组内的身份
         var keyString = typeOf( key )==="string" ? key.toLowerCase() : key.key.toLowerCase();
 
-        if ( (this.includeUnit && this.includeUnit.length) || (this.includeGroup && this.includeGroup.length) ){
-            key = this.getUnitFilterKey( keyString, this.includeUnit, this.includeGroup );
+        // if ( (this.includeUnit && this.includeUnit.length) || (this.includeGroup && this.includeGroup.length) ){
+        //     key = this.getUnitFilterKey( keyString, this.includeUnit, this.includeGroup );
+        //     this.orgAction.listIdentityByKey(function(json){
+        //         if (callback) callback(json.data);
+        //     }.bind(this), function(){
+        //         if (callback) callback();
+        //     }, key);
+        // }else{
+        //     if (callback) callback();
+        // }
 
-            this.orgAction.listIdentityByKey(function(json){
-                if (callback) callback(json.data);
-            }.bind(this), function(){
-                if (callback) callback();
-            }, key);
-        }else{
+        var hasUnit = this.includeUnit && this.includeUnit.length;
+        var hasGroup = this.includeGroup && this.includeGroup.length;
+        var total = 0;
+        hasUnit && total++;
+        hasGroup && total++;
+        var count = 0;
+        var result = [];
+
+        var runSuccess = (json)=>{
+            count++;
+            result.push( ...json.data );
+            if(count >= total){
+                !!callback && callback(result);
+            }
+        };
+
+        var runFail = ()=>{
+            count++;
+            if(count >= total){
+                !!callback && callback(result);
+            }
+        };
+
+        if ( hasUnit ){
+            this.orgAction.listIdentityByKey(runSuccess, runFail, this.getUnitFilterKey( keyString, this.includeUnit ));
+        }
+        if ( hasGroup ){
+            this.orgAction.listIdentityByKey(runSuccess, runFail, this.getUnitFilterKey( keyString, null, this.includeGroup));
+        }
+        if( !hasUnit && !hasGroup ){
             if (callback) callback();
         }
     },
