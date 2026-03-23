@@ -199,7 +199,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         this.datatypeInput = this.inputAreaNode.getElement(".datatypeInput_vf");
 
         this.restrictParameterInput = this.inputAreaNode.getElement(".restrictParameterInput_vf");
-        if(!this.restrictParameterInput.onclick){
+        if(this.restrictParameterInput && !this.restrictParameterInput.onclick){
             this.restrictParameterInput.addEventListener("click", function (e) {
                 if (this.restrictParameterInput.checked){
                     this.inputAreaNode.getElement('.viewParameterRestrict')?.setStyle('display', '');
