@@ -20,6 +20,7 @@ import javax.persistence.*;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AttendanceV2LeaveAccount extends SliceJpaObject {
 
+    private static final String TABLE = PersistenceProperties.AttendanceV2LeaveAccount.table;
     private static final long serialVersionUID = 1L;
 
 

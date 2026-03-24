@@ -21,6 +21,7 @@ import javax.persistence.Table;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AttendanceV2LeaveTransaction extends SliceJpaObject {
 
+    private static final String TABLE = PersistenceProperties.AttendanceV2LeaveTransaction.table;
     private static final long serialVersionUID = 1L;
 
     public String getId() {
@@ -53,7 +54,7 @@ public class AttendanceV2LeaveTransaction extends SliceJpaObject {
     private String ledgerId;
 
     public static final String bizType_FIELDNAME = "bizType";
-    @FieldDescribe("业务类型  GRANT: 发放 USE: 使用 CANCEL: 取消 EXPIRE: 过期 ADJUST: 调整")
+    @FieldDescribe("业务类型  GRANT: 发放 USE: 使用 CANCEL: 取消 EXPIRE: 过期 CARRYFORWARD: 结转 ADJUST: 调整")
     @Column(length = JpaObject.length_32B, name = ColumnNamePrefix + bizType_FIELDNAME)
     private String bizType;
 
@@ -61,6 +62,17 @@ public class AttendanceV2LeaveTransaction extends SliceJpaObject {
     @FieldDescribe("变化额度")
     @Column(name = ColumnNamePrefix + amount_FIELDNAME)
     private Double amount;
+
+    
+    public static final String leaveRequestId_FIELDNAME = "leaveRequestId";
+    @FieldDescribe("请假申请 id")
+    @Column(length = JpaObject.length_id, name = ColumnNamePrefix + leaveRequestId_FIELDNAME)
+    private String leaveRequestId;
+
+    public static final String fromYear_FIELDNAME = "fromYear";
+    @FieldDescribe("类型是CARRYFORWARD，来源年份")
+    @Column(length = JpaObject.length_16B, name = ColumnNamePrefix + fromYear_FIELDNAME)
+    private String fromYear;
 
 
     public String getPerson() {

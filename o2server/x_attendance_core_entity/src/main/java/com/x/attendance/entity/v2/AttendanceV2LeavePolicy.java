@@ -6,12 +6,24 @@ import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+
+import org.apache.openjpa.persistence.Persistent;
+import org.apache.openjpa.persistence.PersistentCollection;
+import org.apache.openjpa.persistence.jdbc.ContainerTable;
+import org.apache.openjpa.persistence.jdbc.ElementColumn;
+import org.apache.openjpa.persistence.jdbc.ElementIndex;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 // 定义 假期额度发放规则。
 @Entity
@@ -21,6 +33,7 @@ import javax.persistence.Table;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AttendanceV2LeavePolicy extends SliceJpaObject {
 
+    private static final String TABLE = PersistenceProperties.AttendanceV2LeavePolicy.table;
     private static final long serialVersionUID = 1L;
 
     public String getId() {
@@ -47,15 +60,48 @@ public class AttendanceV2LeavePolicy extends SliceJpaObject {
     @Column(length = JpaObject.length_96B, name = ColumnNamePrefix + policyName_FIELDNAME)
     private String policyName;
 
+     public static final String grantScopeType_FIELDNAME = "grantScopeType";
+    @FieldDescribe("发放范围 ALL: 全员  DEPARTMENT: 指定员工/部门")
+    @Column(length = JpaObject.length_16B, name = ColumnNamePrefix + grantScopeType_FIELDNAME)
+    private String grantScopeType;
+
+    public static final String grantScopeList_FIELDNAME = "grantScopeList";
+	@FieldDescribe("grantScopeType=DEPARTMENT， 发放范围人员、组织.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ContainerTable(name = PersistenceProperties.AttendanceV2LeavePolicy.table + ContainerTableNameMiddle
+			+ grantScopeList_FIELDNAME, joinIndex = @org.apache.openjpa.persistence.jdbc.Index(name = PersistenceProperties.AttendanceV2LeavePolicy.table + grantScopeList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + grantScopeList_FIELDNAME)
+	@ElementIndex(name = PersistenceProperties.AttendanceV2LeavePolicy.table + grantScopeList_FIELDNAME + ElementIndexNameSuffix)
+	private List<String> grantScopeList;
+
     public static final String grantType_FIELDNAME = "grantType";
-    @FieldDescribe("发放方式 YEARLY/MONTHLY/ONE_TIME")
+    @FieldDescribe("发放方式： YEARLY/MONTHLY/ONE_TIME")
     @Column(length = JpaObject.length_16B, name = ColumnNamePrefix + grantType_FIELDNAME)
     private String grantType;
 
+    public static final String grantTypeValue_FIELDNAME = "grantTypeValue";
+    @FieldDescribe("发放方式日期规则配置： Y:01-01/MF:1,ML:1/ONE_TIME")
+    @Column(length = JpaObject.length_16B, name = ColumnNamePrefix + grantTypeValue_FIELDNAME)
+    private String grantTypeValue;
+
+    public static final String grantNextExecuteTime_FIELDNAME = "grantNextExecuteTime";
+    @FieldDescribe("下次发放时间，yyyy-MM-dd")
+    @Column(  length = JpaObject.length_16B, name = ColumnNamePrefix + grantNextExecuteTime_FIELDNAME)
+    private String grantNextExecuteTime;
+   
     public static final String grantAmount_FIELDNAME = "grantAmount";
     @FieldDescribe("发放额度")
     @Column(name = ColumnNamePrefix + grantAmount_FIELDNAME)
     private Double grantAmount = 0.0;
+    
+	public static final String grantAmountType_FIELDNAME = "grantAmountType";
+	@FieldDescribe("发放额度规则，只在按年发放时需要.")
+	@Persistent
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + grantAmountType_FIELDNAME)
+	private AttendanceV2LeavePolicyGrantAmountTypeProperties grantAmountType;
+ 
 
     public static final String expireType_FIELDNAME = "expireType";
     @FieldDescribe("过期类型 NEVER / FIXED / RELATIVE")
@@ -86,6 +132,8 @@ public class AttendanceV2LeavePolicy extends SliceJpaObject {
     @FieldDescribe("状态 ENABLED/DISABLED")
     @Column(name = ColumnNamePrefix + active_FIELDNAME)
     private Boolean active = true;
+
+
 
 
     public String getLeaveTypeId() {
@@ -167,4 +215,47 @@ public class AttendanceV2LeavePolicy extends SliceJpaObject {
     public void setActive(Boolean active) {
         this.active = active;
     }
+
+    public String getGrantScopeType() {
+        return grantScopeType;
+    }
+
+    public void setGrantScopeType(String grantScopeType) {
+        this.grantScopeType = grantScopeType;
+    }
+
+    public List<String> getGrantScopeList() {
+        return grantScopeList;
+    }
+
+    public void setGrantScopeList(List<String> grantScopeList) {
+        this.grantScopeList = grantScopeList;
+    }
+
+    public String getGrantTypeValue() {
+        return grantTypeValue;
+    }
+
+    public void setGrantTypeValue(String grantTypeValue) {
+        this.grantTypeValue = grantTypeValue;
+    }
+
+    public String getGrantNextExecuteTime() {
+        return grantNextExecuteTime;
+    }
+
+    public void setGrantNextExecuteTime(String grantNextExecuteTime) {
+        this.grantNextExecuteTime = grantNextExecuteTime;
+    }
+
+    public AttendanceV2LeavePolicyGrantAmountTypeProperties getGrantAmountType() {
+        return grantAmountType;
+    }
+
+    public void setGrantAmountType(AttendanceV2LeavePolicyGrantAmountTypeProperties grantAmountType) {
+        this.grantAmountType = grantAmountType;
+    } 
+
+    
+    
 }

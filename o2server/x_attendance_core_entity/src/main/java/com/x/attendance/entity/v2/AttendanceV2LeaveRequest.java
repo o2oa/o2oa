@@ -23,6 +23,7 @@ import javax.persistence.TemporalType;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AttendanceV2LeaveRequest extends SliceJpaObject {
 
+    private static final String TABLE = PersistenceProperties.AttendanceV2LeaveRequest.table;
     private static final long serialVersionUID = 1L;
 
 
