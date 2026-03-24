@@ -14,6 +14,7 @@ import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Unit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -95,9 +96,22 @@ class ActionListTopController extends BaseAction {
 		List<Unit> os = business.unit().listControlUnitWithPerson(person.getId());
 		List<Wo> wos = business.unit().sort(Wo.copier.copy(os));
 		if(wos.size() > 1){
-			while (!wos.get(0).getLevel().equals(wos.get(wos.size()-1).getLevel())){
-				wos.remove(wos.size()-1);
+			List<Wo> list = new ArrayList<>();
+			List<String> levelList = new ArrayList<>();
+			for (Wo wo : wos){
+				boolean flag = true;
+				for(String level : levelList){
+					if(wo.getLevelName().contains(level)){
+						flag = false;
+						break;
+					}
+				}
+				if(flag){
+					list.add(wo);
+					levelList.add(wo.getLevelName());
+				}
 			}
+			wos = list;
 		}
 		wos.forEach(o -> {
 			try {
