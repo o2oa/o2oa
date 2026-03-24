@@ -75,7 +75,7 @@ var scripts = {
 //     string: ["e", "lp", "w", "m", "d"]
 // });
 var o_options = minimist(process.argv.slice(2), {
-    string: ["e", "lp", "w", "m", "d", "efd", "itai", "name", "uname", "email", "cmobile", "cname", "ver", "sec", "v"]
+    string: ["e", "lp", "w", "m", "d", "efd", "itai", "name", "uname", "email", "cmobile", "cname", "ver", "sec", "hv"]
 });
 
 var options = {};
@@ -84,7 +84,7 @@ options.lp = o_options.lp || "zh-cn";
 options.webSite = o_options.w || "https://www.o2oa.net";
 options.mirrorSite = o_options.m || "https://mirror1.o2oa.net";
 options.downloadSite = o_options.d || "https://download.o2oa.net";
-options.historyVersion = o_options.v || "";
+options.historyVersion = o_options.hv || "";
 var jvmUrl = jvmUrls[options.ev];
 var scriptSource = scripts[options.ev];
 
@@ -1315,9 +1315,7 @@ function createHistoryJsonFile(url, fileName, host){
                     if (append){
                         historyJsons.unshift(downloadJson);
                     }
-                    console.log(`---------------------------------------------------------------------
-  ${historyJsons} ...
----------------------------------------------------------------------`);
+
                     console.log(`---------------------------------------------------------------------
   . create history json file ${fileName} ...
 ---------------------------------------------------------------------`);
@@ -1334,10 +1332,6 @@ async function createHistroyJson(cb) {
     const mirrorHost = options.mirrorSite;
     const downloadHost = options.downloadSite;
     const hv = options.historyVersion ? ("-v"+options.historyVersion) : "";
-
-    console.log(`---------------------------------------------------------------------
-  . Start creating history json file ... ${hv}
----------------------------------------------------------------------`);
 
     if (host) {
         const url = host + "/website/history"+hv+".json?t=" + (new Date()).getTime();
