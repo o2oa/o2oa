@@ -1315,6 +1315,12 @@ function createHistoryJsonFile(url, fileName, host){
                     if (append){
                         historyJsons.unshift(downloadJson);
                     }
+                    console.log(`---------------------------------------------------------------------
+  ${historyJsons} ...
+---------------------------------------------------------------------`);
+                    console.log(`---------------------------------------------------------------------
+  . create history json file ${fileName} ...
+---------------------------------------------------------------------`);
                     const jsonStr = JSON.stringify(historyJsons, null, '\t');
                     fp.writeFile(path.resolve(process.cwd(), fileName), jsonStr).then(()=>{resolve();});
                 });
@@ -1329,9 +1335,13 @@ async function createHistroyJson(cb) {
     const downloadHost = options.downloadSite;
     const hv = options.historyVersion ? ("-v"+options.historyVersion) : "";
 
+    console.log(`---------------------------------------------------------------------
+  . Start creating history json file ... ${hv}
+---------------------------------------------------------------------`);
+
     if (host) {
-        const url = host + "/website/history.json?t=" + (new Date()).getTime();
-        const mirrorUrl = mirrorHost + "/download/download-history.json?t=" + (new Date()).getTime();
+        const url = host + "/website/history"+hv+".json?t=" + (new Date()).getTime();
+        const mirrorUrl = mirrorHost + "/download/download-history"+hv+".json?t=" + (new Date()).getTime();
 
         var doneWebSite = false;
         var doneMirror = false;
