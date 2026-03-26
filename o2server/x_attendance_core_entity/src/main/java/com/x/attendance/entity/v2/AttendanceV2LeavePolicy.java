@@ -81,7 +81,7 @@ public class AttendanceV2LeavePolicy extends SliceJpaObject {
     private String grantType;
 
     public static final String grantTypeValue_FIELDNAME = "grantTypeValue";
-    @FieldDescribe("发放方式日期规则配置： Y:01-01/MF:1,ML:1/ONE_TIME")
+    @FieldDescribe("发放方式日期规则配置： Y:01-01/MS:1,ME:1/ONE_TIME")
     @Column(length = JpaObject.length_16B, name = ColumnNamePrefix + grantTypeValue_FIELDNAME)
     private String grantTypeValue;
 
@@ -132,8 +132,6 @@ public class AttendanceV2LeavePolicy extends SliceJpaObject {
     @FieldDescribe("状态 ENABLED/DISABLED")
     @Column(name = ColumnNamePrefix + active_FIELDNAME)
     private Boolean active = true;
-
-
 
 
     public String getLeaveTypeId() {

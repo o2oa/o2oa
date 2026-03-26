@@ -5,17 +5,17 @@ import java.util.List;
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
 
-public class AttendanceV2LeavePolicyGrantAmountTypeProperties extends JsonProperties  {
-    
+public class AttendanceV2LeavePolicyGrantAmountTypeProperties extends JsonProperties {
+
     private static final long serialVersionUID = -4872177863446165403L;
 
     @FieldDescribe("发放额度类型，按年发放才需要, FIXED: 固定额度， SERVICELEN: 按司龄发放")
     private String type;
 
     @FieldDescribe("发放额度")
-    private Double grantAmount = 0.0; 
+    private Double grantAmount = 0.0;
 
-     @FieldDescribe("按司龄发放规则列表")
+    @FieldDescribe("按司龄发放规则列表")
     private List<AttendanceV2LeavePlicyGrantAmountTypeTenureLeaveRule> tenureLeaveRules;
 
     // 根据司龄计算发放额度
@@ -34,30 +34,44 @@ public class AttendanceV2LeavePolicyGrantAmountTypeProperties extends JsonProper
         return 0.0; // 默认返回0
     }
 
-     public String getType() {
-         return type;
-     }
+    // 验证配置是否合法
+    public boolean validate() {
+        if (type == null || (!"FIXED".equalsIgnoreCase(type) && !"SERVICELEN".equalsIgnoreCase(type))) {
+            return false;
+        }
+        if ("FIXED".equalsIgnoreCase(type)) {
+            return grantAmount != null && grantAmount >= 0;
+        } else if ("SERVICELEN".equalsIgnoreCase(type)) {
+            if (tenureLeaveRules == null || tenureLeaveRules.isEmpty()) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
 
-     public void setType(String type) {
-         this.type = type;
-     }
+    public String getType() {
+        return type;
+    }
 
-     public Double getGrantAmount() {
-         return grantAmount;
-     }
+    public void setType(String type) {
+        this.type = type;
+    }
 
-     public void setGrantAmount(Double grantAmount) {
-         this.grantAmount = grantAmount;
-     }
+    public Double getGrantAmount() {
+        return grantAmount;
+    }
 
-     public List<AttendanceV2LeavePlicyGrantAmountTypeTenureLeaveRule> getTenureLeaveRules() {
-         return tenureLeaveRules;
-     }
+    public void setGrantAmount(Double grantAmount) {
+        this.grantAmount = grantAmount;
+    }
 
-     public void setTenureLeaveRules(List<AttendanceV2LeavePlicyGrantAmountTypeTenureLeaveRule> tenureLeaveRules) {
-         this.tenureLeaveRules = tenureLeaveRules;
-     }
-    
+    public List<AttendanceV2LeavePlicyGrantAmountTypeTenureLeaveRule> getTenureLeaveRules() {
+        return tenureLeaveRules;
+    }
 
-    
+    public void setTenureLeaveRules(List<AttendanceV2LeavePlicyGrantAmountTypeTenureLeaveRule> tenureLeaveRules) {
+        this.tenureLeaveRules = tenureLeaveRules;
+    }
+
 }

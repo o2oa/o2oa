@@ -1,0 +1,120 @@
+package com.x.attendance.assemble.control.jaxrs.v2.leavemanager;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.gson.JsonElement;
+import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
+import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
+import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeavePolicyEnums.ExpireTypeEnum;
+import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeavePolicyEnums.GrantScopeTypeEnum;
+import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeavePolicyEnums.GrantTypeEnum;
+import com.x.attendance.entity.v2.AttendanceV2LeavePolicy;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.bean.WrapCopier;
+import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.jaxrs.WoId;
+
+public class ActionLeavePolicyPost extends BaseAction {
+
+    ActionResult<Wo> execute(EffectivePerson person, JsonElement jsonElement) throws Exception {
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
+            if (!business.isManager(person)) {
+                throw new ExceptionAccessDenied(person);
+            }
+
+            ActionResult<Wo> result = new ActionResult<>();
+            Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+
+            if (StringUtils.isBlank(wi.getPolicyName())) {
+                throw new ExceptionEmptyParameter("规则名称");
+            }
+            if (StringUtils.isBlank(wi.getLeaveTypeId())) {
+                throw new ExceptionEmptyParameter("假期类型ID");
+            }
+            if (StringUtils.isBlank(wi.getGrantScopeType())
+                    || (!GrantScopeTypeEnum.ALL.getValue().equals(wi.getGrantScopeType())
+                            && !GrantScopeTypeEnum.DEPARTMENT.getValue().equals(wi.getGrantScopeType()))) {
+                throw new ExceptionEmptyParameter("发放范围");
+            }
+            if (GrantScopeTypeEnum.DEPARTMENT.getValue().equals(wi.getGrantScopeType())
+                    && (wi.getGrantScopeList() == null || wi.getGrantScopeList().isEmpty())) {
+                throw new ExceptionEmptyParameter("发放范围列表");
+            }
+            if (StringUtils.isBlank(wi.getGrantType()) || (!GrantTypeEnum.YEARLY.getValue().equals(wi.getGrantType())
+                    && !GrantTypeEnum.MONTHLY.getValue().equals(wi.getGrantType())
+                    && !GrantTypeEnum.ONE_TIME.getValue().equals(wi.getGrantType()))) {
+                throw new ExceptionEmptyParameter("发放方式");
+            }
+            if (StringUtils.isBlank(wi.getExpireType()) || (!ExpireTypeEnum.NEVER.getValue().equals(wi.getExpireType())
+                    && !ExpireTypeEnum.FIXED.getValue().equals(wi.getExpireType())
+                    && !ExpireTypeEnum.RELATIVE.getValue().equals(wi.getExpireType()))) {
+                throw new ExceptionEmptyParameter("过期类型");
+            }
+            // 单次 发放必须指定发放额度，且不能为负数
+            if ((GrantTypeEnum.ONE_TIME.getValue().equals(wi.getGrantType())
+                    || GrantTypeEnum.MONTHLY.getValue().equals(wi.getGrantType()))
+                    && (wi.getGrantAmount() == null || wi.getGrantAmount() < 0)) {
+                throw new ExceptionEmptyParameter("发放额度");
+            } else if (GrantTypeEnum.YEARLY.getValue().equals(wi.getGrantType())) {
+                if (wi.getGrantAmountType() == null || !wi.getGrantAmountType().validate()) {
+                    throw new ExceptionWithMessage("发放额度规则错误");
+                }
+            }
+            if (BooleanUtils.isTrue(wi.getCarryForward()) && (wi.getMaxCarryForward() == null || wi.getMaxCarryForward() < 0)) {
+                throw new ExceptionEmptyParameter("最大结转额度");
+            }
+
+            AttendanceV2LeavePolicy leavePolicy = Wi.copier.copy(wi);
+            //生成grantNextExecuteTime
+            calculateNextExecutionTimeForLeavePolicy(leavePolicy);
+
+            emc.beginTransaction(AttendanceV2LeavePolicy.class);
+
+            if (StringUtils.isBlank(leavePolicy.getId())) {
+                emc.persist(leavePolicy, CheckPersistType.all);
+                Wo wo = new Wo();
+                wo.setId(leavePolicy.getId());
+                result.setData(wo);
+            } else {
+                AttendanceV2LeavePolicy old = emc.find(leavePolicy.getId(), AttendanceV2LeavePolicy.class);
+                if (old != null) {
+                    leavePolicy.copyTo(old, JpaObject.FieldsUnmodify);
+                    emc.check(old, CheckPersistType.all);
+                    Wo wo = new Wo();
+                    wo.setId(old.getId());
+                    result.setData(wo);
+                } else {
+                    emc.persist(leavePolicy, CheckPersistType.all);
+                    Wo wo = new Wo();
+                    wo.setId(leavePolicy.getId());
+                    result.setData(wo);
+                }
+            }
+
+            emc.commit();
+            return result;
+        }
+    }
+
+    public static class Wi extends AttendanceV2LeavePolicy {
+        private static final long serialVersionUID = 1L;
+
+        static WrapCopier<Wi, AttendanceV2LeavePolicy> copier = WrapCopierFactory.wi(Wi.class,
+                AttendanceV2LeavePolicy.class, null,
+                JpaObject.FieldsUnmodify);
+
+    }
+
+    public static class Wo extends WoId {
+        private static final long serialVersionUID = 1L;
+    }
+}
