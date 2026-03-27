@@ -28,7 +28,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Table(name = PersistenceProperties.IMMsg.table, indexes = {
         @javax.persistence.Index(name = PersistenceProperties.IMMsg.table
                                         + JpaObject.IndexNameMiddle
-                                        + JpaObject.createTime_FIELDNAME, columnList = JpaObject.CREATETIMECOLUMN)}, uniqueConstraints = {
+                                        + JpaObject.createTime_FIELDNAME, columnList = JpaObject.CREATETIMECOLUMN),
+        @javax.persistence.Index(name = PersistenceProperties.IMMsg.table + "_conversationId_createTime", columnList = "xconversationId, " + JpaObject.CREATETIMECOLUMN)
+}, uniqueConstraints = {
         @UniqueConstraint(name = PersistenceProperties.IMMsg.table + JpaObject.IndexNameMiddle
                                  + JpaObject.DefaultUniqueConstraintSuffix, columnNames = {
                 JpaObject.IDCOLUMN,
