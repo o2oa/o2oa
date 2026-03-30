@@ -75,7 +75,7 @@ var scripts = {
 //     string: ["e", "lp", "w", "m", "d"]
 // });
 var o_options = minimist(process.argv.slice(2), {
-    string: ["e", "lp", "w", "m", "d", "efd", "itai", "name", "uname", "email", "cmobile", "cname", "ver", "sec"]
+    string: ["e", "lp", "w", "m", "d", "efd", "itai", "name", "uname", "email", "cmobile", "cname", "ver", "sec", "hv"]
 });
 
 var options = {};
@@ -84,6 +84,7 @@ options.lp = o_options.lp || "zh-cn";
 options.webSite = o_options.w || "https://www.o2oa.net";
 options.mirrorSite = o_options.m || "https://mirror1.o2oa.net";
 options.downloadSite = o_options.d || "https://download.o2oa.net";
+options.historyVersion = o_options.hv || "";
 var jvmUrl = jvmUrls[options.ev];
 var scriptSource = scripts[options.ev];
 
@@ -1314,6 +1315,10 @@ function createHistoryJsonFile(url, fileName, host){
                     if (append){
                         historyJsons.unshift(downloadJson);
                     }
+
+                    console.log(`---------------------------------------------------------------------
+  . create history json file ${fileName} ...
+---------------------------------------------------------------------`);
                     const jsonStr = JSON.stringify(historyJsons, null, '\t');
                     fp.writeFile(path.resolve(process.cwd(), fileName), jsonStr).then(()=>{resolve();});
                 });
@@ -1326,11 +1331,11 @@ async function createHistroyJson(cb) {
     const host = options.webSite;
     const mirrorHost = options.mirrorSite;
     const downloadHost = options.downloadSite;
-    const hv = options.historyVersion;
+    const hv = options.historyVersion ? ("-v"+options.historyVersion) : "";
 
     if (host) {
-        const url = host + "/website/history.json?t=" + (new Date()).getTime();
-        const mirrorUrl = mirrorHost + "/download/download-history.json?t=" + (new Date()).getTime();
+        const url = host + "/website/history"+hv+".json?t=" + (new Date()).getTime();
+        const mirrorUrl = mirrorHost + "/download/download-history"+hv+".json?t=" + (new Date()).getTime();
 
         var doneWebSite = false;
         var doneMirror = false;

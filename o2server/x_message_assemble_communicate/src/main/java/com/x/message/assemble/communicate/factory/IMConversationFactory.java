@@ -184,6 +184,7 @@ public class IMConversationFactory extends AbstractFactory {
         Predicate p = cb.equal(root.get(IMMsg_.conversationId), conversationId);
         List<IMMsg> list = em.createQuery(
                         cq.select(root).where(p).orderBy(cb.desc(root.get(IMMsg_.createTime))))
+                .setMaxResults(1)
                 .getResultList();
         if (list != null && !list.isEmpty()) {
             return list.get(0);
