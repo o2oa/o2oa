@@ -125,7 +125,7 @@ public class IMConversationFactory extends AbstractFactory {
         Predicate p = cb.equal(root.get(IMConversationExt_.person), person);
         p = cb.and(p, cb.equal(root.get(IMConversationExt_.conversationId), conversationId));
         cq.select(root).where(p);
-        List<IMConversationExt> list = em.createQuery(cq).getResultList();
+        List<IMConversationExt> list = em.createQuery(cq).setMaxResults(1).getResultList();
         if (list != null && !list.isEmpty()) {
             return list.get(0);
         }
@@ -388,6 +388,90 @@ public class IMConversationFactory extends AbstractFactory {
     }
 
     /**
+     * 批量查询当前用户会话扩展
+     *
+     * @param person
+     * @param conversationIds
+     * @return
+     * @throws Exception
+     */
+    public java.util.Map<String, IMConversationExt> getConversationExts(String person, java.util.List<String> conversationIds)
+            throws Exception {
+        EntityManager em = this.entityManagerContainer().get(IMConversationExt.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<IMConversationExt> cq = cb.createQuery(IMConversationExt.class);
+        Root<IMConversationExt> root = cq.from(IMConversationExt.class);
+        Predicate p = cb.equal(root.get(IMConversationExt_.person), person);
+        p = cb.and(p, root.get(IMConversationExt_.conversationId).in(conversationIds));
+        cq.select(root).where(p);
+        java.util.List<IMConversationExt> list = em.createQuery(cq).getResultList();
+        return list.stream().collect(java.util.stream.Collectors.toMap(IMConversationExt::getConversationId, ext -> ext, (existing, replacement) -> existing));
+    }
+
+    /**
+     * 批量获取未读消息数量
+     *
+     * @param exts
+     * @return
+     * @throws Exception
+     */
+    public java.util.Map<String, Long> getUnreadNumbers(java.util.List<IMConversationExt> exts) throws Exception {
+        if (exts.isEmpty()) {
+            return java.util.Collections.emptyMap();
+        }
+        EntityManager em = this.entityManagerContainer().get(IMMsg.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<java.lang.Object[]> cq = cb.createQuery(java.lang.Object[].class);
+        Root<IMMsg> root = cq.from(IMMsg.class);
+        // 构建条件：conversationId in exts, createPerson != person, createTime > lastReadTime
+        java.util.List<String> conversationIds = exts.stream().map(IMConversationExt::getConversationId).collect(java.util.stream.Collectors.toList());
+        Predicate p = root.get(IMMsg_.conversationId).in(conversationIds);
+        // 为每个ext添加条件
+        java.util.List<Predicate> predicates = new java.util.ArrayList<>();
+        for (IMConversationExt ext : exts) {
+            Predicate p1 = cb.equal(root.get(IMMsg_.conversationId), ext.getConversationId());
+            p1 = cb.and(p1, cb.notEqual(root.get(IMMsg_.createPerson), ext.getPerson()));
+            if (ext.getLastReadTime() != null) {
+                p1 = cb.and(p1, cb.greaterThan(root.get(IMMsg_.createTime), ext.getLastReadTime()));
+            }
+            predicates.add(p1);
+        }
+        Predicate orPredicate = cb.or(predicates.toArray(new Predicate[0]));
+        cq.multiselect(root.get(IMMsg_.conversationId), cb.count(root)).where(orPredicate).groupBy(root.get(IMMsg_.conversationId));
+        java.util.List<java.lang.Object[]> results = em.createQuery(cq).getResultList();
+        return results.stream().collect(java.util.stream.Collectors.toMap(arr -> (String) arr[0], arr -> (Long) arr[1], (existing, replacement) -> existing));
+    }
+
+    /**
+     * 批量获取最后一条消息
+     *
+     * @param conversationIds
+     * @return
+     * @throws Exception
+     */
+    public java.util.Map<String, IMMsg> getLastMessages(java.util.List<String> conversationIds) throws Exception {
+        if (conversationIds.isEmpty()) {
+            return java.util.Collections.emptyMap();
+        }
+        EntityManager em = this.entityManagerContainer().get(IMMsg.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<IMMsg> cq = cb.createQuery(IMMsg.class);
+        Root<IMMsg> root = cq.from(IMMsg.class);
+        Predicate p = root.get(IMMsg_.conversationId).in(conversationIds);
+        // 使用窗口函数或子查询获取每个会话的最新消息
+        // 由于JPA Criteria不支持窗口函数，我们用子查询
+        Subquery<java.util.Date> subMaxTime = cq.subquery(java.util.Date.class);
+        Root<IMMsg> subRoot = subMaxTime.from(IMMsg.class);
+        subMaxTime.select(cb.greatest(subRoot.get(IMMsg_.createTime)))
+                .where(cb.equal(subRoot.get(IMMsg_.conversationId), root.get(IMMsg_.conversationId)));
+        Predicate p2 = cb.equal(root.get(IMMsg_.createTime), subMaxTime);
+        cq.select(root).where(cb.and(p, p2));
+        java.util.List<IMMsg> list = em.createQuery(cq).getResultList();
+        return list.stream().collect(java.util.stream.Collectors.toMap(IMMsg::getConversationId, msg -> msg, (existing, replacement) -> existing));
+    }
+
+
+     /**
      * 收藏消息数量
      *
      * @param person
