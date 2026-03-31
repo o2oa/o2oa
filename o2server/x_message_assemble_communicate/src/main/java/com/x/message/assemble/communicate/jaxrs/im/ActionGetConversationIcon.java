@@ -75,7 +75,9 @@ public class ActionGetConversationIcon extends BaseAction {
             }
         }
         if (base64 == null) {
-            LOGGER.info("没有找到会话头像 icon");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("没有找到会话头像 icon");
+            }
             base64 = ICON_UNKOWN;
         }
         byte[] bs = Base64.decodeBase64(base64);
