@@ -7,6 +7,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
@@ -16,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
@@ -48,6 +50,59 @@ public class LeaveManagerAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "删除假期类型对象.", action = ActionLeaveTypeDelete.class)
+    @GET
+    @Path("type/delete/{id}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void typeDelete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+            @JaxrsParameterDescribe("类型ID") @PathParam("id") String id) {
+        ActionResult<ActionLeaveTypeDelete.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLeaveTypeDelete().execute(id);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "假期类型列表.", action = ActionLeaveTypeList.class)
+    @GET
+    @Path("type/list/all")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void typeListAll(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+        ActionResult<List<ActionLeaveTypeList.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLeaveTypeList().execute();
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "假期类型列表,是否有限额.", action = ActionLeaveTypeListWithQuotaType.class)
+    @GET
+    @Path("type/list/quota/{isLimited}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void typeListWithQuota(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+            @JaxrsParameterDescribe("是否有限额") @PathParam("isLimited") Boolean isLimited) {
+        ActionResult<List<ActionLeaveTypeListWithQuotaType.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLeaveTypeListWithQuotaType().execute(isLimited);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "保存假期规则数据.", action = ActionLeavePolicyPost.class)
     @POST
     @Path("policy")
@@ -66,6 +121,24 @@ public class LeaveManagerAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "假期规则对象.", action = ActionLeavePolicyGet.class)
+    @GET
+    @Path("policy/{id}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void policyGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+            @JaxrsParameterDescribe("规则ID") @PathParam("id") String id) {
+        ActionResult<ActionLeavePolicyGet.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLeavePolicyGet().execute(id);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "假期规则列表.", action = ActionLeavePolicyList.class)
     @GET
     @Path("policy/list")
@@ -76,6 +149,25 @@ public class LeaveManagerAction extends StandardJaxrsAction {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
             result = new ActionLeavePolicyList().execute();
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+
+    @JaxrsMethodDescribe(value = "删除假期规则对象.", action = ActionLeavePolicyDelete.class)
+    @GET
+    @Path("policy/delete/{id}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void policyDelete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+            @JaxrsParameterDescribe("规则ID") @PathParam("id") String id) {
+        ActionResult<ActionLeavePolicyDelete.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLeavePolicyDelete().execute(id);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);

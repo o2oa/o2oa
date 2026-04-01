@@ -1,10 +1,13 @@
 package com.x.attendance.assemble.control.jaxrs.v2.leavemanager;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
+import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
 import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeaveTypeEnums.QuotaTypeEnum;
 import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeaveTypeEnums.UnitTypeEnum;
 import com.x.attendance.entity.v2.AttendanceV2LeaveType;
@@ -31,6 +34,16 @@ public class ActionLeaveTypePost extends BaseAction {
             Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
             if (StringUtils.isBlank(wi.getName())) {
                 throw new ExceptionEmptyParameter("假期名称");
+            }
+             // 名称不能重复
+            List<AttendanceV2LeaveType> checkRepetitive = emc.listEqualAndEqual(AttendanceV2LeaveType.class,
+                    AttendanceV2LeaveType.name_FIELDNAME, wi.getName(), AttendanceV2LeaveType.active_FIELDNAME, true);
+            if (checkRepetitive != null && !checkRepetitive.isEmpty()) {
+                for (AttendanceV2LeaveType check : checkRepetitive) {
+                    if (check.getName().equals(wi.getName()) && !check.getId().equals(wi.getId())) {
+                        throw new ExceptionWithMessage("假期名称已存在");
+                    }
+                }
             }
             if (StringUtils.isBlank(wi.getQuotaType()) || (!QuotaTypeEnum.QUOTA.getValue().equals(wi.getQuotaType())
                     && !QuotaTypeEnum.UNLIMITED.getValue().equals(wi.getQuotaType()))) {
@@ -68,8 +81,8 @@ public class ActionLeaveTypePost extends BaseAction {
     }
 
     public static class Wi extends AttendanceV2LeaveType {
-        private static final long serialVersionUID = 1L;
 
+        private static final long serialVersionUID = -2293772894673897906L;
         static WrapCopier<Wi, AttendanceV2LeaveType> copier = WrapCopierFactory.wi(Wi.class,
                 AttendanceV2LeaveType.class, null,
                 JpaObject.FieldsUnmodify);
@@ -77,6 +90,7 @@ public class ActionLeaveTypePost extends BaseAction {
     }
 
     public static class Wo extends WoId {
-        private static final long serialVersionUID = 1L;
+
+        private static final long serialVersionUID = -409828970324495394L;
     }
 }

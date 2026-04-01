@@ -1,5 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.v2.leavemanager;
 
+import java.util.List;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -37,6 +39,16 @@ public class ActionLeavePolicyPost extends BaseAction {
             if (StringUtils.isBlank(wi.getPolicyName())) {
                 throw new ExceptionEmptyParameter("规则名称");
             }
+            // 名称不能重复
+            List<AttendanceV2LeavePolicy> checkRepetitive = emc.listEqualAndEqual(AttendanceV2LeavePolicy.class,
+                    AttendanceV2LeavePolicy.policyName_FIELDNAME, wi.getPolicyName(), AttendanceV2LeavePolicy.active_FIELDNAME, true);
+            if (checkRepetitive != null && !checkRepetitive.isEmpty()) {
+                for (AttendanceV2LeavePolicy check : checkRepetitive) {
+                    if (check.getPolicyName().equals(wi.getPolicyName()) && !check.getId().equals(wi.getId())) {
+                        throw new ExceptionWithMessage("规则名称已存在");
+                    }
+                }
+            }
             if (StringUtils.isBlank(wi.getLeaveTypeId())) {
                 throw new ExceptionEmptyParameter("假期类型ID");
             }
@@ -48,6 +60,20 @@ public class ActionLeavePolicyPost extends BaseAction {
             if (GrantScopeTypeEnum.DEPARTMENT.getValue().equals(wi.getGrantScopeType())
                     && (wi.getGrantScopeList() == null || wi.getGrantScopeList().isEmpty())) {
                 throw new ExceptionEmptyParameter("发放范围列表");
+            }
+            // 全员 校验是否有同类型的了 ， todo： GrantScopeTypeEnum.DEPARTMENT下是否判断重复
+            if (GrantScopeTypeEnum.ALL.getValue().equals(wi.getGrantScopeType())) {
+                List<AttendanceV2LeavePolicy> checkTypeAndScopeAll = emc.listEqualAndEqualAndEqual(
+                        AttendanceV2LeavePolicy.class, AttendanceV2LeavePolicy.leaveTypeId_FIELDNAME,
+                        wi.getLeaveTypeId(), AttendanceV2LeavePolicy.grantScopeType_FIELDNAME,
+                        GrantScopeTypeEnum.ALL.getValue(), AttendanceV2LeavePolicy.active_FIELDNAME, true);
+                if (checkTypeAndScopeAll != null && !checkTypeAndScopeAll.isEmpty()) {
+                    for (AttendanceV2LeavePolicy check : checkRepetitive) {
+                        if (!check.getId().equals(wi.getId())) {
+                            throw new ExceptionWithMessage("当前假期类型已有配置规则");
+                        }
+                    }
+                }
             }
             if (StringUtils.isBlank(wi.getGrantType()) || (!GrantTypeEnum.YEARLY.getValue().equals(wi.getGrantType())
                     && !GrantTypeEnum.MONTHLY.getValue().equals(wi.getGrantType())
@@ -69,12 +95,13 @@ public class ActionLeavePolicyPost extends BaseAction {
                     throw new ExceptionWithMessage("发放额度规则错误");
                 }
             }
-            if (BooleanUtils.isTrue(wi.getCarryForward()) && (wi.getMaxCarryForward() == null || wi.getMaxCarryForward() < 0)) {
+            if (BooleanUtils.isTrue(wi.getCarryForward())
+                    && (wi.getMaxCarryForward() == null || wi.getMaxCarryForward() < 0)) {
                 throw new ExceptionEmptyParameter("最大结转额度");
             }
 
             AttendanceV2LeavePolicy leavePolicy = Wi.copier.copy(wi);
-            //生成grantNextExecuteTime
+            // 生成grantNextExecuteTime
             calculateNextExecutionTimeForLeavePolicy(leavePolicy);
 
             emc.beginTransaction(AttendanceV2LeavePolicy.class);
@@ -106,8 +133,8 @@ public class ActionLeavePolicyPost extends BaseAction {
     }
 
     public static class Wi extends AttendanceV2LeavePolicy {
-        private static final long serialVersionUID = 1L;
 
+        private static final long serialVersionUID = -2609308371335390023L;
         static WrapCopier<Wi, AttendanceV2LeavePolicy> copier = WrapCopierFactory.wi(Wi.class,
                 AttendanceV2LeavePolicy.class, null,
                 JpaObject.FieldsUnmodify);
@@ -115,6 +142,7 @@ public class ActionLeavePolicyPost extends BaseAction {
     }
 
     public static class Wo extends WoId {
-        private static final long serialVersionUID = 1L;
+
+        private static final long serialVersionUID = -6628188676802865564L;
     }
 }

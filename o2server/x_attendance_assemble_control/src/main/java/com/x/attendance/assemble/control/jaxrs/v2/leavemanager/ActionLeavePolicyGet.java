@@ -1,7 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.v2.leavemanager;
 
-import java.util.List;
-
+import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.entity.v2.AttendanceV2LeavePolicy;
 import com.x.attendance.entity.v2.AttendanceV2LeaveType;
 import com.x.base.core.container.EntityManagerContainer;
@@ -11,36 +10,29 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 
-public class ActionLeavePolicyList extends BaseAction {
+public class ActionLeavePolicyGet extends BaseAction {
 
-    private static Logger logger = LoggerFactory.getLogger(ActionLeavePolicyList.class);
-
-    ActionResult<List<Wo>> execute() throws Exception {
+    ActionResult<Wo> execute(String id) throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            ActionResult<List<Wo>> result = new ActionResult<>();
-            List<AttendanceV2LeaveType> typeList = emc.listAll(AttendanceV2LeaveType.class);
-            List<Wo> wos = emc.listEqual(AttendanceV2LeavePolicy.class, AttendanceV2LeavePolicy.active_FIELDNAME, true)
-                    .stream().map(policy -> {
-                        Wo wo = Wo.copier.copy(policy);
-                        AttendanceV2LeaveType leaveType = typeList.stream()
-                                .filter(type -> type.getId().equals(policy.getLeaveTypeId())).findFirst().orElse(null);
-                        if (leaveType != null) {
-                            wo.setLeaveType(leaveType);
-                        }
-                        return wo;
-                    }).collect(java.util.stream.Collectors.toList());
-            result.setData(wos);
+            ActionResult<Wo> result = new ActionResult<>();
+            AttendanceV2LeavePolicy policy = emc.find(id, AttendanceV2LeavePolicy.class);
+            if (policy == null) {
+                throw new ExceptionNotExistObject("无法找到指定ID的假期规则信息，ID：" + id);
+            }
+            Wo wo = Wo.copier.copy(policy);
+            AttendanceV2LeaveType leaveType = emc.find(policy.getLeaveTypeId(), AttendanceV2LeaveType.class);
+            if (leaveType != null) {
+                wo.setLeaveType(leaveType);
+            }
+            result.setData(wo);
             return result;
         }
     }
 
     public static class Wo extends AttendanceV2LeavePolicy {
- 
 
-        private static final long serialVersionUID = -2972497235792721018L;
+        private static final long serialVersionUID = -5159333621668443727L;
 
         static WrapCopier<AttendanceV2LeavePolicy, Wo> copier = WrapCopierFactory.wo(AttendanceV2LeavePolicy.class,
                 Wo.class, null,

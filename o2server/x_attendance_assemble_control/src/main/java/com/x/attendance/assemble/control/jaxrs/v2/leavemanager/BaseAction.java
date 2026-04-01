@@ -2,17 +2,38 @@ package com.x.attendance.assemble.control.jaxrs.v2.leavemanager;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
 import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeavePolicyEnums.GrantTypeEnum;
+import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeaveTypeEnums.QuotaTypeEnum;
 import com.x.attendance.entity.v2.AttendanceV2LeavePolicy;
+import com.x.attendance.entity.v2.AttendanceV2LeaveType;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.DateTools;
 
 abstract class BaseAction extends StandardJaxrsAction {
+
+
+
+    protected List<AttendanceV2LeaveType> getLeaveTypeList(String quotaType) throws Exception {
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            List<AttendanceV2LeaveType> types = emc.listEqual(AttendanceV2LeaveType.class, AttendanceV2LeaveType.active_FIELDNAME, true);
+            if (StringUtils.isNotBlank(quotaType) && (QuotaTypeEnum.QUOTA.getValue().equals(quotaType) || QuotaTypeEnum.UNLIMITED.getValue().equals(quotaType))) {
+                types = types.stream().filter(t -> quotaType.equals(t.getQuotaType())).collect(Collectors.toList());
+            }
+           
+            return types;
+        }
+    }
+
+
 
     // 根据当前配置计算下次发放时间
     protected void calculateNextExecutionTimeForLeavePolicy(AttendanceV2LeavePolicy policy) throws Exception {
