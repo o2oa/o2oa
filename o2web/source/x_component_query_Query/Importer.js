@@ -620,7 +620,9 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
 
             var pUnit;
             if( unitList && unitList.length ){
-                pUnit = o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({ unitList : unitList.unique(), useNameFind: true });
+                pUnit = o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({
+                    unitList : unitList.unique(), useNameFind: true
+                });
             }
 
             var pGroup;
