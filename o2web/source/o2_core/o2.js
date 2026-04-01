@@ -2174,8 +2174,12 @@ if (!window.o2) {
                                     var json = JSON.decode(xhr.responseText);
                                     
                                     const node = new Element("div", {styles: {height: "100%"}});
+
+                                    const redirect = o2.filterUrl(window.location.origin + '/x_desktop/close.html');
+                                    let src = o2.filterUrl(window.location.origin + '/x_desktop/index.html');
+                                    src = src + '?redirect='+redirect + '&username='+layout.session.user.name;
                                     const iframe = new Element("iframe", {
-                                        "src": '../x_desktop/index.html?redirect=../x_desktop/close.html&username='+layout.session.user.name,
+                                        "src": src,
                                         "width": "100%",
                                         "height": "100%",
                                         "frameborder": "0",
