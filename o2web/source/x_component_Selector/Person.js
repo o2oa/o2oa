@@ -2089,7 +2089,7 @@ MWF.xApplication.Selector.Person = new Class({
             _self.fireEvent("afterCheckSelectSingleItem",[_self])
         }
     },
-    setSize : function(){
+    setSize: function(){
 
         if( !this.options.width && !this.options.height )return;
 
@@ -2207,8 +2207,11 @@ MWF.xApplication.Selector.Person = new Class({
             }
 
             var itemAreaScrollNodeHeight = selectNodeHeight - getOffsetY( this.searchInputDiv ) - this.searchInputDiv.getSize().y;
-            if( !this.options.searchbarInTopNode && this.selectTopNode ){
+            if( this.options.hasTop && this.selectTopNode ){
                 itemAreaScrollNodeHeight = itemAreaScrollNodeHeight - getOffsetY( this.selectTopNode ) - this.selectTopNode.getStyle("height").toInt();
+            }
+            if( !this.options.searchbarInTopNode && this.searchInputDiv ){
+                itemAreaScrollNodeHeight = itemAreaScrollNodeHeight - getOffsetY( this.searchInputDiv ) - this.searchInputDiv.getStyle("height").toInt();
             }
             if(this.letterAreaNode && this.letterAreaNode.offsetParent){
                 itemAreaScrollNodeHeight = itemAreaScrollNodeHeight - getOffsetY( this.letterAreaNode ) - this.letterAreaNode.getStyle("height").toInt();
