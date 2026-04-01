@@ -338,7 +338,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 if( !map[ data.key ] )map[ data.key ] = [];
                 if( !map[ data.key ].length ){
                     Promise.resolve( o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({
-                        "personList": [data.key]
+                        "personList": [data.key],
+                        useNameFind: true
                     })).then(function(json){
                         var key = json.data.length ? json.data[0].name : data.key;
                         this.form.sectionKeyPersonMap[data.key] = key;

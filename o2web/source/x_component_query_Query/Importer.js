@@ -615,12 +615,12 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class(
 
             var pPerson;
             if( personList && personList.length ){
-                pPerson = o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({ personList : personList.unique() });
+                pPerson = o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({ personList : personList.unique(), useNameFind: true });
             }
 
             var pUnit;
             if( unitList && unitList.length ){
-                pUnit = o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({ unitList : unitList.unique() });
+                pUnit = o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({ unitList : unitList.unique(), useNameFind: true });
             }
 
             var pGroup;
