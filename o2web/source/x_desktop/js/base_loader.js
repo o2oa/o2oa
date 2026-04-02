@@ -13,6 +13,9 @@ if (!layout.isReady) {
         layout.desktop.addEvents = function (e) {
             window.addEvents(e);
         };
+        layout.desktop.fireEvent = function (type, data) {
+            window.fireEvent(type, data);
+        };
 
         var loadingNode = (window.$) ? $("loaddingArea") : null;
         var loadeds = 0;
