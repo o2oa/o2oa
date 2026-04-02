@@ -3,11 +3,15 @@ package com.x.attendance.entity.v2;
 import com.x.attendance.entity.PersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
+import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.persistence.*;
+
+import org.apache.openjpa.persistence.Persistent;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 /**
  * 考勤配置
@@ -128,6 +132,13 @@ public class AttendanceV2Config extends SliceJpaObject {
     @Column(name = ColumnNamePrefix + faceDetectionEnable_FIELDNAME)
     private Boolean faceDetectionEnable = false;
 
+    public static final String PROPERTIES_FIELDNAME = "properties";
+	@FieldDescribe("更多配置信息.")
+	@Persistent
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + PROPERTIES_FIELDNAME)
+	private AttendanceV2ConfigProperties properties;
+
 
     public Boolean getFaceDetectionEnable() {
         return faceDetectionEnable;
@@ -233,4 +244,13 @@ public class AttendanceV2Config extends SliceJpaObject {
         this.processName = processName;
     }
 
+    public AttendanceV2ConfigProperties getProperties() {
+        return properties;
+    }
+
+    public void setProperties(AttendanceV2ConfigProperties properties) {
+        this.properties = properties;
+    }
+
+    
 }

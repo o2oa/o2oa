@@ -77,9 +77,10 @@ public class ActionLeaveAccountSearch extends BaseAction {
         return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
                 .getResultList();
     }
+
     // 根据人员和假期类型查询余额账户数量
-    private Long countAccountsWithPersonAndType(List<String> userList,
-            List<String> leaveTypeList, EntityManagerContainer emc) throws Exception {
+    private Long countAccountsWithPersonAndType(List<String> userList, List<String> leaveTypeList,
+            EntityManagerContainer emc) throws Exception {
         EntityManager em = emc.get(AttendanceV2LeaveAccount.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);

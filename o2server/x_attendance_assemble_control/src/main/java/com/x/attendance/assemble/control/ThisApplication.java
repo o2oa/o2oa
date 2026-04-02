@@ -18,6 +18,7 @@ import com.x.attendance.assemble.control.schedule.v2.AttendanceV2MessageSendTask
 import com.x.attendance.assemble.control.schedule.v2.AttendanceV2TodayMessageDataGenerateTask;
 import com.x.attendance.assemble.control.schedule.v2.QueueAttendanceV2Detail;
 import com.x.attendance.assemble.control.service.AttendanceSettingService;
+import com.x.attendance.assemble.control.service.v2.AttendanceV2LeaveManagerService;
 import com.x.attendance.entity.v2.AttendanceV2Config;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -94,6 +95,7 @@ public class ThisApplication {
             // 配置对象 考勤统计定时器可配置
             AttendanceV2Config config = null; 
             String cronString = null;
+            boolean leaveTypeInitialized = false; // 考勤假勤类型的默认数据是否已经初始化
             try  {
                 EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
                 List<AttendanceV2Config> configs = emc.listAll(AttendanceV2Config.class);
@@ -102,12 +104,17 @@ public class ThisApplication {
                 }
                 if (config != null) {
                     cronString = config.getDetailStatisticCronString();
+                    leaveTypeInitialized = config.getProperties() != null && BooleanUtils.isTrue(config.getProperties().getLeaveTypeInitialized());
                 }
             } catch (Exception e) {
                 LOGGER.error(e);
             }
             if (StringUtils.isEmpty(cronString)) {
                 cronString = "0 0 3 * * ?";
+            }
+            // 初始化考勤假勤类型的默认数据
+            if (!leaveTypeInitialized){
+                new AttendanceV2LeaveManagerService().initDefaultLeaveTypeData();
             }
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("定时表达式 {}", cronString);
