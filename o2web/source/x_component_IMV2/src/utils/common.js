@@ -260,7 +260,7 @@ const chatMsgShowTimeFormat = (date) => {
     } else if (now.getFullYear() === input.getFullYear()) {
       return `${month}-${d} ${hour}:${m}`
     } else {
-      return `${now.getFullYear()}-${month}-${d} ${hour}:${m}`
+      return `${input.getFullYear()}-${month}-${d} ${hour}:${m}`
     }
   }
 }
