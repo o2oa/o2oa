@@ -1,14 +1,14 @@
 [
     {
       "id": "f827b000-fddd-4ba7-b6b0-35381b3f3393",
-      "name": "通义千问qwen3-max",
+      "name": "通义千问qwen3.6-plus",
       "type": "ali",
-      "model": "qwen3-max",
+      "model": "qwen3.6-plus",
       "completionUrl": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
       "apiKey": "",
       "enable": true,
       "asDefault": false,
-      "desc": "该模型是阿里推出的万亿参数MoE大模型，在推理、编程、数学和智能体任务上全球领先。",
+      "desc": "该模型是原生视觉语言系列Plus模型，模型在Agentic coding、前端编程、Vibe coding等代码能力、多模态万物识别、OCR、物体定位等能力上显著增强。",
       "proxyEnable": false
     },
     {
