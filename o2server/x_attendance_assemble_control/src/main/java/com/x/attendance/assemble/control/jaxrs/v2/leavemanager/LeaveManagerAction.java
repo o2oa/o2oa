@@ -175,4 +175,44 @@ public class LeaveManagerAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "查询假期余额账户.", action = ActionLeaveAccountSearch.class)
+    @POST
+    @Path("account/search/page/{page}/size/{size}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void accountSearch(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+        @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+                             @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, 
+            JsonElement jsonElement) {
+        ActionResult<ActionLeaveAccountSearch.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLeaveAccountSearch().execute(page, size, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "查询假期申请.", action = ActionLeaveRequestSearch.class)
+    @POST
+    @Path("request/search")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void requestSearch(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+         @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+                             @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, 
+            JsonElement jsonElement) {
+        ActionResult<List<ActionLeaveRequestSearch.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLeaveRequestSearch().execute(page, size, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
 }

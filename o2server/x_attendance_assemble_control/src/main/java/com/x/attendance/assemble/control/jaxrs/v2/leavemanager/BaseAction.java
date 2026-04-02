@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
 import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeavePolicyEnums.GrantTypeEnum;
 import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeaveTypeEnums.QuotaTypeEnum;
@@ -22,6 +23,20 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 
 
+
+
+    protected void analysisPerson(List<String> userList, String filter, Business business) throws Exception {
+        if (filter.endsWith("@U")) { // 组织转化成人员列表 不递归
+            List<String> users = business.organization().person().listWithUnitSubDirect(filter);
+            if (users != null && !users.isEmpty()) {
+                userList.addAll(users);
+            }
+        } else if (filter.endsWith("@P")) {
+            userList.add(filter);
+        }
+    }
+
+
     protected List<AttendanceV2LeaveType> getLeaveTypeList(String quotaType) throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             List<AttendanceV2LeaveType> types = emc.listEqual(AttendanceV2LeaveType.class, AttendanceV2LeaveType.active_FIELDNAME, true);
@@ -32,8 +47,6 @@ abstract class BaseAction extends StandardJaxrsAction {
             return types;
         }
     }
-
-
 
     // 根据当前配置计算下次发放时间
     protected void calculateNextExecutionTimeForLeavePolicy(AttendanceV2LeavePolicy policy) throws Exception {
