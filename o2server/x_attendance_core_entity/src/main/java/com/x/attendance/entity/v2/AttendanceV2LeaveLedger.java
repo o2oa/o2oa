@@ -159,4 +159,21 @@ public class AttendanceV2LeaveLedger extends SliceJpaObject {
     public void setActive(Boolean active) {
         this.active = active;
     }
+
+    public String getPolicyId() {
+        return policyId;
+    }
+
+    public void setPolicyId(String policyId) {
+        this.policyId = policyId;
+    }
+
+    public String getGrantPeriod() {
+        return grantPeriod;
+    }
+
+    public void setGrantPeriod(String grantPeriod) {
+        this.grantPeriod = grantPeriod;
+    }
+    
 }

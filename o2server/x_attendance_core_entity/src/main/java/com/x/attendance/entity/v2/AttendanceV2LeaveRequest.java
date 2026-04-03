@@ -69,7 +69,7 @@ public class AttendanceV2LeaveRequest extends SliceJpaObject {
     private Double duration;
 
     public static final String status_FIELDNAME = "status";
-    @FieldDescribe("请假当前状态： PENDING / APPROVED / REJECTED / CANCELLED")
+    @FieldDescribe("请假当前状态：  APPLYING / REJECTED / CANCELLED")
     @Column(length = JpaObject.length_16B, name = ColumnNamePrefix + status_FIELDNAME)
     private String status;
 

@@ -74,6 +74,23 @@ public class AttendanceV2LeaveTransaction extends SliceJpaObject {
     @Column(length = JpaObject.length_16B, name = ColumnNamePrefix + fromYear_FIELDNAME)
     private String fromYear;
 
+    
+
+    public String getLeaveRequestId() {
+        return leaveRequestId;
+    }
+
+    public void setLeaveRequestId(String leaveRequestId) {
+        this.leaveRequestId = leaveRequestId;
+    }
+
+    public String getFromYear() {
+        return fromYear;
+    }
+
+    public void setFromYear(String fromYear) {
+        this.fromYear = fromYear;
+    }
 
     public String getPerson() {
         return person;
