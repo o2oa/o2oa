@@ -161,7 +161,7 @@ ${MWF.xApplication.Selector.LP.alias}:${this.data.alias}`;
 });
 
 MWF.xApplication.Selector.Activity.ItemSelected = new Class({
-	Extends: MWF.xApplication.Selector.Activity.Item,
+	Extends: MWF.xApplication.Selector.Person.ItemSelected,
     _getTtiteText: function(){
         return this.data.alias ? this.data.name +"("+this.data.alias+")"  : this.data.name;
     },
