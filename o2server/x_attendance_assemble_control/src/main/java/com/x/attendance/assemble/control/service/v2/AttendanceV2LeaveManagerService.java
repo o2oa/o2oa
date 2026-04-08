@@ -32,7 +32,7 @@ public class AttendanceV2LeaveManagerService {
             updateConfig();
             logger.info("考勤假勤类型的默认数据初始化完成.");
         } catch (Exception e) {
-            logger.warn("初始化考勤假勤类型的默认数据时发生异常: {}", e.getMessage(), e);
+            logger.error(e);
         }
         if (logger.isDebugEnabled()) {
             logger.debug("初始化考勤假勤类型的默认数据的任务结束...");
