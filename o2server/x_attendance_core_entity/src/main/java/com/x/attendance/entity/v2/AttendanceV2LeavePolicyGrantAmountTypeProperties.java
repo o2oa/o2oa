@@ -19,10 +19,13 @@ public class AttendanceV2LeavePolicyGrantAmountTypeProperties extends JsonProper
     private List<AttendanceV2LeavePlicyGrantAmountTypeTenureLeaveRule> tenureLeaveRules;
 
     // 根据司龄计算发放额度
-    public Double calculateGrantAmount(double yearsOfService) {
+    public Double calculateGrantAmount(Double yearsOfService) {
         if ("FIXED".equalsIgnoreCase(type)) {
             return grantAmount;
         } else if ("SERVICELEN".equalsIgnoreCase(type)) {
+            if (yearsOfService == null || yearsOfService < 0) {
+                return 0.0;
+            }
             if (tenureLeaveRules != null) {
                 for (AttendanceV2LeavePlicyGrantAmountTypeTenureLeaveRule rule : tenureLeaveRules) {
                     if (rule.match(yearsOfService)) {

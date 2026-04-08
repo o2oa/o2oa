@@ -7,16 +7,20 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
+import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeaveManager;
 import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeavePolicyEnums.ExpireTypeEnum;
 import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeavePolicyEnums.GrantScopeTypeEnum;
 import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeavePolicyEnums.GrantTypeEnum;
+import com.x.attendance.assemble.control.schedule.v2.model.QueueAttendanceV2LeavePolicyGrantModel;
 import com.x.attendance.entity.v2.AttendanceV2LeavePolicy;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -102,10 +106,8 @@ public class ActionLeavePolicyPost extends BaseAction {
 
             AttendanceV2LeavePolicy leavePolicy = Wi.copier.copy(wi);
             // 生成grantNextExecuteTime
-            calculateNextExecutionTimeForLeavePolicy(leavePolicy);
-
+            AttendanceV2LeaveManager.calculateNextExecutionTimeForLeavePolicy(leavePolicy);
             emc.beginTransaction(AttendanceV2LeavePolicy.class);
-
             if (StringUtils.isBlank(leavePolicy.getId())) {
                 emc.persist(leavePolicy, CheckPersistType.all);
                 Wo wo = new Wo();
@@ -126,8 +128,16 @@ public class ActionLeavePolicyPost extends BaseAction {
                     result.setData(wo);
                 }
             }
-
             emc.commit();
+
+            if (BooleanUtils.isTrue(wi.getIsGrantImmediately())) {
+                AttendanceV2LeavePolicy p = emc.find(result.getData().getId(), AttendanceV2LeavePolicy.class);
+                QueueAttendanceV2LeavePolicyGrantModel model = new QueueAttendanceV2LeavePolicyGrantModel();
+                model.setPolicy(p);
+                model.setIsImmediately(true);
+                ThisApplication.queueV2LeavePolicyGrant.send(model);
+            }
+
             return result;
         }
     }
@@ -138,6 +148,19 @@ public class ActionLeavePolicyPost extends BaseAction {
         static WrapCopier<Wi, AttendanceV2LeavePolicy> copier = WrapCopierFactory.wi(Wi.class,
                 AttendanceV2LeavePolicy.class, null,
                 JpaObject.FieldsUnmodify);
+
+        @FieldDescribe("是否立即发放")
+        private Boolean isGrantImmediately;
+
+        public Boolean getIsGrantImmediately() {
+            return isGrantImmediately;
+        }
+
+        public void setIsGrantImmediately(Boolean isGrantImmediately) {
+            this.isGrantImmediately = isGrantImmediately;
+        }
+
+        
 
     }
 

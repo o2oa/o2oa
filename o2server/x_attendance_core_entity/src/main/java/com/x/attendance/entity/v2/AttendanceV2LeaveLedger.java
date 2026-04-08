@@ -58,7 +58,7 @@ public class AttendanceV2LeaveLedger extends SliceJpaObject {
     private String policyId;
 
     public static final String grantPeriod_FIELDNAME = "grantPeriod";
-    @FieldDescribe("发放周期，根据规则发放方式来，如果是年，则格式为 yyyy，如果是月，则格式为 yyyyMM，如果是一次性发放，则格式为一次性")
+    @FieldDescribe("发放周期，根据规则发放方式来，如果是年，则格式为 yyyy，如果是月，则格式为 yyyy-MM，如果是一次性发放，则格式为一次性")
     @Column(length = JpaObject.length_32B, name = ColumnNamePrefix + grantPeriod_FIELDNAME)
     private String grantPeriod;
 

@@ -14,9 +14,11 @@ import com.x.attendance.assemble.control.schedule.DetailLastDayRecordAnalyseTask
 import com.x.attendance.assemble.control.schedule.DingdingAttendanceSyncScheduleTask;
 import com.x.attendance.assemble.control.schedule.QywxAttendanceSyncScheduleTask;
 import com.x.attendance.assemble.control.schedule.v2.AttendanceV2DetailGenerateTask;
+import com.x.attendance.assemble.control.schedule.v2.AttendanceV2LeavePolicyGrantTask;
 import com.x.attendance.assemble.control.schedule.v2.AttendanceV2MessageSendTask;
 import com.x.attendance.assemble.control.schedule.v2.AttendanceV2TodayMessageDataGenerateTask;
 import com.x.attendance.assemble.control.schedule.v2.QueueAttendanceV2Detail;
+import com.x.attendance.assemble.control.schedule.v2.QueueAttendanceV2LeavePolicyGrant;
 import com.x.attendance.assemble.control.service.AttendanceSettingService;
 import com.x.attendance.assemble.control.service.v2.AttendanceV2LeaveManagerService;
 import com.x.attendance.entity.v2.AttendanceV2Config;
@@ -58,6 +60,7 @@ public class ThisApplication {
 
     // V2
     public static final QueueAttendanceV2Detail queueV2Detail = new QueueAttendanceV2Detail();
+    public static final QueueAttendanceV2LeavePolicyGrant queueV2LeavePolicyGrant = new QueueAttendanceV2LeavePolicyGrant();
     
     // 同步执行器  这里还有集群服务器的问题
     public static final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
@@ -92,6 +95,7 @@ public class ThisApplication {
             /////////////////// V2///
             // 处理考勤统计相关的队列
             context.startQueue(queueV2Detail);
+            context.startQueue(queueV2LeavePolicyGrant);
             // 配置对象 考勤统计定时器可配置
             AttendanceV2Config config = null; 
             String cronString = null;
@@ -125,6 +129,8 @@ public class ThisApplication {
             context.schedule(AttendanceV2TodayMessageDataGenerateTask.class, "0 30 3 * * ?");
             // 4点钟开始 每 5 分钟检查 发送考勤相关消息的任务
             context.schedule(AttendanceV2MessageSendTask.class, "0 0/5 4-23 * * ?");
+            // 每天凌晨 2 点，开启假期数据发放任务。
+            context.schedule(AttendanceV2LeavePolicyGrantTask.class, "0 0 2 * * ?");
 
         } catch (Exception e) {
             LOGGER.error(e);
