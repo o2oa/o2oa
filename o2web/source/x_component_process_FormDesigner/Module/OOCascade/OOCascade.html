@@ -1,0 +1,268 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="{{$.lp.base}}" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.id}}:</td>
+		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.name}}:</td>
+		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.description}}:</td>
+		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+		  </tr>
+
+            <tr>
+                <td class="editTableTitle">{{$.lp.showMode}}:</td>
+                <td class="editTableValue">
+                    <label><input type="radio" name="showMode" value="editable" text{($.showMode!=='readonlyMode' && $.showMode!=='disabled' && $.showMode!=='read')?'checked':''}/>{{$.lp.editable}}</label>
+                    <label><input type="radio" name="showMode" value="disabled" text{($.showMode==='disabled')?'checked':''}/>{{$.lp.disabled}}</label>
+                    <label><input type="radio" name="showMode" value="read" text{($.showMode==='read')?'checked':''}/>{{$.lp.read}}</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><b>{{$.lp.readModeEvents}}:</b>
+                    <input type="radio" name="readModeEvents" value="yes" text{($.readModeEvents=='yes')?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="readModeEvents" value="no" text{($.readModeEvents!=='yes')?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.required}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="required" value="true" text{($.required==true)?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="required" value="false" text{($.required!=true)?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.title}}:</td>
+                <td class="editTableValue" id="text{$.pid}isTitleArea">
+                    <input type="text" name="label" value="text{$.label}" class="editTableInput"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.multiple}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="multiple" value="true" text{($.multiple==true)?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="multiple" value="false" text{($.multiple!=true)?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.maxTags}}:</td>
+                <td class="editTableValue">
+                    <input type="number" name="maxTags" value="text{$.maxTags || 0}" class="editTableInput"/>
+                    <div style="padding: 5px">{{$.lp.maxTagsInfo}}</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.showAllLevels}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="showAllLevels" value="true" text{($.showAllLevels!==true)?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="showAllLevels" value="false" text{($.showAllLevels===false)?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.checkStrictly}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="checkStrictly" value="true" text{($.checkStrictly===true)?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="checkStrictly" value="false" text{($.checkStrictly!==true)?'checked':''}/>{{$.lp.no}}
+                    <div style="padding: 5px">{{$.lp.checkStrictlyInfo}}</div>
+                </td>
+            </tr>
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.options}}:</td>
+		    <td class="editTableValue">
+		    	<input class="editTableRadio" onclick="if (this.checked){
+		    	    $('text{$.pid}selectEditItemScript').setStyle('display', 'block');
+                     $('text{$.pid}selectEditItemDict').setStyle('display', 'none');
+		    	  }" name="itemType" text{(!$.itemType || $.itemType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}
+                <input class="editTableRadio" onclick="if (this.checked){
+                    $('text{$.pid}selectEditItemScript').setStyle('display', 'none');
+                    $('text{$.pid}selectEditItemDict').setStyle('display', 'block');
+                }" name="itemType" text{($.itemType=='dict')?'checked':''} type="radio" value="dict"/>{{$.lp.dict}}
+		    </td>
+		  </tr>
+		</table>
+
+        <div id="text{$.pid}selectEditItemScript" style="display: text{(!$.itemType || $.itemType=='script')?'block':'none'}" >
+            <div class="MWFScriptArea" name="itemScript" title="{{$.lp.optionScript}} (S)"></div>
+            <div style="padding: 5px;color:dodgerblue;cursor: pointer;" onclick="this.nextElementSibling.showModal()">{{$.lp.selectItemScriptInfo}}。也可以直接使用动态加载选项。点击查看样例。</div>
+            <dialog style="border: 1px solid #ccc;border-radius: 8px;box-shadow: 0 2px 10px rgba(0,0,0,0.1);margin: auto;">
+                <h3>使用脚本选项说明</h3>
+                <p>返回一个可选值数组列表，如下：</p>
+                <pre>return [{
+    text: "商品",     //选项文本
+    value: "goods",  //选项值
+    children: [{     //子选项，如果没有children表示叶子节点
+        text: "床上用品",
+        value: "bedding",
+        //子选项也可以使用动态加载的函数，字符串为该函数名。
+        children: "getSubOptions"
+    }]
+}]</pre>
+                <hr>
+                <p>返回一个resolve了可选值数组的Promise对象，如下：</p>
+                <pre>return new Promise((resolve)=>{
+    window.setTimeout(()=>{
+        let items = [{
+            text: "商品",
+            value: "goods",
+            children: [{
+                text: "床上用品",
+                value: "bedding"
+            }]
+        }]
+        resolve(items) //返回选项数据
+    }, 500)
+})</pre>
+                <button onclick="this.parentElement.close()">关闭</button>
+            </dialog>
+        </div>
+
+        <div id="text{$.pid}selectEditItemDict" style="display: text{($.itemType=='dict')?'block':'none'}" class="MWFDictionaryItemContainer">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.dict}}:</td>
+                    <td class="editTableValue">
+                        <div class="MWFDictionaryNode" data-count=1 name="itemDict"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.dictPath}}:</td>
+                    <td class="editTableValue">
+                        <div class="MWFDictionaryItemNode" name="itemDictPath" data-dict="itemDict" title="{{$.lp.dict}}{{$.lp.dictPath}}"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.useCache}}:</td>
+                    <td class="editTableValue">
+                        <input type="radio" name="dictUseCache" value="true" text{($.dictUseCache!==false)?'checked':''}/>{{$.lp.yes}}
+                        <input type="radio" name="dictUseCache" value="false" text{($.dictUseCache===false)?'checked':''}/>{{$.lp.no}}
+                        <div style="color:#999;">{{$.lp.useCacheNote}}</div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.lazy}}:</td>
+                    <td class="editTableValue">
+                        <input type="radio" onclick="if (this.checked){ this.getParent('div').getNext().show();}" name="lazy" value="true" text{($.lazy===true)?'checked':''}/>{{$.lp.yes}}
+                        <input type="radio" onclick="if (this.checked){ this.getParent('div').getNext().hide();}" name="lazy" value="false" text{($.lazy!==true)?'checked':''}/>{{$.lp.no}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="display: text{($.lazy===true) ? 'block' : 'none'}">
+            <div class="MWFScriptArea" name="lazyLoadScript" title="{{$.lp.lazyLoadScript}} (S)"></div>
+            <div style="padding: 5px; color:dodgerblue;cursor: pointer;" onclick="this.nextElementSibling.showModal()">点击查看样例。</div>
+            <dialog style="border: 1px solid #ccc;border-radius: 8px;box-shadow: 0 2px 10px rgba(0,0,0,0.1);margin: auto;">
+                <h3>动态加载选项说明</h3>
+                <p>需返回一个带名称的函数，该函数返回一个Promise，如下：</p>
+                <p>value为选项值路径，如：['商品','床上用品'，'枕头']。根节点路径为空数组[]。</p>
+                <p>e为触发事件对象，可以通过e.target获取触发的Dom节点。</p>
+                <pre>return function getSubOptions(value, e){
+    return new Promise((resolve)=>{
+        window.setTimeout(()=>{
+            let items;
+            const v = value.at(-1); //返回最后一项
+            if( !v ){ //空，为根节点
+                items = [{
+                    text: "商品", //选项文本
+                    value: "goods",//选项值
+                    //子选项，和返回的方法同名。表示展开该节点继续调用本函数。
+                    children: getSubOptions
+                }]
+            }else if(v === 'goods'){
+                items = [{
+                    text: "床上用品",
+                    value: "bedding",
+                    children: [{
+                        text: "枕头",
+                        value: "pillow"
+                    }]
+                }]
+            }
+            resolve(items) //返回选项数据
+        }, 500)
+    })
+}</pre>
+                <button onclick="this.parentElement.close()">关闭</button>
+            </dialog>
+        </div>
+
+		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+<!--		<div class="MWFMaplist" name="buttonStyles" title="{{$.lp.buttonStyle}}"></div>-->
+		<div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.compute}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="compute" value="create" text{($.compute.indexOf('create')!=-1)?'checked':''}/>{{$.lp.create}}
+                    <input type="radio" name="compute" value="save" text{($.compute.indexOf('save')!=-1)?'checked':''}/>{{$.lp.save}}
+                    <input type="radio" name="compute" value="show" text{($.compute.indexOf('show')!=-1)?'checked':''}/>{{$.lp.show}}
+                </td>
+            </tr>
+        </table>
+		<div class="MWFScriptArea" name="defaultValue" title="{{$.lp.defaultValue}} (S)"></div>
+
+        <div class="MWFValidation" name="validationConfig"></div>
+        <div class="MWFScriptArea" name="validation" title="{{$.lp.verificationScript}} (S)"></div>
+
+        <div class="MWFHtmlEditorArea" name="innerHTML" title="{{$.lp.innerHtml}} (H)"></div>
+
+	</div>
+    <div title="{{$.lp.section}}" class="MWFTab">
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.enableSection}}:</td>
+                <td class="editTableValue">
+                    <input onclick="if (this.checked){
+                        $('text{$.pid}sectionByEditArea').setStyle('display', 'block');
+                        $('text{$.pid}sectionMergeArea').setStyle('display', 'none')
+                    }" type="radio" name="section" value="yes" text{($.section=='yes')?'checked':''}/>{{$.lp.yes}}
+                    <input onclick="if (this.checked){
+                        $('text{$.pid}sectionByEditArea').setStyle('display', 'none');
+                        $('text{$.pid}sectionMergeArea').setStyle('display', 'block')
+                    }" type="radio" name="section" value="no" text{($.section!='yes')?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
+        </table>
+
+        <div id="text{$.pid}sectionByEditArea" style="display: text{($.section=='yes')?'block':'none'};">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.sectionBy}}:</td>
+                    <td class="editTableValue">
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}" name="sectionBy" text{(($.sectionBy=='person') || ($.sectionBy!='unit' && $.sectionBy!='activity' && $.sectionBy!='script'))?'checked':''} type="radio" value="person"/>{{$.lp.handler}}<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='unit')?'checked':''} type="radio" value="unit"/>{{$.lp.handlerUnit}}<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='activity')?'checked':''} type="radio" value="activity"/>{{$.lp.activityId}}<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'none');}"  name="sectionBy" text{($.sectionBy=='splitValue')?'checked':''} type="radio" value="splitValue"/>{{$.lp.splitValue}}<br/>
+                        <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionByScriptEditArea').setStyle('display', 'block');}"  name="sectionBy" text{($.sectionBy=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}<br/>
+                    </td>
+                </tr>
+            </table>
+            <div id="text{$.pid}sectionByScriptEditArea" style="display: text{($.sectionBy=='script')?'block':'none'};">
+                <div class="MWFScriptArea" name="sectionByScript" title="{{$.lp.sectionBy}} (S)"></div>
+            </div>
+        </div>
+
+        <div id="text{$.pid}sectionMergeArea" class="MWFSectionMergeArea" style="display: text{($.section=='yes')?'none':''};"></div>
+    </div>
+    <div title="{{$.lp.power}}"  class="MWFTab">
+        <div class="MWFFieldPermission"></div>
+    </div>
+	<div title="{{$.lp.event}}"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+    <div title="JSON"  class="MWFTab">
+        <div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+</div>

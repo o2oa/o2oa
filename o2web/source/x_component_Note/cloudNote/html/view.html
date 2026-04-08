@@ -1,0 +1,238 @@
+<div id="cloudnote_content">
+    <div class="main_side">
+        <div class="main_menu">
+            <div class="main_menu_item  selected" data-o2-element="menuListNode" data-o2-events="click:loadListNew">
+                <div class="main_menu_item_icon">
+                    <i class="icon icon_menu_home_selected"></i>
+                </div>
+                <div class="main_menu_item_title"> {{$.lp.newNote}}</div>
+            </div>
+            <div class="main_menu_item none" data-o2-element="menuListCalendarNode" data-o2-events="click:loadListCalendar">
+                <div class="main_menu_item_icon">
+                    <i class="icon icon_menu_calendar"></i>
+                </div>
+                <div class="main_menu_item_title">日历</div>
+            </div>
+            <div class="main_menu_item " data-o2-element="menuStarNode" data-o2-events="click:loadListStar">
+                <div class="main_menu_item_icon">
+                    <i class="icon icon_menu_star"></i>
+                </div>
+                <div class="main_menu_item_title">{{$.lp.starNote}}</div>
+            </div>
+            <div>
+                <div class="main_menu_itemgroup" data-o2-element="menuCategoryNode" data-o2-events="click:showCategoryList">
+                    <div class="main_menu_item_icon">
+                        <i class="icon icon_menu_group"></i> </div>
+                    <div class="main_menu_item_title">{{$.lp.group}}</div>
+                    <div class="main_menu_item_icon_new">
+                        <i class="icon icon_category_add"  style="width: 16px;height: 16px;" data-o2-element="addCategoryNode" data-o2-events="click:addCategory"></i>
+                    </div>
+                    <div class="main_menu_item_icon_group" >
+                        <i class="icon icon_menu_group_close"></i>
+                    </div>
+                </div>
+                <div class="main_menu_group">
+                    <div class="main_menu_group_items none" data-o2-element="categoryListNode">
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="main_menu_itemgroup" data-o2-element="menuTagNode" data-o2-events="click:showTagList">
+                    <div class="main_menu_item_icon"> <i class="icon icon_menu_tags"></i> </div>
+                    <div class="main_menu_item_title">{{$.lp.tag}}</div>
+                    <div class="main_menu_item_icon_group">
+                        <i class="icon icon_menu_group_close"></i>
+                    </div>
+                </div>
+                <div class="main_menu_group">
+                    <div class="main_menu_group_items none" data-o2-element="tagListNode"  >
+                    </div>
+                </div>
+            </div>
+            <div class="main_menu_item " data-o2-element="menuShareNode" data-o2-events="click:loadListShare">
+                <div class="main_menu_item_icon"> <i class="icon icon_menu_share"></i> </div>
+                <div class="main_menu_item_title">{{$.lp.shareToMe}} </div>
+            </div>
+            <div class="main_menu_item " data-o2-element="menuRecycleNode" data-o2-events="click:loadListRecycle">
+                <div class="main_menu_item_icon"> <i class="icon icon_menu_recycle"></i> </div>
+                <div class="main_menu_item_title">{{$.lp.recycle}}</div>
+            </div>
+        </div>
+<!--        <div class="main_side_user_container" data-o2-element="userNode" data-o2-events="click:showUserSet">-->
+<!--            <div  class="main_side_user">-->
+<!--                <div class="main_side_user_wrap">-->
+<!--                    <img src="{{$.user.avatar}}" class="main_side_user_icon" />-->
+<!--                    <div class="main_side_user_name">-->
+<!--                        {{$.user.userName}}-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+    </div>
+    <div class="main_view">
+        <div class="main_view_listCotent">
+            <div data-o2-element="viewListNode">
+                <div class="main_view_list_header">
+                    <div data-o2-element="filterNode" data-o2-events="click:showFilterNotePopNode" style="float: left;margin-left:5px;width: 20px;">
+                        <i style="width:16px;height: 16px" class="icon icon_filter"></i>
+                    </div>
+                    <div class="main_view_list_header_search" data-o2-element="searchNode">
+                        <i class="icon main_view_list_header_search_icon icon_search" data-o2-element="okSearchNode"></i>
+
+                        <input data-o2-element="searchInputNode" data-o2-events="keydown:doSearch"/>
+                        <div data-o2-element="cancelSearchNode" data-o2-events="click:cancelSearch" style="display:none;float:right" >
+                            <i  class="icon main_view_list_header_search_icon icon_cancelSearch" ></i>
+                        </div>
+                    </div>
+                    <div class="main_view_list_header_action">
+                        <div data-o2-element="createNoteNode" data-o2-events="click:showCreateNote"  class="icon_button">
+                            <i class="icon icon_action icon_create_note"></i>
+                            <div> 新建 </div>
+                        </div>
+                        <div data-o2-element="clearNode" data-o2-events="click:clearNote"  class="icon_button none">
+                            <i class="icon icon_action icon_clear_note"></i>
+                            <div> 清空 </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="calendar" class="calendar none"></div>
+                <div class="main_view_list_content">
+                    <div class="itemListNode" data-o2-element="itemListNode"  style="height:100%;overflow: hidden;">
+                    </div>
+                </div >
+            </div>
+        </div>
+        <div class="main_view_content" data-o2-element="viewContentNode">
+        </div>
+    </div>
+</div>
+<div class="popover" data-o2-element="noteInfoPopNode"
+     style="width: 200px;  top: 60px; right: 10px; display: none;z-index: 999">
+    <div class="group_container" >
+        <table>
+            <tbody>
+            <tr>
+                <td class="td-l">创建时间 :</td>
+                <td class="td-r" data-o2-element="createTimeNode"></td>
+            </tr>
+            <tr>
+                <td class="td-l">修改时间 :</td>
+                <td class="td-r" data-o2-element="updateTimeNode"></td>
+            </tr>
+            <tr>
+                <td class="td-l">标签 :</td>
+                <td class="td-r" style="color:#ffad69;cursor: pointer" data-o2-element="tagNode" title="点击添加标签" data-o2-events="click:showAddTag">无标签</td>
+            </tr>
+            <tr>
+                <td class="td-l">分组 :</td>
+                <td class="td-r" style="color:#ffad69;cursor: pointer" data-o2-element="categoryNode" title="点击切换" data-o2-events="click:showFolderList"></td>
+            </tr>
+            </tbody></table>
+    </div>
+</div>
+<div class="popover" data-o2-element="folderListPopNode"
+     style="z-index:999;width: 200px;  top: 194px; right: 10px;display: none;">
+    <div class="group_container" data-o2-element="folderListNode">
+    </div>
+</div>
+
+<div class="popover" data-o2-element="categoryPopNode"
+     style="width: 130px;  top: 350px; left: 168px; display: none">
+    <div class="group_container" >
+        <div class="group_item" data-o2-element="renameCategoryNode" data-o2-events="click:renameCategory" >
+            <i class="group_item_icon icon icon_rename"></i>
+            <div class="group_item_title">
+                重命名
+            </div>
+        </div>
+        <div class="group_item"  data-o2-element="deleteCategoryNode" data-o2-events="click:deleteCategory" >
+            <i class="group_item_icon icon icon_delete"></i>
+            <div class="group_item_title">
+                删除
+            </div>
+        </div>
+    </div>
+</div>
+<div class="popover" data-o2-element="filterNotePopNode"
+     style="z-index:999;width: 120px;  top: 56px; left: 190px;display: none; ">
+    <div class="group_container" >
+        <div class="group_item" data-o2-element="filterAllNode" data-o2-events="click:filterNote;" noteType="filter">
+            <i class="group_item_icon icon icon_note"></i>
+            <div class="group_item_title">
+                全部
+            </div>
+        </div>
+        <div class="group_item" data-o2-element="filterNoteNode" data-o2-events="click:filterNote;" noteType="note">
+            <i class="group_item_icon icon icon_note"></i>
+            <div class="group_item_title">
+                笔记
+            </div>
+        </div>
+        <div class="group_item" data-o2-element="filterMarkdownNode" data-o2-events="click:filterNote;"  noteType="markdown">
+            <i class="group_item_icon icon icon_markdown"></i>
+            <div class="group_item_title">
+                MarkDown
+            </div>
+        </div>
+        <div class="group_item" data-o2-element="filterNaotuNode" data-o2-events="click:filterNote;"  noteType="naotu">
+            <i class="group_item_icon icon icon_naotu"></i>
+            <div class="group_item_title">
+                脑图
+            </div>
+        </div>
+        <div class="group_item" data-o2-element="filterWhiteboardNode" data-o2-events="click:filterNote;"  noteType="whiteBoard">
+            <i class="group_item_icon icon icon_whiteBoard"></i>
+            <div class="group_item_title">
+                白板
+            </div>
+        </div>
+    </div>
+</div>
+<div class="popover" data-o2-element="createNotePopNode"
+     style="z-index:999;width: 120px;  top: 56px; left: 328px;display: none; ">
+    <div class="popover_title">
+        选择类型
+    </div>
+    <div class="group_container" >
+        <div class="group_item" data-o2-element="newNoteNode" data-o2-events="click:newNote;" noteType = "note">
+            <i class="group_item_icon icon icon_note"></i>
+            <div class="group_item_title">
+                笔记
+            </div>
+        </div>
+        <div class="group_item" data-o2-element="newMarkdownNode" data-o2-events="click:newNote;"  noteType = "markdown">
+            <i class="group_item_icon icon icon_markdown"></i>
+            <div class="group_item_title">
+                Markdown
+            </div>
+        </div>
+        <div class="group_item" data-o2-element="newNaotuNode" data-o2-events="click:newNote;" noteType = "naotu">
+            <i class="group_item_icon icon icon_naotu"></i>
+            <div class="group_item_title">
+                脑图
+            </div>
+        </div>
+        <div class="group_item" data-o2-element="newWhiteboardNode" data-o2-events="click:newNote;" noteType = "whiteBoard">
+            <i class="group_item_icon icon icon_whiteBoard"></i>
+            <div class="group_item_title">
+                白板
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="popover" data-o2-element="userNode"
+     style="width: 160px;position: absolute; bottom: 62px; left: 20px; transform-origin: center top; z-index: 2000;display:none ">
+    <div class="group_container" >
+        </div>
+        <div class="group_item" data-o2-element="actionExitNode" data-o2-events="click:exit;">
+            <i class="group_item_icon icon icon_exit"></i>
+            <div class="group_item_title">
+                退出登录
+            </div>
+        </div>
+    </div>
+</div>
+<div class="main_view_empty" data-o2-element="emptyNode" >
+    <div style="width:200px;height: 180px;" class="icon icon_empty"></div>
+</div>

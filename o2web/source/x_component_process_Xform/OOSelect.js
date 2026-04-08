@@ -116,7 +116,8 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
     },
     _loadNodeEdit: function(){
 		this._resetNodeEdit();
-		this.node.setAttribute('value', undefined);
+		//this.node.setAttribute('value', undefined);
+		this.node.removeAttribute("value");
 		this.node.removeAttribute("placeholder");
 
 		if (o2.isMediaMobile() && !this.json.inDatatable){
@@ -181,6 +182,18 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
             this.node.setAttribute('allow-input', 'true');
         }else{
 			this.node.removeAttribute('allow-input');
+		}
+
+		if (this.json.maxTags) {
+			this.node.setAttribute('max-tags', this.json.maxTags);
+		}else{
+			this.node.removeAttribute('max-tags');
+		}
+
+		if (this.json.multiple) {
+			this.node.setAttribute('multiple', 'true');
+		}else{
+			this.node.setAttribute('multiple', 'false');
 		}
 
 		if (this.json.innerHTML){
@@ -306,8 +319,9 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 	// },
 
 	__setValue: function(value){
+		debugger;
 		this._setBusinessData(value);
-		this.node.value = value;
+		this.node.value = Array.isArray(value) ? JSON.stringify(value) : value;
 		this.fieldModuleLoaded = true;
 		this.moduleValueAG = null;
 	},
@@ -330,7 +344,7 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 		}
 	},
     getInputData: function(){
-		return this.node.value;
+		return this.node.value || '';
 	},
     resetData: function(){
         this.setData(this.getValue());

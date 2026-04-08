@@ -24,7 +24,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "IMConversationExt", description = "消息会话扩展.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
-@Table(name = PersistenceProperties.IMConversationExt.table, uniqueConstraints = {
+@Table(name = PersistenceProperties.IMConversationExt.table, indexes = {
+        @javax.persistence.Index(name = PersistenceProperties.IMConversationExt.table + "_person_conversationId", columnList = "xperson, xconversationId")
+}, uniqueConstraints = {
         @UniqueConstraint(name = PersistenceProperties.IMConversationExt.table + JpaObject.IndexNameMiddle
                 + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
                         JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })

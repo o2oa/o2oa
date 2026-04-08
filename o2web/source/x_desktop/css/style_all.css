@@ -26,6 +26,12 @@ body {
 .o2_vue *{
 	box-sizing: border-box!important;
 }
+.o2_vue.o2_vue{
+	box-sizing: border-box!important;
+}
+.o2_vue.o2_vue *{
+	box-sizing: border-box!important;
+}
 
 *::-webkit-scrollbar {
     width:8px;

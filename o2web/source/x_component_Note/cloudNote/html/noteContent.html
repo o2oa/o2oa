@@ -1,0 +1,170 @@
+<div class="main_view_editor" data-o2-element="editorNode">
+
+    <div class="main_view_editor_header">
+        <div class="main_view_editor_header_subject">
+            <input data-o2-events="keyup:updateSubject;" data-o2-element="subjectNode" maxlength="250"/>
+            <div data-o2-element="showSubjectNode"style="display: none;font-size:18px"></div>
+        </div>
+        <div class="main_view_editor_header_tool">
+            <div data-o2-element="saveNode"  class="main_view_editor_header_tool_save" data-o2-events="click:save;">
+                保存
+            </div>
+            <div data-o2-element="showCommentNode" data-o2-events="click:showComment" class="icon_op" >
+                <i class="icon-ops  icon_comment"></i>
+            </div>
+            <div data-o2-element="shareNode" data-o2-events="click:share" class="icon_op" >
+                <i class="icon-ops  icon_menu_share"></i>
+            </div>
+            <div data-o2-element="moreNode" data-o2-events="click:showMoreAction" class="icon_op">
+                <i class="icon-ops  icon_more"></i>
+            </div>
+            <div data-o2-element="noteInfoNode" data-o2-events="click:showNoteInfo" class="icon_op">
+                <i class="icon-ops  icon_info"></i>
+            </div>
+            <div data-o2-element="shiftDeleteNode" data-o2-events="click:shiftDelete" class="icon_op">
+                <i class="icon-ops  icon_delete"></i>
+            </div>
+            <div data-o2-element="restoreNode" data-o2-events="click:restore" class="icon_op">
+                <i class="icon-ops  icon_restore"></i>
+            </div>
+            <div data-o2-element="saveShareNode" data-o2-events="click:saveShare" class="icon_op" title="保存我的笔记">
+                <i class="icon-ops  icon_save_note"></i>
+            </div>
+            <div data-o2-element="shieldShareNode" data-o2-events="click:shieldShare" class="icon_op" title="屏蔽该分享">
+                <i class="icon-ops  icon_shield"></i>
+            </div>
+        </div>
+    </div>
+    <div class = "main_view_editor_content" >
+        <div data-o2-element="editorContentNode"  id="editor" class="main_view_editor_content_container editor">
+        </div>
+    </div>
+
+</div>
+
+<div class="main_view_version" data-o2-element="versionNode"  style="display: none;">
+    <div style="height: 56px;position: absolute;width:100%;margin:0 10px;">
+        <div style="width:50%;float:left;line-height: 56px;height: 56px;padding-left:20px;">
+            <span ><select id="leftVerson" ></select></span>
+            <span style="float:right;margin-right: 20px;cursor: pointer;" data-o2-element="closeVersionNode" data-o2-events="click:closeVersion">关闭比较</span>
+        </div>
+        <div style="width:50%;float:right;line-height: 56px;height: 56px;padding-left:30px;padding-right:20px;">
+            <span ><select id="rightVerson" ></select></span>
+        </div>
+    </div>
+    <div  data-o2-element="versionContentNode"  style="position: absolute;margin-left:20px;margin-right: 20px;top:56px;width:100%">
+        <div id = "compareContent" style="position: relative;width:100%;height:100%"></div>
+    </div>
+</div>
+<div>
+    <!--<div style="width:50%;float:left;border-right:solid 1px #c9c9c9;height: 100%;">左边</div>
+    <div style="width:50%;float:right;">右边</div>-->
+</div>
+<div class="popover" data-o2-element="noteInfoPopNode"
+     style="width: 200px;  top: 60px; right: 10px; display: none;z-index: 999">
+    <div class="group_container" >
+        <table>
+            <tbody>
+            <tr>
+                <td class="td-l">创建时间 :</td>
+                <td class="td-r" data-o2-element="createTimeNode">2020/03/05 10:36</td>
+            </tr>
+            <tr>
+                <td class="td-l">修改时间 :</td>
+                <td class="td-r" data-o2-element="updateTimeNode">2020/03/22 11:07</td>
+            </tr>
+            <tr>
+                <td class="td-l">标签 :</td>
+                <td class="td-r" style="color:#ffad69;cursor: pointer" data-o2-element="tagNode" title="点击添加标签" data-o2-events="click:showAddTag">无标签</td>
+            </tr>
+            <tr>
+                <td class="td-l">分组 :</td>
+                <td class="td-r" style="color:#ffad69;cursor: pointer" data-o2-element="categoryNode" title="点击切换" data-o2-events="click:showFolderList"></td>
+            </tr>
+            </tbody></table>
+    </div>
+</div>
+<div class="popover" data-o2-element="folderListPopNode"
+     style="z-index:999;width: 200px;  top: 184px; right: 10px;display: none;">
+    <div class="group_container" data-o2-element="folderListNode">
+    </div>
+</div>
+<div class="popover" data-o2-element="versionListPopNode"
+     style="z-index:999;width: 200px;  top: 64px; right: 10px;display: none;">
+    <div class="group_container" data-o2-element="versionListNode">
+    </div>
+</div>
+<div class="comment_container" data-o2-element = "commentNode" style="display: none">
+    <div class="comment_header">
+        <span>评论</span>
+        <div data-o2-element = "closeCommentNode"  data-o2-events="click:closeComment;" class="icon icon_close comment_header_icon" ></div>
+    </div>
+    <div class="comment_content">
+        <div class="comment_content_send">
+            <textarea data-o2-element="commentInputNode"  class="comment_input" placeholder="输入评论…" style="height: 60px;"></textarea>
+            <div class="comment_sendBtn" data-o2-element="addCommentNode" data-o2-events="click:addComment;">评论</div>
+        </div>
+        <div class="comment_itemlist"  data-o2-element="commentListNode">
+        </div>
+    </div>
+</div>
+<div class="popover" data-o2-element="actionMorePopNode"
+     style="z-index:999;width: 120px;  top: 56px; right: 22px;display: none; min-width: 140px;">
+
+    <div class="group_container" >
+        <div class="group_item" data-o2-element="addTopNode" data-o2-events="click:addTop;">
+            <i class="group_item_icon icon icon_top"></i>
+            <div class="group_item_title">
+                置顶
+            </div>
+        </div>
+        <div class="group_item" data-o2-element="removeTopNode" data-o2-events="click:removeTop;">
+            <i class="group_item_icon icon icon_top"></i>
+            <div class="group_item_title">
+                取消置顶
+            </div>
+        </div>
+        <div class="group_item" data-o2-element="addStarNode" data-o2-events="click:addStar;">
+            <i class="group_item_icon icon icon_star"></i>
+            <div class="group_item_title">
+                加星
+            </div>
+        </div>
+        <div class="group_item" data-o2-element="removeStarNode" data-o2-events="click:removeStar;">
+            <i class="group_item_icon icon icon_star"></i>
+            <div class="group_item_title">
+                取消加星
+            </div>
+        </div>
+        <div class="group_item" data-o2-element="showVersionNode" data-o2-events="click:showVersion;">
+            <i class="group_item_icon icon icon_version"></i>
+            <div class="group_item_title">
+                查看历史版本
+            </div>
+        </div>
+        <div class="group_item" data-o2-element="printNode" data-o2-events="click:print;">
+            <i class="group_item_icon icon icon_print"></i>
+            <div class="group_item_title">
+                打印
+            </div>
+        </div>
+        <div class="group_item" data-o2-element="exportWordNode" data-o2-events="click:exportWord;">
+            <i class="group_item_icon icon icon_word"></i>
+            <div class="group_item_title">
+                导出为word
+            </div>
+        </div>
+        <div class="group_item" data-o2-element="deleteNode" data-o2-events="click:delete;">
+            <i class="group_item_icon icon icon_menu_recycle"></i>
+            <div class="group_item_title">
+                删除
+            </div>
+        </div>
+    </div>
+</div>
+<div class="popover none tagsinput" data-o2-element="tagPopNode"
+     style="z-index:999;width: 200px;  top: 184px; height:100px;right: 10px;">
+    <div data-o2-element="tagsNode">
+    </div>
+    <input class="tags" data-o2-element="addTagNode" placeholder="添加标签" data-o2-events="keydown:addTag">
+</div>

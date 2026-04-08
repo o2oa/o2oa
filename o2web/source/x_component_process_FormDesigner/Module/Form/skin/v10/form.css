@@ -70,6 +70,7 @@
 .form-layout .form-content-area oo-input,
 .form-layout .form-content-area oo-files,
 .form-layout .form-content-area oo-selector,
+.form-layout .form-content-area oo-cascade,
 .form-layout .form-content-area oo-textarea,
 .form-layout .form-content-area oo-radio-group,
 .form-layout .form-content-area oo-checkbox-group,
@@ -576,51 +577,6 @@
     background-color: var(--oo-color-main-deep) !important;
 }
 
-.form-content-view>div.search-item-area{
-    padding: 0.25em 0.25em 0 0.25em !important;
-    display: flex;
-    flex-direction: row;
-    gap: 0.5em;
-    padding: 1em;
-    background-color: #ffffff;
-    border-radius: var(--oo-default-radius);
-}
-.form-content-view>div.search-item-area:empty{
-    display: none !important;
-}
-.form-content-view>div.search-item-area .filter-item{
-    display: flex;
-    align-items: center;
-    gap: 0;
-    padding: 0.3em 0.5em !important;
-    border-radius: 0.2em;
-    background-color: var(--oo-color-gray-f9);
-    font-size: 0.875rem;
-    align-items: baseline;
-    transition: background-color 0.2s, color 0.2s;
-}
-
-.form-content-view>div.search-item-area .filter-item:hover{
-    background-color: var(--oo-color-gray-f3);
-}
-
-.form-content-view>div.search-item-area .filter-item .filter-item-title{
-    color: var(--oo-color-main);
-}
-.form-content-view>div.search-item-area .filter-item .filter-item-value{
-    color: var(--oo-color-text2);
-}
-.form-content-view>div.search-item-area .filter-item>.ooicon-close{
-    border-radius: 100%;
-    padding: 0.1em;
-    cursor: pointer;
-    transition: background-color 0.2s, color 0.2s;
-}
-.form-content-view>div.search-item-area .filter-item>.ooicon-close:hover{
-    color: var(--oo-color-main);
-    background-color: var(--oo-color-gray-d);
-}
-
 .form-layout .v10_dialog {
     box-sizing: content-box !important;
 }
@@ -947,6 +903,7 @@
     div[mwftype='datatable'] oo-radio-group,
     div[mwftype='datatable'] oo-checkbox-group,
     div[mwftype='datatable'] oo-select,
+    div[mwftype='datatable'] oo-cascade,
     div[mwftype='datatable'] oo-currency,
     div[mwftype='datatable'] oo-datetime {
         white-space: nowrap !important;
@@ -1079,6 +1036,7 @@
     div[mwftype='datatable'].datatable_edit_mode oo-radio-group,
     div[mwftype='datatable'].datatable_edit_mode oo-checkbox-group,
     div[mwftype='datatable'].datatable_edit_mode oo-select,
+    div[mwftype='datatable'].datatable_edit_mode oo-cascade,
     div[mwftype='datatable'].datatable_edit_mode oo-currency,
     div[mwftype='datatable'].datatable_edit_mode oo-datetime {
         white-space: normal !important;
@@ -1088,6 +1046,7 @@
     div[mwftype='datatable'].datatable_edit_mode oo-selector[readmode='false'],
     div[mwftype='datatable'].datatable_edit_mode oo-textarea[readmode='false'],
     div[mwftype='datatable'].datatable_edit_mode oo-select[readmode='false'],
+    div[mwftype='datatable'].datatable_edit_mode oo-cascade[readmode='false'],
     div[mwftype='datatable'].datatable_edit_mode oo-currency[readmode='false'],
     div[mwftype='datatable'].datatable_edit_mode oo-datetime[readmode='false'] {
         background-color: #ffffff;

@@ -146,9 +146,8 @@ public class GraalvmScriptingFactory {
 		if(denyClassList.contains(className)){
 			return false;
 		}
-		return className.startsWith("com.x.base.core.project.tools")
-				|| className.startsWith("com.x.base.core.project.connection")
-				|| className.startsWith("com.x.organization")
+		return className.startsWith("com.x.base.core.project.connection")
+				|| className.startsWith("com.x.organization.core")
 				|| getScriptingAllowedClasses().contains(className);
 	}
 

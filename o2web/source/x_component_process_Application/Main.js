@@ -1162,15 +1162,14 @@ MWF.xApplication.process.Application.WorkList = new Class({
 		layout.desktop.openApplication(null, "process.Work", options);
 
 	},
-	manage : function (id,ev,dataList){
+	manage : function (id,ev){
 		var data ;
-		for(var i = 0 ; i < dataList.length;i++){
-			if(dataList[i].id === id){
-				data = dataList[i];
+		for(var i = 0 ; i < this.dataList.length;i++){
+			if(this.dataList[i].id === id){
+				data = this.dataList[i];
 				break ;
 			}
 		}
-
 		this._manage(data);
 	},
 	_manage : function (data){

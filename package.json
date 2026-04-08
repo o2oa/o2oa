@@ -22,6 +22,10 @@
         "build_api": "gulp build_api",
         "build_historyJson": "gulp build_historyJson",
         "build_parallel": "npm run build_server && npm run build_web && npm run build_api",
+
+        "build_lic": "gulp create_license",
+        "dump_application_data": "gulp dump_application_data",
+        
         "deploy": "gulp deploy",
         "deploy:win": "gulp deploy --e windows",
         "deploy:linux": "gulp deploy --e linux",

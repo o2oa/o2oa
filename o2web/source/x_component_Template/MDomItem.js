@@ -53,6 +53,7 @@ var MDomItem_ClassType = {
     "oo-org": "OOSelector",
     "oo-radiogroup": "OORadioGroup",
     "oo-select": "OOSelect",
+    "oo-cascade": "OOCascade",
     "oo-textarea": "OOTextarea"
 };
 
@@ -4106,6 +4107,24 @@ MDomItem.OOSelect = new Class({
                 optionNode.inject(groupNode);
             });
         });
+    }
+});
+
+MDomItem.OOCascade = new Class({
+    Extends: MDomItem.OOInput,
+    createInput: function () {
+        var input = new Element('oo-cascade');
+        this.input = input;
+        this.renderOption(input);
+        if (this.css?.OOCascade) input.setStyles(this.css.OOCascade);
+
+        var propertyName = this.module.getLabelLength(this.options.label || this.options.text) === 3 ? 'OOCascadeProperties3' : 'OOCascadeProperties';
+        if (this.css[propertyName]) input.set(this.css[propertyName]);
+
+        return input;
+    },
+    renderOption: function () {
+
     }
 });
 

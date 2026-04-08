@@ -122,13 +122,12 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		this.setCustomStyles();
 	},
 	_hasPowerSetting: function(){
-		let flag = (this.json.readByActivity || this.json.readByOrg || this.json.readByScript)
-		|| (this.json.readByActivityValue && this.json.readByActivityValue.length)
-		|| (this.json.readByOrgValue && this.json.readByOrgValue.length)
-		|| 	(this.json.readByScriptValue && this.json.readByScriptValue.code)
-		|| (this.json.editByActivityValue && this.json.editByActivityValue.length)
-		|| (this.json.editByOrgValue && this.json.editByOrgValue.length)
-		|| 	(this.json.editByScriptValue && this.json.editByScriptValue.length);
+		let flag = (this.json.readByActivity && this.json.readByActivity.includes("true") && this.json.readByActivityValue && this.json.readByActivityValue.length) || 
+		(this.json.readByOrg && this.json.readByOrg.includes("true") && this.json.readByOrgValue && this.json.readByOrgValue.length) ||
+		(this.json.readByScript && this.json.readByScript.includes("true") && this.json.readByScriptValue && this.json.readByScriptValue.code) ||
+		(this.json.editByActivity && this.json.editByActivity.includes("true") && this.json.editByActivityValue && this.json.editByActivityValue.length) ||
+		(this.json.editByOrg && this.json.editByOrg.includes("true") && this.json.editByOrgValue && this.json.editByOrgValue.length) ||
+		(this.json.editByScript && this.json.editByScript.includes("true") && this.json.editByScriptValue && this.json.editByScriptValue.code);
 
 		return flag; 
 	},

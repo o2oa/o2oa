@@ -90,6 +90,19 @@
     "label-Align": "right",
     "view-style": "background-color:#f7f7f7"
   },
+  "OOCascade":{
+    "width": "100%"
+  },
+  "OOCascadeProperties":{
+    "label-style": "width:6.2vw; min-width:4.3em; max-width:9em;",
+    "label-Align": "right",
+    "view-style": "background-color:#f7f7f7"
+  },
+  "OOCascadeProperties3":{
+    "label-style": "width:6.2vw; min-width:4.3em; max-width:9em;letter-spacing:1px;",
+    "label-Align": "right",
+    "view-style": "background-color:#f7f7f7"
+  },
   "inputText": {
     "width": "99%",
     "border":"1px solid #ccc",

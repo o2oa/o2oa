@@ -185,3 +185,4 @@ o2server/test.sh
 *_bak.*
 *.bak
 **/pnpm-lock.yaml
+JenkinsFile

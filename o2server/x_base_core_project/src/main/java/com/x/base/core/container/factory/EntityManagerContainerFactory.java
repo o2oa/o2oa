@@ -1,5 +1,8 @@
 package com.x.base.core.container.factory;
 
+import com.x.base.core.project.exception.ExceptionConnectDbError;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +14,12 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.CheckRemove;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 
 public class EntityManagerContainerFactory extends SliceEntityManagerContainerFactory {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(EntityManagerContainerFactory.class);
 
 	private static EntityManagerContainerFactory instance;
 
@@ -54,7 +61,7 @@ public class EntityManagerContainerFactory extends SliceEntityManagerContainerFa
 		}
 	}
 
-	public static EntityManagerContainerFactory instance() {
+	public static EntityManagerContainerFactory instance() throws ExceptionConnectDbError {
 		if (instance == null) {
 			throw new IllegalStateException("get EntityManagerContainerFactory instance error, not initial.");
 		}

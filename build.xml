@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." name="main" default="default">
 	<property name="VERSION" value="4.3.6" />
-	<property name="preName" value="o2server"/>
-	<property name="targetdir" value="target"/>
+	<property name="preName" value="o2server" />
+	<property name="targetdir" value="target" />
 	<target name="default" depends="md5code" />
 	<target name="md5code" depends="default_zip">
-		<checksum file="${preName}-${VERSION}-windows-x64.zip" property="build_win.sha" algorithm="SHA-256" />
-		<length file="${preName}-${VERSION}-windows-x64.zip" property="length_win"/>
+		<checksum file="${preName}-${VERSION}-windows-x64.zip" property="build_win.sha"
+			algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-windows-x64.zip" property="length_win" />
 		<script language="javascript">
 			<![CDATA[
 			var length_win_bytes = project.getProperty("length_win");
@@ -15,8 +16,9 @@
 			project.setNewProperty("length_win_mb", length_win_mbytes);
 		]]>
 		</script>
-		<checksum file="${preName}-${VERSION}-linux-x64.zip" property="build_linux.sha" algorithm="SHA-256" />
-		<length file="${preName}-${VERSION}-linux-x64.zip" property="length_linux"/>
+		<checksum file="${preName}-${VERSION}-linux-x64.zip" property="build_linux.sha"
+			algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-linux-x64.zip" property="length_linux" />
 		<script language="javascript">
 			<![CDATA[
 			var length_linux_bytes = project.getProperty("length_linux");
@@ -25,8 +27,9 @@
 			project.setNewProperty("length_linux_mb", length_linux_mbytes);
 		]]>
 		</script>
-		<checksum file="${preName}-${VERSION}-macosx64.zip" property="build_macosx64.sha" algorithm="SHA-256" />
-		<length file="${preName}-${VERSION}-macosx64.zip" property="length_macosx64"/>
+		<checksum file="${preName}-${VERSION}-macosx64.zip" property="build_macosx64.sha"
+			algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-macosx64.zip" property="length_macosx64" />
 		<script language="javascript">
 			<![CDATA[
 			var length_macosx64_bytes = project.getProperty("length_macosx64");
@@ -35,8 +38,9 @@
 			project.setNewProperty("length_macosx64_mb", length_macosx64_mbytes);
 		]]>
 		</script>
-		<checksum file="${preName}-${VERSION}-macosarm.zip" property="build_macosarm.sha" algorithm="SHA-256" />
-		<length file="${preName}-${VERSION}-macosarm.zip" property="length_macosarm"/>
+		<checksum file="${preName}-${VERSION}-macosarm.zip" property="build_macosarm.sha"
+			algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-macosarm.zip" property="length_macosarm" />
 		<script language="javascript">
 			<![CDATA[
 			var length_macosarm_bytes = project.getProperty("length_macosarm");
@@ -45,8 +49,9 @@
 			project.setNewProperty("length_macosarm_mb", length_macosarm_mbytes);
 		]]>
 		</script>
-		<checksum file="${preName}-${VERSION}-linux-mips.zip" property="build_mips.sha" algorithm="SHA-256" />
-		<length file="${preName}-${VERSION}-linux-mips.zip" property="length_mips"/>
+		<checksum file="${preName}-${VERSION}-linux-mips.zip" property="build_mips.sha"
+			algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-linux-mips.zip" property="length_mips" />
 		<script language="javascript">
 			<![CDATA[
 			var length_mips_bytes = project.getProperty("length_mips");
@@ -55,8 +60,9 @@
 			project.setNewProperty("length_mips_mb", length_mips_mbytes);
 		]]>
 		</script>
-		<checksum file="${preName}-${VERSION}-linux-arm.zip" property="build_arm.sha" algorithm="SHA-256" />
-		<length file="${preName}-${VERSION}-linux-arm.zip" property="length_arm"/>
+		<checksum file="${preName}-${VERSION}-linux-arm.zip" property="build_arm.sha"
+			algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-linux-arm.zip" property="length_arm" />
 		<script language="javascript">
 			<![CDATA[
 			var length_arm_bytes = project.getProperty("length_arm");
@@ -66,7 +72,7 @@
 		]]>
 		</script>
 		<checksum file="${preName}-${VERSION}-sw.zip" property="build_sw.sha" algorithm="SHA-256" />
-		<length file="${preName}-${VERSION}-sw.zip" property="length_sw"/>
+		<length file="${preName}-${VERSION}-sw.zip" property="length_sw" />
 		<script language="javascript">
 			<![CDATA[
 			var length_sw_bytes = project.getProperty("length_sw");
@@ -76,7 +82,7 @@
 		]]>
 		</script>
 		<tstamp>
-			<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss"/>
+			<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
 		</tstamp>
 		<echo file="download_preview.jsonp">callback(
 			{
@@ -238,173 +244,218 @@
 			}
 			}</echo>
 	</target>
-	<target name="default_zip" depends="version_o2,zip_windows,zip_linux,zip_macosx64,zip_macosarm,zip_raspi,zip_mips,zip_arm,zip_sw" />
+	<target name="default_zip"
+		depends="version_o2,zip_windows,zip_linux,zip_macosx64,zip_macosarm,zip_raspi,zip_mips,zip_arm,zip_sw" />
 	<target name="version_o2">
 		<tstamp>
-			<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss"/>
+			<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
 		</tstamp>
 		<echo file="${targetdir}/o2server/version.o2">{"version":"${VERSION}","date":"${TODAY}"}</echo>
 	</target>
 	<target name="zip_windows">
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-windows-x64.zip" update="false">
-			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
-				<include name="commons/"/>
+			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8"
+				prefix="o2server">
+				<include name="commons/" />
 				<exclude name="commons/ext/" />
-				<include name="configSample/"/>
-				<include name="localSample/"/>
-				<include name="servers/"/>
-				<include name="store/"/>
-				<include name="console.jar"/>
-				<include name="index.html"/>
-				<include name="version.o2"/>
-				<include name="jvm/windows_java11/"/>
-				<include name="service_windows.bat"/>
-				<include name="start_windows.bat"/>
-				<include name="start_windows_debug.bat"/>
-				<include name="console_windows.bat"/>
-				<include name="stop_windows.bat"/>
+				<include name="configInit/" />
+				<include name="dynamic/" />
+				<include name="configSample/" />
+				<include name="localSample/" />
+				<include name="servers/webServer/" />
+				<include name="store/" />
+				<include name="console.jar" />
+				<include name="index.html" />
+				<include name="version.o2" />
+				<include name="jvm/windows_java11/" />
+				<include name="service_windows.bat" />
+				<include name="start_windows.bat" />
+				<include name="start_windows_debug.bat" />
+				<include name="console_windows.bat" />
+				<include name="stop_windows.bat" />
+				<include name="start_with_ai_windows.bat" />
+				<include name="servers/aiagent/commons/" />
+				<include name="servers/aiagent/jvm/windows-x64/" />
+				<include name="servers/aiagent/lib/" />
+				<include name="servers/aiagent/resources/" />
+				<include name="servers/aiagent/webapps/" />
+				<include name="servers/aiagent/boot.jar" />
+				<include name="servers/aiagent/start-windows-x64.bat" />
+				<include name="servers/aiagent/version.o2" />
 			</zipfileset>
 		</zip>
 	</target>
 	<target name="zip_linux">
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-linux-x64.zip" update="false">
-			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
-				<include name="commons/"/>
+			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8"
+				prefix="o2server">
+				<include name="commons/" />
 				<exclude name="commons/ext/" />
-				<include name="configSample/"/>
-				<include name="localSample/"/>
-				<include name="servers/"/>
-				<include name="store/"/>
-				<include name="console.jar"/>
-				<include name="index.html"/>
-				<include name="version.o2"/>
-				<include name="jvm/linux_java11/"/>
-				<include name="start_linux.sh"/>
-				<include name="start_linux_min.sh"/>
-				<include name="start_linux_debug.sh"/>
-				<include name="console_linux.sh"/>
-				<include name="stop_linux.sh"/>
-				<include name="service_linux.sh"/>
+				<include name="configInit/" />
+				<include name="dynamic/" />
+				<include name="configSample/" />
+				<include name="localSample/" />
+				<include name="servers/webServer/" />
+				<include name="store/" />
+				<include name="console.jar" />
+				<include name="index.html" />
+				<include name="version.o2" />
+				<include name="jvm/linux_java11/" />
+				<include name="start_linux.sh" />
+				<include name="start_linux_min.sh" />
+				<include name="start_linux_debug.sh" />
+				<include name="console_linux.sh" />
+				<include name="stop_linux.sh" />
+				<include name="service_linux.sh" />
+				<include name="start_with_ai_linux.sh" />
+				<include name="stop_with_ai_linux.sh" />
+				<include name="servers/aiagent/commons/" />
+				<include name="servers/aiagent/jvm/linux-x64/" />
+				<include name="servers/aiagent/lib/" />
+				<include name="servers/aiagent/resources/" />
+				<include name="servers/aiagent/webapps/" />
+				<include name="servers/aiagent/boot.jar" />
+				<include name="servers/aiagent/start-linux-x64.sh" />
+				<include name="servers/aiagent/stop-linux-x64.sh" />
+				<include name="servers/aiagent/version.o2" />
 			</zipfileset>
 		</zip>
 	</target>
 	<target name="zip_macosx64">
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-macosx64.zip" update="false">
-			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
-				<include name="commons/"/>
+			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8"
+				prefix="o2server">
+				<include name="commons/" />
 				<exclude name="commons/ext/" />
-				<include name="configSample/"/>
-				<include name="localSample/"/>
-				<include name="servers/"/>
-				<include name="store/"/>
-				<include name="console.jar"/>
-				<include name="index.html"/>
-				<include name="version.o2"/>
-				<include name="jvm/macosx64_java11/"/>
-				<include name="start_macosx64.sh"/>
-				<include name="start_macosx64_debug.sh"/>
-				<include name="console_macosx64.sh"/>
-				<include name="stop_macosx64.sh"/>
+				<include name="configInit/" />
+				<include name="dynamic/" />
+				<include name="configSample/" />
+				<include name="localSample/" />
+				<include name="servers/webServer/" />
+				<include name="store/" />
+				<include name="console.jar" />
+				<include name="index.html" />
+				<include name="version.o2" />
+				<include name="jvm/macosx64_java11/" />
+				<include name="start_macosx64.sh" />
+				<include name="start_macosx64_debug.sh" />
+				<include name="console_macosx64.sh" />
+				<include name="stop_macosx64.sh" />
 			</zipfileset>
 		</zip>
 	</target>
 	<target name="zip_macosarm">
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-macosarm.zip" update="false">
-			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
-				<include name="commons/"/>
+			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8"
+				prefix="o2server">
+				<include name="commons/" />
 				<exclude name="commons/ext/" />
-				<include name="configSample/"/>
-				<include name="localSample/"/>
-				<include name="servers/"/>
-				<include name="store/"/>
-				<include name="console.jar"/>
-				<include name="index.html"/>
-				<include name="version.o2"/>
-				<include name="jvm/macosarm_java11/"/>
-				<include name="start_macosarm.sh"/>
-				<include name="start_macosarm_debug.sh"/>
-				<include name="console_macosarm.sh"/>
-				<include name="stop_macosarm.sh"/>
+				<include name="configInit/" />
+				<include name="dynamic/" />
+				<include name="configSample/" />
+				<include name="localSample/" />
+				<include name="servers/webServer/" />
+				<include name="store/" />
+				<include name="console.jar" />
+				<include name="index.html" />
+				<include name="version.o2" />
+				<include name="jvm/macosarm_java11/" />
+				<include name="start_macosarm.sh" />
+				<include name="start_macosarm_debug.sh" />
+				<include name="console_macosarm.sh" />
+				<include name="stop_macosarm.sh" />
 			</zipfileset>
 		</zip>
 	</target>
 	<target name="zip_raspi">
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-raspi.zip" update="false">
-			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
-				<include name="commons/"/>
+			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8"
+				prefix="o2server">
+				<include name="commons/" />
 				<exclude name="commons/ext/" />
-				<include name="configSample/"/>
-				<include name="localSample/"/>
-				<include name="servers/"/>
-				<include name="store/"/>
-				<include name="console.jar"/>
-				<include name="index.html"/>
-				<include name="version.o2"/>
-				<include name="jvm/raspi_java11/"/>
-				<include name="start_raspi.sh"/>
-				<include name="start_raspi_debug.sh"/>
-				<include name="console_raspi.sh"/>
-				<include name="stop_raspi.sh"/>
+				<include name="configInit/" />
+				<include name="dynamic/" />
+				<include name="configSample/" />
+				<include name="localSample/" />
+				<include name="servers/webServer/" />
+				<include name="store/" />
+				<include name="console.jar" />
+				<include name="index.html" />
+				<include name="version.o2" />
+				<include name="jvm/raspi_java11/" />
+				<include name="start_raspi.sh" />
+				<include name="start_raspi_debug.sh" />
+				<include name="console_raspi.sh" />
+				<include name="stop_raspi.sh" />
 			</zipfileset>
 		</zip>
 	</target>
 	<target name="zip_mips">
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-linux-mips.zip" update="false">
-			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
-				<include name="commons/"/>
+			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8"
+				prefix="o2server">
+				<include name="commons/" />
 				<exclude name="commons/ext/" />
-				<include name="configSample/"/>
-				<include name="localSample/"/>
-				<include name="servers/"/>
-				<include name="store/"/>
-				<include name="console.jar"/>
-				<include name="index.html"/>
-				<include name="version.o2"/>
-				<include name="jvm/mips_java11/"/>
-				<include name="start_mips.sh"/>
-				<include name="start_mips_debug.sh"/>
-				<include name="console_mips.sh"/>
-				<include name="stop_mips.sh"/>
+				<include name="configInit/" />
+				<include name="dynamic/" />
+				<include name="configSample/" />
+				<include name="localSample/" />
+				<include name="servers/webServer/" />
+				<include name="store/" />
+				<include name="console.jar" />
+				<include name="index.html" />
+				<include name="version.o2" />
+				<include name="jvm/mips_java11/" />
+				<include name="start_mips.sh" />
+				<include name="start_mips_debug.sh" />
+				<include name="console_mips.sh" />
+				<include name="stop_mips.sh" />
 			</zipfileset>
 		</zip>
 	</target>
 	<target name="zip_arm">
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-linux-arm.zip" update="false">
-			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
-				<include name="commons/"/>
+			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8"
+				prefix="o2server">
+				<include name="commons/" />
 				<exclude name="commons/ext/" />
-				<include name="configSample/"/>
-				<include name="localSample/"/>
-				<include name="servers/"/>
-				<include name="store/"/>
-				<include name="console.jar"/>
-				<include name="index.html"/>
-				<include name="version.o2"/>
-				<include name="jvm/arm_java11/"/>
-				<include name="start_arm.sh"/>
-				<include name="start_arm_debug.sh"/>
-				<include name="console_arm.sh"/>
-				<include name="stop_arm.sh"/>
+				<include name="configInit/" />
+				<include name="dynamic/" />
+				<include name="configSample/" />
+				<include name="localSample/" />
+				<include name="servers/webServer/" />
+				<include name="store/" />
+				<include name="console.jar" />
+				<include name="index.html" />
+				<include name="version.o2" />
+				<include name="jvm/arm_java11/" />
+				<include name="start_arm.sh" />
+				<include name="start_arm_debug.sh" />
+				<include name="console_arm.sh" />
+				<include name="stop_arm.sh" />
 			</zipfileset>
 		</zip>
 	</target>
 	<target name="zip_sw">
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-sw.zip" update="false">
-			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
-				<include name="commons/"/>
+			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8"
+				prefix="o2server">
+				<include name="commons/" />
 				<exclude name="commons/ext/" />
-				<include name="configSample/"/>
-				<include name="localSample/"/>
-				<include name="servers/"/>
-				<include name="store/"/>
-				<include name="console.jar"/>
-				<include name="index.html"/>
-				<include name="version.o2"/>
-				<include name="jvm/sw_java11/"/>
-				<include name="start_sw.sh"/>
-				<include name="start_sw_debug.sh"/>
-				<include name="console_sw.sh"/>
-				<include name="stop_sw.sh"/>
+				<include name="configInit/" />
+				<include name="dynamic/" />
+				<include name="configSample/" />
+				<include name="localSample/" />
+				<include name="servers/webServer/" />
+				<include name="store/" />
+				<include name="console.jar" />
+				<include name="index.html" />
+				<include name="version.o2" />
+				<include name="jvm/sw_java11/" />
+				<include name="start_sw.sh" />
+				<include name="start_sw_debug.sh" />
+				<include name="console_sw.sh" />
+				<include name="stop_sw.sh" />
 			</zipfileset>
 		</zip>
 	</target>

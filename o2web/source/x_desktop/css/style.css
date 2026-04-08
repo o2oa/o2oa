@@ -31,6 +31,12 @@ body {
 .o2_vue *{
 	box-sizing: border-box!important;
 }
+.o2_vue.o2_vue{
+	box-sizing: border-box!important;
+}
+.o2_vue.o2_vue *{
+	box-sizing: border-box!important;
+}
 .start-process-area{
 	box-sizing: content-box!important;
 }

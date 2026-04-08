@@ -100,27 +100,6 @@ public class BaseTools {
 				.map(Entry::getKey).collect(Collectors.toList()).forEach(jsonObject::remove);
 	}
 
-	public static <T> T readConfigObject(String path, String otherPath, Class<T> cls) {
-		String base = BaseTools.getBasePath();
-		File file = new File(base, path);
-		if (file.exists() && file.isFile()) {
-			return readConfigObject(path, cls);
-		}
-		file = new File(base, otherPath);
-		if (file.exists() && file.isFile()) {
-			return readConfigObject(otherPath, cls);
-		}
-		throw new UncheckedIOException(
-				new IOException("can not get file with path:" + path + ", otherPath:" + otherPath + "."));
-	}
-
-	public static void writeObject(String path, Object obj) throws IOException {
-		String base = BaseTools.getBasePath();
-		File file = new File(base, path);
-		String json = (new Gson()).toJson(obj);
-		FileUtils.writeStringToFile(file, json, StandardCharsets.UTF_8);
-	}
-
 	public static String readCfg(String path) throws IOException {
 		String base = BaseTools.getBasePath();
 		File file = new File(base, path);
@@ -137,21 +116,6 @@ public class BaseTools {
 			str = defaultValue;
 		}
 		return (StringUtils.trim(str));
-	}
-
-	public static void writeCfg(String path, String value) throws IOException {
-		String base = BaseTools.getBasePath();
-		File file = new File(base, path);
-		FileUtils.writeStringToFile(file, StringUtils.trim(value), StandardCharsets.UTF_8);
-	}
-
-	public static byte[] readBytes(String path) throws IOException {
-		String base = BaseTools.getBasePath();
-		File file = new File(base, path);
-		if ((!file.exists()) || file.isDirectory()) {
-			throw new IOException("can not get file with path:" + file.getAbsolutePath());
-		}
-		return FileUtils.readFileToByteArray(file);
 	}
 
 	public static String readString(String path) throws IOException {

@@ -365,6 +365,7 @@ MWF.xApplication.process.FormDesigner.LP={
 		"oo_radioGroup": "Elecciones individuales",
 		"oo_checkGroup": "Casillas",
 		"oo_select": "Desplegable",
+		"oo_cascade": 'Cascader',
 		"oo_textarea": "Texto multilínea",
 		"oo_calendar": "Calendario",
 		"oo_datetime": "Marco de fecha",
