@@ -3,7 +3,6 @@ package com.x.attendance.assemble.control.service.v2;
 import java.util.Arrays;
 import java.util.List;
 
-import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeaveTypeEnums.QuotaTypeEnum;
 import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeaveTypeEnums.UnitTypeEnum;
 import com.x.attendance.entity.v2.AttendanceV2Config;
@@ -12,9 +11,6 @@ import com.x.attendance.entity.v2.AttendanceV2LeaveType;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.Application;
-import com.x.base.core.project.x_attendance_assemble_control;
-import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
@@ -41,23 +37,25 @@ public class AttendanceV2LeaveManagerService {
 
     private void defaultLeaveTypeData() throws Exception {
         List<String> defaultLeaveTypes = Arrays.asList("年假", "病假", "事假", "婚假", "丧假", "产假", "陪产假", "其他");
-        Application app = ThisApplication.context().applications()
-                .randomWithWeight(x_attendance_assemble_control.class.getName());
-        if (app != null) {
-            for (String leaveType : defaultLeaveTypes) {
-                AttendanceV2LeaveType body = new AttendanceV2LeaveType();
-                body.setName(leaveType);
-                body.setQuotaType(QuotaTypeEnum.UNLIMITED.getValue());
-                body.setUnit(UnitTypeEnum.DAY.getValue());
-                WoId woId = ThisApplication.context().applications().postQuery(false, app, "v2/leavemanager/type", body)
-                        .getData(WoId.class);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("默认假勤类型 {} 初始化完成，ID: {}", leaveType, woId.getId());
-                }
-            }
-        } else {
-            logger.warn("无法获取到应用实例，无法初始化默认的假勤类型数据.");
+        for (String leaveType : defaultLeaveTypes) {
+            AttendanceV2LeaveType body = new AttendanceV2LeaveType();
+            body.setName(leaveType);
+            body.setQuotaType(QuotaTypeEnum.UNLIMITED.getValue());
+            body.setUnit(UnitTypeEnum.DAY.getValue());
+            saveLeaveType(body);
         }
+    }
+
+    private void saveLeaveType(AttendanceV2LeaveType leaveType) throws Exception {
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            emc.beginTransaction(AttendanceV2LeaveType.class);
+            emc.persist(leaveType, CheckPersistType.all);
+            emc.commit();
+            if (logger.isDebugEnabled()) {
+                logger.debug("默认假勤类型 {} 初始化完成，ID: {}", leaveType, leaveType.getId());
+            }
+        }
+
     }
 
     private void updateConfig() throws Exception {

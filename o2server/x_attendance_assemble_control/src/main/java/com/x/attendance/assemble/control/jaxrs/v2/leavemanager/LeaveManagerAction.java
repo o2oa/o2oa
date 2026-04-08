@@ -144,7 +144,7 @@ public class LeaveManagerAction extends StandardJaxrsAction {
     @Path("policy/list")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+    public void policyList(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
         ActionResult<List<ActionLeavePolicyList.Wo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
