@@ -67,6 +67,9 @@
     },
     "author": "",
     "license": "ISC",
+    "overrides": {
+        "lodash.template": "^4.18.1"
+    },
     "devDependencies": {
         "@o2oa/language-tools": "^1.0.27",
         "@o2oa/tidy-jsdoc-o2": "^0.0.26",
