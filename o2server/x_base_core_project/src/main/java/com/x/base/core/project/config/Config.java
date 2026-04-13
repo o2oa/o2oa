@@ -598,15 +598,7 @@ public class Config {
 	private ExternalDataSources externalDataSources;
 
 	public static synchronized ExternalDataSources externalDataSources() throws Exception {
-		if (null == instance().externalDataSources) {
-			ExternalDataSources obj = BaseTools.readConfigObject(PATH_CONFIG_EXTERNALDATASOURCES,
-					ExternalDataSources.class);
-			if (null == obj) {
-				obj = ExternalDataSources.defaultInstance();
-			}
-			instance().externalDataSources = obj;
-		}
-		return instance().externalDataSources;
+		return ExternalDataSources.defaultInstance();
 	}
 
 	private ExternalStorageSources externalStorageSources;
