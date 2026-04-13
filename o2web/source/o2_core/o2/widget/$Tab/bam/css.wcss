@@ -47,7 +47,7 @@
 	"tabCloseNode": {
 		"height": "48px",
 		"width": "16px",
-		"background": "url("+o2.session.path+"/widget/$Tab/administrator/close_gray.png) left center",
+		"background": "url("+o2.session.path+"/widget/$Tab/bam/close_gray.png) left center",
 		"background-repeat": "no-repeat" ,
 		"float": "right"
 	},
@@ -84,7 +84,7 @@
 	"tabCloseNodeCurrent": {
 		"height": "48px",
 		"width": "16px",
-		"background": "url("+o2.session.path+"/widget/$Tab/administrator/close.png) left center",
+		"background": "url("+o2.session.path+"/widget/$Tab/bam/close.png) left center",
 		"background-repeat": "no-repeat",
 		"float": "left"
 	}
