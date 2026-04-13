@@ -45,7 +45,7 @@ MWF.xApplication.Setting.Main = new Class({
 
 
         MWF.require("MWF.widget.Tab", function(){
-            this.tab = new MWF.widget.Tab(this.content, {"style": "administrator"});
+            this.tab = new MWF.widget.Tab(this.content, {"style": "bam"});
             this.tab.load();
 
             this.basePage = this.tab.addTab(this.baseAreaNode, this.lp.tab_base, false);

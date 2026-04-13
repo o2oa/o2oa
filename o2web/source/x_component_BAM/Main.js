@@ -36,7 +36,7 @@ MWF.xApplication.BAM.Main = new Class({
     },
     createLayout: function(callback){
         this.tabNode = new Element("div", {"styles": this.css.tabNode}).inject(this.node);
-        this.tab = new MWF.widget.Tab(this.tabNode, {"style": "administrator"});
+        this.tab = new MWF.widget.Tab(this.tabNode, {"style": "bam"});
         this.tab.load();
 
         this.summaryNode = new Element("div", {"styles": this.css.summaryNode});
