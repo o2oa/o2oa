@@ -390,7 +390,7 @@ MWF.xApplication.process.Work.Main = new Class({
                 // this.unLoading();
 
             }
-        }.bind(this), "failure": function(){}}, [work.form, work.application]);
+        }.bind(this), "failure": function(){}}, [work.form, new Date().getTime()]);
     },
 
     createWorkNode: function(work, node, completed){
