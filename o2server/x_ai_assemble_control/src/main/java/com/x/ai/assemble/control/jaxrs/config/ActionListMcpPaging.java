@@ -31,7 +31,7 @@ class ActionListMcpPaging extends BaseAction {
         ActionResult<List<Wo>> result = new ActionResult<>();
         AiConfig aiConfig = Business.getConfig();
         if (BooleanUtils.isNotTrue(aiConfig.getO2AiEnable())
-                || StringUtils.isBlank(aiConfig.getO2AiToken()) && StringUtils.isBlank(
+                || StringUtils.isBlank(aiConfig.getO2AiToken()) || StringUtils.isBlank(
                 aiConfig.getO2AiBaseUrl())) {
             result.setData(Collections.emptyList());
             result.setCount(0L);

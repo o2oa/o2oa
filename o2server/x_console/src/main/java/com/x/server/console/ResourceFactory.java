@@ -10,9 +10,6 @@ import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.DataServer;
-import com.x.base.core.project.config.ExternalDataSource;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ClassLoaderTools;
 import com.x.base.core.project.tools.H2Tools;
 import com.x.base.core.project.tools.JarTools;
@@ -44,7 +41,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.commons.lang3.reflect.MethodUtils;
 import org.eclipse.jetty.plus.jndi.Resource;
 
 /**
@@ -53,8 +49,6 @@ import org.eclipse.jetty.plus.jndi.Resource;
  *
  */
 public class ResourceFactory {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ResourceFactory.class);
 
 	private static final int TOKENTHRESHOLDSMAXSIZE = 2000;
 
@@ -87,11 +81,7 @@ public class ResourceFactory {
 	 * @throws Exception
 	 */
 	private static void initDataSources() throws Exception {
-		if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
-			external();
-		} else {
-			internal();
-		}
+		internal();
 	}
 
 	/**
@@ -177,55 +167,6 @@ public class ResourceFactory {
 		new Resource(Config.RESOURCE_CONTAINERENTITIES, MapUtils.unmodifiableMap(map));
 	}
 
-	private static void external() throws Exception {
-		dataSources.addAll(externalDruidC3p0());
-	}
-
-	private static List<DruidDataSourceC3P0Adapter> externalDruidC3p0() throws Exception {
-		List<DruidDataSourceC3P0Adapter> list = new ArrayList<>();
-		for (ExternalDataSource ds : Config.externalDataSources()) {
-			if (BooleanUtils.isNotTrue(ds.getEnable())) {
-				continue;
-			}
-			DruidDataSourceC3P0Adapter dataSource = new DruidDataSourceC3P0Adapter();
-			dataSource.setJdbcUrl(ds.getUrl());
-			dataSource.setDriverClass(ds.getDriverClassName());
-			// dataSource.setPreferredTestQuery(SlicePropertiesBuilder.validationQueryOfUrl(ds.getUrl()));
-			dataSource.setUser(ds.getUsername());
-			dataSource.setPassword(ds.getPassword());
-			dataSource.setMaxPoolSize(ds.getMaxTotal());
-			dataSource.setMinPoolSize(ds.getMaxIdle());
-			// 增加校验
-			// dataSource.setTestConnectionOnCheckin(ds.getTestConnectionOnCheckin());
-			// dataSource.setTestConnectionOnCheckout(ds.getTestConnectionOnCheckout());
-			dataSource.setMaxIdleTime(ds.getMaxIdleTime());
-			dataSource.setAcquireIncrement(2);
-			DruidDataSource druidDataSource = (DruidDataSource) FieldUtils.readField(dataSource, "dataSource", true);
-			druidDataSource.setTestWhileIdle(false);
-			druidDataSource.setTestOnBorrow(false);
-			druidDataSource.setTestOnReturn(false);
-			if (BooleanUtils.isTrue(ds.getStatEnable())) {
-				dataSource.setFilters(ds.getStatFilter());
-				if (BooleanUtils.isTrue(ds.getSlowSqlEnable())) {
-					Properties properties = new Properties();
-					properties.setProperty("druid.stat.slowSqlMillis", ds.getSlowSqlThreshold().toString());
-					properties.setProperty("druid.stat.logSlowSql", "true");
-					dataSource.setProperties(properties);
-				}
-				if (BooleanUtils.isTrue(ds.getLogStatEnable())) {
-					druidDataSource.setStatLogger(new DruidStatLogger());
-					druidDataSource.setTimeBetweenLogStatsMillis(60000L * ds.getLogStatInterval());
-				}
-			}
-			// 增加autoCommit设置
-			dataSource.setAutoCommitOnClose(ds.getAutoCommit());
-			String name = Config.externalDataSources().name(ds);
-			new Resource(Config.RESOURCE_JDBC_PREFIX + name, dataSource);
-			list.add(dataSource);
-		}
-		return list;
-	}
-
 	/**
 	 * internal 使用的是H2 server,在执行close dataserver已经完成了数据库关闭,dataSource无法destory.
 	 *
@@ -254,7 +195,6 @@ public class ResourceFactory {
 					+ ";CACHE_SIZE=" + (entry.getValue().getCacheSize() * 1024);
 			dataSource.setJdbcUrl(url);
 			dataSource.setDriverClass(SlicePropertiesBuilder.driver_h2);
-			// dataSource.setPreferredTestQuery(SlicePropertiesBuilder.validationQueryOfUrl(url));
 			dataSource.setUser(H2Tools.USER);
 			dataSource.setPassword(Config.token().getPassword());
 			dataSource.setMaxPoolSize(entry.getValue().getMaxTotal());

@@ -75,10 +75,10 @@ class ActionListFilterPaging extends BaseAction {
 				count = countWithUnit(business, wi, conUnitList);
 			}
 			wos.forEach(wo -> {
-				if (wo.getName().startsWith(Person.ENCRYPT)) {
+				if (StringUtils.isNotBlank(wo.getName()) && wo.getName().startsWith(Person.ENCRYPT)) {
 					wo.setName(Crypto.base64Decode(wo.getName().substring(Person.ENCRYPT.length())));
 				}
-				if (wo.getMobile().startsWith(Person.ENCRYPT)) {
+				if (StringUtils.isNotBlank(wo.getMobile()) && wo.getMobile().startsWith(Person.ENCRYPT)) {
 					wo.setMobile(Crypto.base64Decode(wo.getMobile().substring(Person.ENCRYPT.length())));
 				}
 			});
