@@ -1,8 +1,11 @@
 package com.x.message.assemble.communicate.jaxrs.im;
 
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -13,7 +16,6 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
-import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.message.assemble.communicate.Business;
@@ -36,12 +38,16 @@ public class ActionMyConversationList extends BaseAction {
 			Business business = new Business(emc);
 			List<IMConversation> list = business.imConversationFactory().listConversationWithPerson2(effectivePerson.getDistinguishedName());
 			List<Wo> wos = Wo.copier.copy(list);
+			// 批量查询优化
+			List<String> conversationIds = wos.stream().map(Wo::getId).collect(Collectors.toList());
+			Map<String, IMConversationExt> extMap = business.imConversationFactory().getConversationExts(effectivePerson.getDistinguishedName(), conversationIds);
+			Map<String, Long> unreadMap = business.imConversationFactory().getUnreadNumbers(new ArrayList<>(extMap.values()));
+			Map<String, IMMsg> lastMsgMap = business.imConversationFactory().getLastMessages(conversationIds);
 			for (Wo wo : wos) {
-				IMConversationExt ext = business.imConversationFactory()
-						.getConversationExt(effectivePerson.getDistinguishedName(), wo.getId());
+				IMConversationExt ext = extMap.get(wo.getId());
 				if (ext != null) {
 					wo.setIsTop(ext.getIsTop());
-					wo.setUnreadNumber(business.imConversationFactory().unreadNumber(ext));
+					wo.setUnreadNumber(unreadMap.getOrDefault(wo.getId(), 0L));
 					wo.setExt(ext);
 				} else {
 					LOGGER.info("没有找到对应 IMConversationExt ？？ " + effectivePerson.getDistinguishedName() + "  " + wo.getId());
@@ -54,14 +60,11 @@ public class ActionMyConversationList extends BaseAction {
 				}
 				return true;
 			}).filter((wo)-> {// 删除空的会话
-				WoMsg woMsg;
-				try {
-					woMsg = WoMsg.copier.copy(business.imConversationFactory().lastMessage(wo.getId()));
-					if (woMsg != null) {
-						wo.setLastMessage(woMsg);
-					}
-				} catch (Exception e) {
-					woMsg = null;
+				WoMsg woMsg = null;
+				IMMsg lastMsg = lastMsgMap.get(wo.getId());
+				if (lastMsg != null) {
+					woMsg = WoMsg.copier.copy(lastMsg);
+					wo.setLastMessage(woMsg);
 				}
 				// 群聊不管有没有聊天消息都展现。
 				if (wo.getType() != null && wo.getType().equals(CONVERSATION_TYPE_GROUP)) {
