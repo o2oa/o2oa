@@ -1,0 +1,45 @@
+
+{{each $.data}}
+    <div class="blockItem" data-o2-events="click:openProject:{{$.id}};o2load:loadBgImage:{{$.icon}};">
+        <!-- <div class="blockCover"></div> -->
+        <img class="blockItemImg" src="../x_component_TeamWork/$ProjectListV2/default/icon/pic_morentu_220.png" />
+        <div class="blockContent">
+            <div class="blockAction">
+                <div class="blockActionEndTime">{{
+                    (function(){
+                        var res = "";
+                        var date = $.endTime || "";
+                        if(date!=""){
+                            res = date.split(" ")[0]
+                        }
+                        return res
+                    })()    
+                }}</div>
+                <div class="blockActionImg">
+                    {{if $.star}}
+                        <img src = "../x_component_TeamWork/$ProjectListV2/default/icon/icon_wdxx_click.png" title="星标" status="star" data-o2-events="click:setStar:{{$.id}};" />
+                    {{end if}}
+                    {{if !$.star}}
+                        <img src = "../x_component_TeamWork/$ProjectListV2/default/icon/icon_wdxx_2.png" title="星标" status="unstar" data-o2-events="click:setStar:{{$.id}};" />
+                    {{end if}}
+                    <img src = "../x_component_TeamWork/$ProjectListV2/default/icon/icon_detail.png" title="详情" data-o2-events="click:openSetting:{{$.id}};" />
+                </div>
+            </div>
+            <div class="blockName">{{$.title}}</div>
+
+            <div class="blockNumber">
+                <div class="blockNumberTotal"><span>{{$.taskStatistics.allCount}}</span><span>{{$._.lp.ProjectList.totalText.total}}</span></div>
+                <div class="blockNumberCompleted"><span>{{$.taskStatistics.completedCount}}</span><span>{{$._.lp.ProjectList.totalText.completed}}</span></div>
+                <div class="blockNumberFlow"><span>{{$.taskStatistics.processingCount}}</span><span>{{$._.lp.ProjectList.totalText.flow}}</span></div>
+                <div class="blockNumberDelay"><span>{{$.taskStatistics.delayCount}}</span><span>{{$._.lp.ProjectList.totalText.delay}}</span></div>
+                <div class="blockNumberCancel"><span>{{$.taskStatistics.deleteCount}}</span><span>{{$._.lp.ProjectList.totalText.canceled}}</span></div>
+            </div>
+        </div>
+    </div>
+{{end each}}
+    <div class="blockItemNew" data-o2-element="addProject" data-o2-events="click:createProject;">
+        <img src="../x_component_TeamWork/$ProjectListV2/default/icon/icon_jia_20.png" /></img>
+        <span>{{$.lp.ProjectList.content.addProjectBlockText}}</span>
+    </div>
+
+

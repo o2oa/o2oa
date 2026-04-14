@@ -1,0 +1,23 @@
+<div class="ft_content">
+    <div class="ft_titleSearchArea">
+        <div class="ft_filterIcon"><icon class="o2icon-sousuo mainColor_color"></icon></div>
+        <div class="ft_searchButton mainColor_bg" data-o2-events="click:doFilter">{{$.lp.search}}</div>
+        <div class="ft_titleInputArea"><input value="{{($.filter) ? ($.filter.key || "") : ""}}" type="text" placeholder="{{$.lp.filterPlaceholder}}"  data-o2-events="keydown:inputFilter"/></div>
+    </div>
+    <div class="ft_filterItemsArea">
+        {{each ($.lp.filterCategoryList)}}
+            {{if ($._.data[$.key])}}
+                <div class="ft_itemsCategory">
+                    <div class="ft_itemsCategoryTitle">{{$.name}}</div>
+                    <div class="ft_itemsArea">
+                        {{each ($._.data[$.key])}}
+                            <div class="ft_itemNode {{if ($._._.filter && $._._.filter[$._.key] && $._._.filter[$._.key].indexOf($.value.toString())!==-1 ) }}mainColor_bg{{end if}}"
+                                 data-o2-events="click:selectFilterItem:{{$.name}}:{{$.value}}:{{$._.key}}" data-value="{{$.value}}" data-category="{{$._.key}}">{{$.name}}</div>
+                        {{end each}}
+                    </div>
+                </div>
+            {{end if}}
+        {{end each}}
+
+    </div>
+</div>

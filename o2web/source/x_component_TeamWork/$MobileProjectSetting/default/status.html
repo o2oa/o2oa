@@ -1,0 +1,47 @@
+<div class="tw-ps-status-item" data-o2-element="statusProcessing"  data-o2-events="click:setStatus:processing;">
+    <div class="tw-ps-status-item-title">
+        <div class="o2-tw-jinxing"></div>
+        <div>进行中</div>
+    </div>
+    <div class="tw-ps-status-item-dagou {{(function(){
+        var res = "";
+        if($.data.workStatus == "processing") res = "o2-tw-dagou"
+        return res
+    })()}}"></div>
+</div>
+
+<div class="tw-ps-status-item" data-o2-element="statusDelay" data-o2-events="click:setStatus:delay;">
+    <div class="tw-ps-status-item-title">
+        <div class="o2-tw-gezhi"></div>
+        <div>已搁置</div>
+    </div>
+    <div class="tw-ps-status-item-dagou {{(function(){
+        var res = "";
+        if($.data.workStatus == "delay") res = "o2-tw-dagou"
+        return res
+    })()}}"></div>
+</div>
+
+<div class="tw-ps-status-item" data-o2-element="statusCompleted" data-o2-events="click:setStatus:completed;">
+    <div class="tw-ps-status-item-title">
+        <div class="o2-tw-wancheng"></div>
+        <div>已完成</div>
+    </div>
+    <div class="tw-ps-status-item-dagou {{(function(){
+        var res = "";
+        if($.data.workStatus == "completed") res = "o2-tw-dagou"
+        return res
+    })()}}"></div>
+</div>
+
+<div class="tw-ps-status-item" data-o2-element="statusArchived" data-o2-events="click:setStatus:archived;">
+    <div class="tw-ps-status-item-title">
+        <div class="o2-tw-guidang"></div>
+        <div>已归档</div>
+    </div>
+    <div class="tw-ps-status-item-dagou {{(function(){
+        var res = "";
+        if($.data.workStatus == "archived") res = "o2-tw-dagou"
+        return res
+    })()}}"></div>
+</div>

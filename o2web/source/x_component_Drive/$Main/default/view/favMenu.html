@@ -1,0 +1,21 @@
+<div>
+    {{if $.data.length}}
+    {{each $.data}}
+    <div style="padding-left:30px" class="menuItem" data-o2-element="fav{{$.id}}MenuNode">
+        <div class="menuItemIcon"><icon class="o2Drive icon-star"></icon></div>
+        <div class="menuItemText" title = {{$.name}} data-o2-events="click:loadList:fav:{{$.id}}">{{$.name}}</div>
+        <div class="menuItemAction" data-o2-events="click:setZone3" style="display: none">
+            <icon class="o2Drive icon-gengduo mainColor_color"></icon>
+        </div>
+    </div>
+    {{end each}}
+    {{end if}}
+    {{if !$.data.length}}
+    <div class="emptyListArea1">
+        <div class="emptyListIcon1"></div>
+        <div class="emptyListText" style="text-align: center;margin:10px">
+                暂无收藏
+        </div>
+    </div>
+    {{end if}}
+</div>

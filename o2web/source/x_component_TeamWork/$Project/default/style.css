@@ -1,0 +1,74 @@
+/* naviview */
+.projectNaviViewLayout{
+    width:100%;
+}
+.projectNaviViewLayout div{
+    display:flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.projectNaviViewItem{
+    height:40px;
+    padding-left:20px;
+    cursor:pointer;
+    color:#333333;
+}
+.projectNaviViewItem:hover{
+    background-color:#f2f5f7;
+    color:#4a90e2;
+}
+.projectNaviViewItem > div:nth-child(1){
+    width:16px;
+    height:16px;
+    margin-right:10px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.projectNaviViewAll div:nth-child(1){
+    background-image: url('../x_component_TeamWork/$Project/default/icon/icon_all.png');
+}
+.projectNaviViewAll:hover div:nth-child(1){
+    background-image: url('../x_component_TeamWork/$Project/default/icon/icon_all_click.png');
+}
+.projectNaviViewAdmin div:nth-child(1){
+    background-image: url('../x_component_TeamWork/$Project/default/icon/icon_admin.png');
+}
+.projectNaviViewAdmin:hover div:nth-child(1){
+    background-image: url('../x_component_TeamWork/$Project/default/icon/icon_admin_click.png');
+}
+.projectNaviViewMy div:nth-child(1){
+    background-image: url('../x_component_TeamWork/$Project/default/icon/icon_wdxm_xm.png');
+}
+.projectNaviViewMy:hover div:nth-child(1){
+    background-image: url('../x_component_TeamWork/$Project/default/icon/icon_wdxm_xm_click.png');
+}
+.projectNaviViewFlow div:nth-child(1){
+    background-image: url('../x_component_TeamWork/$Project/default/icon/icon_rw_wwc.png');
+}
+.projectNaviViewFlow:hover div:nth-child(1){
+    background-image: url('../x_component_TeamWork/$Project/default/icon/icon_rw_wwc_click.png');
+}
+.projectNaviViewDelay div:nth-child(1){
+    background-image: url('../x_component_TeamWork/$Project/default/icon/icon_delay.png');
+}
+.projectNaviViewDelay:hover div:nth-child(1){
+    background-image: url('../x_component_TeamWork/$Project/default/icon/icon_delay_click.png');
+}
+.projectNaviViewCanceled div:nth-child(1){
+    background-image: url('../x_component_TeamWork/$Project/default/icon/icon_canceled.png');
+}
+.projectNaviViewCanceled:hover div:nth-child(1){
+    background-image: url('../x_component_TeamWork/$Project/default/icon/icon_canceled_click.png');
+}
+.projectNaviViewCompleted div:nth-child(1){
+    background-image: url('../x_component_TeamWork/$Project/default/icon/icon_renwu_ywc.png');
+}
+.projectNaviViewCompleted:hover div:nth-child(1){
+    background-image: url('../x_component_TeamWork/$Project/default/icon/icon_renwu_ywc_click.png');
+}
+.projectNaviViewItem > div:nth-child(2){
+    font-size:14px;
+}
+.curNaviItem{
+    color:#4a90e2;
+}

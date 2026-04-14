@@ -1,0 +1,146 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='editTable' style='table-layout:fixed;'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+    "mouseoverStyles": "documentNode_over",
+    "mousedownStyles": "documentNode_down",
+    "holdMouseDownStyles" : true,
+//    "action": "open"
+  },
+  "items": [
+    {
+      "name": "$checkbox",
+      "head": {
+        "html": "<th styles='normalThNode'></th>",
+        "width": "30"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'></td>"
+      }
+    },
+    {
+      "name": "title",
+      "head": {
+        "html": "<th styles='normalThNode' lable='fileName'></th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' width='58%' item='fileName'></td>",
+        "items": {
+          "fileName": {
+            "action" : "open"
+
+          }
+        }
+      }
+    },
+    {
+      "name": "creator",
+      "head": {
+        "html": "<th styles='normalThNode' lable='creator'></th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='creator'></td>",
+        "items": {
+          "creator": {"value" : "function(d){ return d.creator.split('@')[0] }"}
+        }
+      }
+    },
+    {
+      "name": "fileVersion",
+      "head": {
+        "html": "<th styles='normalThNode' lable='fileVersion'></th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='fileVersion'></td>",
+        "items": { "fileVersion" : {} }
+      }
+    },
+    {
+      "name": "fileSize",
+      "head": {
+        "html": "<th styles='normalThNode' lable='fileSize'></th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='fileSize'></td>",
+        "items": { "fileSize" : {} }
+      }
+    },
+    {
+      "name": "categoryName",
+      "head": {
+        "html": "<th styles='normalThNode' lable='categoryName'>分类</th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='categoryName'></td>",
+        "items": { "categoryName" : {} }
+      }
+    },
+    {
+      "name": "id",
+      "head": {
+        "html": "<th styles='normalThNode' lable='id'>文档id</th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='id'></td>",
+        "items": { "id" : {} }
+      }
+    },
+    {
+      "name": "docId",
+      "head": {
+        "html": "<th styles='normalThNode' lable='docId'>关联id</th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='docId'></td>",
+        "items": { "docId" : {} }
+      }
+    },
+    {
+      "name": "createTime",
+      "head": {
+        "html": "<th styles='normalThNode' lable='createTime'></th>",
+        "width": ""
+      },
+      "content": {
+        "html": "<td styles='normalTdNode' item='createTime'></td>",
+        "items": { "createTime" : {} }
+      }
+    },
+    {
+      "name": "actionList",
+      "head": {
+        "html": "<th styles='normalThNode' lable='data_op'></th>",
+        "width": "100"
+      },
+      "content": {
+        "html": "<td styles='normalTdNode'><div styles='editAction' item='editAction'></div><div styles='removeAction' item='removeAction'></div></td>",
+        "items": {
+          "editAction": {
+            "title": "editAction",
+            "action": "edit",
+            "styles" : "opinionAction",
+            "mouseoverStyles": "opinionAction_over"
+          },
+          "removeAction": {
+            "title": "remove",
+            "action": "remove",
+            "styles" : "removeAction",
+            "mouseoverStyles": "removeAction_over"
+          }
+        }
+      }
+    }
+  ]
+}
