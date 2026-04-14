@@ -57,6 +57,11 @@ public class AttendanceV2LeaveType extends SliceJpaObject {
     @Column(length = JpaObject.length_16B, name = ColumnNamePrefix + unit_FIELDNAME)
     private String unit;
 
+    public static final String orderNumber_FIELDNAME = "orderNumber";
+	@FieldDescribe("排序号,升序排列,为空在最后")
+	@Column(name = ColumnNamePrefix + orderNumber_FIELDNAME)
+	private Integer orderNumber;
+
     public static final String isPaid_FIELDNAME = "isPaid";
     @FieldDescribe("是否带薪")
     @Column(name = ColumnNamePrefix + isPaid_FIELDNAME)
@@ -108,4 +113,21 @@ public class AttendanceV2LeaveType extends SliceJpaObject {
     public void setQuotaType(String quotaType) {
         this.quotaType = quotaType;
     }
+
+    public Integer getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(Integer orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
+    public Boolean getIsPaid() {
+        return isPaid;
+    }
+
+    public void setIsPaid(Boolean isPaid) {
+        this.isPaid = isPaid;
+    }
+    
 }

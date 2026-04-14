@@ -208,7 +208,8 @@ abstract class BaseAction extends StandardJaxrsAction {
                     || QuotaTypeEnum.UNLIMITED.getValue().equals(quotaType))) {
                 types = types.stream().filter(t -> quotaType.equals(t.getQuotaType())).collect(Collectors.toList());
             }
-
+           //根据AttendanceV2LeaveType的orderNumber字段 倒序排序
+            types.sort(Comparator.comparing(AttendanceV2LeaveType::getOrderNumber, Comparator.nullsLast(Comparator.naturalOrder())).reversed());
             return types;
         }
     }
