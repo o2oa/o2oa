@@ -3671,7 +3671,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 			this.personMap = {};
 			if( personList.length ){
 				personList = personList.unique();
-				o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({ personList : personList }, function (json) {
+				o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({ personList : personList, useNameFind: true }, function (json) {
 					json.data.each( function (d) { this.personMap[ d.matchKey ] = d; }.bind(this));
 					personLoaded = true;
 					check();
@@ -3684,7 +3684,7 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 			this.unitMap = {};
 			if( unitList.length ){
 				unitList = unitList.unique();
-				o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({ unitList : unitList }, function (json) {
+				o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({ unitList : unitList, useNameFind: true }, function (json) {
 					json.data.each( function (d) { this.unitMap[ d.matchKey ] = d; }.bind(this));
 					unitLoaded = true;
 					check();
