@@ -1,5 +1,0 @@
-{
-  "upload": {"uri": "/jaxrs/onlyoffice/upload", "method": "POST", "enctype": "formData", "progress": true},
-  "clazz": "x_onlyofficefile_assemble_control"
-
-}

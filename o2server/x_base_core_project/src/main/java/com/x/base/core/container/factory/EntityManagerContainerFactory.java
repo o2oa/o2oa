@@ -65,21 +65,7 @@ public class EntityManagerContainerFactory extends SliceEntityManagerContainerFa
 		if (instance == null) {
 			throw new IllegalStateException("get EntityManagerContainerFactory instance error, not initial.");
 		}
-		if (!checkLicense()) {
-			throw new ExceptionConnectDbError();
-		}
 		return instance;
-	}
-
-	private static boolean checkLicense() {
-		try {
-			Class<?> licenseToolsCls = Class.forName("com.x.base.core.lc.LcTools");
-			Boolean result = (Boolean) MethodUtils.invokeStaticMethod(licenseToolsCls, "validate");
-			return BooleanUtils.isTrue(result);
-		} catch (Exception e) {
-			LOGGER.error(e);
-		}
-		return false;
 	}
 
 	private EntityManagerContainerFactory(String webApplicationDirectory, List<String> entities,
