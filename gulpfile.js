@@ -44,7 +44,7 @@ var downloadHost = "g.o2oa.net";
 var protocol = "https";
 // https://g.o2oa.net/o2oa/o2oa-ee/evn-o-2-server-commons/-/archive/9.3/evn-o-2-server-commons-9.3.tar.gz
 
-var commonUrl = "/o2oa/o2oa-ee/evn-o2server-commons/-/archive/9.3/evn-o2server-commons-9.3.tar.gz?path=commons";
+var commonUrl = "/o2oa/evn-o2server-commons/-/archive/9.3/evn-o2server-commons-9.3.tar.gz?path=commons";
 var jvmUrls = {
     "all": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm",
     "linux_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/linux_java11",
