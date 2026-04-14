@@ -1,0 +1,47 @@
+<div class="detail_content">
+    <div class="detail_top">
+        <div class="detail_text" data-o2-element="createTip"></div>
+    </div>
+    <div class="detail_middle">
+        <div class="detail_item">
+            <div class="detail_itemTitle">{{ $.lp.projectDetails.source }}</div>
+            {{if $.data.control.edit}}
+                <div class="detail_itemContent"><input data-o2-element="source" value = "{{ $.data.source }}" /></div>
+            {{end if}}
+            {{if !$.data.control.edit}}
+                <div class="detail_valueRead">{{ $.data.source }}</div>
+            {{end if}}
+
+            
+        </div>
+        <div class="detail_item">
+            <div class="detail_itemTitle">{{ $.lp.projectDetails.objective }}</div>
+            <div class="detail_itemContent">
+                {{if $.data.control.edit}}
+                    <textarea data-o2-element="objective">{{ $.data.objective }}</textarea>
+                {{end if}}
+                {{if !$.data.control.edit}}
+                    <div class="detail_valueRead">{{ $.data.objective }}</div>
+                {{end if}}
+                
+            </div>
+        </div>
+        <div class="detail_item">
+            <div class="detail_itemTitle">{{ $.lp.projectDetails.description }}</div>
+            <div class="detail_itemContent">
+                {{if $.data.control.edit}}
+                    <textarea data-o2-element="description">{{ $.data.description }}</textarea>
+                {{end if}}
+                {{if !$.data.control.edit}}
+                    <div class="detail_valueRead">{{ $.data.description }}</div>
+                {{end if}}
+                
+            </div>
+        </div>
+    </div>
+    <div class="detail_bottom">
+        {{if $.data.control.edit}}
+            <div class="detail_button" data-o2-events="click:projectSave;">{{ $.lp.confirm }}</div>
+        {{end if}}
+    </div>
+</div>

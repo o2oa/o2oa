@@ -1,0 +1,10 @@
+{{each $.data}}
+    <div class="{{
+        (function(){
+            //dragItem
+            return 'laneItem'
+        })()
+    }}">
+        <div class="laneItemTitle">{{$.name}}</div>
+    </div>
+{{end each}}

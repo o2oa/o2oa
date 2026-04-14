@@ -1,0 +1,28 @@
+<div>
+    {{each $.data}}
+    <div class="menuItemWrap">
+        <div class="menuItem" data-o2-events="click:switchMenuItem">
+            <div class="menuItemIcon"><i class="o2icon-{{$.icon}}"></i></div>
+            <div class="menuItemText">{{$.label}}</div>
+        </div>
+
+        <div class="menuItemSubArea" style="display: {{$.expand ? '' : 'none'}};" >
+            {{each $.items}}
+            <div class="menuItem subItem" data-o2-events="click:menuItemClick;mouseover:menuItemOver;mouseout:menuItemOut;" data-o2-key="{{$.id || $.key}}">
+
+                {{if $.id}}
+                    <div class="subItemTextReveal" title="{{$.name}}">{{$.name}}</div>
+                {{end if}}
+
+                {{if !$.id}}
+                    <i class="subItemCheckbox o2icon-check_box_outline_blank" data-o2-events="click:menuItemClick_multi"></i>
+                    <div class="subItemText" title="{{$.name}}">{{$.name}}</div>
+                {{end if}}
+
+            </div>
+            {{end each}}
+
+        </div>
+    </div>
+    {{end each}}
+</div>

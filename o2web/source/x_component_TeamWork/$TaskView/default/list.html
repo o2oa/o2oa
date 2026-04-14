@@ -1,0 +1,53 @@
+
+<table class="taskList_table">
+    <thead>
+        <tr>
+            {{if $.projectId != ""}}
+            <th>{{$.lp.number}}</th>
+            {{end if}}
+            <th>{{$.lp.projectName}}</th>
+            <th>{{$.lp.name}}</th>
+            <th>{{$.lp.important}}</th>
+            <th>{{$.lp.urgency}}</th>
+            <!-- <th>{{$.lp.source}}</th> -->
+            <!-- <th>{{$.lp.description}}</th> -->
+            <th>{{$.lp.endTime}}</th>
+            <th>{{$.lp.executor}}</th>
+            <!-- <th>{{$.lp.detail}}</th> -->
+            <th>{{$.lp.progress}}</th>
+            <th>{{$.lp.status}}</th>
+        </tr>
+    </thead>
+    <tbody data-o2-element="taskList_body">
+    {{each $.data}}
+        <tr data-o2-events="click:openTask:{{$.id}}">
+            {{if $._.projectId != ""}}
+            <td><div>{{$.serialNumber}}</div></td>
+            {{end if}}
+            <td><div>{{$.projectName||''}}</div></td>
+            <td class="taskList_td_name"><div>{{$.name}}</div></td>
+            <td><div>{{$.important}}</div></td>
+            <td><div>{{$.urgency}}</div></td>
+            <!-- <td><div>{{$.source}}</div></td> -->
+            <!-- <td><div>{{$.description}}</div></td> -->
+            <td><div>{{
+                (function(){
+                    var endTime_str = $.endTime;
+                    return endTime_str.split(" ")[0]
+                })()
+            }}</div></td>
+            <td><div>{{$.executor.split("@")[0]}}</div></td>
+            <!-- <td><div>{{$.detail}}</div></td> -->
+            <td><div>{{$.progress +'%'}}</div></td>
+            <td><div>{{(function(){
+                    var status = $.workStatus;
+                    var res = $._.lp.processing;
+                    if(status == 'delay') res = $._.lp.delay;
+                    else if(status == 'completed') res = $._.lp.completed;
+                    else if(status == 'canceled') res = $._.lp.canceled;
+                    return res
+                })()}}</div></td>
+        </tr>
+    {{end each}}
+    </tbody>
+</table>

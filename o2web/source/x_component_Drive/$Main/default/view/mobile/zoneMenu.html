@@ -1,0 +1,25 @@
+<div>
+    {{if $.data.length}}
+    {{each $.data}}
+    <div class="m-list-item" data-o2-events="click:loadList:zone:{{$.id}}">
+
+        <div class="m-list-item-l"><icon class="ooicon-xiangmuxiezuo" style="color:#2E82F7"></icon>
+        </div>
+        <div class="m-list-item-c">
+            <div class="m-list-item-c-text"> {{$.name}}</div>
+        </div>
+        <div class="m-list-item-r">
+            <div class="ooicon-arrow_forward"></div>
+        </div>
+    </div>
+    {{end each}}
+    {{end if}}
+    {{if !$.data.length}}
+    <div class="emptyListArea1">
+        <div class="emptyListIcon1"></div>
+        <div class="emptyListText" style="text-align: center;margin:10px">
+            暂无共享区
+        </div>
+    </div>
+    {{end if}}
+</div>

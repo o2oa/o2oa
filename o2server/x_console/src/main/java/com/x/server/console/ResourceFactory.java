@@ -84,6 +84,17 @@ public class ResourceFactory {
 		internal();
 	}
 
+	private static boolean checkLicense() {
+		try {
+			Class<?> licenseToolsCls = Class.forName("com.x.base.core.lc.LcTools");
+			Boolean result = (Boolean) MethodUtils.invokeStaticMethod(licenseToolsCls, "validate");
+			return BooleanUtils.isTrue(result);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		return false;
+	}
+
 	/**
 	 * 使用mysql连接服务器端提醒WARN,是由于druid是使用了mysql ping 检测连接导致的 druid 1.2.2版本以上有这个问题.
 	 * 2021-11-03 15:51:23.398 [com.x.program.center.LogQueue] WARN
