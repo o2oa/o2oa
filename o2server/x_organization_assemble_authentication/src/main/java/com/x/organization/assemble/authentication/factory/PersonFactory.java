@@ -64,7 +64,7 @@ public class PersonFactory extends AbstractFactory {
 				}
 			}else if (BooleanUtils.isTrue(Config.person().getPersonEncryptEnable())) {
 				String enStr = Person.ENCRYPT + Crypto.base64Encode(flag);
-				o = this.entityManagerContainer().firstEqual(Person.class, Person.mobile_FIELDNAME, enStr);
+				o = this.entityManagerContainer().firstEqualOrEqual(Person.class, Person.mobile_FIELDNAME, enStr, Person.qq_FIELDNAME, enStr);
 			}
 		}
 		return o;
@@ -113,6 +113,7 @@ public class PersonFactory extends AbstractFactory {
 		if(BooleanUtils.isTrue(Config.person().getPersonEncryptEnable())){
 			String enStr = Person.ENCRYPT + Crypto.base64Encode(credential);
 			p = cb.or(p, cb.equal(root.get(Person_.mobile), enStr));
+			p = cb.or(p, cb.equal(root.get(Person_.qq), enStr));
 		}
 		cq.select(root.get(Person_.id)).where(p);
 		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());

@@ -171,6 +171,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			String enStr = Person.ENCRYPT + Crypto.base64Encode(credential);
 			p = cb.or(p, cb.equal(root.get(Person_.name), enStr));
 			p = cb.or(p, cb.equal(root.get(Person_.mobile), enStr));
+			p = cb.or(p, cb.equal(root.get(Person_.qq), enStr));
 		}
 		cq.select(root.get(Person_.id)).where(p);
 		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());

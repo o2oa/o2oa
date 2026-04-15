@@ -64,7 +64,7 @@ public class PersonFactory extends AbstractFactory {
 				}
 			}else if (BooleanUtils.isTrue(Config.person().getPersonEncryptEnable())) {
 				String enStr = Person.ENCRYPT + Crypto.base64Encode(flag);
-				o = this.entityManagerContainer().firstEqual(Person.class, Person.mobile_FIELDNAME, enStr);
+				o = this.entityManagerContainer().firstEqualOrEqual(Person.class, Person.mobile_FIELDNAME, enStr, Person.qq_FIELDNAME, enStr);
 			}
 		}
 		return o;

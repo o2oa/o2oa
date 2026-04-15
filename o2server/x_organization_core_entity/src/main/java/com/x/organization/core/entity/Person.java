@@ -132,8 +132,11 @@ public class Person extends SliceJpaObject {
 			if(!this.name.startsWith(ENCRYPT)) {
 				this.name = ENCRYPT + Crypto.base64Encode(this.name);
 			}
-			if(!this.mobile.startsWith(ENCRYPT)) {
+			if(StringUtils.isNotBlank(this.mobile) && !this.mobile.startsWith(ENCRYPT)) {
 				this.mobile = ENCRYPT + Crypto.base64Encode(this.mobile);
+			}
+			if(StringUtils.isNotBlank(this.qq) && !this.qq.startsWith(ENCRYPT)) {
+				this.qq = ENCRYPT + Crypto.base64Encode(this.qq);
 			}
 		}
 	}
@@ -145,6 +148,9 @@ public class Person extends SliceJpaObject {
 		}
 		if (StringUtils.isNotBlank(this.getMobile()) && this.getMobile().startsWith(ENCRYPT)) {
 			this.setMobile(Crypto.base64Decode(this.getMobile().substring(ENCRYPT.length())));
+		}
+		if (StringUtils.isNotBlank(this.getQq()) && this.getQq().startsWith(ENCRYPT)) {
+			this.setQq(Crypto.base64Decode(this.getQq().substring(ENCRYPT.length())));
 		}
 	}
 
@@ -334,6 +340,7 @@ public class Person extends SliceJpaObject {
 	private String weixin;
 
 	public static final String qq_FIELDNAME = "qq";
+	@Flag
 	@FieldDescribe("QQ号.")
 	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + qq_FIELDNAME)
 	@CheckPersist(allowEmpty = true, citationNotExists = @CitationNotExist(fields = qq_FIELDNAME, type = Person.class))

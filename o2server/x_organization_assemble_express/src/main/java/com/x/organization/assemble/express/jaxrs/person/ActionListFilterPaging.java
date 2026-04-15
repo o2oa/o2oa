@@ -43,8 +43,11 @@ class ActionListFilterPaging extends BaseAction {
                 if (wo.getName().startsWith(Person.ENCRYPT)) {
                     wo.setName(Crypto.base64Decode(wo.getName().substring(Person.ENCRYPT.length())));
                 }
-                if (wo.getMobile().startsWith(Person.ENCRYPT)) {
+                if (StringUtils.isNotBlank(wo.getMobile()) && wo.getMobile().startsWith(Person.ENCRYPT)) {
                     wo.setMobile(Crypto.base64Decode(wo.getMobile().substring(Person.ENCRYPT.length())));
+                }
+                if (StringUtils.isNotBlank(wo.getQq()) && wo.getQq().startsWith(Person.ENCRYPT)) {
+                    wo.setQq(Crypto.base64Decode(wo.getQq().substring(Person.ENCRYPT.length())));
                 }
             });
             this.hide(effectivePerson, business, wos);
