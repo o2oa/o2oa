@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.OsArchDetect;
 
 public final class AiAgent {
 
@@ -26,7 +25,7 @@ public final class AiAgent {
 
 	private final String base;
 
-	private volatile Process process;
+	private Process process;
 
 	public AiAgent(String base) {
 		this.base = base;
