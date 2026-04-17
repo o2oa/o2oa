@@ -219,6 +219,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             //if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
         },
         load: function (callback) {
+            this.checkDatatableClass();
             if (this.app) {
                 if (this.app.formNode) this.app.formNode.setStyles(this.json.styles);
                 if (this.app.addEvent) this.app.addEvent("resize", function () {
@@ -279,6 +280,14 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 }
 
             }.bind(this));
+        },
+        checkDatatableClass: function (){
+            if( (layout.mobile || COMMON.Browser.Platform.isMobile) && this.json.formStyleType === 'v10' ){
+                MWF.xApplication.cms.Xform.Datatable = MWF.CMSDatatable = MWF.xApplication.process.Xform.DatatableV10;
+                MWF.CMSDatatable.implement(MWF.CMSDatatableFeature);
+                MWF.xApplication.cms.Xform.Datatable$Title = MWF.CMSDatatable$Title = MWF.xApplication.process.Xform.DatatablePC$Title;
+                MWF.xApplication.cms.Xform.Datatable$Data = MWF.CMSDatatable$Data = MWF.xApplication.process.Xform.DatatablePC$Data;
+            }
         },
         loadLanguage: function(callback){
             MWF.xDesktop.requireApp("cms.Xform", "lp." + MWF.language, null, false);
