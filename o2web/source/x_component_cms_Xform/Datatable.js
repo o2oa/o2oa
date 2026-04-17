@@ -1,6 +1,5 @@
 MWF.xDesktop.requireApp("process.Xform", "Datatable", null, false);
-MWF.xApplication.cms.Xform.Datatable = MWF.CMSDatatable =  new Class({
-    Extends: MWF.APPDatatable,
+MWF.CMSDatatableFeature = {
     deleteAttachment: function( attId ){
         this.form.documentAction.deleteAttachment(attId, this.form.businessData.document.id);
     },
@@ -118,7 +117,11 @@ MWF.xApplication.cms.Xform.Datatable = MWF.CMSDatatable =  new Class({
         }
         return true;
     }
+};
+MWF.xApplication.cms.Xform.Datatable = MWF.CMSDatatable =  new Class({
+    Extends: MWF.APPDatatable
 });
+MWF.CMSDatatable.implement(MWF.CMSDatatableFeature);
 
 MWF.xApplication.cms.Xform.Datatable$Title = MWF.CMSDatatable$Title =  new Class({
     Extends: MWF.APPDatatable$Title
