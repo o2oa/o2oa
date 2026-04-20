@@ -41,7 +41,7 @@ public class QywxAttendanceSyncScheduleTask extends AbstractJob {
             emc.beginTransaction(DingdingQywxSyncRecord.class);
             emc.persist(record);
             emc.commit();
-            ThisApplication.qywxQueue.send(record);
+//            ThisApplication.qywxQueue.send(record);
         }
     }
 }

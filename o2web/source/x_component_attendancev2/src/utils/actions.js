@@ -169,6 +169,15 @@ function leaveAction(method, ...args) {
   );
 }
 
+function leaveManagerAction(method, ...args) {
+  return doAction(
+    "x_attendance_assemble_control",
+    "LeaveManagerAction",
+    method,
+    args
+  );
+}
+
 
 /**
  * 考勤配置API
@@ -322,4 +331,5 @@ export {
   leaveAction,
   recordActionListByPaging,
   groupScheduleAction,
+  leaveManagerAction,
 };

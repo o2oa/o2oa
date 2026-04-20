@@ -50,6 +50,24 @@ public class LeaveManagerAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "假期类型对象.", action = ActionLeaveTypeGet.class)
+    @GET
+    @Path("type/{id}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void typeGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+            @JaxrsParameterDescribe("类型ID") @PathParam("id") String id) {
+        ActionResult<ActionLeaveTypeGet.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLeaveTypeGet().execute(id);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "删除假期类型对象.", action = ActionLeaveTypeDelete.class)
     @GET
     @Path("type/delete/{id}")
@@ -141,14 +159,15 @@ public class LeaveManagerAction extends StandardJaxrsAction {
 
     @JaxrsMethodDescribe(value = "假期规则列表.", action = ActionLeavePolicyList.class)
     @GET
-    @Path("policy/list")
+    @Path("policy/list/type/{typeId}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void policyList(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+    public void policyListWithTypeId(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+            @JaxrsParameterDescribe("假期类型ID") @PathParam("typeId") String typeId) {
         ActionResult<List<ActionLeavePolicyList.Wo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionLeavePolicyList().execute();
+            result = new ActionLeavePolicyList().execute(typeId);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);

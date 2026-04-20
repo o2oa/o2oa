@@ -1,0 +1,59 @@
+<div class="manager-box white-bg">
+    <!-- 假期类型 -->
+    <div class="index_page_header_container" oo-if="!$.leaveTypePolicyShow">
+        <div class="index_page_header_title">{{$.lp.leaveManagerV2Title}}</div>
+        <span class="operator_link_underline" @click="gotoOld">{{$.lp.leaveManagerV2.gotoOld}}</span>
+    </div>
+    <div class="manager-box-content" oo-if="!$.leaveTypePolicyShow">
+        <div style="margin: 10px 0;float: left;">
+            <button class="mainColor_bg" @click="clickAddType">{{$.lp.leaveManagerV2.addType}}</button>
+        </div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
+            <thead>
+                <th>{{$.lp.leaveManagerV2.type.name}}</th>
+                <th>{{$.lp.leaveManagerV2.type.quotaType}}</th>
+                <th style="width: 180px;">{{$.lp.operate}}</th>
+            </thead>
+            <tr oo-each="$.leaveTypeList" oo-item="d">
+                <td>{{d.value.name}}</td>
+                <td>{{d.value.quotaType == 'QUOTA' ? $.lp.leaveManagerV2.type.quotaTypeLimited :
+                    $.lp.leaveManagerV2.type.quotaTypeUnlimited}}</td>
+                <td>
+                    <span class="operator_link" @click="this.clickEditLeaveType(d.value.id)">{{$.lp.update}}</span>
+                    <span class="operator_link" @click="this.clickDeleteType(d.value.id)">{{$.lp.delete}}</span>
+                    <span class="operator_link" @click="this.clickOpenPolicyList(d.value.id)"
+                        oo-if="d.value.quotaType == 'QUOTA'">{{$.lp.leaveManagerV2.type.configPolicy}}</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- 假期类型规则 -->
+    <div class="index_page_header_container" oo-if="$.leaveTypePolicyShow">
+        <div class="index_page_header_title"><button style="margin-left: 0;margin-right: 10px;"
+                @click="clickBackTypeList"><i class="ooicon-process-goback"></i></button> {{
+            $.lp.leaveManagerV2.leaveTypeTitle }} - {{ ($.currentLeaveType && $.currentLeaveType.name)? $.currentLeaveType.name : '' }}</div>
+    </div>
+    <div class="manager-box-content" oo-if="$.leaveTypePolicyShow">
+        <div style="margin: 10px 0;float: left;">
+            <button class="mainColor_bg" @click="clickAddPolicy">{{$.lp.leaveManagerV2.addTypePolicy}}</button>
+        </div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
+            <thead>
+                <th>{{$.lp.leaveManagerV2.policy.policyName}}</th>
+                <th>{{$.lp.leaveManagerV2.policy.grantScopeType}}</th>
+                <th>{{$.lp.leaveManagerV2.policy.grantType}}</th>
+                <th style="width: 180px;">{{$.lp.operate}}</th>
+            </thead>
+            <tr oo-each="$.leaveTypePolicyList" oo-item="d">
+                <td>{{d.value.policyName}}</td>
+                <td>{{d.value.grantScopeType}}</td>
+                <td>{{d.value.grantType}}</td>
+                <td>
+                    <span class="operator_link" @click="this.clickDeletePolicy(d.value.id)">{{$.lp.delete}}</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</div>

@@ -1,9 +1,10 @@
 <div class="manager-box white-bg">
     <div class="index_page_header_container">
         <div class="index_page_header_title">{{$.lp.leaveManagerTitle}}</div>
+        <span oo-if="$.menu.name === '3-4'" class="operator_link_underline"  @click="back2V2">{{$.lp.leaveManagerV2.back2V2}}</span>
     </div>
-    <div class="manager-box-content">{{ $m.search($.menu.id === '3-4') }}
-        <div class="form" oo-if="$.menu.id === '3-4'">
+    <div class="manager-box-content">{{ $m.search($.menu.name === '3-4') }}
+        <div class="form" oo-if="$.menu.name === '3-4'">
             <!--人员组织选择  -->
             <div style="margin-right: 10px;float: left;">
                 <o-org-person-selector

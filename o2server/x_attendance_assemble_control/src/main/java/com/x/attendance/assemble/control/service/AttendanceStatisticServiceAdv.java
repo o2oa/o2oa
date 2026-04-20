@@ -80,7 +80,7 @@ public class AttendanceStatisticServiceAdv {
 			for( AttendanceStatisticRequireLog log : attendanceStatisticRequireLogList ){
 				//统计考勤数据，发送到执行队列
 				try {
-					ThisApplication.detailStatisticQueue.send( log.getId() );
+//					ThisApplication.detailStatisticQueue.send( log.getId() );
 				} catch ( Exception e1 ) {
 					e1.printStackTrace();
 				}
@@ -116,7 +116,7 @@ public class AttendanceStatisticServiceAdv {
 			for( AttendanceStatisticRequireLog log : attendanceStatisticRequireLogList ){
 				//统计考勤数据，发送到执行队列
 				try {
-					ThisApplication.detailStatisticQueue.send( log.getId() );
+//					ThisApplication.detailStatisticQueue.send( log.getId() );
 				} catch ( Exception e1 ) {
 					e1.printStackTrace();
 				}
@@ -143,7 +143,7 @@ public class AttendanceStatisticServiceAdv {
 			for( AttendanceStatisticRequireLog log : attendanceStatisticRequireLogList ){
 				//统计考勤数据，发送到执行队列
 				try {
-					ThisApplication.detailStatisticQueue.send( log.getId() );
+//					ThisApplication.detailStatisticQueue.send( log.getId() );
 				} catch ( Exception e1 ) {
 					e1.printStackTrace();
 				}
@@ -170,7 +170,7 @@ public class AttendanceStatisticServiceAdv {
 			for( AttendanceStatisticRequireLog log : attendanceStatisticRequireLogList ){
 				//统计考勤数据，发送到执行队列
 				try {
-					ThisApplication.detailStatisticQueue.send( log.getId() );
+//					ThisApplication.detailStatisticQueue.send( log.getId() );
 				} catch ( Exception e1 ) {
 					e1.printStackTrace();
 				}
@@ -197,7 +197,7 @@ public class AttendanceStatisticServiceAdv {
 			for( AttendanceStatisticRequireLog log : attendanceStatisticRequireLogList ){
 				//统计考勤数据，发送到执行队列
 				try {
-					ThisApplication.detailStatisticQueue.send( log.getId() );
+//					ThisApplication.detailStatisticQueue.send( log.getId() );
 				} catch ( Exception e1 ) {
 					e1.printStackTrace();
 				}

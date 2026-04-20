@@ -33,6 +33,9 @@ export default content({
   afterRender() {
     this.search();
   },
+  back2V2() {
+    this.$parent.openLeaveManagerV2();
+  },
   search() {
     this.bind.pagerData.page = 1;
     this.loadLeaveList();
@@ -45,7 +48,7 @@ export default content({
   },
   async loadLeaveList() {
     let form = this.bind.form;
-    if (this.bind.menu.id === "3-4") {
+    if (this.bind.menu.name === "3-4") {
       /// 管理员
       if (this.bind.filterList && this.bind.filterList.length > 0) {
         form.person = this.bind.filterList[0];

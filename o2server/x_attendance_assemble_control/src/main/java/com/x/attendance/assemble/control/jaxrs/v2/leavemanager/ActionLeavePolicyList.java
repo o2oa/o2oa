@@ -18,11 +18,11 @@ public class ActionLeavePolicyList extends BaseAction {
 
     private static Logger logger = LoggerFactory.getLogger(ActionLeavePolicyList.class);
 
-    ActionResult<List<Wo>> execute() throws Exception {
+    ActionResult<List<Wo>> execute(String typeId) throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             ActionResult<List<Wo>> result = new ActionResult<>();
             List<AttendanceV2LeaveType> typeList = emc.listAll(AttendanceV2LeaveType.class);
-            List<Wo> wos = emc.listEqual(AttendanceV2LeavePolicy.class, AttendanceV2LeavePolicy.active_FIELDNAME, true)
+            List<Wo> wos = emc.listEqualAndEqual(AttendanceV2LeavePolicy.class, AttendanceV2LeavePolicy.active_FIELDNAME, true, AttendanceV2LeavePolicy.leaveTypeId_FIELDNAME, typeId)
                     .stream().map(policy -> {
                         Wo wo = Wo.copier.copy(policy);
                         AttendanceV2LeaveType leaveType = typeList.stream()

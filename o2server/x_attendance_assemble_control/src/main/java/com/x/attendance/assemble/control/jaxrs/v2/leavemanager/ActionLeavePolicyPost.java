@@ -72,7 +72,7 @@ public class ActionLeavePolicyPost extends BaseAction {
                         wi.getLeaveTypeId(), AttendanceV2LeavePolicy.grantScopeType_FIELDNAME,
                         GrantScopeTypeEnum.ALL.getValue(), AttendanceV2LeavePolicy.active_FIELDNAME, true);
                 if (checkTypeAndScopeAll != null && !checkTypeAndScopeAll.isEmpty()) {
-                    for (AttendanceV2LeavePolicy check : checkRepetitive) {
+                    for (AttendanceV2LeavePolicy check : checkTypeAndScopeAll) {
                         if (!check.getId().equals(wi.getId())) {
                             throw new ExceptionWithMessage("当前假期类型已有配置规则");
                         }
@@ -108,13 +108,13 @@ public class ActionLeavePolicyPost extends BaseAction {
             // 生成grantNextExecuteTime
             AttendanceV2LeaveManager.calculateNextExecutionTimeForLeavePolicy(leavePolicy);
             emc.beginTransaction(AttendanceV2LeavePolicy.class);
-            if (StringUtils.isBlank(leavePolicy.getId())) {
+            if (StringUtils.isBlank(wi.getId())) {
                 emc.persist(leavePolicy, CheckPersistType.all);
                 Wo wo = new Wo();
                 wo.setId(leavePolicy.getId());
                 result.setData(wo);
             } else {
-                AttendanceV2LeavePolicy old = emc.find(leavePolicy.getId(), AttendanceV2LeavePolicy.class);
+                AttendanceV2LeavePolicy old = emc.find(wi.getId(), AttendanceV2LeavePolicy.class);
                 if (old != null) {
                     leavePolicy.copyTo(old, JpaObject.FieldsUnmodify);
                     emc.check(old, CheckPersistType.all);

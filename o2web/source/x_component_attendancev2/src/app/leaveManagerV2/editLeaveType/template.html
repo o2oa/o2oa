@@ -1,0 +1,37 @@
+<!-- 表单 -->
+<div style="height: 100%;">
+    <div class="o2-form">
+        <div class="o2-form-header">
+            <span class="title">{{$.fTitle}}</span>
+            <button class="close" @click="close"><i class="o2icon-icon_off"></i></button>
+        </div>
+        <div class="o2-form-content">
+             <o-input oo-prop="{'isRequried': true, 'label':$.lp.leaveManagerV2.type.name, 'placeholder':$.lp.leaveManagerV2.type.namePlaceholder, 'value': $.form.name}"
+                oo-model="form.name"></o-input>
+                <!-- 额度类型选择 -->
+           <div class="margin-top">
+                <div class="form-item-line-label" >
+                    <span class="required">*</span>
+                    {{$.lp.leaveManagerV2.type.quotaType}}
+                </div>
+                <div style="display: flex; flex-wrap: wrap;">
+                    <div class="margin-left" style="display: flex;align-items: center;"  @click="this.clickChangeQuotaType('QUOTA')">
+                        <div class="o2-icon-14" id="checkTypeFix"><i class="{{ $.form.quotaType == 'QUOTA' ? 'o2icon-icon_xuanzhong primary_color' : 'o2icon-icon_quan'}}"></i></div>
+                        <label style="margin: 5px;" for="checkTypeFix"> {{$.lp.leaveManagerV2.type.quotaTypeLimited}}</label>
+                    </div>
+                    <div class="margin-left" style="display: flex;align-items: center;"  @click="this.clickChangeQuotaType('UNLIMITED')">
+                        <div class="o2-icon-14" id="checkTypeFree"><i class="{{ $.form.quotaType == 'UNLIMITED' ? 'o2icon-icon_xuanzhong primary_color' : 'o2icon-icon_quan'}}"></i></div>
+                        <label style="margin: 5px;" for="checkTypeFree"> {{$.lp.leaveManagerV2.type.quotaTypeUnlimited}}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="o2-form-footer">
+            <span>
+                <button style="width: 250px;" class="mainColor_bg" @click="submit">{{$.lp.save}}</button>
+                <button class="lightColor_bg" @click="close">{{$.lp.cancel}}</button>
+            </span>
+        </div>
+    </div>
+ 
+</div>

@@ -42,7 +42,7 @@ public class DingdingAttendanceSyncScheduleTask extends AbstractJob {
             emc.beginTransaction(DingdingQywxSyncRecord.class);
             emc.persist(record);
             emc.commit();
-            ThisApplication.dingdingQueue.send(record);
+//            ThisApplication.dingdingQueue.send(record);
         }
     }
 }

@@ -756,4 +756,14 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
         Predicate p = cb.equal(root.get(AttendanceV2GroupScheduleConfig_.groupId), groupId);
         return em.createQuery(cq.select(root).where(p)).getResultList();
     }
+
+    public Integer findAttendanceV2LeaveTypeBiggestOrderNumber() throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2LeaveType.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Integer> cq = cb.createQuery(Integer.class);
+        Root<AttendanceV2LeaveType> root = cq.from(AttendanceV2LeaveType.class);
+        cq.select(cb.max(root.get(AttendanceV2LeaveType_.orderNumber)));
+        Integer maxOrderNumber = em.createQuery(cq).getSingleResult();
+        return maxOrderNumber == null ? 100 : maxOrderNumber;
+    }
 }

@@ -35,9 +35,11 @@ public class ActionLeaveTypePost extends BaseAction {
             if (StringUtils.isBlank(wi.getName())) {
                 throw new ExceptionEmptyParameter("假期名称");
             }
-             // 名称不能重复
-            List<AttendanceV2LeaveType> checkRepetitive = emc.listEqualAndEqual(AttendanceV2LeaveType.class,
-                    AttendanceV2LeaveType.name_FIELDNAME, wi.getName(), AttendanceV2LeaveType.active_FIELDNAME, true);
+            // 名称不能重复
+            List<AttendanceV2LeaveType> checkRepetitive = emc.listEqualAndEqual(
+                    AttendanceV2LeaveType.class,
+                    AttendanceV2LeaveType.name_FIELDNAME, wi.getName(),
+                    AttendanceV2LeaveType.active_FIELDNAME, true);
             if (checkRepetitive != null && !checkRepetitive.isEmpty()) {
                 for (AttendanceV2LeaveType check : checkRepetitive) {
                     if (check.getName().equals(wi.getName()) && !check.getId().equals(wi.getId())) {
@@ -45,36 +47,43 @@ public class ActionLeaveTypePost extends BaseAction {
                     }
                 }
             }
-            if (StringUtils.isBlank(wi.getQuotaType()) || (!QuotaTypeEnum.QUOTA.getValue().equals(wi.getQuotaType())
+            if (StringUtils.isBlank(wi.getQuotaType()) || (
+                    !QuotaTypeEnum.QUOTA.getValue().equals(wi.getQuotaType())
                     && !QuotaTypeEnum.UNLIMITED.getValue().equals(wi.getQuotaType()))) {
                 throw new ExceptionEmptyParameter("额度类型");
             }
-            if (StringUtils.isBlank(wi.getUnit()) || (!UnitTypeEnum.DAY.getValue().equals(wi.getUnit())
+            if (StringUtils.isBlank(wi.getUnit()) || (
+                    !UnitTypeEnum.DAY.getValue().equals(wi.getUnit())
                     && !UnitTypeEnum.HOUR.getValue().equals(wi.getUnit()))) {
                 throw new ExceptionEmptyParameter("单位");
             }
             AttendanceV2LeaveType leaveType = Wi.copier.copy(wi);
             emc.beginTransaction(AttendanceV2LeaveType.class);
-            if (StringUtils.isBlank(leaveType.getId())) {
-                emc.persist(leaveType, CheckPersistType.all);
-                Wo wo = new Wo();
-                wo.setId(leaveType.getId());
-                result.setData(wo);
-            } else {
-                AttendanceV2LeaveType old = emc.find(leaveType.getId(), AttendanceV2LeaveType.class);
+            if (StringUtils.isNotEmpty(wi.getId())) {
+                AttendanceV2LeaveType old = emc.find(wi.getId(),
+                        AttendanceV2LeaveType.class);
                 if (old != null) {
                     leaveType.copyTo(old, JpaObject.FieldsUnmodify);
                     emc.check(old, CheckPersistType.all);
                     Wo wo = new Wo();
                     wo.setId(old.getId());
                     result.setData(wo);
-                } else {
-                    emc.persist(leaveType, CheckPersistType.all);
-                    Wo wo = new Wo();
-                    wo.setId(leaveType.getId());
-                    result.setData(wo);
+                    emc.commit();
+                    return result;
                 }
             }
+            Integer order = business.getAttendanceV2ManagerFactory()
+                    .findAttendanceV2LeaveTypeBiggestOrderNumber();
+            if (order == null) {
+                order = 100;
+            } else {
+                order = order + 1;
+            }
+            leaveType.setOrderNumber(order);
+            emc.persist(leaveType, CheckPersistType.all);
+            Wo wo = new Wo();
+            wo.setId(leaveType.getId());
+            result.setData(wo);
             emc.commit();
             return result;
         }

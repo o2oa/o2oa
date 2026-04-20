@@ -47,7 +47,7 @@ public class ActionSyncData extends BaseAction {
             emc.beginTransaction(DingdingQywxSyncRecord.class);
             emc.persist(record);
             emc.commit();
-            ThisApplication.dingdingQueue.send(record);
+//            ThisApplication.dingdingQueue.send(record);
             result.setData(new WrapBoolean(true));
         }
         return result;
