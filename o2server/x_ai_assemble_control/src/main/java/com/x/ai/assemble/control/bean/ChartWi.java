@@ -26,6 +26,8 @@ public class ChartWi extends GsonPropertyObject {
 
     private String token;
 
+    private Boolean thinkingEnabled;
+
     @FieldDescribe("ai模式：chat|rag|mcp.")
     private String generateType;
 
@@ -98,5 +100,13 @@ public class ChartWi extends GsonPropertyObject {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public Boolean getThinkingEnabled() {
+        return thinkingEnabled;
+    }
+
+    public void setThinkingEnabled(Boolean thinkingEnabled) {
+        this.thinkingEnabled = thinkingEnabled;
     }
 }
