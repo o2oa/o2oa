@@ -1743,6 +1743,76 @@
     display: none;
 }
 
+
+.references-section {
+    margin-top: 2.142em;
+    padding-top: 1.428em;
+    border-top: 0.071em solid #eee;
+}
+.references-title {
+    font-size: 1em;
+    font-weight: 700;
+    color: #555;
+    margin-bottom: 1.071em;
+    display: flex;
+    align-items: center;
+    gap: 0.428em;
+}
+
+.reference-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.857em;
+}
+
+.reference-card {
+    display: flex;
+    gap: 0.714em;
+    padding: 0.714em;
+    border: 0.071em solid #eee;
+    border-radius: 0.571em;
+    text-decoration: none;
+    transition: border-color 0.2s;
+    background: #fafafa;
+    cursor: pointer;
+}
+.reference-card:hover {
+    border-color: #1a73e8;
+    background: #fff;
+}
+
+.ref-favicon {
+    width: 1.714em;
+    height: 1.714em;
+    border-radius: 50%;
+    background: #ddd;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.857em;
+    color: #666;
+}
+
+.ref-info {
+    display: flex;
+    flex-direction: column;
+}
+.ref-title {
+    font-size: 0.928em;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 0.285em;
+}
+.ref-source {
+    font-size: 0.857em;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
 .reasoning{
 
 
