@@ -186,6 +186,7 @@ public class ActionChat extends BaseAction {
         Map<String, Object> data = new HashMap<>();
         data.put("model", model.getModel());
         data.put("stream", true);
+        data.put("enable_thinking", BooleanUtils.isTrue(wi.getThinkingEnabled()));
         List<Map<String, Object>> messages = new ArrayList<>();
         final String contentKey = "content";
         final String roleKey = "role";

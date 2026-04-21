@@ -80,7 +80,7 @@ class ActionListCompletionPaging extends BaseAction {
         static WrapCopier<Completion, Wo> copier = WrapCopierFactory.wo(Completion.class, Wo.class,
                 null,
                 ListTools.toList(JpaObject.FieldsInvisible, "createDateTime", "updateDateTime",
-                        Completion.referenceIdList_FIELDNAME, Completion.extra_FIELDNAME, "toolCallList"));
+                        Completion.referenceIdList_FIELDNAME, Completion.extra_FIELDNAME, "toolCallList", "extendList"));
     }
 
 }
