@@ -96,8 +96,10 @@ public class HandoverJob extends AbstractJob {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		Handover wi = new Handover();
 		wi.setPerson(handover.getPerson());
+		wi.setTargetPerson(handover.getTargetPerson());
 		wi.setTargetIdentity(handover.getTargetIdentity());
 		List<Task> taskList = listTask(business, handover);
+		LOGGER.info("用户{}权限交接给{}, 交接任务数:{}.",handover::getPerson, handover::getTargetPerson, taskList::size);
 		String path = "task";
 		for (Task task : taskList){
 			replaceTaskOrRead(task.getId(), task.getJob(), path, wi, jobSet);

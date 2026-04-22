@@ -85,7 +85,6 @@ class ActionReplace extends BaseAction {
 		@Override
 		public ActionResult<Wo> call() throws Exception {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
 				Wo wo = new Wo();
 				wo.setValue(true);
 				Task task = emc.find(id, Task.class);
