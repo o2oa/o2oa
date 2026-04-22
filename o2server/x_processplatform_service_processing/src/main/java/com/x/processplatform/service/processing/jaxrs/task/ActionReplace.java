@@ -1,16 +1,9 @@
 package com.x.processplatform.service.processing.jaxrs.task;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-
-import com.x.processplatform.core.entity.ticket.Ticket;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -25,14 +18,16 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Handover;
-import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ActionReplaceWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ActionReplaceWo;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ProcessPlatformKeyClassifyExecutorFactory;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionReplace extends BaseAction {
 
@@ -84,7 +79,6 @@ class ActionReplace extends BaseAction {
 		@Override
 		public ActionResult<Wo> call() throws Exception {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
 				Wo wo = new Wo();
 				wo.setValue(true);
 				Task task = emc.find(id, Task.class);
@@ -120,6 +114,10 @@ class ActionReplace extends BaseAction {
 						work.setCreatorIdentity(wi.getTargetIdentity());
 					}
 					emc.commit();
+				}else if (!task.getPerson().equals(wi.getTargetPerson())){
+					emc.beginTransaction(Task.class);
+					task.setPerson(wi.getTargetPerson());
+					emc.commit();
 				}
 
 				ActionResult<Wo> result = new ActionResult<>();
@@ -134,7 +132,7 @@ class ActionReplace extends BaseAction {
 		private static final long serialVersionUID = -6215838156429443320L;
 
 		static WrapCopier<Wi, Handover> copier = WrapCopierFactory.wi(Wi.class, Handover.class,
-				ListTools.toList(Handover.person_FIELDNAME, Handover.targetIdentity_FIELDNAME), null);
+				JpaObject.FieldsInvisibleIncludeProperites, null);
 
 	}
 

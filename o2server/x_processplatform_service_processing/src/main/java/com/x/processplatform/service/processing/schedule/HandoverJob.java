@@ -12,16 +12,42 @@ import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.utils.time.TimeStamp;
 import com.x.base.core.project.x_processplatform_service_processing;
-import com.x.processplatform.core.entity.content.*;
+import com.x.processplatform.core.entity.content.Draft;
+import com.x.processplatform.core.entity.content.Draft_;
+import com.x.processplatform.core.entity.content.Handover;
+import com.x.processplatform.core.entity.content.HandoverSchemeEnum;
+import com.x.processplatform.core.entity.content.HandoverStatusEnum;
+import com.x.processplatform.core.entity.content.Handover_;
+import com.x.processplatform.core.entity.content.Read;
+import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.ReadCompleted_;
+import com.x.processplatform.core.entity.content.Read_;
+import com.x.processplatform.core.entity.content.Review;
+import com.x.processplatform.core.entity.content.Review_;
+import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.entity.content.TaskCompleted;
+import com.x.processplatform.core.entity.content.TaskCompleted_;
+import com.x.processplatform.core.entity.content.Task_;
+import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.content.WorkCompleted_;
+import com.x.processplatform.core.entity.content.Work_;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ThisApplication;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
-import javax.persistence.criteria.*;
-import java.util.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 
 /**
  * 权限交接任务处理
@@ -70,6 +96,7 @@ public class HandoverJob extends AbstractJob {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		Handover wi = new Handover();
 		wi.setPerson(handover.getPerson());
+		wi.setTargetPerson(handover.getTargetPerson());
 		wi.setTargetIdentity(handover.getTargetIdentity());
 		List<Task> taskList = listTask(business, handover);
 		String path = "task";
@@ -268,7 +295,6 @@ public class HandoverJob extends AbstractJob {
 				&& ListTools.isNotEmpty(handover.getJobList())){
 			p = cb.and(p, root.get(Task_.job).in(handover.getJobList()));
 		}
-		p = cb.and(p, cb.notEqual(root.get(Task_.identity), handover.getTargetIdentity()));
 		cq.multiselect(idPath, jobPath).where(p);
 		List<Tuple> os = em.createQuery(cq).getResultList();
 		List<Task> list = new ArrayList<>();
