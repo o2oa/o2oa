@@ -16,6 +16,7 @@ import com.x.base.core.project.x_ai_assemble_control;
 import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobExecutionContext;
 
 /**
@@ -47,11 +48,21 @@ public class InitConfigTask extends AbstractJob {
                         ThisApplication.context().applications()
                                 .postQuery(x_ai_assemble_control.class,
                                         Applications.joinQueryUri("config", "save"), config);
+                        return;
                     }
                 }
             }
-
-
+            if(StringUtils.isBlank(config.getO2AiToken())){
+                File file = new File(Config.dir_config(), "o2.license");
+                if (file.exists()) {
+                    String lic = FileUtils.readFileToString(file, DefaultCharset.charset);
+                    String token = "sk-" + MD5Tool.md5(lic);
+                    config.setO2AiToken(token);
+                    ThisApplication.context().applications()
+                            .postQuery(x_ai_assemble_control.class,
+                                    Applications.joinQueryUri("config", "save"), config);
+                }
+            }
         } catch (Exception e) {
             LOGGER.error(e);
         }
