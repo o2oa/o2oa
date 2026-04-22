@@ -70,7 +70,17 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
         }.bind(this));
 
         this.domListNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.designer.propertyDomArea);
+
         this.designer.propertyTitleNode.set("text", this.designer.lp.clumn);
+        this.designer.propertyTitleNode.setStyles({'position': 'relative'});
+        this.editColumnNode = new Element('div.ooicon-edit',{
+            styles: {width: '16px', height: '16px', position: 'absolute', top: '8px', right: '8px'},
+            events: {
+                click: function(){
+                    this.editColumns();
+                }.bind(this)
+            }
+        }).inject(this.designer.propertyTitleNode);
         this.designer.propertyDomPercent = 0.5;
         this.designer.loadPropertyContentResize();
         this.createColumnEditTable();
@@ -89,6 +99,158 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
         this.designer.addEvent("resize", this.setViewWidth.bind(this));
 
         this.checkToolbars();
+    },
+    editColumns: function(){
+        // 打开JSON编辑器批量修改字段列表
+        var div = new Element("div", {
+            "styles": {
+                "margin": "10px",
+                "padding": "5px",
+                "height": "500px",
+                "width": "700px",
+                "overflow": "hidden"
+            }
+        });
+
+        var options = {
+            "content": div,
+            "title": this.designer.lp.editColumns || "编辑字段列表",
+            "container": this.designer.content,
+            "width": 780,
+            "height": 610,
+            "mask": false,
+            "buttonList": [
+                {
+                    "text": this.designer.lp.ok,
+                    "action": function(){
+                        this.saveEditColumns(dlg);
+                    }.bind(this)
+                },
+                {
+                    "text": this.designer.lp.cancel,
+                    "action": function(){
+                        dlg.close();
+                    }.bind(this)
+                }
+            ],
+            "onResize": function(){
+                var size = dlg.content.getSize();
+                div.setStyles({
+                    "width": (size.x - 60) + "px",
+                    "height": (size.y - 30) + "px"
+                });
+            }
+        };
+
+        var dlg = o2.DL.open(options);
+
+        // 加载JS编辑器并赋值当前字段列表
+        o2.require("o2.widget.JavascriptEditor", function(){
+            dlg.editor = new o2.widget.JavascriptEditor(div, {
+                "option": {"mode": "json"}
+            });
+            dlg.editor.load(function(){
+                // 取出当前字段列表，格式化展示
+                var fieldList = this.json.draftData.fieldList || [];
+                dlg.editor.editor.setValue(JSON.stringify(fieldList, null, "\t"));
+            }.bind(this));
+        }.bind(this), false);
+    },
+
+// 保存编辑后的字段列表
+    saveEditColumns: function(dlg){
+        var str = dlg.editor.editor.getValue().trim();
+        if (!str) {
+            this.designer.notice("字段列表不能为空", "error");
+            return;
+        }
+
+        try {
+            var newFieldList = JSON.parse(str);
+
+            // 基础校验
+            if (!Array.isArray(newFieldList)) {
+                this.designer.notice("必须是数组格式", "error");
+                return;
+            }
+
+            var allowTypeList = [
+                "string",
+                "integer",
+                "long",
+                "double",
+                "boolean",
+                "date",
+                "time",
+                "dateTime",
+                "stringList",
+                "integerList",
+                "longList",
+                "doubleList",
+                "booleanList",
+                "stringLob",
+                "stringMap"
+            ];
+
+            var nameMap = {};
+            for (var i = 0; i < newFieldList.length; i++) {
+                var field = newFieldList[i];
+                var index = i + 1;
+
+                // 校验字段是对象
+                if (o2.typeOf(field) !== "object") {
+                    this.designer.notice("第" + index + "条字段数据格式错误，必须为JSON对象", "error");
+                    return;
+                }
+                // 校验必填 name
+                if (!field.name) {
+                    this.designer.notice("第" + index + "条字段缺少【name】字段名", "error");
+                    return;
+                }
+                // 校验必填 type
+                if (!field.type) {
+                    this.designer.notice("第" + index + "条字段【"+field.name+"】缺少type类型", "error");
+                    return;
+                }
+                // 沿用你原生的字段名校验方法（字母开头、仅字母数字下划线、不能是关键字）
+                if (!this.checkColumnName(field.name)) {
+                    return;
+                }
+                // 校验字段名重复
+                if (nameMap[field.name]) {
+                    this.designer.notice("字段名重复：【"+field.name+"】", "error");
+                    return;
+                }
+                nameMap[field.name] = true;
+
+                // 3. 严格校验字段type是否在允许白名单内
+                if (!allowTypeList.contains(field.type)) {
+                    this.designer.notice(
+                        "第" + index + "条字段【"+field.name+"】类型错误！\n仅支持：" + allowTypeList.join("、"),
+                        "error"
+                    );
+                    return;
+                }
+            }
+
+            // 保存新的字段列表
+            this.json.draftData.fieldList = newFieldList;
+
+            // 刷新界面：清空原有列 → 重新加载 → 重新渲染
+            this.items.each(function(item){
+                item.destroy();
+            });
+            this.items = [];
+            this.loadViewColumns();
+            this.setViewWidth();
+            this.setContentHeight();
+
+            this.designer.notice(this.designer.lp.save_success || "保存成功", "success");
+            dlg.close();
+
+        } catch (e) {
+            this.designer.notice("JSON 格式错误：" + e.message, "error");
+        }
     },
     setEvent: function(){
         this.areaNode.addEvent("click", this.selected.bind(this));
