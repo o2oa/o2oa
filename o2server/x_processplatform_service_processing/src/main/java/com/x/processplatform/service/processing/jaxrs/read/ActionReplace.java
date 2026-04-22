@@ -3,6 +3,7 @@ package com.x.processplatform.service.processing.jaxrs.read;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -75,13 +76,13 @@ class ActionReplace extends BaseAction {
 				emc.beginTransaction(Review.class);
 				List<ReadCompleted> readCompletedList = emc.listEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME,
 						read.getPerson(), ReadCompleted.job_FIELDNAME, read.getJob());
-				readCompletedList.stream().forEach(o -> {
+				readCompletedList.forEach(o -> {
 					o.setPerson(wi.getTargetPerson());
 					o.setIdentity(wi.getTargetIdentity());
 				});
 				List<Review> reviewList = emc.listEqualAndEqual(Review.class, Review.person_FIELDNAME, read.getPerson(),
 						Review.job_FIELDNAME, read.getJob());
-				reviewList.stream().forEach(o -> o.setPerson(wi.getTargetPerson()));
+				reviewList.forEach(o -> o.setPerson(wi.getTargetPerson()));
 
 				read.setPerson(wi.getTargetPerson());
 				read.setIdentity(wi.getTargetIdentity());
@@ -99,7 +100,7 @@ class ActionReplace extends BaseAction {
 		private static final long serialVersionUID = -6215838156429443320L;
 
 		static WrapCopier<Wi, Handover> copier = WrapCopierFactory.wi(Wi.class, Handover.class,
-                ListTools.toList(Handover.person_FIELDNAME, Handover.targetIdentity_FIELDNAME), null);
+				JpaObject.FieldsInvisibleIncludeProperites, null);
 
     }
 
