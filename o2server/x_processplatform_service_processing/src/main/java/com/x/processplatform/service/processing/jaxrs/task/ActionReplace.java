@@ -1,5 +1,6 @@
 package com.x.processplatform.service.processing.jaxrs.task;
 
+import com.x.base.core.entity.JpaObject;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -120,6 +121,10 @@ class ActionReplace extends BaseAction {
 						work.setCreatorIdentity(wi.getTargetIdentity());
 					}
 					emc.commit();
+				}else if (!task.getPerson().equals(wi.getTargetPerson())){
+					emc.beginTransaction(Task.class);
+					task.setPerson(wi.getTargetPerson());
+					emc.commit();
 				}
 
 				ActionResult<Wo> result = new ActionResult<>();
@@ -134,7 +139,7 @@ class ActionReplace extends BaseAction {
 		private static final long serialVersionUID = -6215838156429443320L;
 
 		static WrapCopier<Wi, Handover> copier = WrapCopierFactory.wi(Wi.class, Handover.class,
-				ListTools.toList(Handover.person_FIELDNAME, Handover.targetIdentity_FIELDNAME), null);
+				JpaObject.FieldsInvisibleIncludeProperites, null);
 
 	}
 
