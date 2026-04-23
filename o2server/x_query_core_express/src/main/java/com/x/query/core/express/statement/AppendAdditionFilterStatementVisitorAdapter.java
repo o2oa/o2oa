@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 public class AppendAdditionFilterStatementVisitorAdapter extends StatementVisitorAdapter {
 
     private static final String TEXT_AND = "AND";
+    private static final String TEXT_OR = "OR";
     private static final String TEXT_SPACE = " ";
     private static final String TEXT_LEFTPARENTHESIS = "(";
     private static final String TEXT_RIGHTPARENTHESIS = ")";
@@ -114,16 +115,17 @@ public class AppendAdditionFilterStatementVisitorAdapter extends StatementVisito
         for (int i = 0; i < runtime.getFilterList().size(); i++) {
             FilterEntry entry = runtime.getFilterList().get(i);
             if (i > 0) {
-                builder.append(TEXT_SPACE).append(entry.logic).append(TEXT_SPACE);
+                builder.append(TEXT_SPACE).append(StringUtils.equalsIgnoreCase(entry.logic, TEXT_OR) ? TEXT_OR : TEXT_AND).append(TEXT_SPACE);
             }
             builder.append(pathWithFromAlias(entry.path, fromAlias)).append(TEXT_SPACE).append(comparison(entry))
-                    .append(TEXT_SPACE).append(TEXT_COLON).append(entry.value);
+                    .append(TEXT_SPACE).append(TEXT_COLON).append(StringUtils.deleteWhitespace(entry.value));
         }
         builder.append(TEXT_RIGHTPARENTHESIS);
         return CCJSqlParserUtil.parseCondExpression(builder.toString());
     }
 
     private String pathWithFromAlias(String path, String fromAlias) {
+        path = StringUtils.deleteWhitespace(path);
         return (StringUtils.isEmpty(fromAlias) || StringUtils.contains(path, ".")) ? path : (fromAlias + "." + path);
     }
 
