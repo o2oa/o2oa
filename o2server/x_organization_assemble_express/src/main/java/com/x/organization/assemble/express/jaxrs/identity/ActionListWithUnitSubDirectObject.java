@@ -80,6 +80,7 @@ class ActionListWithUnitSubDirectObject extends BaseAction {
 		List<String> identityIds = em.createQuery(cq.select(root.get(Identity_.id)).where(p))
 				.getResultList().stream().distinct().collect(Collectors.toList());
 		List<Identity> list = business.identity().pick(identityIds);
+		list = business.identity().sort(list);
 		for (Identity o : list) {
 			wos.add(this.convert(business, o, Wo.class));
 		}

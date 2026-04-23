@@ -84,6 +84,7 @@ class ActionListWithUnitSubNestedObject extends BaseAction {
 				.getResultList().stream().distinct().collect(Collectors.toList());
 		identityIds = ListTools.trim(identityIds, true, true);
 		List<Identity> list = business.identity().pick(identityIds);
+		list = business.identity().sort(list);
 		for (Identity o : list) {
 			wos.add(this.convert(business, o, Wo.class));
 		}
