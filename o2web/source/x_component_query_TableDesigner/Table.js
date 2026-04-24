@@ -114,7 +114,7 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
 
         var options = {
             "content": div,
-            "title": this.designer.lp.editColumns || "编辑字段列表",
+            "title": this.designer.lp.editColumns,
             "container": this.designer.content,
             "width": 780,
             "height": 610,
@@ -157,11 +157,12 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
         }.bind(this), false);
     },
 
-// 保存编辑后的字段列表
+    // 保存编辑后的字段列表
     saveEditColumns: function(dlg){
         var str = dlg.editor.editor.getValue().trim();
+        var lp = this.designer.lp;
         if (!str) {
-            this.designer.notice("字段列表不能为空", "error");
+            this.designer.notice(lp.columnIsEmpty, "error");
             return;
         }
 
@@ -170,7 +171,7 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
 
             // 基础校验
             if (!Array.isArray(newFieldList)) {
-                this.designer.notice("必须是数组格式", "error");
+                this.designer.notice(lp.mustBeArray, "error");
                 return;
             }
 
@@ -199,17 +200,17 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
 
                 // 校验字段是对象
                 if (o2.typeOf(field) !== "object") {
-                    this.designer.notice("第" + index + "条字段数据格式错误，必须为JSON对象", "error");
+                    this.designer.notice(lp.mustBeJson.replace('{index}', index), "error");
                     return;
                 }
                 // 校验必填 name
                 if (!field.name) {
-                    this.designer.notice("第" + index + "条字段缺少【name】字段名", "error");
+                    this.designer.notice(lp.noName.replace('{index}', index), "error");
                     return;
                 }
                 // 校验必填 type
                 if (!field.type) {
-                    this.designer.notice("第" + index + "条字段【"+field.name+"】缺少type类型", "error");
+                    this.designer.notice(lp.noType.replace('{index}', index).replace('{name}', field.name), "error");
                     return;
                 }
                 // 沿用你原生的字段名校验方法（字母开头、仅字母数字下划线、不能是关键字）
@@ -218,7 +219,7 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
                 }
                 // 校验字段名重复
                 if (nameMap[field.name]) {
-                    this.designer.notice("字段名重复：【"+field.name+"】", "error");
+                    this.designer.notice(lp.nameConflict.replace('{name}', field.name), "error");
                     return;
                 }
                 nameMap[field.name] = true;
@@ -226,7 +227,9 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
                 // 3. 严格校验字段type是否在允许白名单内
                 if (!allowTypeList.contains(field.type)) {
                     this.designer.notice(
-                        "第" + index + "条字段【"+field.name+"】类型错误！\n仅支持：" + allowTypeList.join("、"),
+                        lp.errorType.replace('{index}', index).
+                            replace('{name}', field.name).
+                            replace('{type}', allowTypeList.join("、")),
                         "error"
                     );
                     return;
@@ -245,11 +248,12 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
             this.setViewWidth();
             this.setContentHeight();
 
-            this.designer.notice(this.designer.lp.save_success || "保存成功", "success");
+            this.designer.notice(this.designer.lp.saveSuccess, "success");
             dlg.close();
 
         } catch (e) {
-            this.designer.notice("JSON 格式错误：" + e.message, "error");
+            this.designer.notice("error：" + e.message, "error");
+            console.error(e.message);
         }
     },
     setEvent: function(){
