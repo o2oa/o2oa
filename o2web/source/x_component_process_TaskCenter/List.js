@@ -399,26 +399,32 @@ MWF.xApplication.process.TaskCenter.List = new Class({
         this.listScrollAreaNode = new Element("div", {"styles": this.css.listScrollAreaNode}).inject(this.contentNode);
         this.listAreaNode = new Element("div", {"styles": this.css.listAreaNode}).inject(this.listScrollAreaNode);
         var _self = this;
-        MWF.require("MWF.widget.ScrollBar", function(){
-            new MWF.widget.ScrollBar(this.listScrollAreaNode, {
-                "style":"xApp_TaskList", "where": "before", "distance": 30, "friction": 4,	"axis": {"x": false, "y": true},
-                "onScroll": function(y, x){
-                    //new Element("div", {"text": "sss-"+y}).inject(_self.listScrollAreaNode, "before");
-                    // _self.app.taskTitleTextNode.set("text", "start");
-                    // _self.app.taskTitleTextNode.set("text", y);
-                    // if (!detail){
-                    var scrollSize = _self.listScrollAreaNode.getScrollSize();
-                    var clientSize = _self.listScrollAreaNode.getSize();
-                    var scrollHeight = scrollSize.y-clientSize.y;
-                    if (y+200>scrollHeight) {
-                        if (!_self.isElementLoaded) _self.listItemNext();
-                    }
-                    // }else{
-                    //     _self.app.taskTitleTextNode.set("text", y);
-                    // }
+        if( layout.mobile ){
+            this.listScrollAreaNode.setStyle('overflow', 'auto');
+            this.listScrollAreaNode.addEvent("scroll", function(){
+                var scroll = _self.listScrollAreaNode.getScroll();
+                var scrollSize = _self.listScrollAreaNode.getScrollSize();
+                var clientSize = _self.listScrollAreaNode.getSize();
+                var scrollHeight = scrollSize.y-clientSize.y;
+                if (scroll.y+200>scrollHeight) {
+                    if (!_self.isElementLoaded) _self.listItemNext();
                 }
             });
-        }.bind(this));
+        }else{
+            MWF.require("MWF.widget.ScrollBar", function(){
+                new MWF.widget.ScrollBar(this.listScrollAreaNode, {
+                    "style":"xApp_TaskList", "where": "before", "distance": 30, "friction": 4,	"axis": {"x": false, "y": true},
+                    "onScroll": function(y, x){
+                        var scrollSize = _self.listScrollAreaNode.getScrollSize();
+                        var clientSize = _self.listScrollAreaNode.getSize();
+                        var scrollHeight = scrollSize.y-clientSize.y;
+                        if (y+200>scrollHeight) {
+                            if (!_self.isElementLoaded) _self.listItemNext();
+                        }
+                    }
+                });
+            }.bind(this));
+        }
     },
     // setAppContentSize: function(){
     //     var size = this.app.contentNode.getSize();
