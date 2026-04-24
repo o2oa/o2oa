@@ -155,6 +155,7 @@ class ActionEdit extends BaseAction {
                         Person person = emc.find(identity.getPerson(), Person.class);
                         emc.beginTransaction(Person.class);
                         Set<String> topUnitList = new HashSet<>(person.getTopUnitList());
+                        topUnitList.remove(unit.getId());
                         topUnitList.add(unit.getSuperior());
                         person.setTopUnitList(new ArrayList<>(topUnitList));
                         emc.commit();
