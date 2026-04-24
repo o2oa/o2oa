@@ -1,16 +1,5 @@
 package com.x.organization.assemble.control.jaxrs.unit;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -29,7 +18,18 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
+import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Unit;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionEdit extends BaseAction {
 
@@ -87,7 +87,7 @@ class ActionEdit extends BaseAction {
             /** 判断是否修改了组织级别或组织名称,如果修改了，需要重新计算当前组织及下属组织成员的身份（组织名称，组织级别名称） */
             checkFlag = this.checkUnitTypeName(oldUnit, unit);
             if (checkFlag) {
-                this.updateIdentityUnitNameAndUnitLevelName(unit, business);
+                this.updateIdentityUnitNameAndUnitLevelName(oldUnit, unit, business);
             }
 
             Wo wo = new Wo();
@@ -113,7 +113,7 @@ class ActionEdit extends BaseAction {
 
     /**
      * 根据组织标志列出身份列表
-     * 
+     *
      * @param business
      * @param unit
      * @return
@@ -132,10 +132,9 @@ class ActionEdit extends BaseAction {
         return os;
     }
 
-    void updateIdentityUnitNameAndUnitLevelName(Unit unit, Business business) throws Exception {
-        /*
-         * 同时更新unit下的所有身份的UnitLevelName，UnitName
-         */
+    void updateIdentityUnitNameAndUnitLevelName(Unit oldUnit, Unit unit, Business business) throws Exception {
+        boolean isTopUpdate = Unit.TOP_LEVEL.equals(oldUnit.getLevel())
+                && unit.getLevel() > Unit.TOP_LEVEL;
         List<Unit> unitList = new ArrayList<>();
         unitList.add(unit);
         unitList.addAll(business.unit().listSubNestedObject(unit));
@@ -143,17 +142,25 @@ class ActionEdit extends BaseAction {
         for (Unit u : unitList) {
             List<Identity> identityList = this.listIdentityByUnitFlag(business, u);
             if (ListTools.isNotEmpty(identityList)) {
-                String _unitName = u.getName();
-                String _unitLevelName = u.getLevelName();
-
+                String unitName = u.getName();
+                String unitLevelName = u.getLevelName();
                 for (Identity i : identityList) {
-                    Identity _identity = emc.find(i.getId(), Identity.class);
-                    _identity.setUnitName(_unitName);
-                    _identity.setUnitLevelName(_unitLevelName);
+                    Identity identity = emc.find(i.getId(), Identity.class);
+                    identity.setUnitName(unitName);
+                    identity.setUnitLevelName(unitLevelName);
                     emc.beginTransaction(Identity.class);
-                    emc.check(_identity, CheckPersistType.all);
+                    emc.check(identity, CheckPersistType.all);
                     emc.commit();
+                    if(isTopUpdate) {
+                        Person person = emc.find(identity.getPerson(), Person.class);
+                        emc.beginTransaction(Person.class);
+                        Set<String> topUnitList = new HashSet<>(person.getTopUnitList());
+                        topUnitList.add(unit.getSuperior());
+                        person.setTopUnitList(new ArrayList<>(topUnitList));
+                        emc.commit();
+                    }
                     CacheManager.notify(Identity.class);
+                    CacheManager.notify(Person.class);
                 }
             }
 
