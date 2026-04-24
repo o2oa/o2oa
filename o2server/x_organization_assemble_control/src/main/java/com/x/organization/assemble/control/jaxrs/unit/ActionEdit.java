@@ -133,8 +133,8 @@ class ActionEdit extends BaseAction {
     }
 
     void updateIdentityUnitNameAndUnitLevelName(Unit oldUnit, Unit unit, Business business) throws Exception {
-        boolean isTopUpdate = Unit.TOP_LEVEL.equals(oldUnit.getLevel())
-                && unit.getLevel() > Unit.TOP_LEVEL;
+        boolean isTopUpdate = (Unit.TOP_LEVEL.equals(oldUnit.getLevel()) || Unit.TOP_LEVEL.equals(unit.getLevel()))
+                && !oldUnit.getSuperior().equals(unit.getSuperior());
         List<Unit> unitList = new ArrayList<>();
         unitList.add(unit);
         unitList.addAll(business.unit().listSubNestedObject(unit));
@@ -155,8 +155,13 @@ class ActionEdit extends BaseAction {
                         Person person = emc.find(identity.getPerson(), Person.class);
                         emc.beginTransaction(Person.class);
                         Set<String> topUnitList = new HashSet<>(person.getTopUnitList());
-                        topUnitList.remove(unit.getId());
-                        topUnitList.add(unit.getSuperior());
+                        if(Unit.TOP_LEVEL.equals(oldUnit.getLevel())) {
+                            topUnitList.remove(unit.getId());
+                            topUnitList.add(unit.getSuperior());
+                        }else{
+                            topUnitList.remove(oldUnit.getSuperior());
+                            topUnitList.add(unit.getId());
+                        }
                         person.setTopUnitList(new ArrayList<>(topUnitList));
                         emc.commit();
                     }
