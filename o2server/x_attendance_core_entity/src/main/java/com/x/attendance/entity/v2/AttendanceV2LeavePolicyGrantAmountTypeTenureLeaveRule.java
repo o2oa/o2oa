@@ -25,7 +25,7 @@ public class AttendanceV2LeavePlicyGrantAmountTypeTenureLeaveRule extends JsonPr
         this.grantAmount = grantAmount;
     }
 
-    @FieldDescribe("最小司龄（包含）")
+    @FieldDescribe("最小司龄（包含）, null 表示无下限")
     private Double minYears;
 
     @FieldDescribe("最大司龄（不包含），null 表示无上限")
