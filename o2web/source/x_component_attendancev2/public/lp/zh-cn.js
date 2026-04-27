@@ -395,6 +395,16 @@ MWF.xApplication.attendancev2.LP = {
       grantAmount: "发放额度",
       grantAmountPlaceholder: "请输入发放额度, 必须为大于0的整数",
       description: "规则说明",
+      grantTypeLabel: "额度类型配置",
+      grantTypeFixedLabel: "固定额度",
+      grantTypeServiceLenLabel: "司龄额度",
+      grantTypeRuleLengthLabel: "司龄额度规则至少需要 2 条",
+      grantServiceAmountPlaceholder: "请输入每条司龄规则的发放额度，必须为大于 0 的数字",
+      grantTypeServiceLenRule: "司龄规则",
+      grantTypeServiceLen: "司龄",
+      grantTypeAddRule: "添加规则",
+      grantTypeServiceLenRuleScope: "司龄范围",
+
     }
   },
 

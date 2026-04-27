@@ -220,7 +220,7 @@ export default content({
         this.normalizeTenureLeaveRules();
         const rules = this.bind.form.grantAmountType.tenureLeaveRules;
         if (rules.length <= 2) {
-            o2.api.page.notice("工龄额度规则至少保留 2 条", "error");
+            o2.api.page.notice(lp.leaveManagerV2.policy.grantTypeRuleLengthLabel, "error");
             return;
         }
         for (let i = 0; i < rules.length; i++) {
@@ -245,7 +245,7 @@ export default content({
         if (grantAmountType.type === "FIXED") {
             const grantAmount = toPositiveNumber(grantAmountType.grantAmount);
             if (grantAmount === null) {
-                o2.api.page.notice("请输入发放额度，必须为大于 0 的数字", "error");
+                o2.api.page.notice(lp.leaveManagerV2.policy.grantAmountPlaceholder, "error");
                 return false;
             }
             grantAmountType.grantAmount = grantAmount;
@@ -254,7 +254,7 @@ export default content({
         // this.normalizeTenureLeaveRules();
         const rules = grantAmountType.tenureLeaveRules;
         if (!rules || rules.length < 2) {
-            o2.api.page.notice("工龄额度规则至少需要 2 条", "error");
+            o2.api.page.notice(lp.leaveManagerV2.policy.grantTypeRuleLengthLabel, "error");
             return false;
         }
         const result = [];
@@ -262,7 +262,7 @@ export default content({
             const rule = rules[i];
             const amount = toPositiveNumber(rule.amount);
             if (amount === null) {
-                o2.api.page.notice("请输入每条工龄规则的发放额度，必须为大于 0 的数字", "error");
+                o2.api.page.notice(lp.leaveManagerV2.policy.grantServiceAmountPlaceholder, "error");
                 return false;
             }
             const item = {amount};
