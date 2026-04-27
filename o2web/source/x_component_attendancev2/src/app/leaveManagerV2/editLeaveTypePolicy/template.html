@@ -82,19 +82,32 @@
                             oo-prop="{ 'value': $.grantTypeValueForYear, 'key': 'grantTypeValueForYear'}"></o-month-day-selector>
                     </div>
                 </div>
-                <!-- <div class=" margin-top" >
+                <div class="form-item-line margin-top" oo-if="$.form.grantType == 'MONTHLY'">
                     <div class="form-item-line-content" style="width: 302px;">
-                        {{$.lp.leaveManagerV2.policy.grantTypeMonthLabel}} 
+                        {{$.lp.leaveManagerV2.policy.grantTypeMonthLabel}}  <input oo-model="grantTypeValueForMonth" placeholder="$.lp.leaveManagerV2.policy.grantTypeMonthPlaceholder"  
+                        style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" /> 日
                     </div>
-                </div> -->
-                <o-input oo-if="$.form.grantType == 'MONTHLY'" 
+                </div>
+                <!-- <o-input oo-if="$.form.grantType == 'MONTHLY'" 
                     oo-prop="{'label':$.lp.leaveManagerV2.policy.grantTypeMonthLabel, 'placeholder': $.lp.leaveManagerV2.policy.grantTypeMonthPlaceholder, 'value': $.grantTypeValueForMonth}" 
-                    oo-model="grantTypeValueForMonth"></o-input>
+                    oo-model="grantTypeValueForMonth"></o-input> -->
             </div>
             <!-- 发放数量 -->
-             <o-input oo-if="$.form.grantType == 'ONE_TIME' || $.form.grantType == 'MONTHLY'"
+            <div class="margin-top" oo-if="$.form.grantType == 'MONTHLY'">
+                每人每月发放
+                <input oo-model="form.grantAmount" placeholder="$.lp.leaveManagerV2.policy.grantAmount"  
+                    style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
+                天
+            </div>
+            <div class="margin-top" oo-if="$.form.grantType == 'ONE_TIME'">
+                一次性发放
+                <input oo-model="form.grantAmount" placeholder="$.lp.leaveManagerV2.policy.grantAmount"  
+                    style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
+                天
+            </div>
+             <!-- <o-input oo-if="$.form.grantType == 'ONE_TIME' || $.form.grantType == 'MONTHLY'"
                 oo-prop="{'isRequried': true, 'label': $.lp.leaveManagerV2.policy.grantAmount, 'placeholder':$.lp.leaveManagerV2.policy.grantAmountPlaceholder, 'value': $.form.grantAmount}"
-                oo-model="form.grantAmount"></o-input>
+                oo-model="form.grantAmount"></o-input> -->
 
             <!-- 额度类型配置 -->
             <div class="margin-top" oo-if="$.form.grantType == 'YEARLY'">
@@ -118,9 +131,17 @@
                         <label style="margin: 5px;" for="checkGrantAmountTypeServiceLen">{{$.lp.leaveManagerV2.policy.grantTypeServiceLenLabel}}</label>
                     </div>
                 </div>
-                <o-input oo-if="$.form.grantAmountType.type == 'FIXED'"
+                <!-- <o-input oo-if="$.form.grantAmountType.type == 'FIXED'"
                     oo-prop="{'isRequried': true, 'label':$.lp.leaveManagerV2.policy.grantAmount, 'placeholder':'$.lp.leaveManagerV2.policy.grantAmountPlaceholder', 'value': $.form.grantAmountType.grantAmount}"
-                    oo-model="form.grantAmountType.grantAmount"></o-input>
+                    oo-model="form.grantAmountType.grantAmount"></o-input> -->
+
+                <div class="margin-top" oo-if="$.form.grantAmountType.type == 'FIXED'">
+                    每人每年发放
+                    <input oo-model="form.grantAmountType.grantAmount" placeholder="$.lp.leaveManagerV2.policy.grantAmountPlaceholder"  
+                        style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
+                    天
+                </div>
+
                 <div class="margin-top" oo-if="$.form.grantAmountType.type == 'SERVICELEN'">
                     <div class="o-input-item-label">
                         {{$.lp.leaveManagerV2.policy.grantTypeServiceLenRule}}

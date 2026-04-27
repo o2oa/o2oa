@@ -122,7 +122,7 @@ public class QueueAttendanceV2LeavePolicyGrant extends AbstractQueue<QueueAttend
                 ledger.setGrantAmount(grantAmount);
                 ledger.setGrantTime(today);
                 if (ExpireTypeEnum.RELATIVE.getValue().equals(policy.getExpireType())) {
-                    int addDay = policy.getExpireValue() != null ? policy.getExpireValue().intValue() : 0;
+                    int addDay = policy.getExpireValue() != null ? policy.getExpireValue() : 0;
                     if (GrantTypeEnum.YEARLY.getValue().equals(policy.getGrantType())) {
                         addDay = addDay * 365;
                     } else if (GrantTypeEnum.MONTHLY.getValue().equals(policy.getGrantType())) {
