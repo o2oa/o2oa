@@ -95,6 +95,66 @@
                 oo-prop="{'isRequried': true, 'label':$.lp.leaveManagerV2.policy.grantAmount, 'placeholder':$.lp.leaveManagerV2.policy.grantAmountPlaceholder, 'value': $.form.grantAmount}"
                 oo-model="form.grantAmount"></o-input>
 
+            <!-- 额度类型配置 -->
+            <div class="margin-top" oo-if="$.form.grantType == 'YEARLY'">
+                <div class="form-item-line-label">
+                    <span class="required">*</span>
+                    额度类型配置
+                </div>
+                <div style="display: flex; flex-wrap: wrap;">
+                    <div class="margin-left" style="display: flex;align-items: center;"
+                        @click="this.clickChangeGrantAmountType('FIXED')">
+                        <div class="o2-icon-14" id="checkGrantAmountTypeFixed"><i
+                                class="{{ $.form.grantAmountType.type == 'FIXED' ? 'o2icon-icon_xuanzhong primary_color' : 'o2icon-icon_quan'}}"></i>
+                        </div>
+                        <label style="margin: 5px;" for="checkGrantAmountTypeFixed">固定额度</label>
+                    </div>
+                    <div class="margin-left" style="display: flex;align-items: center;"
+                        @click="this.clickChangeGrantAmountType('SERVICELEN')">
+                        <div class="o2-icon-14" id="checkGrantAmountTypeServiceLen"><i
+                                class="{{ $.form.grantAmountType.type == 'SERVICELEN' ? 'o2icon-icon_xuanzhong primary_color' : 'o2icon-icon_quan'}}"></i>
+                        </div>
+                        <label style="margin: 5px;" for="checkGrantAmountTypeServiceLen">工龄额度</label>
+                    </div>
+                </div>
+                <o-input oo-if="$.form.grantAmountType.type == 'FIXED'"
+                    oo-prop="{'isRequried': true, 'label':'发放额度', 'placeholder':'请输入发放额度，必须为大于 0 的数字', 'value': $.form.grantAmountType.grantAmount}"
+                    oo-model="form.grantAmountType.grantAmount"></o-input>
+                <div class="margin-top" oo-if="$.form.grantAmountType.type == 'SERVICELEN'">
+                    <div class="o-input-item-label">
+                        工龄规则
+                        <div style="float: right;" @click="this.addTenureLeaveRule()">
+                            <span class="operator_link primary_color margin-right">添加规则</span>
+                            <i class="o2icon-icon_zengjia_blue2_click primary_color"></i>
+                        </div>
+                    </div>
+                    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table margin-top">
+                        <thead>
+                            <th style="width: 45%;">工龄范围</th>
+                            <th style="width: 30%;">发放额度</th>
+                            <th>操作</th>
+                        </thead>
+                        <tr oo-each="$.form.grantAmountType.tenureLeaveRules" oo-item="rule" style="background-color: transparent;">
+                            <td>
+                                <span oo-if="!rule.value.minYears && rule.value.maxYears">工龄 &lt;</span>
+                                <span oo-if="rule.value.minYears && rule.value.maxYears">{{rule.value.minYears}} 年 ≤ 工龄 &lt;</span>
+                                <span oo-if="rule.value.minYears && !rule.value.maxYears">工龄 ≥ {{rule.value.minYears}} 年</span>
+                                <input oo-if="rule.value.maxYears" value="{{rule.value.maxYears}}" @input="this.changeTenureRuleMaxYears(rule.value, $event)"
+                                    style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
+                                <span oo-if="rule.value.maxYears">年</span>
+                            </td>
+                            <td>
+                                <input value="{{rule.value.amount}}" @input="this.changeTenureRuleAmount(rule.value, $event)"
+                                    style="width: 88px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;" />
+                            </td>
+                            <td>
+                                <span class="operator_link primary_color" @click="this.deleteTenureLeaveRule(rule.value)">删除</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
         </div>
 
         <div class="o2-form-footer">

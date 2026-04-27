@@ -7,6 +7,33 @@ import oInput from "../../../components/o-input";
 import oOrgPersonSelector from "../../../components/o-org-person-selector";
 import oMonthDaySelector from "../../../components/o-month-day-selector";
 
+function defaultGrantAmountType() {
+    return {
+        type: "FIXED",
+        grantAmount: 5,
+        tenureLeaveRules: [
+            {maxYears: 2, amount: 5},
+            {minYears: 2, amount: 10}
+        ]
+    };
+}
+
+function toPositiveNumber(value) {
+    if (value === null || value === undefined || value === "") {
+        return null;
+    }
+    const str = String(value).trim();
+    if (!/^\d+(\.\d+)?$/.test(str)) {
+        return null;
+    }
+    const num = Number(str);
+    return num > 0 ? num : null;
+}
+
+function trimNumber(value) {
+    return Number(Number(value).toFixed(2));
+}
+
 export default content({
     template,
     components: { oInput, oOrgPersonSelector, oMonthDaySelector },
@@ -23,10 +50,13 @@ export default content({
                 grantType: "YEARLY", // YEARLY | MONTHLY | ONE_TIME
                 grantTypeValue: "Y:01-01", // 发放方式日期规则配置： Y:01-01/MS:1,ME:1/ONE_TIME
                 grantAmount: 0, // 发放数量
-                grantAmountType: {
+                grantAmountType: { // 额度类型配置
                     type: "FIXED", // FIXED | SERVICELEN  固定额度｜工龄额度
-                    grantAmount: 0.0,
-                    tenureLeaveRules: [] // 工龄额度规则，按照工龄年限递增的规则列表，示例：[{maxYears: 2, amount: 5}, {minYears: 2, maxYears: 5, amount: 7}, {minYears: 5, amount: 10}]
+                    grantAmount: 5, // 发放额度
+                    tenureLeaveRules: [ // 工龄额度规则，按照工龄年限递增的规则列表，示例：[{maxYears: 2, amount: 5}, {minYears: 2, maxYears: 5, amount: 7}, {minYears: 5, amount: 10}]
+                        {maxYears: 2, amount: 5}, 
+                        {minYears: 2, maxYears: 5, amount: 7},
+                        {minYears: 5, amount: 10}]
                 }, 
                 expireType: "RELATIVE", // 过期类型 NEVER / RELATIVE
                 expireValue: 1, // 过期值，单位为年
@@ -45,6 +75,10 @@ export default content({
             const policy = await leaveManagerAction("policyGet", this.bind.updateId);
             if (policy) {
                 this.bind.form = policy;
+                this.ensureGrantAmountType();
+                if (this.bind.form.grantAmountType.type === "SERVICELEN") {
+                    this.normalizeTenureLeaveRules();
+                }
                 this.bind.fTitle = lp.leaveManagerV2.editTypePolicy;
             }
         }
@@ -61,6 +95,13 @@ export default content({
     },
     clickChangeGrantType(type) {
         this.bind.form.grantType = type;
+    },
+    clickChangeGrantAmountType(type) {
+        this.ensureGrantAmountType();
+        this.bind.form.grantAmountType.type = type;
+        if (type === "SERVICELEN") {
+            this.normalizeTenureLeaveRules();
+        }
     },
     // o month day selector 控件返回结果使用
     setSelectorValue(key, value) {
@@ -80,7 +121,7 @@ export default content({
             o2.api.page.notice(lp.leaveManagerV2.policy.grantTypeYearPlaceholder, 'error');
             return;
         }
-        if (form.grantType === "MONTHLY" && (isValidGrantTypeMonthValue(this.bind.grantTypeValueForMonth))) {
+        if (form.grantType === "MONTHLY" && !this.isValidGrantTypeMonthValue(this.bind.grantTypeValueForMonth)) {
             o2.api.page.notice(lp.leaveManagerV2.policy.grantTypeMonthPlaceholder, 'error');
             return;
         }
@@ -91,14 +132,18 @@ export default content({
         } else if (form.grantType === "MONTHLY") {
             form.grantTypeValue = `MS:${this.bind.grantTypeValueForMonth}`;
         }
-        if ((form.grantType === "MONTHLY" || form.grantType === "ONE_TIME") && !isValidGrantAmount(form.grantAmount)) {
+        if ((form.grantType === "MONTHLY" || form.grantType === "ONE_TIME") && !this.isValidGrantAmount(form.grantAmount)) {
             o2.api.page.notice(lp.leaveManagerV2.policy.grantAmountPlaceholder, 'error');
             return;
         }
-        const result = await leaveManagerAction("policyPost", form);
-        console.log(result);
-        o2.api.page.notice(lp.saveSuccess, 'success');
-        this.close();
+        if (form.grantType === "YEARLY" && !this.validateGrantAmountType()) {
+            return;
+        }
+        console.debug("submit form", form);
+        // const result = await leaveManagerAction("policyPost", form);
+        // console.log(result);
+        // o2.api.page.notice(lp.saveSuccess, 'success');
+        // this.close();
     },
     isValidGrantTypeMonthValue(input) {
         // 先判断是不是纯数字（避免 "1e2" 这种）
@@ -111,6 +156,126 @@ export default content({
         if (!/^\d+$/.test(input)) return false;
         const num = Number(input);
         return num >= 1;
+    },
+    ensureGrantAmountType() {
+        if (!this.bind.form.grantAmountType) {
+            this.bind.form.grantAmountType = defaultGrantAmountType();
+            return;
+        }
+        const grantAmountType = this.bind.form.grantAmountType;
+        if (grantAmountType.type !== "FIXED" && grantAmountType.type !== "SERVICELEN") {
+            grantAmountType.type = "FIXED";
+        }
+        if (grantAmountType.grantAmount === null || grantAmountType.grantAmount === undefined || grantAmountType.grantAmount === "") {
+            grantAmountType.grantAmount = 5;
+        }
+        if (!grantAmountType.tenureLeaveRules || grantAmountType.tenureLeaveRules.length < 2) {
+            grantAmountType.tenureLeaveRules = defaultGrantAmountType().tenureLeaveRules;
+        }
+    },
+    normalizeTenureLeaveRules() {
+        this.ensureGrantAmountType();
+        const rules = this.bind.form.grantAmountType.tenureLeaveRules;
+        while (rules.length < 2) {
+            const lastBoundary = rules.length > 0 ? toPositiveNumber(rules[rules.length - 1].maxYears || rules[rules.length - 1].minYears) : 2;
+            const boundary = lastBoundary || rules.length + 1;
+            rules.push({minYears: boundary, amount: 5});
+        }
+        let currentMin = 0;
+        for (let i = 0; i < rules.length; i++) {
+            const rule = rules[i];
+            const amount = toPositiveNumber(rule.amount);
+            rule.amount = amount === null ? rule.amount : amount;
+            if (i === 0) {
+                rule.minYears = null;
+            } else {
+                rule.minYears = currentMin;
+            }
+            if (i === rules.length - 1) {
+                rule.maxYears = null;
+            } else {
+                let maxYears = toPositiveNumber(rule.maxYears);
+                if (maxYears === null || maxYears <= currentMin) {
+                    maxYears = currentMin + 1;
+                }
+                rule.maxYears = trimNumber(maxYears);
+                currentMin = rule.maxYears;
+            }
+        }
+        this.bind.form.grantAmountType.tenureLeaveRules = rules;
+    },
+    addTenureLeaveRule() {
+        this.normalizeTenureLeaveRules();
+        const rules = this.bind.form.grantAmountType.tenureLeaveRules;
+        const lastRule = rules[rules.length - 1];
+        const minYears = toPositiveNumber(lastRule.minYears) || rules.length;
+        rules.splice(rules.length - 1, 0, {
+            minYears,
+            maxYears: trimNumber(minYears + 1),
+            amount: lastRule.amount || 5
+        });
+        this.normalizeTenureLeaveRules();
+    },
+    deleteTenureLeaveRule(rule) {
+        this.normalizeTenureLeaveRules();
+        const rules = this.bind.form.grantAmountType.tenureLeaveRules;
+        if (rules.length <= 2) {
+            o2.api.page.notice("工龄额度规则至少保留 2 条", "error");
+            return;
+        }
+        for (let i = 0; i < rules.length; i++) {
+            if (rules[i] === rule) {
+                rules.splice(i, 1);
+                break;
+            }
+        }
+        this.normalizeTenureLeaveRules();
+    },
+    changeTenureRuleMaxYears(rule, event) {
+        rule.maxYears = event.target.value;
+        this.normalizeTenureLeaveRules();
+    },
+    changeTenureRuleAmount(rule, event) {
+        rule.amount = event.target.value;
+    },
+    validateGrantAmountType() {
+        debugger;
+        // this.ensureGrantAmountType();
+        const grantAmountType = this.bind.form.grantAmountType;
+        if (grantAmountType.type === "FIXED") {
+            const grantAmount = toPositiveNumber(grantAmountType.grantAmount);
+            if (grantAmount === null) {
+                o2.api.page.notice("请输入发放额度，必须为大于 0 的数字", "error");
+                return false;
+            }
+            grantAmountType.grantAmount = grantAmount;
+            return true;
+        }
+        // this.normalizeTenureLeaveRules();
+        const rules = grantAmountType.tenureLeaveRules;
+        if (!rules || rules.length < 2) {
+            o2.api.page.notice("工龄额度规则至少需要 2 条", "error");
+            return false;
+        }
+        const result = [];
+        for (let i = 0; i < rules.length; i++) {
+            const rule = rules[i];
+            const amount = toPositiveNumber(rule.amount);
+            if (amount === null) {
+                o2.api.page.notice("请输入每条工龄规则的发放额度，必须为大于 0 的数字", "error");
+                return false;
+            }
+            const item = {amount};
+            if (i > 0) {
+                item.minYears = Number(rule.minYears);
+            }
+            if (i < rules.length - 1) {
+                item.maxYears = Number(rule.maxYears);
+            }
+            result.push(item);
+        }
+        grantAmountType.tenureLeaveRules = result;
+        return true;
     },
 
     // 关闭当前窗口
