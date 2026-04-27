@@ -404,6 +404,8 @@ MWF.xApplication.attendancev2.LP = {
       grantTypeServiceLen: "司龄",
       grantTypeAddRule: "添加规则",
       grantTypeServiceLenRuleScope: "司龄范围",
+      expireTime: "假期有效期",
+      expireValuePlaceholder: "请输入假期有效期，必须为大于0的整数",
 
     }
   },

@@ -95,6 +95,7 @@ export default content({
     },
     clickChangeGrantType(type) {
         this.bind.form.grantType = type;
+        this.bind.form.expireType = type === "ONE_TIME" ? "NEVER" : "RELATIVE";
     },
     clickChangeGrantAmountType(type) {
         this.ensureGrantAmountType();
@@ -137,6 +138,10 @@ export default content({
             return;
         }
         if (form.grantType === "YEARLY" && !this.validateGrantAmountType()) {
+            return;
+        }
+        if (form.expireType === "RELATIVE" && !this.isValidGrantAmount(form.expireValue)) {
+            o2.api.page.notice(lp.leaveManagerV2.policy.expireValuePlaceholder, 'error');
             return;
         }
         console.debug("submit form", form);

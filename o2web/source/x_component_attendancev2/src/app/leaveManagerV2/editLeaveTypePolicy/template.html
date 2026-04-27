@@ -177,6 +177,26 @@
                 </div>
             </div>
 
+            <!-- 过期 -->
+            <div class="margin-top" oo-if="$.form.grantType == 'YEARLY' || $.form.grantType == 'MONTHLY'">
+                <div class="form-item-line-label">
+                    <span class="required">*</span>
+                     {{$.lp.leaveManagerV2.policy.expireTime}}
+                </div>
+                <div class="margin-top" oo-if="$.form.grantType == 'YEARLY'">
+                    自发放日起
+                    <input oo-model="form.expireValue" 
+                        style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
+                    年后过期
+                </div>
+                <div class="margin-top" oo-if="$.form.grantType == 'MONTHLY'">
+                    自发放日起
+                    <input oo-model="form.expireValue"  
+                        style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
+                    月后过期
+                </div>
+            </div>
+
         </div>
 
         <div class="o2-form-footer">

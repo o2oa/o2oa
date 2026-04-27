@@ -108,6 +108,9 @@ export default content({
       this.bind.showValue = `${month}${lp.components.monthDaySelectorMonth}${dayStr}${lp.components.monthDaySelectorDay}`;
     },
     selected(day) {
+      if (!this.bind.chooseMonth) {
+        this.bind.chooseMonth = 1;
+      }
       this.bind.chooseDay = day;
       const month = this.bind.chooseMonth < 10 ? `0${this.bind.chooseMonth}` : this.bind.chooseMonth;
       const dayStr = this.bind.chooseDay < 10 ? `0${this.bind.chooseDay}` : this.bind.chooseDay;
