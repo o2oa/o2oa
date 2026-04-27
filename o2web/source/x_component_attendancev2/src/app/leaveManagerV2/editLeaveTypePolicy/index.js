@@ -23,7 +23,11 @@ export default content({
                 grantType: "YEARLY", // YEARLY | MONTHLY | ONE_TIME
                 grantTypeValue: "Y:01-01", // 发放方式日期规则配置： Y:01-01/MS:1,ME:1/ONE_TIME
                 grantAmount: 0, // 发放数量
-                grantAmountType: {},
+                grantAmountType: {
+                    type: "FIXED", // FIXED | SERVICELEN  固定额度｜工龄额度
+                    grantAmount: 0.0,
+                    tenureLeaveRules: [] // 工龄额度规则，按照工龄年限递增的规则列表，示例：[{maxYears: 2, amount: 5}, {minYears: 2, maxYears: 5, amount: 7}, {minYears: 5, amount: 10}]
+                }, 
                 expireType: "RELATIVE", // 过期类型 NEVER / RELATIVE
                 expireValue: 1, // 过期值，单位为年
                 carryForward: false, // 是否允许结转

@@ -16,7 +16,7 @@ public class AttendanceV2LeavePolicyGrantAmountTypeProperties extends JsonProper
     private Double grantAmount = 0.0;
 
     @FieldDescribe("按司龄发放规则列表")
-    private List<AttendanceV2LeavePlicyGrantAmountTypeTenureLeaveRule> tenureLeaveRules;
+    private List<AttendanceV2LeavePolicyGrantAmountTypeTenureLeaveRule> tenureLeaveRules;
 
     // 根据司龄计算发放额度
     public Double calculateGrantAmount(Double yearsOfService) {
@@ -27,9 +27,9 @@ public class AttendanceV2LeavePolicyGrantAmountTypeProperties extends JsonProper
                 return 0.0;
             }
             if (tenureLeaveRules != null) {
-                for (AttendanceV2LeavePlicyGrantAmountTypeTenureLeaveRule rule : tenureLeaveRules) {
+                for (AttendanceV2LeavePolicyGrantAmountTypeTenureLeaveRule rule : tenureLeaveRules) {
                     if (rule.match(yearsOfService)) {
-                        return rule.getGrantAmount();
+                        return rule.getAmount();
                     }
                 }
             }
@@ -69,11 +69,11 @@ public class AttendanceV2LeavePolicyGrantAmountTypeProperties extends JsonProper
         this.grantAmount = grantAmount;
     }
 
-    public List<AttendanceV2LeavePlicyGrantAmountTypeTenureLeaveRule> getTenureLeaveRules() {
+    public List<AttendanceV2LeavePolicyGrantAmountTypeTenureLeaveRule> getTenureLeaveRules() {
         return tenureLeaveRules;
     }
 
-    public void setTenureLeaveRules(List<AttendanceV2LeavePlicyGrantAmountTypeTenureLeaveRule> tenureLeaveRules) {
+    public void setTenureLeaveRules(List<AttendanceV2LeavePolicyGrantAmountTypeTenureLeaveRule> tenureLeaveRules) {
         this.tenureLeaveRules = tenureLeaveRules;
     }
 
