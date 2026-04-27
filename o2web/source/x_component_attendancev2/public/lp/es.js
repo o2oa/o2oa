@@ -16,8 +16,10 @@ MWF.xApplication.attendancev2.LP={
 		"groupmanager": "Gestión de grupos de asistencia",
 		"addressmanger": "Gestión de lugares de trabajo",
 		"leavemanager": "Registros de ausencia",
+		"leavemanagerv2": "Gestión de vacaciones",
 		"configmanager": "Gestión de configuración"
 	},
+	"back": "Volver",
 	"alert": "Alerta",
 	"operate": "Operar",
 	"choose": "Elegir",
@@ -73,7 +75,10 @@ MWF.xApplication.attendancev2.LP={
 		"chooseDatePlaceholder": "Seleccionar fecha",
 		"selectPlaceholder": "Seleccionar",
 		"selectOrgPersonOverCount": "¡Solo se pueden seleccionar ({count}) datos!",
-		"errorPageNumber": "¡¡ introduzca el número de página correcto!"
+		"errorPageNumber": "¡¡ introduzca el número de página correcto!",
+		"monthDaySelectorPlaceholder": "Seleccione mes y día",
+		"monthDaySelectorMonth": "Mes",
+		"monthDaySelectorDay": "Día"
 	},
 	"myAttendanceTitle": "Mis estadísticas",
 	"myAttendanceCalendar": "Calendario de asistencia",
@@ -337,6 +342,55 @@ MWF.xApplication.attendancev2.LP={
 		"importExcelFileSuccess": "Importación completada. ¡Haga clic en Aceptar para descargar y ver los resultados de la importación!",
 		"deleteConfirm": "¿Está seguro de que desea eliminar estos datos de registro?"
 	},
+	"leaveManagerV2Title": "Gestión de vacaciones",
+	"leaveManagerV2": {
+		"gotoOld": "Ver datos antiguos de permisos",
+		"back2V2": "Volver a Gestión de vacaciones",
+		"leaveTypeTitle": "Tipos de vacaciones",
+		"addType": "Agregar tipo de vacaciones",
+		"editType": "Editar tipo de vacaciones",
+		"addTypePolicy": "Agregar regla de tipo de vacaciones",
+		"editTypePolicy": "Editar regla de tipo de vacaciones",
+		"type": {
+			"name": "Nombre del tipo de vacaciones",
+			"namePlaceholder": "Ingrese el nombre del tipo de vacaciones",
+			"quotaType": "Tipo de cuota",
+			"configPolicy": "Configurar reglas",
+			"quotaTypeLimited": "Limitada",
+			"quotaTypeUnlimited": "Ilimitada",
+			"confirmDelete": "¿Está seguro de que desea eliminar estos datos de 【{name}】?"
+		},
+		"policy": {
+			"policyName": "Nombre de la regla",
+			"policyNamePlaceholder": "Ingrese el nombre de la regla",
+			"grantScopeType": "Alcance de asignación",
+			"grantScopeTypeALL": "Todo el personal",
+			"grantScopeTypeDEPARTMENT": "Departamentos/personas",
+			"grantScopeListPickerPlaceholder": "Seleccione el alcance de asignación",
+			"grantType": "Método de asignación",
+			"grantTypeYEARLY": "Asignación anual",
+			"grantTypeYearLabel": "Fecha de asignación anual:",
+			"grantTypeYearPlaceholder": "Seleccione la fecha de asignación anual",
+			"grantTypeMONTHLY": "Asignación mensual",
+			"grantTypeMonthLabel": "Fecha de asignación mensual:",
+			"grantTypeMonthPlaceholder": "Ingrese la fecha de asignación mensual, un número del 1 al 28",
+			"grantTypeONE_TIME": "Asignación única",
+			"grantAmount": "Cuota asignada",
+			"grantAmountPlaceholder": "Ingrese la cuota asignada, debe ser un entero mayor que 0",
+			"description": "Descripción de la regla",
+			"grantTypeLabel": "Configuración del tipo de cuota",
+			"grantTypeFixedLabel": "Cuota fija",
+			"grantTypeServiceLenLabel": "Cuota por antigüedad",
+			"grantTypeRuleLengthLabel": "Las reglas de cuota por antigüedad requieren al menos 2 entradas",
+			"grantServiceAmountPlaceholder": "Ingrese la cuota asignada para cada regla de antigüedad, debe ser un número mayor que 0",
+			"grantTypeServiceLenRule": "Regla de antigüedad",
+			"grantTypeServiceLen": "Antigüedad",
+			"grantTypeAddRule": "Agregar regla",
+			"grantTypeServiceLenRuleScope": "Rango de antigüedad",
+			"expireTime": "Periodo de validez de las vacaciones",
+			"expireValuePlaceholder": "Ingrese el periodo de validez de las vacaciones, debe ser un entero mayor que 0"
+		}
+	},
 	"appealManagerTitle": "Datos de excepciones de asistencia",
 	"appeal": {
 		"date": "Fecha",
@@ -401,7 +455,8 @@ MWF.xApplication.attendancev2.LP={
 		"outsideTitle": "Registro de trabajo de campo",
 		"outsideNotAllow": "No se permite el registro de trabajo de campo.",
 		"outsideRemarkPlaceholder": "Ingresa una descripción para el registro de trabajo de campo.",
-		"statisticMonthLabel": "Mes"
+		"statisticMonthLabel": "Mes",
+		"myTitle": "Mi asistencia"
 	}
 }
 MWF.xApplication.attendancev2["lp."+o2.language] = MWF.xApplication.attendancev2.LP

@@ -16,8 +16,10 @@ MWF.xApplication.attendancev2.LP={
 		"groupmanager": "Attendance Group Management",
 		"addressmanger": "Workplace Management",
 		"leavemanager": "Out of Office Leave Records",
+		"leavemanagerv2": "Leave Management",
 		"configmanager": "Configuration Management"
 	},
+	"back": "Back",
 	"alert": "Alert",
 	"operate": "Operate",
 	"choose": "Choose",
@@ -73,7 +75,10 @@ MWF.xApplication.attendancev2.LP={
 		"chooseDatePlaceholder": "Select Date",
 		"selectPlaceholder": "Select",
 		"selectOrgPersonOverCount": "You can select up to ({count}) data!",
-		"errorPageNumber": "Please enter the correct page number!"
+		"errorPageNumber": "Please enter the correct page number!",
+		"monthDaySelectorPlaceholder": "Select month and day",
+		"monthDaySelectorMonth": "Month",
+		"monthDaySelectorDay": "Day"
 	},
 	"myAttendanceTitle": "My Statistics",
 	"myAttendanceCalendar": "Attendance Calendar",
@@ -337,6 +342,55 @@ MWF.xApplication.attendancev2.LP={
 		"importExcelFileSuccess": "Import completed. Click OK to download and view the import results!",
 		"deleteConfirm": "Are you sure you want to delete this record?"
 	},
+	"leaveManagerV2Title": "Leave Management",
+	"leaveManagerV2": {
+		"gotoOld": "View old leave record data",
+		"back2V2": "Back to Leave Management",
+		"leaveTypeTitle": "Leave Types",
+		"addType": "Add Leave Type",
+		"editType": "Edit Leave Type",
+		"addTypePolicy": "Add Leave Type Rule",
+		"editTypePolicy": "Edit Leave Type Rule",
+		"type": {
+			"name": "Leave Type Name",
+			"namePlaceholder": "Enter leave type name",
+			"quotaType": "Quota Type",
+			"configPolicy": "Configure Rules",
+			"quotaTypeLimited": "Limited",
+			"quotaTypeUnlimited": "Unlimited",
+			"confirmDelete": "Are you sure you want to delete this '{name}' data?"
+		},
+		"policy": {
+			"policyName": "Rule Name",
+			"policyNamePlaceholder": "Enter rule name",
+			"grantScopeType": "Grant Scope",
+			"grantScopeTypeALL": "All Members",
+			"grantScopeTypeDEPARTMENT": "Departments/Personnel",
+			"grantScopeListPickerPlaceholder": "Select grant scope",
+			"grantType": "Grant Method",
+			"grantTypeYEARLY": "Annual Grant",
+			"grantTypeYearLabel": "Annual grant date:",
+			"grantTypeYearPlaceholder": "Select the annual grant date",
+			"grantTypeMONTHLY": "Monthly Grant",
+			"grantTypeMonthLabel": "Monthly grant date:",
+			"grantTypeMonthPlaceholder": "Enter the monthly grant date, a number from 1 to 28",
+			"grantTypeONE_TIME": "One-Time Grant",
+			"grantAmount": "Grant Quota",
+			"grantAmountPlaceholder": "Enter the grant quota, must be an integer greater than 0",
+			"description": "Rule Description",
+			"grantTypeLabel": "Quota Type Configuration",
+			"grantTypeFixedLabel": "Fixed Quota",
+			"grantTypeServiceLenLabel": "Service Length Quota",
+			"grantTypeRuleLengthLabel": "Service length quota rules require at least 2 entries",
+			"grantServiceAmountPlaceholder": "Enter the grant quota for each service length rule, must be a number greater than 0",
+			"grantTypeServiceLenRule": "Service Length Rule",
+			"grantTypeServiceLen": "Service Length",
+			"grantTypeAddRule": "Add Rule",
+			"grantTypeServiceLenRuleScope": "Service Length Range",
+			"expireTime": "Leave Validity Period",
+			"expireValuePlaceholder": "Enter the leave validity period, must be an integer greater than 0"
+		}
+	},
 	"appealManagerTitle": "Abnormal attendance data",
 	"appeal": {
 		"date": "Date",
@@ -401,7 +455,8 @@ MWF.xApplication.attendancev2.LP={
 		"outsideTitle": "Field Work Clock-In",
 		"outsideNotAllow": "Field Work Clock-In not allowed!",
 		"outsideRemarkPlaceholder": "Enter Field Work Clock-In Remarks!",
-		"statisticMonthLabel": "Month"
+		"statisticMonthLabel": "Month",
+		"myTitle": "My Attendance"
 	}
 }
 MWF.xApplication.attendancev2["lp."+o2.language] = MWF.xApplication.attendancev2.LP
