@@ -351,6 +351,7 @@ MWF.xApplication.attendancev2.LP={
 		"editType": "Editar tipo de vacaciones",
 		"addTypePolicy": "Agregar regla de tipo de vacaciones",
 		"editTypePolicy": "Editar regla de tipo de vacaciones",
+		"confirmDelete": "¿Está seguro de que desea eliminar estos datos de 【{name}】?",
 		"type": {
 			"name": "Nombre del tipo de vacaciones",
 			"namePlaceholder": "Ingrese el nombre del tipo de vacaciones",
@@ -358,7 +359,6 @@ MWF.xApplication.attendancev2.LP={
 			"configPolicy": "Configurar reglas",
 			"quotaTypeLimited": "Limitada",
 			"quotaTypeUnlimited": "Ilimitada",
-			"confirmDelete": "¿Está seguro de que desea eliminar estos datos de 【{name}】?"
 		},
 		"policy": {
 			"policyName": "Nombre de la regla",

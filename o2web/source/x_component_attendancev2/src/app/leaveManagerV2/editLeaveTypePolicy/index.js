@@ -144,11 +144,14 @@ export default content({
             o2.api.page.notice(lp.leaveManagerV2.policy.expireValuePlaceholder, 'error');
             return;
         }
+        if (!form.id) { // 新增默认立即发放
+            form.isGrantImmediately = true; 
+        }
         console.debug("submit form", form);
-        // const result = await leaveManagerAction("policyPost", form);
-        // console.log(result);
-        // o2.api.page.notice(lp.saveSuccess, 'success');
-        // this.close();
+        const result = await leaveManagerAction("policyPost", form);
+        console.log(result);
+        o2.api.page.notice(lp.saveSuccess, 'success');
+        this.close();
     },
     isValidGrantTypeMonthValue(input) {
         // 先判断是不是纯数字（避免 "1e2" 这种）

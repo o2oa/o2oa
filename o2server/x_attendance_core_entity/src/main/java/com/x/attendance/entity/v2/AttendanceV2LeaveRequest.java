@@ -48,7 +48,7 @@ public class AttendanceV2LeaveRequest extends SliceJpaObject {
 
     public static final String leaveTypeId_FIELDNAME = "leaveTypeId";
     @FieldDescribe("假期类型")
-    @Column(length = JpaObject.length_32B, name = ColumnNamePrefix + leaveTypeId_FIELDNAME)
+    @Column(length = JpaObject.length_id, name = ColumnNamePrefix + leaveTypeId_FIELDNAME)
     private String leaveTypeId;
 
     public static final String startTime_FIELDNAME = "startTime";

@@ -27,60 +27,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 abstract class BaseAction extends StandardJaxrsAction {
     private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
 
-    /**
-     * 异步更新假期账户余额数据
-     * 
-     * @param personDN
-     * @param leaveTypeId
-     */
-    protected void asyncUpdateLeaveAccount(String personDN, String leaveTypeId) {
-        logger.info("需要异步更新用户 {} 的请假类型 {} 的余额数据", personDN, leaveTypeId);
-        Thread thread = new Thread(() -> {
-            try {
-                EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
-                List<AttendanceV2LeaveLedger> ledgers = emc.listEqualAndEqualAndEqual(AttendanceV2LeaveLedger.class,
-                        AttendanceV2LeaveLedger.person_FIELDNAME, personDN,
-                        AttendanceV2LeaveLedger.leaveTypeId_FIELDNAME, leaveTypeId,
-                        AttendanceV2LeaveLedger.active_FIELDNAME, true);
-                List<AttendanceV2LeaveAccount> accounts = emc.listEqualAndEqual(AttendanceV2LeaveAccount.class,
-                        AttendanceV2LeaveAccount.person_FIELDNAME, personDN,
-                        AttendanceV2LeaveAccount.leaveTypeId_FIELDNAME, leaveTypeId);
-                AttendanceV2LeaveAccount account = null;
-                if (accounts == null || accounts.isEmpty()) {
-                    account = new AttendanceV2LeaveAccount();
-                    account.setPerson(personDN);
-                    account.setLeaveTypeId(leaveTypeId);
-                    emc.beginTransaction(AttendanceV2LeaveAccount.class);
-                    emc.persist(account, CheckPersistType.all);
-                    emc.commit();
-                } else {
-                    account = accounts.get(0);
-                }
-                if (ledgers != null && !ledgers.isEmpty()) {
-                    double totalGranted = 0.0;
-                    double totalUsed = 0.0;
-                    double balance = 0.0;
-                    for (AttendanceV2LeaveLedger ledger : ledgers) {
-                        totalGranted += ledger.getGrantAmount() != null ? ledger.getGrantAmount() : 0.0;
-                        totalUsed += ledger.getUsedAmount() != null ? ledger.getUsedAmount() : 0.0;
-                        balance += ledger.getRemainingAmount() != null ? ledger.getRemainingAmount() : 0.0;
-                    }
-                    account.setTotalGranted(totalGranted);
-                    account.setTotalUsed(totalUsed);
-                    account.setBalance(balance);
-                    emc.beginTransaction(AttendanceV2LeaveAccount.class);
-                    AttendanceV2LeaveAccount old = emc.find(account.getId(), AttendanceV2LeaveAccount.class);
-                    account.copyTo(old, JpaObject.FieldsUnmodify);
-                    emc.check(old, CheckPersistType.all);
-                    emc.commit();
-                }
-            } catch (Exception e) {
-                logger.error(e);
-            }
 
-        });
-        thread.start();
-    }
 
     /**
      * 扣除请假余额
@@ -170,7 +117,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                 emc.commit();
             }
             // 扣减完后异步更新账户余额数据
-            asyncUpdateLeaveAccount(personDN, leaveType.getId());
+            AttendanceV2LeaveManager.asyncUpdateLeaveAccount(personDN, leaveType.getId());
         }
     }
 

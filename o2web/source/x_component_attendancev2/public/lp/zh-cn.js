@@ -368,6 +368,7 @@ MWF.xApplication.attendancev2.LP = {
     editType: "编辑假期类型",
     addTypePolicy: "新增假期类型规则",
     editTypePolicy: "编辑假期类型规则",
+    confirmDelete: "确认要删除这条【{name}】数据？",
     type: {
       name: "假期类型名称",
       namePlaceholder: "请输入假期类型名称",
@@ -375,7 +376,6 @@ MWF.xApplication.attendancev2.LP = {
       configPolicy: "配置规则",
       quotaTypeLimited: "限额",
       quotaTypeUnlimited: "不限额",
-      confirmDelete: "确认要删除这条【{name}】数据？",
     },
     policy: {
       policyName: "规则名称",

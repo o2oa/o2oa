@@ -1,6 +1,6 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2, layout } from "@o2oa/component";
-import { lpFormat } from "../../utils/common";
+import { lpFormat, formatPersonName } from "../../utils/common";
 import { leaveManagerAction } from "../../utils/actions";
 import oPager from "../../components/o-pager";
 import oOrgPersonSelector from "../../components/o-org-person-selector";
@@ -51,7 +51,7 @@ export default content({
   clickDeleteType(typeId) {
     const type = this.bind.leaveTypeList.find((g) => g.id === typeId);
     var _self = this;
-    const c = lpFormat(lp, "leaveManagerV2.type.confirmDelete", { name: type.name });
+    const c = lpFormat(lp, "leaveManagerV2.confirmDelete", { name: type.name });
     o2.api.page.confirm(
       "warn",
       lp.alert,
@@ -98,6 +98,24 @@ export default content({
     this.bind.leaveTypePolicyShow = true;
     this.clickOpenPolicyLoading = false;
   },
+  formatScopeList(policy) {
+    if (policy.grantScopeType === "ALL") {
+      return lp.leaveManagerV2.policy.grantScopeTypeALL;
+    } else {
+      const list = policy.grantScopeList || [];
+      const nameList = list.map((item) => formatPersonName(item));
+      return nameList.join("|");
+    }
+  },
+  formatGrantType(grantType) {
+    if (grantType === "ONE_TIME") {
+      return lp.leaveManagerV2.policy.grantTypeONE_TIME;
+    } else if (grantType === "MONTHLY") {
+      return lp.leaveManagerV2.policy.grantTypeMONTHLY;
+    } else {
+      return lp.leaveManagerV2.policy.grantTypeYEARLY;
+    }
+  },
   clickBackTypeList() {
     this.bind.leaveTypePolicyShow = false;
     this.bind.leaveTypePolicyList = [];
@@ -110,5 +128,29 @@ export default content({
     console.log("点击编辑假期类型规程", id);
     this.$parent.openLeaveTypePolicyForm({ bind: { updateId: id } });
   },
-  
+  clickDeletePolicy(id) {
+    const policy = this.bind.leaveTypePolicyList.find((g) => g.id === id);
+    var _self = this;
+    const c = lpFormat(lp, "leaveManagerV2.confirmDelete", { name: policy.policyName });
+    o2.api.page.confirm(
+      "warn",
+      lp.alert,
+      c,
+      300,
+      100,
+      function () {
+        _self.deletePolicy(id);
+        this.close();
+      },
+      function () {
+        this.close();
+      }
+    );
+  },
+  async deletePolicy(id) {  
+    this.$parent.closeFormVm();
+    const result = await leaveManagerAction("policyDelete", id)
+    console.debug(result);
+    this.refreshPolicyList();
+  },
 });

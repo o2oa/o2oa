@@ -351,6 +351,7 @@ MWF.xApplication.attendancev2.LP={
 		"editType": "Edit Leave Type",
 		"addTypePolicy": "Add Leave Type Rule",
 		"editTypePolicy": "Edit Leave Type Rule",
+		"confirmDelete": "Are you sure you want to delete this '{name}' data?",
 		"type": {
 			"name": "Leave Type Name",
 			"namePlaceholder": "Enter leave type name",
@@ -358,7 +359,6 @@ MWF.xApplication.attendancev2.LP={
 			"configPolicy": "Configure Rules",
 			"quotaTypeLimited": "Limited",
 			"quotaTypeUnlimited": "Unlimited",
-			"confirmDelete": "Are you sure you want to delete this '{name}' data?"
 		},
 		"policy": {
 			"policyName": "Rule Name",

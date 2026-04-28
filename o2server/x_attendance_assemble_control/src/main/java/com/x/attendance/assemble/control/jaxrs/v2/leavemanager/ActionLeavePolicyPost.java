@@ -1,5 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.v2.leavemanager;
 
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -29,6 +31,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 
 public class ActionLeavePolicyPost extends BaseAction {
+
+    private static Logger logger = LoggerFactory.getLogger(ActionLeavePolicyPost.class);
 
     ActionResult<Wo> execute(EffectivePerson person, JsonElement jsonElement) throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -71,9 +75,14 @@ public class ActionLeavePolicyPost extends BaseAction {
                         AttendanceV2LeavePolicy.class, AttendanceV2LeavePolicy.leaveTypeId_FIELDNAME,
                         wi.getLeaveTypeId(), AttendanceV2LeavePolicy.grantScopeType_FIELDNAME,
                         GrantScopeTypeEnum.ALL.getValue(), AttendanceV2LeavePolicy.active_FIELDNAME, true);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("checkTypeAndScopeAll size: {}, leaveTypeId: {}, grantScopeType: {} , id: {}",
+                            checkTypeAndScopeAll == null ? 0 : checkTypeAndScopeAll.size(), wi.getLeaveTypeId(),
+                            GrantScopeTypeEnum.ALL.getValue(), wi.getId());
+                }
                 if (checkTypeAndScopeAll != null && !checkTypeAndScopeAll.isEmpty()) {
                     for (AttendanceV2LeavePolicy check : checkTypeAndScopeAll) {
-                        if (!check.getId().equals(wi.getId())) {
+                        if (!check.getId().equals(wi.getId()) && (wi.getGrantType().equals(check.getGrantType())) ) {
                             throw new ExceptionWithMessage("当前假期类型已有配置规则");
                         }
                     }
