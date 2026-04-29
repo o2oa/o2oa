@@ -18,6 +18,7 @@ export default content({
             accountList: [],
             leaveTypeList: [],
             personList: [],
+            accountTableList: [],
         };
     },
     afterRender() {
@@ -44,10 +45,44 @@ export default content({
             this.bind.accountList = json.accountList || [];
             this.bind.leaveTypeList = json.leaveTypeList || [];
             this.bind.personList = json.personList || [];
+            this.bind.accountTableList = this.buildAccountTableList(this.bind.personList, this.bind.leaveTypeList, this.bind.accountList);
         } finally {
             this.queryLoading = false;
             await hideLoading(this);
         }
-        console.log("result", this.bind);
+    },
+    buildAccountTableList(personList, leaveTypeList, accountList) {
+        const accountMap = {};
+        (accountList || []).forEach((account) => {
+            accountMap[`${account.person}_${account.leaveTypeId}`] = account;
+        });
+        return (personList || []).map((person) => ({
+            person,
+            personName: formatPersonName(person),
+            balanceList: (leaveTypeList || []).map((leaveType) => {
+                const account = accountMap[`${person}_${leaveType.id}`];
+                return {
+                    leaveTypeId: leaveType.id,
+                    value: account ? this.formatAccountValue(account) : "0/0/0",
+                };
+            }),
+        }));
+    },
+    formatAccountValue(account) {
+        return [
+            this.formatNumber(account.totalGranted),
+            this.formatNumber(account.totalUsed),
+            this.formatNumber(account.balance),
+        ].join("/");
+    },
+    formatNumber(value) {
+        if (value === null || value === undefined || value === "") {
+            return "0";
+        }
+        const number = Number(value);
+        if (!Number.isFinite(number)) {
+            return "0";
+        }
+        return Number.isInteger(number) ? `${number}` : `${Number(number.toFixed(2))}`;
     },
 });
