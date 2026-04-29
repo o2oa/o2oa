@@ -407,6 +407,10 @@ MWF.xApplication.attendancev2.LP = {
       expireTime: "假期有效期",
       expireValuePlaceholder: "请输入假期有效期，必须为大于0的整数",
 
+    },
+    account: {
+      filterSelectTitle: "查询的人员或组织",
+      filterEmptyPlaceholder: "请选择人员或组织！",
     }
   },
 

@@ -6,8 +6,17 @@
             $.lp.leaveManagerV2.leaveTypeTitle }}</div>
     </div>
     <div class="manager-box-content">
-        <div style="margin: 10px 0;float: left;">
-            <button class="mainColor_bg" @click="clickAddPolicy">{{$.lp.leaveManagerV2.addTypePolicy}}</button>
+        <div style="margin: 10px 0;float: left;display: flex; align-items: center;">
+            <!--人员组织选择  -->
+            <div class="margin-right">
+                <o-org-person-selector
+                    oo-prop="{'isRequried': true, 'selectorTitle': $.lp.leaveManagerV2.account.filterSelectTitle,  'placeholder': $.lp.leaveManagerV2.account.filterEmptyPlaceholder, 'value': $.filterList}"
+                    oo-model="filterList"></o-org-person-selector>
+            </div>
+ 
+            <div class="margin-top margin-right">
+                <button class="mainColor_bg" @click="search">{{$.lp.search}}</button>
+            </div>
         </div>
     </div>
 </div>
