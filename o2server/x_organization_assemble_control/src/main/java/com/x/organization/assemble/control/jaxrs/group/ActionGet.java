@@ -1,5 +1,6 @@
 package com.x.organization.assemble.control.jaxrs.group;
 
+import com.x.base.core.project.tools.Crypto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,7 @@ import com.x.organization.core.entity.Group;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Unit;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionGet extends BaseAction {
 
@@ -68,6 +70,15 @@ class ActionGet extends BaseAction {
 		if (ListTools.isNotEmpty(wo.getPersonList())) {
 			List<Person> os = business.person().pick(wo.getPersonList());
 			wos = WoPerson.copier.copy(os);
+			for (WoPerson woPerson : wos) {
+				if(StringUtils.isNotBlank(woPerson.getMobile())) {
+					woPerson.setMobile(Crypto.base64Encode(Crypto.base64Encode(woPerson.getMobile())));
+				}
+				if(StringUtils.isNotBlank(woPerson.getMail())) {
+					woPerson.setMail(Crypto.base64Encode(Crypto.base64Encode(woPerson.getMail())));
+				}
+			}
+
 		}
 		wo.setWoPersonList(wos);
 	}

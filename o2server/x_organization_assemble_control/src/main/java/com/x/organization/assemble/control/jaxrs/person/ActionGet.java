@@ -1,5 +1,6 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
+import com.x.base.core.project.tools.Crypto;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -79,6 +80,12 @@ class ActionGet extends BaseAction {
                                 .sort(WoPersonAttribute.copier
                                         .copy(emc.list(PersonAttribute.class, detail.get().fifth()))));
                     }
+                }
+                if(StringUtils.isNotBlank(wo.getMobile())){
+                    wo.setMobile(Crypto.base64Encode(Crypto.base64Encode(wo.getMobile())));
+                }
+                if(StringUtils.isNotBlank(wo.getMail())){
+                    wo.setMail(Crypto.base64Encode(Crypto.base64Encode(wo.getMail())));
                 }
                 CacheManager.put(business.cache(), cacheKey, wo);
                 result.setData(wo);

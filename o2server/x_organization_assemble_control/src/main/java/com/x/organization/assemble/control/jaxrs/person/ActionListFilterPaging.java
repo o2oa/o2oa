@@ -81,6 +81,12 @@ class ActionListFilterPaging extends BaseAction {
 				if (wo.getMobile().startsWith(Person.ENCRYPT)) {
 					wo.setMobile(Crypto.base64Decode(wo.getMobile().substring(Person.ENCRYPT.length())));
 				}
+				if(StringUtils.isNotBlank(wo.getMobile())){
+					wo.setMobile(Crypto.base64Encode(Crypto.base64Encode(wo.getMobile())));
+				}
+				if(StringUtils.isNotBlank(wo.getMail())){
+					wo.setMail(Crypto.base64Encode(Crypto.base64Encode(wo.getMail())));
+				}
 			});
 
 			result.setData(wos);
