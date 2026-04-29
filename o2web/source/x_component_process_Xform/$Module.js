@@ -1477,6 +1477,10 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
     },
     _loadOONodeDownloading: function (){
+        if(!this.node.offsetParent){
+            //this.node.destroy();
+            return;
+        }
         this.node.setStyle('display', 'none');
         let valueNode, labelNode;
         const node = new Element('div.oo-node-downloading', {
