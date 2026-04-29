@@ -134,9 +134,9 @@ abstract class BaseAction extends StandardJaxrsAction {
         }
     }
 
-    // 解析人员列表，把组织下人员都查询出来放入 userList 中
+    // 解析人员列表，把组织下人员都查询出来放入 userList 中 不递归
     protected void analysisPerson(List<String> userList, String filter, Business business) throws Exception {
-        if (filter.endsWith("@U")) { // 组织转化成人员列表 不递归
+        if (filter.endsWith("@U")) {
             List<String> users = business.organization().person().listWithUnitSubDirect(filter);
             if (users != null && !users.isEmpty()) {
                 userList.addAll(users);

@@ -2,6 +2,8 @@ package com.x.attendance.assemble.control.jaxrs.v2.leavemanager;
 
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -69,7 +71,7 @@ public class ActionLeavePolicyPost extends BaseAction {
                     && (wi.getGrantScopeList() == null || wi.getGrantScopeList().isEmpty())) {
                 throw new ExceptionEmptyParameter("发放范围列表");
             }
-            // 全员 校验是否有同类型的了 ， todo： GrantScopeTypeEnum.DEPARTMENT下是否判断重复
+            // 全员 校验是否有同类型的了 ，
             if (GrantScopeTypeEnum.ALL.getValue().equals(wi.getGrantScopeType())) {
                 List<AttendanceV2LeavePolicy> checkTypeAndScopeAll = emc.listEqualAndEqualAndEqual(
                         AttendanceV2LeavePolicy.class, AttendanceV2LeavePolicy.leaveTypeId_FIELDNAME,
@@ -82,8 +84,27 @@ public class ActionLeavePolicyPost extends BaseAction {
                 }
                 if (checkTypeAndScopeAll != null && !checkTypeAndScopeAll.isEmpty()) {
                     for (AttendanceV2LeavePolicy check : checkTypeAndScopeAll) {
-                        if (!check.getId().equals(wi.getId()) && (wi.getGrantType().equals(check.getGrantType())) ) {
-                            throw new ExceptionWithMessage("当前假期类型已有配置规则");
+                        if (!check.getId().equals(wi.getId())) {
+                            throw new ExceptionWithMessage("当前假期类型全员已有配置规则");
+                        }
+                    }
+                }
+            } else if (GrantScopeTypeEnum.DEPARTMENT.getValue().equals(wi.getGrantScopeType())) {
+                // 部门 校验部门列表中是否有同类型的了
+                List<AttendanceV2LeavePolicy> checkTypeAndScopeDepartment = emc.listEqualAndEqualAndEqual(
+                        AttendanceV2LeavePolicy.class, AttendanceV2LeavePolicy.leaveTypeId_FIELDNAME,
+                        wi.getLeaveTypeId(), AttendanceV2LeavePolicy.grantScopeType_FIELDNAME,
+                        GrantScopeTypeEnum.DEPARTMENT.getValue(), AttendanceV2LeavePolicy.active_FIELDNAME, true);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("checkTypeAndScopeDepartment size: {}, leaveTypeId: {}, grantScopeType: {} , id: {}",
+                            checkTypeAndScopeDepartment == null ? 0 : checkTypeAndScopeDepartment.size(),
+                            wi.getLeaveTypeId(), GrantScopeTypeEnum.DEPARTMENT.getValue(), wi.getId());
+                }
+                if (checkTypeAndScopeDepartment != null && !checkTypeAndScopeDepartment.isEmpty()) {
+                    for (AttendanceV2LeavePolicy check : checkTypeAndScopeDepartment) {
+                        List<String> checkGrantScopeList = check.getGrantScopeList();
+                        if (!check.getId().equals(wi.getId()) && checkGrantScopeListHasSamePerson(checkGrantScopeList, wi.getGrantScopeList(), business)) {
+                            throw new ExceptionWithMessage("当前假期类型部门列表中有重复的人员");
                         }
                     }
                 }
@@ -148,6 +169,44 @@ public class ActionLeavePolicyPost extends BaseAction {
             }
 
             return result;
+        }
+
+    }
+
+    // 解析人员列表，把组织下人员都查询出来 然后比较
+    private boolean checkGrantScopeListHasSamePerson(List<String> scopeList1, List<String> scopeList2, Business business)
+            throws Exception {
+        List<String> userList1 = new ArrayList<>();
+        for (String s : scopeList1) {
+            drillDownPerson(userList1, s, business);
+        }
+        List<String> userList2 = new ArrayList<>();
+        for (String s2 : scopeList2) {
+            drillDownPerson(userList2, s2, business);
+        }
+        // 比较两个用户列表是否有重复的数据
+        if (userList1.isEmpty() || userList2.isEmpty()) {
+            return false;
+        }
+        java.util.Set<String> set = new java.util.HashSet<>(userList1);
+        for (String u : userList2) {
+            if (set.contains(u)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 解析人员列表，把组织下人员都查询出来放入 userList 中
+    private void drillDownPerson(List<String> userList, String filter, Business business)
+            throws Exception {
+        if (filter.endsWith("@U")) { // 组织转化成人员列表 递归
+            List<String> users = business.organization().person().listWithUnitSubNested(filter);
+            if (users != null && !users.isEmpty()) {
+                userList.addAll(users);
+            }
+        } else if (filter.endsWith("@P")) {
+            userList.add(filter);
         }
     }
 

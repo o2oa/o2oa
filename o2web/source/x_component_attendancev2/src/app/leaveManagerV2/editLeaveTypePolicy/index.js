@@ -1,6 +1,6 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
-import { isEmpty, setJSONValue } from "../../../utils/common";
+import { hideLoading, isEmpty, setJSONValue, showLoading } from "../../../utils/common";
 import { leaveManagerAction } from "../../../utils/actions";
 import template from "./template.html";
 import oInput from "../../../components/o-input";
@@ -147,11 +147,21 @@ export default content({
         if (!form.id) { // 新增默认立即发放
             form.isGrantImmediately = true; 
         }
-        console.debug("submit form", form);
-        const result = await leaveManagerAction("policyPost", form);
-        console.log(result);
-        o2.api.page.notice(lp.saveSuccess, 'success');
-        this.close();
+        if (this.submitLoading) {
+            return;
+        }
+        this.submitLoading = true;
+        try {
+            await showLoading(this);
+            console.debug("submit form", form);
+            const result = await leaveManagerAction("policyPost", form);
+            console.log(result);
+            o2.api.page.notice(lp.saveSuccess, 'success');
+            this.close();
+        } finally {
+            this.submitLoading = false;
+            await hideLoading(this);
+        }
     },
     isValidGrantTypeMonthValue(input) {
         // 先判断是不是纯数字（避免 "1e2" 这种）
