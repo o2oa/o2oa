@@ -6,9 +6,11 @@ import oPager from "../../components/o-pager";
 import oOrgPersonSelector from "../../components/o-org-person-selector";
 import oDatePicker from "../../components/o-date-picker";
 import template from "./template.html";
+import style from "./style.scope.css";
 
 export default content({
   template,
+  style,
   components: { oPager, oDatePicker, oOrgPersonSelector },
   autoUpdate: true,
   bind() {
@@ -17,7 +19,6 @@ export default content({
       leaveTypeList: [],
       leaveTypePolicyShow: false, // 是否显示某一个假期类型的规则列表
       currentLeaveType: null, // 当前选中的假期类型
-      leaveTypePolicyList: [], // 某一个假期类型的规则列表
     };
   },
   afterRender() {
@@ -28,10 +29,6 @@ export default content({
     this.$topParent.listenEventBus("leaveType", (data) => {
       console.log("接收到了leaveType消息", data);
       this.loadTypeList();
-    });
-    this.$topParent.listenEventBus("leaveTypePolicy", (data) => {
-      console.log("接收到了leaveTypePolicy消息", data);
-      this.refreshPolicyList();
     });
   },
   gotoOld() {
@@ -73,6 +70,13 @@ export default content({
     console.debug(result);
     this.loadTypeList();
   },
+  // 打开账号列表的搜索视图
+  async clickOpenAccountSearchView() {
+    const bindData = {  };
+    const c = (await import('./accountList/index.js')).default;
+    this.openOtherListViewVm(c, bindData);
+  },
+  // 打开某一个假期类型的规则列表
   clickOpenPolicyList(typeId) {
     console.log("点击打开配置规则列表", typeId);
     if (this.clickOpenPolicyLoading === true) {
@@ -81,77 +85,36 @@ export default content({
     }
     this.clickOpenPolicyLoading = true;
     this.$parent.closeFormVm();
-    this.loadPolicyList(typeId);
-  },
-  async refreshPolicyList() {
-    if (!this.bind.currentLeaveType) {
-      console.log("没有选中的假期类型，无法刷新规则列表");
-      return;
-    }
-    const typeId = this.bind.currentLeaveType.id;
-    await this.loadPolicyList(typeId);
-  },
-  async loadPolicyList(typeId) {
-    const type = this.bind.leaveTypeList.find((g) => g.id === typeId);
-    this.bind.currentLeaveType = type;
-    const list = await leaveManagerAction("policyListWithTypeId", typeId)
-    this.bind.leaveTypePolicyList = list || [];
     this.bind.leaveTypePolicyShow = true;
-    this.clickOpenPolicyLoading = false;
+    // this.loadPolicyList(typeId);
+    this.openPolicyListView(typeId);
   },
-  formatScopeList(policy) {
-    if (policy.grantScopeType === "ALL") {
-      return lp.leaveManagerV2.policy.grantScopeTypeALL;
-    } else {
-      const list = policy.grantScopeList || [];
-      const nameList = list.map((item) => formatPersonName(item));
-      return nameList.join("|");
-    }
+  async openPolicyListView(typeId) {
+    const bindData = { bind: { typeId: typeId } };
+    const c = (await import('./policyList/index.js')).default;
+    this.openOtherListViewVm(c, bindData);
   },
-  formatGrantType(grantType) {
-    if (grantType === "ONE_TIME") {
-      return lp.leaveManagerV2.policy.grantTypeONE_TIME;
-    } else if (grantType === "MONTHLY") {
-      return lp.leaveManagerV2.policy.grantTypeMONTHLY;
-    } else {
-      return lp.leaveManagerV2.policy.grantTypeYEARLY;
-    }
-  },
+
   clickBackTypeList() {
-    this.bind.leaveTypePolicyShow = false;
-    this.bind.leaveTypePolicyList = [];
     this.clickOpenPolicyLoading = false;
-  },
-  clickAddPolicy() {
-    this.$parent.openLeaveTypePolicyForm({ bind: { form: { leaveTypeId: this.bind.currentLeaveType.id } } });
-  },
-  clickEditLeaveTypePolicy(id) {
-    console.log("点击编辑假期类型规程", id);
-    this.$parent.openLeaveTypePolicyForm({ bind: { updateId: id } });
-  },
-  clickDeletePolicy(id) {
-    const policy = this.bind.leaveTypePolicyList.find((g) => g.id === id);
-    var _self = this;
-    const c = lpFormat(lp, "leaveManagerV2.confirmDelete", { name: policy.policyName });
-    o2.api.page.confirm(
-      "warn",
-      lp.alert,
-      c,
-      300,
-      100,
-      function () {
-        _self.deletePolicy(id);
-        this.close();
-      },
-      function () {
-        this.close();
-      }
-    );
-  },
-  async deletePolicy(id) {  
     this.$parent.closeFormVm();
-    const result = await leaveManagerAction("policyDelete", id)
-    console.debug(result);
-    this.refreshPolicyList();
+    if (this.policyListVM) {
+      this.policyListVM.destroy();
+      this.policyListVM = null;
+    }
+    this.dom.querySelector("#otherListView").classList.remove("l-display-block");
+    this.dom.querySelector("#otherListView").classList.add("l-display-none");
+    this.dom.querySelector("#leaveTypeListView").classList.remove("l-display-none");
+    this.dom.querySelector("#leaveTypeListView").classList.add("l-display-block");
   },
+
+  async openOtherListViewVm(c, bindData) {
+    this.policyListVM = await c.generate("#otherListView", bindData, this);
+    this.dom.querySelector("#leaveTypeListView").classList.remove("l-display-block");
+    this.dom.querySelector("#leaveTypeListView").classList.add("l-display-none");
+    this.dom.querySelector("#otherListView").classList.remove("l-display-none");
+    this.dom.querySelector("#otherListView").classList.add("l-display-block");
+
+  },
+
 });

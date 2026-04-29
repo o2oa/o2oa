@@ -1,0 +1,30 @@
+<!-- 假期类型规则 -->
+<div style="display: flex; flex-direction: column;" >
+    <div class="index_page_header_container">
+        <div class="index_page_header_title"><button style="margin-left: 0;margin-right: 10px;"
+                @click="clickBackTypeList"><i class="ooicon-process-goback"></i></button> {{
+            $.lp.leaveManagerV2.leaveTypeTitle }} - {{ ($.currentLeaveType && $.currentLeaveType.name)?
+            $.currentLeaveType.name : '' }}</div>
+    </div>
+    <div class="manager-box-content">
+        <div style="margin: 10px 0;float: left;">
+            <button class="mainColor_bg" @click="clickAddPolicy">{{$.lp.leaveManagerV2.addTypePolicy}}</button>
+        </div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
+            <thead>
+                <th>{{$.lp.leaveManagerV2.policy.policyName}}</th>
+                <th>{{$.lp.leaveManagerV2.policy.grantScopeType}}</th>
+                <th>{{$.lp.leaveManagerV2.policy.grantType}}</th>
+                <th style="width: 180px;">{{$.lp.operate}}</th>
+            </thead>
+            <tr oo-each="$.leaveTypePolicyList" oo-item="d">
+                <td>{{d.value.policyName}}</td>
+                <td>{{ $m.formatScopeList(d.value) }}</td>
+                <td>{{ $m.formatGrantType(d.value.grantType) }}</td>
+                <td>
+                    <span class="operator_link" @click="this.clickDeletePolicy(d.value.id)">{{$.lp.delete}}</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
