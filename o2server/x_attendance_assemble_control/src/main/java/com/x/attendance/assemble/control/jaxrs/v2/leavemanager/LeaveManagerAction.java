@@ -37,7 +37,8 @@ public class LeaveManagerAction extends StandardJaxrsAction {
     @Path("type")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void typePost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+    public void typePost(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request,
             JsonElement jsonElement) {
         ActionResult<ActionLeaveTypePost.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -55,7 +56,8 @@ public class LeaveManagerAction extends StandardJaxrsAction {
     @Path("type/{id}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void typeGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+    public void typeGet(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request,
             @JaxrsParameterDescribe("类型ID") @PathParam("id") String id) {
         ActionResult<ActionLeaveTypeGet.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -73,7 +75,8 @@ public class LeaveManagerAction extends StandardJaxrsAction {
     @Path("type/delete/{id}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void typeDelete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+    public void typeDelete(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request,
             @JaxrsParameterDescribe("类型ID") @PathParam("id") String id) {
         ActionResult<ActionLeaveTypeDelete.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -91,7 +94,8 @@ public class LeaveManagerAction extends StandardJaxrsAction {
     @Path("type/list/all")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void typeListAll(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+    public void typeListAll(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request) {
         ActionResult<List<ActionLeaveTypeList.Wo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
@@ -108,7 +112,8 @@ public class LeaveManagerAction extends StandardJaxrsAction {
     @Path("type/list/quota/{isLimited}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void typeListWithQuota(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+    public void typeListWithQuota(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request,
             @JaxrsParameterDescribe("是否有限额") @PathParam("isLimited") Boolean isLimited) {
         ActionResult<List<ActionLeaveTypeListWithQuotaType.Wo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -126,7 +131,8 @@ public class LeaveManagerAction extends StandardJaxrsAction {
     @Path("policy")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void policyPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+    public void policyPost(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request,
             JsonElement jsonElement) {
         ActionResult<ActionLeavePolicyPost.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -144,7 +150,8 @@ public class LeaveManagerAction extends StandardJaxrsAction {
     @Path("policy/{id}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void policyGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+    public void policyGet(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request,
             @JaxrsParameterDescribe("规则ID") @PathParam("id") String id) {
         ActionResult<ActionLeavePolicyGet.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -162,7 +169,8 @@ public class LeaveManagerAction extends StandardJaxrsAction {
     @Path("policy/list/type/{typeId}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void policyListWithTypeId(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+    public void policyListWithTypeId(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request,
             @JaxrsParameterDescribe("假期类型ID") @PathParam("typeId") String typeId) {
         ActionResult<List<ActionLeavePolicyList.Wo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -181,7 +189,8 @@ public class LeaveManagerAction extends StandardJaxrsAction {
     @Path("policy/delete/{id}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void policyDelete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+    public void policyDelete(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request,
             @JaxrsParameterDescribe("规则ID") @PathParam("id") String id) {
         ActionResult<ActionLeavePolicyDelete.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -196,17 +205,15 @@ public class LeaveManagerAction extends StandardJaxrsAction {
 
     @JaxrsMethodDescribe(value = "查询假期余额账户.", action = ActionLeaveAccountSearch.class)
     @POST
-    @Path("account/search/page/{page}/size/{size}")
+    @Path("account/search")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void accountSearch(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-        @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
-                             @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, 
-            JsonElement jsonElement) {
+    public void accountSearch(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request, JsonElement jsonElement) {
         ActionResult<ActionLeaveAccountSearch.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionLeaveAccountSearch().execute(page, size, jsonElement);
+            result = new ActionLeaveAccountSearch().execute(jsonElement);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, jsonElement);
             result.error(e);
@@ -216,12 +223,13 @@ public class LeaveManagerAction extends StandardJaxrsAction {
 
     @JaxrsMethodDescribe(value = "查询假期申请.", action = ActionLeaveRequestSearch.class)
     @POST
-    @Path("request/search")
+    @Path("request/search/page/{page}/size/{size}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void requestSearch(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-         @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
-                             @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, 
+    public void requestSearch(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request,
+            @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+            @JaxrsParameterDescribe("数量") @PathParam("size") Integer size,
             JsonElement jsonElement) {
         ActionResult<List<ActionLeaveRequestSearch.Wo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -239,7 +247,8 @@ public class LeaveManagerAction extends StandardJaxrsAction {
     @Path("request/apply")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void requestApply(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
+    public void requestApply(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request, JsonElement jsonElement) {
         ActionResult<ActionLeaveRequestApply.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {

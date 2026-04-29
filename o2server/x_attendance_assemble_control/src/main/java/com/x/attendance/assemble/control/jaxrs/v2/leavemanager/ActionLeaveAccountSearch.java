@@ -25,14 +25,13 @@ import com.x.base.core.project.logger.LoggerFactory;
 
 public class ActionLeaveAccountSearch extends BaseAction {
 
-    private static Logger logger = LoggerFactory.getLogger(ActionLeaveAccountSearch.class);
+    private static final Logger logger = LoggerFactory.getLogger(ActionLeaveAccountSearch.class);
 
-    ActionResult<Wo> execute(Integer page, Integer size, JsonElement jsonElement) throws Exception {
+    ActionResult<Wo> execute(JsonElement jsonElement) throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             ActionResult<Wo> result = new ActionResult<>();
             Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-            if ((wi.getFilterList() == null || wi.getFilterList().isEmpty()) || wi.getLeaveTypeList() == null
-                    || wi.getLeaveTypeList().isEmpty()) {
+            if ((wi.getFilterList() == null || wi.getFilterList().isEmpty())) {
                 logger.warn("查询条件不完整，查询条件：{0}", wi);
                 return result;
             }
@@ -47,17 +46,17 @@ public class ActionLeaveAccountSearch extends BaseAction {
                 logger.warn("没有找到人员信息，查询条件：{0}", wi.getFilterList());
                 return result;
             }
-            Integer adjustPage = this.adjustPage(page);
-            Integer adjustPageSize = this.adjustSize(size);
-            List<AttendanceV2LeaveAccount> accounts = findAccountsWithPersonAndType(userList, wi.getLeaveTypeList(),
-                    emc, adjustPage, adjustPageSize);
+//            Integer adjustPage = this.adjustPage(page);
+//            Integer adjustPageSize = this.adjustSize(size);
+            List<AttendanceV2LeaveAccount> accounts = findAccountsWithPersonAndType(userList,
+                    emc);
 
-            List<AttendanceV2LeaveType> leaveTypeList = getLeaveTypeList(wi.getLeaveTypeList(), emc);
+            List<AttendanceV2LeaveType> leaveTypeList = getLeaveTypeList(null);
             Wo wo = new Wo();
             wo.setAccountList(accounts);
             wo.setPersonList(userList);
             wo.setLeaveTypeList(leaveTypeList);
-            result.setCount(countAccountsWithPersonAndType(userList, wi.getLeaveTypeList(), emc));
+            result.setCount((long) accounts.size());
             result.setData(wo);
             return result;
         }
@@ -65,17 +64,15 @@ public class ActionLeaveAccountSearch extends BaseAction {
 
     // 根据人员和假期类型查询余额账户 分页查询
     private List<AttendanceV2LeaveAccount> findAccountsWithPersonAndType(List<String> userList,
-            List<String> leaveTypeList, EntityManagerContainer emc, Integer adjustPage, Integer adjustPageSize)
+            EntityManagerContainer emc)
             throws Exception {
         EntityManager em = emc.get(AttendanceV2LeaveAccount.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AttendanceV2LeaveAccount> cq = cb.createQuery(AttendanceV2LeaveAccount.class);
         Root<AttendanceV2LeaveAccount> root = cq.from(AttendanceV2LeaveAccount.class);
         Predicate p = root.get(AttendanceV2LeaveAccount_.person).in(userList);
-        p = cb.and(p, root.get(AttendanceV2LeaveAccount_.leaveTypeId).in(leaveTypeList));
         cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2LeaveAccount_.updateTime)));
-        return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
-                .getResultList();
+        return em.createQuery(cq).getResultList();
     }
 
     // 根据人员和假期类型查询余额账户数量
@@ -92,7 +89,8 @@ public class ActionLeaveAccountSearch extends BaseAction {
     }
 
     // 根据假期类型ID列表查询假期类型列表
-    private List<AttendanceV2LeaveType> getLeaveTypeList(List<String> idList, EntityManagerContainer emc)
+    private List<AttendanceV2LeaveType> getLeaveTypeList(List<String> idList,
+            EntityManagerContainer emc)
             throws Exception {
         EntityManager em = emc.get(AttendanceV2LeaveType.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -110,8 +108,8 @@ public class ActionLeaveAccountSearch extends BaseAction {
         @FieldDescribe("过滤人员或组织，组织只支持单层: 用户或组织的DN，如xxx@xxx@P、xxx@xxx@U")
         private List<String> filterList;
 
-        @FieldDescribe("过滤的假期类型ID列表")
-        private List<String> leaveTypeList;
+//        @FieldDescribe("过滤的假期类型ID列表")
+//        private List<String> leaveTypeList;
 
         public List<String> getFilterList() {
             return filterList;
@@ -120,14 +118,14 @@ public class ActionLeaveAccountSearch extends BaseAction {
         public void setFilterList(List<String> filterList) {
             this.filterList = filterList;
         }
-
-        public List<String> getLeaveTypeList() {
-            return leaveTypeList;
-        }
-
-        public void setLeaveTypeList(List<String> leaveTypeList) {
-            this.leaveTypeList = leaveTypeList;
-        }
+//
+//        public List<String> getLeaveTypeList() {
+//            return leaveTypeList;
+//        }
+//
+//        public void setLeaveTypeList(List<String> leaveTypeList) {
+//            this.leaveTypeList = leaveTypeList;
+//        }
 
     }
 

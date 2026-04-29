@@ -80,6 +80,7 @@ export default content({
       return;
     }
     this.clickOpenPolicyLoading = true;
+    this.$parent.closeFormVm();
     this.loadPolicyList(typeId);
   },
   async refreshPolicyList() {
