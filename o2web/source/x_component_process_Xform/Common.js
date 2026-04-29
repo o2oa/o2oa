@@ -69,7 +69,7 @@ MWF.xApplication.process.Xform.Common = MWF.APPCommon =  new Class({
             const text = this.node.getAttribute('text');
             const value = this.node.getAttribute('value');
             if (text || value){
-                new Element('div', {
+                this.downloadingNode = new Element('div', {
                     text: text || value
                 }).inject(this.node, 'after');
                 this.node.addClass('hide');
