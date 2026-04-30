@@ -91,7 +91,7 @@ public class AttendanceV2LeaveLedger extends SliceJpaObject {
     private Date expireTime;
 
     public static final String active_FIELDNAME = "active";
-    @FieldDescribe("状态 ENABLED/DISABLED")
+    @FieldDescribe("状态")
     @Column(name = ColumnNamePrefix + active_FIELDNAME)
     private Boolean active = true;
 
