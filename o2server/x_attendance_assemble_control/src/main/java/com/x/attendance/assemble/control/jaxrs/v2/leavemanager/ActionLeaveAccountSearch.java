@@ -46,15 +46,16 @@ public class ActionLeaveAccountSearch extends BaseAction {
                 logger.warn("没有找到人员信息，查询条件：{0}", wi.getFilterList());
                 return result;
             }
-//            Integer adjustPage = this.adjustPage(page);
-//            Integer adjustPageSize = this.adjustSize(size);
-            List<AttendanceV2LeaveAccount> accounts = findAccountsWithPersonAndType(userList,
+            // userList 去重
+            java.util.Set<String> set = new java.util.HashSet<>(userList);
+            List<String> distinctUserList = new ArrayList<>(set);
+            List<AttendanceV2LeaveAccount> accounts = findAccountsWithPersonAndType(distinctUserList,
                     emc);
 
             List<AttendanceV2LeaveType> leaveTypeList = getLeaveTypeList(null);
             Wo wo = new Wo();
             wo.setAccountList(accounts);
-            wo.setPersonList(userList);
+            wo.setPersonList(distinctUserList);
             wo.setLeaveTypeList(leaveTypeList);
             result.setCount((long) accounts.size());
             result.setData(wo);
