@@ -20,7 +20,7 @@
             <tr oo-each="$.leaveTypePolicyList" oo-item="d">
                 <td>{{d.value.policyName}}</td>
                 <td>{{ $m.formatScopeList(d.value) }}</td>
-                <td>{{ $m.formatGrantType(d.value.grantType) }}</td>
+                <td>{{ $m.formatGrantType(d.value) }}</td>
                 <td>
                     <span class="operator_link" @click="this.clickDeletePolicy(d.value.id)">{{$.lp.delete}}</span>
                 </td>

@@ -410,8 +410,8 @@ MWF.xApplication.attendancev2.LP = {
 
     },
     account: {
-      filterSelectTitle: "查询的人员或组织",
-      filterEmptyPlaceholder: "请选择人员或组织！",
+      filterSelectTitle: "选择人员或组织",
+      filterEmptyPlaceholder: "请选择人员或组织进行查询！",
     }
   },
 

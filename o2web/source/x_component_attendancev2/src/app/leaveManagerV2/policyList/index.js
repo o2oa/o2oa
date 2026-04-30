@@ -55,12 +55,22 @@ export default content({
             return nameList.join("|");
         }
     },
-    formatGrantType(grantType) {
-        if (grantType === "ONE_TIME") {
+    formatGrantType(policy) {
+        if (!policy || !policy.grantType) {
+            return "";
+        }
+        if (policy.grantType === "ONE_TIME") {
             return lp.leaveManagerV2.policy.grantTypeONE_TIME;
-        } else if (grantType === "MONTHLY") {
-            return lp.leaveManagerV2.policy.grantTypeMONTHLY;
+        } else if (policy.grantType === "MONTHLY") {
+            return `每月${policy.grantTypeValue.substring(3)}日，发放${policy.grantAmount}天`;
         } else {
+            if (policy.grantAmountType ) { 
+                if (policy.grantAmountType.type === "FIXED") {
+                    return `每年${policy.grantTypeValue.substring(2, 4)}月${policy.grantTypeValue.substring(5)}日，发放${policy.grantAmountType.grantAmount}天`;
+                } else {
+                    return `每年${policy.grantTypeValue.substring(2, 4)}月${policy.grantTypeValue.substring(5)}日，按司龄发放`;
+                }
+            }
             return lp.leaveManagerV2.policy.grantTypeYEARLY;
         }
     },

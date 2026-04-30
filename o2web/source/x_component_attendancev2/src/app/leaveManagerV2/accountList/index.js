@@ -63,7 +63,7 @@ export default content({
                 const account = accountMap[`${person}_${leaveType.id}`];
                 return {
                     leaveTypeId: leaveType.id,
-                    value: account ? this.formatAccountValue(account) : "0/0/0",
+                    value: (leaveType.quotaType == 'QUOTA')?  (account ? this.formatAccountValue(account) : "0/0/0") : lp.leaveManagerV2.type.quotaTypeUnlimited,
                 };
             }),
         }));
