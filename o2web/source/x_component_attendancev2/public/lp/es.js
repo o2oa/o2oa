@@ -352,6 +352,8 @@ MWF.xApplication.attendancev2.LP={
 		"addTypePolicy": "Agregar regla de tipo de vacaciones",
 		"editTypePolicy": "Editar regla de tipo de vacaciones",
 		"confirmDelete": "¿Está seguro de que desea eliminar estos datos de 【{name}】?",
+		"accountBlance": "Saldo de vacaciones",
+		"requestList": "Solicitudes de vacaciones",
 		"type": {
 			"name": "Nombre del tipo de vacaciones",
 			"namePlaceholder": "Ingrese el nombre del tipo de vacaciones",
@@ -389,6 +391,19 @@ MWF.xApplication.attendancev2.LP={
 			"grantTypeServiceLenRuleScope": "Rango de antigüedad",
 			"expireTime": "Periodo de validez de las vacaciones",
 			"expireValuePlaceholder": "Ingrese el periodo de validez de las vacaciones, debe ser un entero mayor que 0"
+		},
+		"account": {
+			"filterSelectTitle": "Seleccionar persona u organización",
+			"filterEmptyPlaceholder": "Seleccione una persona u organización para consultar."
+		},
+		"request": {
+			"filterSelectTitle": "Seleccionar persona u organización",
+			"filterEmptyPlaceholder": "Seleccione una persona u organización para consultar.",
+			"dateEmptyPlaceholder": "Seleccione la fecha de inicio y la fecha de finalización.",
+			"dateRangeError": "La fecha de inicio no puede ser posterior a la fecha de finalización.",
+			"statusApplying": "En solicitud",
+			"statusRejected": "Rechazada",
+			"statusCancelled": "Cancelada"
 		}
 	},
 	"appealManagerTitle": "Datos de excepciones de asistencia",

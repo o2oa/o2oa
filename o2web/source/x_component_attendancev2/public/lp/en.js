@@ -352,6 +352,8 @@ MWF.xApplication.attendancev2.LP={
 		"addTypePolicy": "Add Leave Type Rule",
 		"editTypePolicy": "Edit Leave Type Rule",
 		"confirmDelete": "Are you sure you want to delete this '{name}' data?",
+		"accountBlance": "Leave Balance",
+		"requestList": "Leave Requests",
 		"type": {
 			"name": "Leave Type Name",
 			"namePlaceholder": "Enter leave type name",
@@ -389,6 +391,19 @@ MWF.xApplication.attendancev2.LP={
 			"grantTypeServiceLenRuleScope": "Service Length Range",
 			"expireTime": "Leave Validity Period",
 			"expireValuePlaceholder": "Enter the leave validity period, must be an integer greater than 0"
+		},
+		"account": {
+			"filterSelectTitle": "Select person or organization",
+			"filterEmptyPlaceholder": "Select a person or organization to search!"
+		},
+		"request": {
+			"filterSelectTitle": "Select person or organization",
+			"filterEmptyPlaceholder": "Select a person or organization to search!",
+			"dateEmptyPlaceholder": "Select start date and end date!",
+			"dateRangeError": "Start date cannot be later than end date!",
+			"statusApplying": "Applying",
+			"statusRejected": "Rejected",
+			"statusCancelled": "Cancelled"
 		}
 	},
 	"appealManagerTitle": "Abnormal attendance data",

@@ -76,6 +76,12 @@ export default content({
     const c = (await import('./accountList/index.js')).default;
     this.openOtherListViewVm(c, bindData);
   },
+  // 打开请假申请的搜索视图
+  async clickOpenRequestSearchView() {
+    const bindData = {  };
+    const c = (await import('./requestList/index.js')).default;
+    this.openOtherListViewVm(c, bindData);
+  },
   // 打开某一个假期类型的规则列表
   clickOpenPolicyList(typeId) {
     console.log("点击打开配置规则列表", typeId);

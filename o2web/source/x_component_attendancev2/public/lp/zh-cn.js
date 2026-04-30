@@ -370,6 +370,7 @@ MWF.xApplication.attendancev2.LP = {
     editTypePolicy: "编辑假期类型规则",
     confirmDelete: "确认要删除这条【{name}】数据？",
     accountBlance: "假期余额",
+    requestList: "请假申请",
     type: {
       name: "假期类型名称",
       namePlaceholder: "请输入假期类型名称",
@@ -412,6 +413,15 @@ MWF.xApplication.attendancev2.LP = {
     account: {
       filterSelectTitle: "选择人员或组织",
       filterEmptyPlaceholder: "请选择人员或组织进行查询！",
+    },
+    request: {
+      filterSelectTitle: "选择人员或组织",
+      filterEmptyPlaceholder: "请选择人员或组织进行查询！",
+      dateEmptyPlaceholder: "请选择开始日期和结束日期！",
+      dateRangeError: "开始日期不能晚于结束日期！",
+      statusApplying: "申请中",
+      statusRejected: "已拒绝",
+      statusCancelled: "已取消",
     }
   },
 
