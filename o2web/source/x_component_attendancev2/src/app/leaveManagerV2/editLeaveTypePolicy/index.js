@@ -59,7 +59,8 @@ export default content({
                         {minYears: 5, amount: 10}]
                 }, 
                 expireType: "RELATIVE", // 过期类型 NEVER / RELATIVE
-                expireValue: 1, // 过期值，单位为年
+                expireValue: 1, // 过期值 
+                expireValueExtendDay: 0, // 过期值延长天数
                 carryForward: false, // 是否允许结转
                 maxCarryForward: 0, // 最大结转数量
                 policyVersion: "1"
@@ -75,6 +76,9 @@ export default content({
             const policy = await leaveManagerAction("policyGet", this.bind.updateId);
             if (policy) {
                 this.bind.form = policy;
+                if (this.bind.form.expireValueExtendDay === null || this.bind.form.expireValueExtendDay === undefined || this.bind.form.expireValueExtendDay === "") {
+                    this.bind.form.expireValueExtendDay = 0;
+                }
                 this.ensureGrantAmountType();
                 if (this.bind.form.grantAmountType.type === "SERVICELEN") {
                     this.normalizeTenureLeaveRules();
@@ -144,8 +148,18 @@ export default content({
             o2.api.page.notice(lp.leaveManagerV2.policy.expireValuePlaceholder, 'error');
             return;
         }
+        if (form.expireType === "RELATIVE" && !this.isValidExtendDay(form.expireValueExtendDay)) {
+            o2.api.page.notice("过期值延长天数必须是大于等于0的整数！", 'error');
+            return;
+        }
+        const postForm = Object.assign({}, form);
+        if (form.grantType === "YEARLY") {
+            postForm.expireValue = Number(form.expireValue) * 365 + Number(form.expireValueExtendDay || 0);
+        } else if (form.grantType === "MONTHLY") {
+            postForm.expireValue = Number(form.expireValue) * 30 + Number(form.expireValueExtendDay || 0);
+        }
         if (!form.id) { // 新增默认立即发放
-            form.isGrantImmediately = true; 
+            postForm.isGrantImmediately = true; 
         }
         if (this.submitLoading) {
             return;
@@ -153,8 +167,8 @@ export default content({
         this.submitLoading = true;
         try {
             await showLoading(this);
-            console.debug("submit form", form);
-            const result = await leaveManagerAction("policyPost", form);
+            console.debug("submit form", postForm);
+            const result = await leaveManagerAction("policyPost", postForm);
             console.log(result);
             o2.api.page.notice(lp.saveSuccess, 'success');
             this.close();
@@ -174,6 +188,12 @@ export default content({
         if (!/^\d+$/.test(input)) return false;
         const num = Number(input);
         return num >= 1;
+    },
+    isValidExtendDay(input) {
+        // 过期延长天数允许为 0
+        if (!/^\d+$/.test(input)) return false;
+        const num = Number(input);
+        return num >= 0;
     },
     ensureGrantAmountType() {
         if (!this.bind.form.grantAmountType) {

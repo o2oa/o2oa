@@ -152,13 +152,10 @@ public class QueueAttendanceV2LeavePolicyGrant extends
                 ledger.setGrantTime(today);
                 if (ExpireTypeEnum.RELATIVE.getValue().equals(policy.getExpireType())) {
                     int addDay = policy.getExpireValue() != null ? policy.getExpireValue() : 0;
-                    if (GrantTypeEnum.YEARLY.getValue().equals(policy.getGrantType())) {
-                        addDay = addDay * 365;
-                    } else if (GrantTypeEnum.MONTHLY.getValue().equals(policy.getGrantType())) {
-                        addDay = addDay * 30;
+                    if (addDay > 0) {
+                        Date expireTime = DateTools.addDay(today, addDay);
+                        ledger.setExpireTime(expireTime);
                     }
-                    Date expireTime = DateTools.addDay(today, addDay);
-                    ledger.setExpireTime(expireTime);
                 } //
                 emc.persist(ledger, CheckPersistType.all);
                 emc.commit();

@@ -187,13 +187,19 @@
                     自发放日起
                     <input oo-model="form.expireValue" 
                         style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
-                    年后过期
+                    年后过期，延长
+                    <input oo-model="form.expireValueExtendDay"
+                        style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
+                    天后过期
                 </div>
                 <div class="margin-top" oo-if="$.form.grantType == 'MONTHLY'">
                     自发放日起
                     <input oo-model="form.expireValue"  
                         style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
-                    月后过期
+                    月后过期， 延长
+                    <input oo-model="form.expireValueExtendDay"
+                        style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
+                    天后过期
                 </div>
             </div>
 
