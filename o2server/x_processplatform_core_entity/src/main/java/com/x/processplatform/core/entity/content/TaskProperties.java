@@ -48,6 +48,17 @@ public class TaskProperties extends JsonProperties {
 	@FieldDescribe("Ticket创建方式,create,reset,add.")
 	private String act;
 
+	@FieldDescribe("操作人员,在加签中记录执行加签的人")
+	private String actPerson;
+
+	public String getActPerson() {
+		return actPerson;
+	}
+
+	public void setActPerson(String actPerson) {
+		this.actPerson = actPerson;
+	}
+	
 	public String getAct() {
 		return act;
 	}
