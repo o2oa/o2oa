@@ -149,7 +149,7 @@ public class Tickets implements Serializable {
 		if (targets.isEmpty()) {
 			return false;
 		}
-		targets.stream().forEach(o -> o.act(Tickets.ACT_ADD));
+		targets.stream().forEach(o -> o.act(Tickets.ACT_ADD).actPerson(ticket.distinguishedName()));
 		Add add = null;
 		if (StringUtils.equalsIgnoreCase(ticket.mode(), MODE_PARALLEL)) {
 			add = new ParallelAdd();
