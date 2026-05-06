@@ -366,6 +366,8 @@ MWF.xApplication.attendancev2.LP={
 			"policyName": "Nombre de la regla",
 			"policyNamePlaceholder": "Ingrese el nombre de la regla",
 			"grantScopeType": "Alcance de asignación",
+			"grantExludeLabel" : "Distribuir al personal excluido",
+      		"grantExludePlaceholder" : "Seleccione el personal excluido.",
 			"grantScopeTypeALL": "Todo el personal",
 			"grantScopeTypeDEPARTMENT": "Departamentos/personas",
 			"grantScopeListPickerPlaceholder": "Seleccione el alcance de asignación",

@@ -383,6 +383,8 @@ MWF.xApplication.attendancev2.LP = {
       policyName: "规则名称",
       policyNamePlaceholder: "请输入规则名称",
       grantScopeType: "发放范围",
+      grantExludeLabel : "发放排除人员",
+      grantExludePlaceholder : "请选择排除人员",
       grantScopeTypeALL: "全员",
       grantScopeTypeDEPARTMENT: "部门/人员",
       grantScopeListPickerPlaceholder: "请选择发放范围",

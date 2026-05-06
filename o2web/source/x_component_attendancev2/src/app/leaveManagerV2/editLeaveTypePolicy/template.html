@@ -42,6 +42,9 @@
                 <o-org-person-selector oo-if="$.form.grantScopeType == 'DEPARTMENT'"
                     oo-prop="{'selectorTitle': $.lp.leaveManagerV2.policy.grantScopeType, 'label':$.lp.leaveManagerV2.policy.grantScopeType, 'placeholder': $.lp.leaveManagerV2.policy.grantScopeListPickerPlaceholder, 'value': $.form.grantScopeList}"
                     oo-model="form.grantScopeList"></o-org-person-selector>
+                <o-org-person-selector oo-if="$.form.grantScopeType == 'DEPARTMENT'"
+                    oo-prop="{'selectorTitle': $.lp.leaveManagerV2.policy.grantExludeLabel, 'label':$.lp.leaveManagerV2.policy.grantExludeLabel, 'placeholder': $.lp.leaveManagerV2.policy.grantExludePlaceholder, 'types': ['identity'], 'value': $.form.grantExcludeList}"
+                    oo-model="form.grantExcludeList"></o-org-person-selector>
             </div>
 
             <!-- 发放方式 -->

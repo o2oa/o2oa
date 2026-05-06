@@ -75,6 +75,17 @@ public class AttendanceV2LeavePolicy extends SliceJpaObject {
 	@ElementIndex(name = PersistenceProperties.AttendanceV2LeavePolicy.table + grantScopeList_FIELDNAME + ElementIndexNameSuffix)
 	private List<String> grantScopeList;
 
+
+    public static final String grantExcludeList_FIELDNAME = "grantExcludeList";
+    @FieldDescribe("grantScopeType=DEPARTMENT， 发放排除人员.")
+    @PersistentCollection(fetch = FetchType.EAGER)
+    @OrderColumn(name = ORDERCOLUMNCOLUMN)
+    @ContainerTable(name = PersistenceProperties.AttendanceV2LeavePolicy.table + ContainerTableNameMiddle
+                           + grantExcludeList_FIELDNAME, joinIndex = @org.apache.openjpa.persistence.jdbc.Index(name = PersistenceProperties.AttendanceV2LeavePolicy.table + grantExcludeList_FIELDNAME + JoinIndexNameSuffix))
+    @ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + grantExcludeList_FIELDNAME)
+    @ElementIndex(name = PersistenceProperties.AttendanceV2LeavePolicy.table + grantExcludeList_FIELDNAME + ElementIndexNameSuffix)
+    private List<String> grantExcludeList;
+
     public static final String grantType_FIELDNAME = "grantType";
     @FieldDescribe("发放方式： YEARLY/MONTHLY/ONE_TIME")
     @Column(length = JpaObject.length_16B, name = ColumnNamePrefix + grantType_FIELDNAME)
@@ -252,8 +263,13 @@ public class AttendanceV2LeavePolicy extends SliceJpaObject {
 
     public void setGrantAmountType(AttendanceV2LeavePolicyGrantAmountTypeProperties grantAmountType) {
         this.grantAmountType = grantAmountType;
-    } 
+    }
 
-    
-    
+    public List<String> getGrantExcludeList() {
+        return grantExcludeList;
+    }
+
+    public void setGrantExcludeList(List<String> grantExcludeList) {
+        this.grantExcludeList = grantExcludeList;
+    }
 }

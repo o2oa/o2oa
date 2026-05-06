@@ -366,6 +366,8 @@ MWF.xApplication.attendancev2.LP={
 			"policyName": "Rule Name",
 			"policyNamePlaceholder": "Enter rule name",
 			"grantScopeType": "Grant Scope",
+			"grantExludeLabel" : "Distribute to excluded personnel",
+      		"grantExludePlaceholder" : "Please select the excluded personnel.",
 			"grantScopeTypeALL": "All Members",
 			"grantScopeTypeDEPARTMENT": "Departments/Personnel",
 			"grantScopeListPickerPlaceholder": "Select grant scope",

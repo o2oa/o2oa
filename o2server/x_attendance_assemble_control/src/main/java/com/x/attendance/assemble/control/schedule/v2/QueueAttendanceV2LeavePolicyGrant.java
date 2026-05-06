@@ -82,12 +82,19 @@ public class QueueAttendanceV2LeavePolicyGrant extends
                     }
                 }
             }
+            // 排除字段
+            List<String> excludeList = Optional.ofNullable(policy.getGrantExcludeList()).orElse(new ArrayList<>());
+            // userList 去重
+            userList = new ArrayList<>(new java.util.HashSet<>(userList));
+            // 移除排除名单中的用户
+            if (!excludeList.isEmpty()) {
+                userList.removeAll(excludeList);
+            }
+            // 移除后再判断是否为空
             if (userList == null || userList.isEmpty()) {
                 logger.warn("User list is empty for policy {}, skip this task.", policy.getId());
                 return;
             }
-            // userList 去重
-            userList = new ArrayList<>(new java.util.HashSet<>(userList));
             // 循环发放
             for (String user : userList) {
                 // 发放额度

@@ -6,6 +6,7 @@ import com.x.base.core.project.tools.ListTools;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Optional;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -50,11 +51,14 @@ public class ActionLeavePolicyPost extends BaseAction {
                 throw new ExceptionEmptyParameter("规则名称");
             }
             // 名称不能重复
-            List<AttendanceV2LeavePolicy> checkRepetitive = emc.listEqualAndEqual(AttendanceV2LeavePolicy.class,
-                    AttendanceV2LeavePolicy.policyName_FIELDNAME, wi.getPolicyName(), AttendanceV2LeavePolicy.active_FIELDNAME, true);
+            List<AttendanceV2LeavePolicy> checkRepetitive = emc.listEqualAndEqual(
+                    AttendanceV2LeavePolicy.class,
+                    AttendanceV2LeavePolicy.policyName_FIELDNAME, wi.getPolicyName(),
+                    AttendanceV2LeavePolicy.active_FIELDNAME, true);
             if (checkRepetitive != null && !checkRepetitive.isEmpty()) {
                 for (AttendanceV2LeavePolicy check : checkRepetitive) {
-                    if (check.getPolicyName().equals(wi.getPolicyName()) && !check.getId().equals(wi.getId())) {
+                    if (check.getPolicyName().equals(wi.getPolicyName()) && !check.getId()
+                            .equals(wi.getId())) {
                         throw new ExceptionWithMessage("规则名称已存在");
                     }
                 }
@@ -63,23 +67,27 @@ public class ActionLeavePolicyPost extends BaseAction {
                 throw new ExceptionEmptyParameter("假期类型ID");
             }
             if (StringUtils.isBlank(wi.getGrantScopeType())
-                    || (!GrantScopeTypeEnum.ALL.getValue().equals(wi.getGrantScopeType())
-                            && !GrantScopeTypeEnum.DEPARTMENT.getValue().equals(wi.getGrantScopeType()))) {
+                || (!GrantScopeTypeEnum.ALL.getValue().equals(wi.getGrantScopeType())
+                    && !GrantScopeTypeEnum.DEPARTMENT.getValue().equals(wi.getGrantScopeType()))) {
                 throw new ExceptionEmptyParameter("发放范围");
             }
             if (GrantScopeTypeEnum.DEPARTMENT.getValue().equals(wi.getGrantScopeType())
-                    && (wi.getGrantScopeList() == null || wi.getGrantScopeList().isEmpty())) {
+                && (wi.getGrantScopeList() == null || wi.getGrantScopeList().isEmpty())) {
                 throw new ExceptionEmptyParameter("发放范围列表");
             }
             // 全员 校验是否有同类型的了 ，
             if (GrantScopeTypeEnum.ALL.getValue().equals(wi.getGrantScopeType())) {
                 List<AttendanceV2LeavePolicy> checkTypeAndScopeAll = emc.listEqualAndEqualAndEqual(
-                        AttendanceV2LeavePolicy.class, AttendanceV2LeavePolicy.leaveTypeId_FIELDNAME,
+                        AttendanceV2LeavePolicy.class,
+                        AttendanceV2LeavePolicy.leaveTypeId_FIELDNAME,
                         wi.getLeaveTypeId(), AttendanceV2LeavePolicy.grantScopeType_FIELDNAME,
-                        GrantScopeTypeEnum.ALL.getValue(), AttendanceV2LeavePolicy.active_FIELDNAME, true);
+                        GrantScopeTypeEnum.ALL.getValue(), AttendanceV2LeavePolicy.active_FIELDNAME,
+                        true);
                 if (logger.isDebugEnabled()) {
-                    logger.debug("checkTypeAndScopeAll size: {}, leaveTypeId: {}, grantScopeType: {} , id: {}",
-                            checkTypeAndScopeAll == null ? 0 : checkTypeAndScopeAll.size(), wi.getLeaveTypeId(),
+                    logger.debug(
+                            "checkTypeAndScopeAll size: {}, leaveTypeId: {}, grantScopeType: {} , id: {}",
+                            checkTypeAndScopeAll == null ? 0 : checkTypeAndScopeAll.size(),
+                            wi.getLeaveTypeId(),
                             GrantScopeTypeEnum.ALL.getValue(), wi.getId());
                 }
                 if (checkTypeAndScopeAll != null && !checkTypeAndScopeAll.isEmpty()) {
@@ -92,37 +100,46 @@ public class ActionLeavePolicyPost extends BaseAction {
             } else if (GrantScopeTypeEnum.DEPARTMENT.getValue().equals(wi.getGrantScopeType())) {
                 // 部门 校验部门列表中是否有同类型的了
                 List<AttendanceV2LeavePolicy> checkTypeAndScopeDepartment = emc.listEqualAndEqualAndEqual(
-                        AttendanceV2LeavePolicy.class, AttendanceV2LeavePolicy.leaveTypeId_FIELDNAME,
+                        AttendanceV2LeavePolicy.class,
+                        AttendanceV2LeavePolicy.leaveTypeId_FIELDNAME,
                         wi.getLeaveTypeId(), AttendanceV2LeavePolicy.grantScopeType_FIELDNAME,
-                        GrantScopeTypeEnum.DEPARTMENT.getValue(), AttendanceV2LeavePolicy.active_FIELDNAME, true);
+                        GrantScopeTypeEnum.DEPARTMENT.getValue(),
+                        AttendanceV2LeavePolicy.active_FIELDNAME, true);
                 if (logger.isDebugEnabled()) {
-                    logger.debug("checkTypeAndScopeDepartment size: {}, leaveTypeId: {}, grantScopeType: {} , id: {}",
-                            checkTypeAndScopeDepartment == null ? 0 : checkTypeAndScopeDepartment.size(),
-                            wi.getLeaveTypeId(), GrantScopeTypeEnum.DEPARTMENT.getValue(), wi.getId());
+                    logger.debug(
+                            "checkTypeAndScopeDepartment size: {}, leaveTypeId: {}, grantScopeType: {} , id: {}",
+                            checkTypeAndScopeDepartment == null ? 0
+                                    : checkTypeAndScopeDepartment.size(),
+                            wi.getLeaveTypeId(), GrantScopeTypeEnum.DEPARTMENT.getValue(),
+                            wi.getId());
                 }
                 if (checkTypeAndScopeDepartment != null && !checkTypeAndScopeDepartment.isEmpty()) {
                     for (AttendanceV2LeavePolicy check : checkTypeAndScopeDepartment) {
                         List<String> checkGrantScopeList = check.getGrantScopeList();
-                        if (!check.getId().equals(wi.getId()) && checkGrantScopeListHasSamePerson(checkGrantScopeList, wi.getGrantScopeList(), business)) {
+                        if (!check.getId().equals(wi.getId()) && checkGrantScopeListHasSamePerson(
+                                checkGrantScopeList, check.getGrantExcludeList(),
+                                wi.getGrantScopeList(), wi.getGrantExcludeList(), business)) {
                             throw new ExceptionWithMessage("当前假期类型部门列表中有重复的人员");
                         }
                     }
                 }
             }
-            if (StringUtils.isBlank(wi.getGrantType()) || (!GrantTypeEnum.YEARLY.getValue().equals(wi.getGrantType())
+            if (StringUtils.isBlank(wi.getGrantType()) || (
+                    !GrantTypeEnum.YEARLY.getValue().equals(wi.getGrantType())
                     && !GrantTypeEnum.MONTHLY.getValue().equals(wi.getGrantType())
                     && !GrantTypeEnum.ONE_TIME.getValue().equals(wi.getGrantType()))) {
                 throw new ExceptionEmptyParameter("发放方式");
             }
-            if (StringUtils.isBlank(wi.getExpireType()) || (!ExpireTypeEnum.NEVER.getValue().equals(wi.getExpireType())
+            if (StringUtils.isBlank(wi.getExpireType()) || (
+                    !ExpireTypeEnum.NEVER.getValue().equals(wi.getExpireType())
                     && !ExpireTypeEnum.FIXED.getValue().equals(wi.getExpireType())
                     && !ExpireTypeEnum.RELATIVE.getValue().equals(wi.getExpireType()))) {
                 throw new ExceptionEmptyParameter("过期类型");
             }
             // 单次 发放必须指定发放额度，且不能为负数
             if ((GrantTypeEnum.ONE_TIME.getValue().equals(wi.getGrantType())
-                    || GrantTypeEnum.MONTHLY.getValue().equals(wi.getGrantType()))
-                    && (wi.getGrantAmount() == null || wi.getGrantAmount() < 0)) {
+                 || GrantTypeEnum.MONTHLY.getValue().equals(wi.getGrantType()))
+                && (wi.getGrantAmount() == null || wi.getGrantAmount() < 0)) {
                 throw new ExceptionEmptyParameter("发放额度");
             } else if (GrantTypeEnum.YEARLY.getValue().equals(wi.getGrantType())) {
                 if (wi.getGrantAmountType() == null || !wi.getGrantAmountType().validate()) {
@@ -130,7 +147,7 @@ public class ActionLeavePolicyPost extends BaseAction {
                 }
             }
             if (BooleanUtils.isTrue(wi.getCarryForward())
-                    && (wi.getMaxCarryForward() == null || wi.getMaxCarryForward() < 0)) {
+                && (wi.getMaxCarryForward() == null || wi.getMaxCarryForward() < 0)) {
                 throw new ExceptionEmptyParameter("最大结转额度");
             }
 
@@ -161,7 +178,8 @@ public class ActionLeavePolicyPost extends BaseAction {
             emc.commit();
 
             if (BooleanUtils.isTrue(wi.getIsGrantImmediately())) {
-                AttendanceV2LeavePolicy p = emc.find(result.getData().getId(), AttendanceV2LeavePolicy.class);
+                AttendanceV2LeavePolicy p = emc.find(result.getData().getId(),
+                        AttendanceV2LeavePolicy.class);
                 QueueAttendanceV2LeavePolicyGrantModel model = new QueueAttendanceV2LeavePolicyGrantModel();
                 model.setPolicy(p);
                 model.setIsImmediately(true);
@@ -174,7 +192,9 @@ public class ActionLeavePolicyPost extends BaseAction {
     }
 
     // 解析人员列表，把组织下人员都查询出来 然后比较
-    private boolean checkGrantScopeListHasSamePerson(List<String> scopeList1, List<String> scopeList2, Business business)
+    private boolean checkGrantScopeListHasSamePerson(List<String> scopeList1,
+            List<String> excludeList1, List<String> scopeList2, List<String> excludeList2,
+            Business business)
             throws Exception {
         List<String> userList1 = new ArrayList<>();
         for (String s : scopeList1) {
@@ -184,12 +204,17 @@ public class ActionLeavePolicyPost extends BaseAction {
         for (String s2 : scopeList2) {
             drillDownPerson(userList2, s2, business);
         }
+        List<String> eList1 = Optional.ofNullable(excludeList1).orElse(new ArrayList<>());
+        List<String> eList2 = Optional.ofNullable(excludeList2).orElse(new ArrayList<>());
+        userList1.removeAll(eList1);
+        userList2.removeAll(eList2);
         // 比较两个用户列表是否有重复的数据
         if (userList1.isEmpty() || userList2.isEmpty()) {
             return false;
         }
         java.util.Set<String> set = new java.util.HashSet<>(userList1);
-        for (String u : userList2) {
+        java.util.Set<String> set2 = new java.util.HashSet<>(userList2);
+        for (String u : set2) {
             if (set.contains(u)) {
                 return true;
             }
@@ -228,7 +253,6 @@ public class ActionLeavePolicyPost extends BaseAction {
             this.isGrantImmediately = isGrantImmediately;
         }
 
-        
 
     }
 

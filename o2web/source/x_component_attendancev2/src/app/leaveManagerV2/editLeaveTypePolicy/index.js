@@ -47,6 +47,7 @@ export default content({
                 leaveTypeId: "",
                 grantScopeType: "ALL", // ALL | DEPARTMENT
                 grantScopeList: [], // 发放范围的具体列表
+                grantExcludeList: [], // 发放范围排除人员列表
                 grantType: "YEARLY", // YEARLY | MONTHLY | ONE_TIME
                 grantTypeValue: "Y:01-01", // 发放方式日期规则配置： Y:01-01/MS:1,ME:1/ONE_TIME
                 grantAmount: 0, // 发放数量
