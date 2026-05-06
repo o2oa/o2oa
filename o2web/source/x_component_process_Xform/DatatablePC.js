@@ -328,6 +328,15 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			this.loadDatatable();
 		},
+		/**
+		 * @summary 判断组件是否只读.
+		 * @example
+		 * var readonly = this.form.get('datatable').isReadonly();
+		 * @return {Boolean} 是否只读.
+		 */
+		isReadonly : function(){
+			return !this.editable;
+		},
 		/*
 		 * @summary 重新加载数据表格。
 		 * @example
