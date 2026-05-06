@@ -2180,7 +2180,7 @@ if (!window.o2) {
                             delete _resGetQueue[_addr];
 
                             if (xhr && xhr.status === 401){
-                                if (!layout.loginDlg) {
+                                if (!layout.loginDlg && layout.session?.user?.name) {
                                     var json = JSON.decode(xhr.responseText);
 
                                     const node = new Element("div", {styles: {height: "100%"}});
