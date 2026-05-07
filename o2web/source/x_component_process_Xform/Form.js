@@ -4676,8 +4676,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             //匹配@font-face{}内的所有url(./xxx)
             const fontReg = /url\(['"]?\.\/([^'")]+)['"]?\)(?=[\s\S]*?\})/g;
 
-            var port = layout.port === "" ? "" : ":" + layout.port;
-            const FONT_BASE_URL = "http://127.0.0.1" + port + "/x_desktop/css/v10/";
+            //var port = layout.port === "" ? "" : ":" + layout.port;
+
+            var host = o2.Actions.getHost( 'x_processplatform_assemble_surface' );
+            var defaultPort = host.startsWith('https://') ? '443' : '80';
+            var port = new URL(host).port;
+            var backgroundPort = (!port || port === defaultPort) ? '' : `:${port}`;
+
+            const FONT_BASE_URL = "http://127.0.0.1" + backgroundPort + "/x_desktop/css/v10/";
             allStyleList.forEach(styleEl => {
                styleEl.textContent = styleEl.textContent.replace(fontReg, `url("${FONT_BASE_URL}$1")`);
             });
@@ -4814,8 +4820,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         var htmlFormId = "";
         var html = htmlString || document.documentElement.outerHTML; //this.app.content.get("html");
-        var port = layout.port === "" ? "" : ":" + layout.port;
-        var orginUrl = "http://127.0.0.1" + port;
+        //var port = layout.port === "" ? "" : ":" + layout.port;
+
+        var host = o2.Actions.getHost( 'x_processplatform_assemble_surface' );
+        var defaultPort = host.startsWith('https://') ? '443' : '80';
+        var port = new URL(host).port;
+        var backgroundPort = (!port || port === defaultPort) ? '' : `:${port}`;
+
+        var orginUrl = "http://127.0.0.1" + backgroundPort;
         html = html.replace(/\.\.\/(x_|o2_)/g, orginUrl + "/$1");
         html = html.replaceAll(window.location.origin, orginUrl);
         

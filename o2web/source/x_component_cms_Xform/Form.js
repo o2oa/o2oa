@@ -1919,8 +1919,14 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             var htmlFormId = "";
             var html = htmlString || document.documentElement.outerHTML; //this.app.content.get("html");
 
-            var port = layout.port === "" ? "" : ":" + layout.port;
-            var orginUrl = "http://127.0.0.1" + port;
+            // var port = layout.port === "" ? "" : ":" + layout.port;
+
+            var host = o2.Actions.getHost( 'x_processplatform_assemble_surface' );
+            var defaultPort = host.startsWith('https://') ? '443' : '80';
+            var port = new URL(host).port;
+            var backgroundPort = (!port || port === defaultPort) ? '' : `:${port}`;
+
+            var orginUrl = "http://127.0.0.1" + backgroundPort;
             html = html.replace(/\.\.\/(x_|o2_)/g, orginUrl + "/$1");
             html = html.replaceAll(window.location.origin, orginUrl);
 
