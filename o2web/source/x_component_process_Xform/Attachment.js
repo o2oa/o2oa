@@ -3270,7 +3270,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
             "isConfig": this.getFlagDefaultTrue("isConfig"),
             "isOrder": this.getFlagDefaultTrue("isOrder"),
             "dblclick": this.json.dblclick,
-            "readonly": (this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly || this.form.json.isReadonly),
+            "readonly": (!this.isEditable || this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly || this.form.json.isReadonly),
             "availableListStyles": this.json.availableListStyles ? this.json.availableListStyles : ["list", "seq", "icon", "preview"],
             "isDeleteOption": this.json.isDelete,
             "isReplaceOption": this.json.isReplace,
