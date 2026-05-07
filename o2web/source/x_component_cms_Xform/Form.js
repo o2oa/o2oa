@@ -1921,12 +1921,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
 
             // var port = layout.port === "" ? "" : ":" + layout.port;
 
-            var host = o2.Actions.getHost( 'x_cms_assemble_control' );
-            var defaultPort = host.startsWith('https://') ? '443' : '80';
-            var port = new URL(host).port;
-            var backgroundPort = (!port || port === defaultPort) ? '' : `:${port}`;
-
-            var orginUrl = "http://127.0.0.1" + backgroundPort;
+            var orginUrl = "http://127.0.0.1" + this._getBackgroundPort('x_cms_assemble_control');
             html = html.replace(/\.\.\/(x_|o2_)/g, orginUrl + "/$1");
             html = html.replaceAll(window.location.origin, orginUrl);
 

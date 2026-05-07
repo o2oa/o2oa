@@ -4678,10 +4678,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             //var port = layout.port === "" ? "" : ":" + layout.port;
 
-            var host = o2.Actions.getHost( 'x_processplatform_assemble_surface' );
-            var defaultPort = host.startsWith('https://') ? '443' : '80';
-            var port = new URL(host).port;
-            var backgroundPort = (!port || port === defaultPort) ? '' : `:${port}`;
+            var backgroundPort = this._getBackgroundPort('x_processplatform_assemble_surface');
 
             const FONT_BASE_URL = "http://127.0.0.1" + backgroundPort + "/x_desktop/css/v10/";
             allStyleList.forEach(styleEl => {
@@ -4816,18 +4813,25 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }, null, null, this.json.confirmStyle);
         }
     },
+    _getBackgroundPort: function (root){
+        var port;
+        var host = o2.Actions.getHost( root );
+        var defaultPort = host.startsWith('https://') ? '443' : '80';
+        if( layout.serviceAddressListWithPort ){
+            var config = layout.serviceAddressListWithPort[root];
+            port = config.port ? config.port.toString() : config.port;
+        }else{
+            port = new URL(host).port;
+        }
+        return (!port || port === defaultPort) ? '' : `:${port}`;
+    },
     _downloadAll: function (htmlString, callback) {
 
         var htmlFormId = "";
         var html = htmlString || document.documentElement.outerHTML; //this.app.content.get("html");
         //var port = layout.port === "" ? "" : ":" + layout.port;
 
-        var host = o2.Actions.getHost( 'x_processplatform_assemble_surface' );
-        var defaultPort = host.startsWith('https://') ? '443' : '80';
-        var port = new URL(host).port;
-        var backgroundPort = (!port || port === defaultPort) ? '' : `:${port}`;
-
-        var orginUrl = "http://127.0.0.1" + backgroundPort;
+        var orginUrl = "http://127.0.0.1" + this._getBackgroundPort('x_processplatform_assemble_surface');
         html = html.replace(/\.\.\/(x_|o2_)/g, orginUrl + "/$1");
         html = html.replaceAll(window.location.origin, orginUrl);
         
