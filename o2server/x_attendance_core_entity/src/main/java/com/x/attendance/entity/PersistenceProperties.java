@@ -193,6 +193,9 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
     public static class AttendanceV2LeaveCarryForward {
         public static final String table = "ATTEND_V2_LEAVE_CARRY_FORWARD";
     }
+    public static class AttendanceV2Holiday {
+        public static final String table = "ATTEND_V2_HOLIDAY";
+    }
 
 
 

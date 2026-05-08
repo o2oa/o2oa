@@ -50,6 +50,7 @@ import com.x.base.core.project.annotation.ModuleType;
         "com.x.attendance.entity.v2.AttendanceV2LeaveRequest",
         "com.x.attendance.entity.v2.AttendanceV2LeaveType",
         "com.x.attendance.entity.v2.AttendanceV2LeaveData",
+        "com.x.attendance.entity.v2.AttendanceV2Holiday",
         "com.x.general.core.entity.GeneralFile"}, storeJars = {
         "x_attendance_core_entity", "x_organization_core_express", "x_organization_core_entity",
         "x_general_core_entity"})

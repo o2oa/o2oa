@@ -257,6 +257,44 @@ public class LeaveManagerAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "根据年份查询中国节假日数据.", action = ActionHolidayListWithYear.class)
+    @GET
+    @Path("holiday/year/{year}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void holidayListWithYear(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request,
+            @JaxrsParameterDescribe("年份") @PathParam("year") Integer year) {
+        ActionResult<ActionHolidayListWithYear.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionHolidayListWithYear().execute(year);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "根据日期判断中国节假日数据.", action = ActionHolidayGetWithDate.class)
+    @GET
+    @Path("holiday/date/{date}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void holidayGetWithDate(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request,
+            @JaxrsParameterDescribe("日期，格式 yyyy-MM-dd") @PathParam("date") String date) {
+        ActionResult<ActionHolidayGetWithDate.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionHolidayGetWithDate().execute(date);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "查询假期申请.", action = ActionLeaveRequestSearch.class)
     @POST
     @Path("request/search/page/{page}/size/{size}")

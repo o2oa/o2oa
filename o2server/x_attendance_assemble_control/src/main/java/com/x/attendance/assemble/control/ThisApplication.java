@@ -8,6 +8,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.control.schedule.v2.AttendanceV2DetailGenerateTask;
+import com.x.attendance.assemble.control.schedule.v2.AttendanceV2HolidaySyncTask;
 import com.x.attendance.assemble.control.schedule.v2.AttendanceV2LeaveLedgerExpireTask;
 import com.x.attendance.assemble.control.schedule.v2.AttendanceV2LeavePolicyGrantTask;
 import com.x.attendance.assemble.control.schedule.v2.AttendanceV2MessageSendTask;
@@ -95,6 +96,8 @@ public class ThisApplication {
             context.schedule(AttendanceV2LeavePolicyGrantTask.class, "0 0 2 * * ?");
             // 每天凌晨 2 点半，处理过期的假期额度批次。
             context.schedule(AttendanceV2LeaveLedgerExpireTask.class, "0 30 2 * * ?");
+            // 每天凌晨 1 点，同步中国节假日数据。
+            context.schedule(AttendanceV2HolidaySyncTask.class, "0 0 1 * * ?");
 
         } catch (Exception e) {
             LOGGER.error(e);
