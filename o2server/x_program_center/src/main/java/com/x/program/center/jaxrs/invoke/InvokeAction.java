@@ -183,6 +183,24 @@ public class InvokeAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
+	@JaxrsMethodDescribe(value = "执行调用接口，与execute方法一致.", action = ActionExecute.class)
+	@POST
+	@Path("{flag}/invoke")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void invoke(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("flag") String flag, JsonElement jsonElement) {
+		ActionResult<Object> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionExecute().execute(request, effectivePerson, flag, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
 	@JaxrsMethodDescribe(value = "进行认证后执行调用接口,认证令牌格式'person#1970年毫秒数'经过3des加密,加密密钥为key值,有效时间15分钟.", action = ActionExecuteToken.class)
 	@POST
 	@Path("{flag}/client/{client}/token/{token}/execute")
