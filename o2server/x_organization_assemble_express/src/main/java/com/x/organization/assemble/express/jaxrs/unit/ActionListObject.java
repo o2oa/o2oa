@@ -1,9 +1,11 @@
 package com.x.organization.assemble.express.jaxrs.unit;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -38,7 +40,7 @@ class ActionListObject extends BaseAction {
 		logger.debug(effectivePerson.getDistinguishedName());
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		ActionResult<List<Wo>> result = new ActionResult<>();
-		CacheKey cacheKey = new CacheKey(this.getClass(), wi.getUnitList(), wi.getUseNameFind());
+		CacheKey cacheKey = new CacheKey(this.getClass(), wi.getUnitList(), wi.getUseNameFind(), wi.getCountSubNested());
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		if (optional.isPresent()) {
 			result.setData((List<Wo>) optional.get());
@@ -59,6 +61,9 @@ class ActionListObject extends BaseAction {
 		@FieldDescribe("是否需要根据名称查找，默认false")
 		private Boolean useNameFind = false;
 
+		@FieldDescribe("是否需要递归统计所有子级数据量，默认false")
+		private Boolean countSubNested = false;
+
 		public List<String> getUnitList() {
 			return unitList;
 		}
@@ -75,6 +80,13 @@ class ActionListObject extends BaseAction {
 			this.useNameFind = useNameFind;
 		}
 
+		public Boolean getCountSubNested() {
+			return countSubNested;
+		}
+
+		public void setCountSubNested(Boolean countSubNested) {
+			this.countSubNested = countSubNested;
+		}
 	}
 
 	public static class Wo extends Unit {
@@ -92,6 +104,15 @@ class ActionListObject extends BaseAction {
 
 		@FieldDescribe("直接下级职务数量")
 		private Long subDirectDutyCount = 0L;
+
+		@FieldDescribe("所有子级组织数量")
+		private Long subNestedUnitCount;
+
+		@FieldDescribe("所有子级身份数量")
+		private Long subNestedIdentityCount;
+
+		@FieldDescribe("所有子级职务数量")
+		private Long subNestedDutyCount;
 
 		static WrapCopier<Unit, Wo> copier = WrapCopierFactory.wo(Unit.class, Wo.class, null,
 				ListTools.toList(JpaObject.FieldsInvisible, Unit.controllerList_FIELDNAME));
@@ -126,6 +147,30 @@ class ActionListObject extends BaseAction {
 
 		public void setSubDirectDutyCount(Long subDirectDutyCount) {
 			this.subDirectDutyCount = subDirectDutyCount;
+		}
+
+		public Long getSubNestedUnitCount() {
+			return subNestedUnitCount;
+		}
+
+		public void setSubNestedUnitCount(Long subNestedUnitCount) {
+			this.subNestedUnitCount = subNestedUnitCount;
+		}
+
+		public Long getSubNestedIdentityCount() {
+			return subNestedIdentityCount;
+		}
+
+		public void setSubNestedIdentityCount(Long subNestedIdentityCount) {
+			this.subNestedIdentityCount = subNestedIdentityCount;
+		}
+
+		public Long getSubNestedDutyCount() {
+			return subNestedDutyCount;
+		}
+
+		public void setSubNestedDutyCount(Long subNestedDutyCount) {
+			this.subNestedDutyCount = subNestedDutyCount;
 		}
 	}
 
@@ -163,6 +208,18 @@ class ActionListObject extends BaseAction {
 					wo.setSubDirectIdentityCount(business.identity().countByUnit(wo.getId()));
 					wo.setSubDirectUnitCount(business.unit().countBySuper(wo.getId()));
 					wo.setSubDirectDutyCount(business.unitDuty().countByUnit(wo.getId()));
+					if(BooleanUtils.isTrue(wi.getCountSubNested())){
+						Set<String> unitIdSet = new HashSet<>(business.unit().listSubNested(o.getId()));
+						wo.setSubNestedUnitCount((long)unitIdSet.size());
+						Long identityCount = wo.getSubDirectIdentityCount();
+						Long dutyCount = wo.getSubDirectDutyCount();
+						for (String unitId : unitIdSet) {
+							identityCount += business.identity().countByUnit(unitId);
+							dutyCount += business.unitDuty().countByUnit(unitId);
+						}
+						wo.setSubNestedIdentityCount(identityCount);
+						wo.setSubNestedDutyCount(dutyCount);
+					}
 					wos.add(wo);
 				}
 			}
