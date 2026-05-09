@@ -354,7 +354,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
-	protected void removeMemberOfGroup(Business business, Person person) throws Exception {
+	protected void removeMemberOfGroup(Business business, Person person, List<Identity> identities) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Group.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Group> cq = cb.createQuery(Group.class);
@@ -363,6 +363,16 @@ abstract class BaseAction extends StandardJaxrsAction {
 		List<Group> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		for (Group o : os) {
 			o.getPersonList().remove(person.getId());
+		}
+		if(ListTools.isNotEmpty(identities)) {
+			List<String> ids = ListTools.extractProperty(identities, JpaObject.id_FIELDNAME,
+					String.class, true, true);
+			p = root.get(Group_.identityList).in(ids);
+			os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct()
+					.collect(Collectors.toList());
+			for (Group o : os) {
+				o.getIdentityList().removeAll(ids);
+			}
 		}
 	}
 
