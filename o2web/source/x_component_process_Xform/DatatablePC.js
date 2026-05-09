@@ -1524,7 +1524,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if( !line )return true;
 			if( !line.validation() )return false;
 
-			var originalDataStr, dataStr;
+			var originalData, originalDataStr, dataStr;
+			originalData = line.originalData;
 			if( fireChange ){
 				if( line.originalData && o2.typeOf(line.originalData) === "object"){
 					originalDataStr = JSON.stringify(line.originalData)
@@ -1553,7 +1554,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.validationMode();
 			this.fireEvent("completeLineEdit", [line]);
 			if( fireChange && originalDataStr !== dataStr ){
-				this.fireEvent("change", [{"lines":[line], "type":"editcomplete"}]);
+				this.fireEvent("change", [{"lines":[line], "type":"editcomplete", "originalData": originalData}]);
 			}
 
 			this._checkAllRelated();
