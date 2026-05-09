@@ -93,7 +93,7 @@ class ActionDelete extends BaseAction {
 		this.removePersonCustom(business, person);
 		// 删除群组成员
 		emc.beginTransaction(Group.class);
-		this.removeMemberOfGroup(business, person);
+		this.removeMemberOfGroup(business, person, identities);
 		// 删除角色成员
 		emc.beginTransaction(Role.class);
 		this.removeMemberOfRole(business, person);
