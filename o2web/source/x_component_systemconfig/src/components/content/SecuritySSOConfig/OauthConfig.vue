@@ -221,7 +221,7 @@ const addSSOConfig = ()=>{
 }
 
 const removeOauth = (e, idx, info, title, name, path, oauthData)=>{
-  const text = lp._ssoConfig[info].replace(/{name}/, oauthClients.value[idx][name]);
+  const text = lp._ssoConfig[info].replace(/{name}/, oauthData.value[idx][name]);
   const item = e.currentTarget.getParent('.item_sso_item');
   item.addClass('item_sso_item_del');
   component.confirm("warn", e, lp._ssoConfig[title], text, 500, 170, function(){

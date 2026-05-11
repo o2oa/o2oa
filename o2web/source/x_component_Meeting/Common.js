@@ -937,13 +937,24 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         // }.bind(this));
     },
     startImmediately : function(){
+        const startTime = new Date(this.data.startTime);
+        const completedTime = new Date(this.data.completedTime);
+        const diff = completedTime.getTime() - startTime.getTime();
+        const now = new Date();
+        const targetDate = new Date(Date.now() + diff);
+
         o2.Actions.load("x_meeting_assemble_control").MeetingAction.editStartTime( this.data.id, {
             room : this.data.room,
-            startTime : ( new Date() ).format("db")
+            startTime : now.format("db")
         }, function () {
-            this.app.notice( this.lp.startMeetingSucccess, "success");
-            this.waitReload = true;
-            this.close()
+            o2.Actions.load("x_meeting_assemble_control").MeetingAction.editCompletedTime( this.data.id, {
+                room : this.data.room,
+                completedTime : targetDate.format("db")
+            }, function () {
+                this.app.notice( this.lp.endMeetingSucccess, "success");
+                this.waitReload = true;
+                this.reload()
+            }.bind(this))
         }.bind(this))
     },
     finishImmediately : function(){

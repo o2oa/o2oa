@@ -55,9 +55,7 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
             this._saveDoc();
         });
 
-        this.env = this._fileInCms() ? 'cms' : (this._fileInProcess() ? 'process' : '');
-        this.restfulActions =
-            this.env === 'process' ? this.form.workAction.action : this.env === 'cms' ? this.form.documentAction.action : null;
+        this._checkRestfulActions();
 
         this.node.setStyle('pointer-events', 'unset');
     },
@@ -75,6 +73,7 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
         }
     },
     _deleteFile: function (file, fileNode) {
+        this._checkRestfulActions();
         return new Promise((resolve, reject) => {
             try {
                 this.restfulActions.invoke({
@@ -102,6 +101,7 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
     },
 
     _uploadFile: function (node) {
+        this._checkRestfulActions();
         node.setAttribute('status', 'uploading');
         const file = node.file;
         return this._uploadFileToServer(file, node)
@@ -162,7 +162,7 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
         var formData = new FormData();
         formData.append('site', this.json.id);
         formData.append('file', file);
-
+        this._checkRestfulActions();
         return new Promise((resolve, reject) => {
             try {
                 this.restfulActions.targetModule = {module: node, file: file};
@@ -266,6 +266,7 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
         if (!this.json.fileSite) this.json.fileSite = this.json.id;
         //如果有设置 site，循环所有附件，将匹配site的附件添加进来。
         if (this.json.fileSite){
+            this._checkRestfulActions();
             const siteList = this.json.fileSite.split(/.*,.*/g);
             const addr = this.restfulActions.getAddress();
             this.form.businessData.attachmentList.each(function (att) {
@@ -297,10 +298,15 @@ MWF.xApplication.process.Xform.OOFiles = MWF.APPOOFiles = new Class({
 
         return value ?? '';
     },
+    _checkRestfulActions: function (){
+        if(!this.restfulActions) {
+            this.env = this._fileInCms() ? 'cms' : (this._fileInProcess() ? 'process' : '');
+            this.restfulActions =
+                this.env === 'process' ? this.form.workAction.action : this.env === 'cms' ? this.form.documentAction.action : null;
+        }
+    },
     _afterLoadOONodeDownloading: function (){
-        this.env = this._fileInCms() ? 'cms' : (this._fileInProcess() ? 'process' : '');
-        this.restfulActions =
-            this.env === 'process' ? this.form.workAction.action : this.env === 'cms' ? this.form.documentAction.action : null;
+        this._checkRestfulActions();
         let value = this.getValue();
         if(Array.isArray(value)){
             value = value.map(v=>v.name);
