@@ -1,16 +1,5 @@
 package com.x.organization.assemble.express.jaxrs.identity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -24,6 +13,15 @@ import com.x.organization.assemble.express.Business;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
 import com.x.organization.core.entity.Unit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 class ActionListWithUnitSubDirectObject extends BaseAction {
 
@@ -80,6 +78,7 @@ class ActionListWithUnitSubDirectObject extends BaseAction {
 		List<String> identityIds = em.createQuery(cq.select(root.get(Identity_.id)).where(p))
 				.getResultList().stream().distinct().collect(Collectors.toList());
 		List<Identity> list = business.identity().pick(identityIds);
+		list = business.identity().sort(list);
 		for (Identity o : list) {
 			wos.add(this.convert(business, o, Wo.class));
 		}
