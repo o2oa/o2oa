@@ -328,6 +328,15 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			this.loadDatatable();
 		},
+		/**
+		 * @summary 判断组件是否只读.
+		 * @example
+		 * var readonly = this.form.get('datatable').isReadonly();
+		 * @return {Boolean} 是否只读.
+		 */
+		isReadonly : function(){
+			return !this.editable;
+		},
 		/*
 		 * @summary 重新加载数据表格。
 		 * @example
@@ -1515,7 +1524,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if( !line )return true;
 			if( !line.validation() )return false;
 
-			var originalDataStr, dataStr;
+			var originalData, originalDataStr, dataStr;
+			originalData = line.originalData;
 			if( fireChange ){
 				if( line.originalData && o2.typeOf(line.originalData) === "object"){
 					originalDataStr = JSON.stringify(line.originalData)
@@ -1544,7 +1554,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.validationMode();
 			this.fireEvent("completeLineEdit", [line]);
 			if( fireChange && originalDataStr !== dataStr ){
-				this.fireEvent("change", [{"lines":[line], "type":"editcomplete"}]);
+				this.fireEvent("change", [{"lines":[line], "type":"editcomplete", "originalData": originalData}]);
 			}
 
 			this._checkAllRelated();
