@@ -170,10 +170,12 @@ public class HstService {
             Map<String, Object> map = new HashMap<>(3);
             map.put("roomId", meeting.getRoomId());
 
-//            String url = config.getOnlineConfig().getHstUrl() + FIXED_MEETING_API;
-            map.put("hopeStartTime", DateTools.format(DateTools.getAdjustTimeDay(meeting.getStartTime(), 0, 0, -30, 0)));
-            map.put("hopeEndTime", DateTools.format(meeting.getCompletedTime()));
-            String url = config.getOnlineConfig().getHstUrl() + RESERVE_MEETING_API;
+            String url = config.getOnlineConfig().getHstUrl() + FIXED_MEETING_API;
+            if(!DateTools.beforeNowMinutesNullIsTrue(meeting.getStartTime(), -5)) {
+                map.put("hopeStartTime", DateTools.format(DateTools.getAdjustTimeDay(meeting.getStartTime(), 0, 0, -30, 0)));
+                map.put("hopeEndTime", DateTools.format(meeting.getCompletedTime()));
+                url = config.getOnlineConfig().getHstUrl() + RESERVE_MEETING_API;
+            }
             String token = ShaTools.getToken(config.getOnlineConfig().getHstKey(), config.getOnlineConfig().getHstSecret());
             List<NameValuePair> header = new ArrayList<>();
             header.add(new NameValuePair("Authorization", token));
