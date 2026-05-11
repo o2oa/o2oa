@@ -22,7 +22,6 @@ public class ActionApplication extends AbstractActionApplication {
         classes.add(QueryAction.class);
         classes.add(ViewAction.class);
         classes.add(StatAction.class);
-        classes.add(NeuralAction.class);
         classes.add(TableAction.class);
         classes.add(StatementAction.class);
         classes.add(ImportModelAction.class);
