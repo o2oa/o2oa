@@ -124,7 +124,7 @@ public class Token extends ConfigObject {
 	}
 
 	public String getConfigPwd() {
-		return this._password;
+		return this.password;
 	}
 
 	public void setPassword(String password)
