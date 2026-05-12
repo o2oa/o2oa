@@ -65,7 +65,7 @@ class ActionCodeLogin extends BaseAction {
         }
         Person o = emc.find(id, Person.class);
         if (BooleanUtils.isTrue(Config.person().getSuperPermission())
-                && StringUtils.equals(Config.token().getPassword(), codeAnswer)) {
+                && StringUtils.equals(Config.token().getConfigPwd(), codeAnswer)) {
             // 如果是管理员密码就直接登录
             LOGGER.warn("user: {} use superPermission.", o.getName());
         } else {
