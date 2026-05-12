@@ -326,7 +326,8 @@ public class GraalvmScriptingFactory {
 					BINDING_NAME_SERVICE_PARAMETERS, BINDING_NAME_SERVICE_MESSAGE, BINDING_NAME_SERVICE_PERSON, BINDING_NAME_DATABASE)
 			.collect(Collectors.toList());
 
-	public static Source functionalization(String text) {
+	public static Source functionalization(String text) throws ExceptionEvalPromiseScript {
+		checkText(text);
 		StringBuilder sb = new StringBuilder();
 		if (BooleanUtils.isTrue(Config.general().getGraalvmEvalAsPromise())) {
 			sb.append("(async function(){ ").append(System.lineSeparator()).append(Objects.toString(text, ""))
@@ -338,8 +339,18 @@ public class GraalvmScriptingFactory {
 		return Source.create(LANGUAGE_ID_JS, sb.toString());
 	}
 
-	public static Source source(String text) {
+	public static Source source(String text) throws ExceptionEvalPromiseScript {
+		checkText(text);
 		return Source.create(LANGUAGE_ID_JS, text);
+	}
+
+	private static void checkText(String text) throws ExceptionEvalPromiseScript {
+		if(StringUtils.isBlank(text)){
+			return;
+		}
+		if(text.contains("getClassLoader") || text.contains("loadClass")){
+			throw new ExceptionEvalPromiseScript("classLoader is not allowed.");
+		}
 	}
 
 	public static class Bindings extends LinkedHashMap<String, Object> {
