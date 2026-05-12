@@ -1,11 +1,5 @@
 package com.x.organization.assemble.authentication.jaxrs.authentication;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -17,8 +11,11 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.express.assemble.authentication.jaxrs.authentication.ActionCodeLoginWi;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionCodeLogin extends BaseAction {
 
@@ -65,7 +62,7 @@ class ActionCodeLogin extends BaseAction {
         }
         Person o = emc.find(id, Person.class);
         if (BooleanUtils.isTrue(Config.person().getSuperPermission())
-                && StringUtils.equals(Config.token().getPassword(), codeAnswer)) {
+                && StringUtils.equals(Config.token().getConfigPwd(), codeAnswer)) {
             // 如果是管理员密码就直接登录
             LOGGER.warn("user: {} use superPermission.", o.getName());
         } else {
