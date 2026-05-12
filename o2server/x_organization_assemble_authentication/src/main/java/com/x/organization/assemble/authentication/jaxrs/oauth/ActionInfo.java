@@ -85,7 +85,7 @@ class ActionInfo extends BaseAction {
 
 	}
 
-	private Source compliedScript(String clientId, String scope, String text) {
+	private Source compliedScript(String clientId, String scope, String text) throws Exception {
 
 		CacheKey cacheKey = new CacheKey(this.getClass(), clientId, scope);
 		Optional<?> optional = CacheManager.get(cache, cacheKey);
