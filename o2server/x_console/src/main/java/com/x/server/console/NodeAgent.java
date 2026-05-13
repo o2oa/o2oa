@@ -44,6 +44,7 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 public class NodeAgent extends Thread {
 
@@ -101,11 +102,14 @@ public class NodeAgent extends Thread {
 										CommandObject.class);
 								if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEncrypt())) {
 									String decrypt = Crypto.rsaDecrypt(commandObject.getCredential(),
-											Config.privateKey());
-									if (!StringUtils.startsWith(decrypt, "o2@")) {
-										dos.writeUTF("failure:error decrypt!");
-										dos.flush();
-										continue;
+											Crypto.NODE_PRIVATE_KEY);
+									if (!Strings.CS.equals(decrypt, Config.token().getPassword())) {
+										Config.flush();
+										if (!Strings.CS.equals(decrypt, Config.token().getPassword())) {
+											dos.writeUTF("failure:error decrypt!");
+											dos.flush();
+											continue;
+										}
 									}
 								}
 

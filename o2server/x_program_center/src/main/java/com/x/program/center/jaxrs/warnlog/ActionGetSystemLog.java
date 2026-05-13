@@ -31,7 +31,7 @@ import com.x.base.core.project.tools.ListTools;
 
 class ActionGetSystemLog extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionGetSystemLog.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActionGetSystemLog.class);
 
 	private static long durationTime = 30 * 60 * 1000;
 
@@ -89,7 +89,7 @@ class ActionGetSystemLog extends BaseAction {
 							DataInputStream dis = new DataInputStream(socket.getInputStream())) {
 						Map<String, Object> commandObject = new HashMap<>();
 						commandObject.put("command", "readLog:readLog");
-						commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+						commandObject.put("credential", Crypto.rsaEncrypt(Config.token().getPassword(), Crypto.NODE_PUBLIC_KEY));
 
 						dos.writeUTF(XGsonBuilder.toJson(commandObject));
 						dos.flush();

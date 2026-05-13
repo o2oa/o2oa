@@ -67,7 +67,7 @@ public class RestartCommand extends StopCommand {
 									DataInputStream dis = new DataInputStream(socket.getInputStream())) {
 								Map<String, Object> commandObject = new HashMap<>();
 								commandObject.put("command", "command:start");
-								commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+								commandObject.put("credential", Crypto.rsaEncrypt(Config.token().getPassword(), Crypto.NODE_PUBLIC_KEY));
 								dos.writeUTF(XGsonBuilder.toJson(commandObject));
 								dos.flush();
 								break;

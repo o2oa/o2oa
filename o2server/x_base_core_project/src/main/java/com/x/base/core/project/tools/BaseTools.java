@@ -152,7 +152,7 @@ public class BaseTools {
 			socket.setSoTimeout(2000);
 			Map<String, Object> commandObject = new HashMap<>();
 			commandObject.put("command", "syncFile:" + syncFilePath);
-			commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+			commandObject.put("credential", Crypto.rsaEncrypt(Config.token().getPassword(), Crypto.NODE_PUBLIC_KEY));
 			dos.writeUTF(XGsonBuilder.toJson(commandObject));
 			dos.flush();
 
