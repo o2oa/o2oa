@@ -1,5 +1,11 @@
 package com.x.server.console.command;
 
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.Crypto;
+import com.x.server.console.CommandThreads;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -9,13 +15,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.Crypto;
-import com.x.server.console.CommandThreads;
 
 public class RestartCommand extends StopCommand {
 
@@ -67,7 +66,7 @@ public class RestartCommand extends StopCommand {
 									DataInputStream dis = new DataInputStream(socket.getInputStream())) {
 								Map<String, Object> commandObject = new HashMap<>();
 								commandObject.put("command", "command:start");
-								commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+								commandObject.put("credential", Crypto.rsaEncrypt(Config.token().getPassword(), Crypto.NODE_PUBLIC_KEY));
 								dos.writeUTF(XGsonBuilder.toJson(commandObject));
 								dos.flush();
 								break;

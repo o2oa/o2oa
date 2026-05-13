@@ -48,9 +48,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	protected String executeCommand(String ctl, String nodeName, int nodePort, InputStream inputStream,
-			String fileName)
-			throws IOException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidKeySpecException, IllegalBlockSizeException, BadPaddingException, URISyntaxException {
+			String fileName) throws Exception {
 		try (Socket socket = new Socket(nodeName, nodePort);
 				DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 				DataInputStream dis = new DataInputStream(socket.getInputStream())) {
@@ -58,7 +56,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			socket.setSoTimeout(30000);
 			Map<String, Object> commandObject = new HashMap<>();
 			commandObject.put("command", "redeploy:" + ctl);
-			commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+			commandObject.put("credential", Crypto.rsaEncrypt(Config.token().getPassword(), Crypto.NODE_PUBLIC_KEY));
 			dos.writeUTF(XGsonBuilder.toJson(commandObject));
 			dos.flush();
 			dos.writeUTF(fileName);

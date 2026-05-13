@@ -72,7 +72,7 @@ public class ActionPublishHtml extends BaseAction {
 					 DataInputStream dis = new DataInputStream(socket.getInputStream())){
 					Map<String, Object> commandObject = new HashMap<>();
 					commandObject.put("command", "uploadResource:"+fileName);
-					commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+					commandObject.put("credential", Crypto.rsaEncrypt(Config.token().getPassword(), Crypto.NODE_PUBLIC_KEY));
 
 					Map<String, Object> param = new HashMap<>();
 					param.put("fileName", fileName);

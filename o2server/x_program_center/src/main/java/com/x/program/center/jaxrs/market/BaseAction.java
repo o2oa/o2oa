@@ -360,7 +360,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                         }else{
                             return;
                         }
-                        commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+                        commandObject.put("credential", Crypto.rsaEncrypt(Config.token().getPassword(), Crypto.NODE_PUBLIC_KEY));
 
                         dos.writeUTF(XGsonBuilder.toJson(commandObject));
                         dos.flush();

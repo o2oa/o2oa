@@ -43,7 +43,7 @@ import com.x.query.core.entity.wrap.WrapQuery;
 
 class ActionUninstall extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionUninstall.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActionUninstall.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -160,7 +160,7 @@ class ActionUninstall extends BaseAction {
 						 DataInputStream dis = new DataInputStream(socket.getInputStream())) {
 						Map<String, Object> commandObject = new HashMap<>();
 						commandObject.put("command", "uninstall:customWar");
-						commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+						commandObject.put("credential", Crypto.rsaEncrypt(Config.token().getPassword(), Crypto.NODE_PUBLIC_KEY));
 
 						dos.writeUTF(XGsonBuilder.toJson(commandObject));
 						dos.flush();

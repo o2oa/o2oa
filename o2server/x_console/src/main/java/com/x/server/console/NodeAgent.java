@@ -101,11 +101,14 @@ public class NodeAgent extends Thread {
 										CommandObject.class);
 								if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEncrypt())) {
 									String decrypt = Crypto.rsaDecrypt(commandObject.getCredential(),
-											Config.privateKey());
-									if (!StringUtils.startsWith(decrypt, "o2@")) {
-										dos.writeUTF("failure:error decrypt!");
-										dos.flush();
-										continue;
+											Crypto.NODE_PRIVATE_KEY);
+									if (!StringUtils.equals(decrypt, Config.token().getPassword())) {
+										Config.flush();
+										if (!StringUtils.equals(decrypt, Config.token().getPassword())) {
+											dos.writeUTF("failure:error decrypt!");
+											dos.flush();
+											continue;
+										}
 									}
 								}
 

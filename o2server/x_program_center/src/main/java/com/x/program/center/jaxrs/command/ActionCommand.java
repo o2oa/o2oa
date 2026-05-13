@@ -29,7 +29,7 @@ import org.apache.commons.lang3.BooleanUtils;
 /*执行服务器命令*/
 public class ActionCommand extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCommand.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActionCommand.class);
 
 	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement)
 			throws Exception {
@@ -92,7 +92,7 @@ public class ActionCommand extends BaseAction {
 					DataInputStream dis = new DataInputStream(socket.getInputStream())) {
 				Map<String, Object> commandObject = new HashMap<>();
 				commandObject.put("command", "command:" + ctl);
-				commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+				commandObject.put("credential", Crypto.rsaEncrypt(Config.token().getPassword(), Crypto.NODE_PUBLIC_KEY));
 				dos.writeUTF(XGsonBuilder.toJson(commandObject));
 				dos.flush();
 
@@ -126,7 +126,7 @@ public class ActionCommand extends BaseAction {
 
 				Map<String, Object> commandObject = new HashMap<>();
 				commandObject.put("command", "syncFile:" + syncFilePath);
-				commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+				commandObject.put("credential", Crypto.rsaEncrypt(Config.token().getPassword(), Crypto.NODE_PUBLIC_KEY));
 				dos.writeUTF(XGsonBuilder.toJson(commandObject));
 				dos.flush();
 
