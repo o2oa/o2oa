@@ -6,9 +6,9 @@
             <span class="operator_link_underline" @click="gotoOld">{{$.lp.leaveManagerV2.gotoOld}}</span>
         </div>
         <div class="manager-box-content">
-            <div style="margin: 10px 0;float: left;">
+            <!-- <div style="margin: 10px 0;float: left;">
                 <button class="mainColor_bg" @click="clickAddType">{{$.lp.leaveManagerV2.addType}}</button>
-            </div>
+            </div> -->
             <div style="margin: 10px 0;float: right;">
                 <button class="light-border-button" @click="clickOpenAccountSearchView"> {{ $.lp.leaveManagerV2.accountBlance }}</button>
             </div>
@@ -27,9 +27,9 @@
                         $.lp.leaveManagerV2.type.quotaTypeUnlimited}}</td>
                     <td>
                         <span class="operator_link" @click="this.clickEditLeaveType(d.value.id)">{{$.lp.update}}</span>
-                        <span class="operator_link" @click="this.clickDeleteType(d.value.id)">{{$.lp.delete}}</span>
-                        <span class="operator_link" @click="this.clickOpenPolicyList(d.value.id)"
-                            oo-if="d.value.quotaType == 'QUOTA'">{{$.lp.leaveManagerV2.type.configPolicy}}</span>
+                        <!-- <span class="operator_link" @click="this.clickDeleteType(d.value.id)">{{$.lp.delete}}</span> -->
+                        <!-- <span class="operator_link" @click="this.clickOpenPolicyList(d.value.id)"
+                            oo-if="d.value.quotaType == 'QUOTA'">{{$.lp.leaveManagerV2.type.configPolicy}}</span> -->
                     </td>
                 </tr>
             </table>

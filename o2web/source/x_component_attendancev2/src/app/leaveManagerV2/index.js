@@ -19,6 +19,7 @@ export default content({
       leaveTypeList: [],
       leaveTypePolicyShow: false, // 是否显示某一个假期类型的规则列表
       currentLeaveType: null, // 当前选中的假期类型
+      
     };
   },
   afterRender() {
