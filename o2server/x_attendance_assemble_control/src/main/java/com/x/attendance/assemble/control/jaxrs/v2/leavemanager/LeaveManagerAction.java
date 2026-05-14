@@ -257,6 +257,24 @@ public class LeaveManagerAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "新增假期发放批次.", action = ActionLeaveLedgerPost.class)
+    @POST
+    @Path("ledger")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void ledgerPost(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request, JsonElement jsonElement) {
+        ActionResult<ActionLeaveLedgerPost.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLeaveLedgerPost().execute(effectivePerson, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "根据年份查询中国节假日数据.", action = ActionHolidayListWithYear.class)
     @GET
     @Path("holiday/year/{year}")
