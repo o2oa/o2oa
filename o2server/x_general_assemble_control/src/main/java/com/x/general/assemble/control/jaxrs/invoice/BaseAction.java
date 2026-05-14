@@ -13,6 +13,7 @@ import com.x.general.core.entity.InvoiceDetail;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -30,7 +31,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
     protected void extractInvoice(Invoice invoice, byte[] bytes) throws Exception {
         try {
-            PDDocument doc = PDDocument.load(bytes);
+            PDDocument doc = Loader.loadPDF(bytes);
             PDPage firstPage = doc.getPage(0);
             int pageWidth = Math.round(firstPage.getCropBox().getWidth());
             PDFTextStripper textStripper = new PDFTextStripper();
