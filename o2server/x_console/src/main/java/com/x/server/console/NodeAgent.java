@@ -365,7 +365,7 @@ public class NodeAgent extends Thread {
 				} else if (StringUtils.isNotEmpty(filePath)) {
 					filePath = filePath.trim();
 					File dist = Config.path_webroot(true).toFile();
-					if (ZipTools.isMember(filePath, WebServers.WEB_SERVER_FOLDERS)) {
+					if (ZipTools.isMember(filePath, WebServers.WEB_SERVER_FOLDERS) || "favicon.ico".equals(fileName)) {
 						dist = Config.dir_servers_webServer();
 					}
 					dist = new File(dist, filePath);
