@@ -15,6 +15,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 public class AttendanceV2LeaveManagerService {
+
     private static Logger logger = LoggerFactory.getLogger(AttendanceV2LeaveManagerService.class);
 
     public void initDefaultLeaveTypeData() {
@@ -35,12 +36,26 @@ public class AttendanceV2LeaveManagerService {
         }
     }
 
-    private final List<String> defaultLeaveTypes = Arrays.asList("年假", "病假", "事假", "婚假", "丧假", "产假", "陪产假", "其他");
-    private final List<String> defaultLeaveTypeIds = Arrays.asList("f8743f00-f193-4526-8de3-ff425d398f93",
-            "ed809d9a-4fbb-4c23-885f-4f6e7e7dc339", "eac27748-3baf-474f-9cc5-a508a919c254",
-            "e0a055a4-08d3-4466-8680-2a9f13d46194", "bc30bffa-dd23-463d-9f41-1bc7b0351082",
-            "8eca0b5c-aa0c-4b22-9857-2e1e6bfa22f4", "6505c460-8efb-4dc8-a44d-ba2eb3706fd2",
-            "25d425de-a9bd-43f3-92f6-1cc88d54e262");
+    private final List<String> defaultLeaveTypes = Arrays.asList("年假", "带薪事假", "调休假",
+            "产假", "育儿假", "哺乳假", "病假", "婚假", "丧假", "其他");
+    private final List<String> defaultLeaveTypeIds = Arrays.asList(
+            "49448f7d-086e-4f05-8f2c-f64121588661",
+            "e9a3b632-1b12-4d9b-bc75-6e54c86d8a35",
+            "2f98e6c7-3a15-4e78-9041-3b562a4d9e12",
+            "9b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e",
+            "782a1b9c-d3e4-4f5a-bc6d-7e8f9a0b1c2d",
+            "a1b2c3d4-e5f6-47a8-b9c0-d1e2f3a4b5c6",
+            "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+            "550e8400-e29b-41d4-a716-446655440000",
+            "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+            "8d61239c-4f12-4e92-bc10-72a3b1c4d5e6"
+    );
+    private final List<QuotaTypeEnum> defaultQuotaTypes = Arrays.asList(
+            QuotaTypeEnum.QUOTA, QuotaTypeEnum.QUOTA, QuotaTypeEnum.QUOTA,
+            QuotaTypeEnum.UNLIMITED, QuotaTypeEnum.QUOTA, QuotaTypeEnum.UNLIMITED,
+            QuotaTypeEnum.UNLIMITED, QuotaTypeEnum.UNLIMITED, QuotaTypeEnum.UNLIMITED,
+            QuotaTypeEnum.UNLIMITED
+    );
 
     private void defaultLeaveTypeData() throws Exception {
         for (int i = 0; i < defaultLeaveTypes.size(); i++) {
@@ -49,8 +64,8 @@ public class AttendanceV2LeaveManagerService {
             AttendanceV2LeaveType body = new AttendanceV2LeaveType();
             body.setId(leaveTypeId);
             body.setName(leaveType);
-            body.setOrderNumber((100 - (i * 10)));
-            body.setQuotaType(QuotaTypeEnum.UNLIMITED.getValue());
+            body.setOrderNumber((200 - (i * 10)));
+            body.setQuotaType(defaultQuotaTypes.get(i).getValue());
             body.setUnit(UnitTypeEnum.DAY.getValue());
             saveLeaveType(body);
         }
