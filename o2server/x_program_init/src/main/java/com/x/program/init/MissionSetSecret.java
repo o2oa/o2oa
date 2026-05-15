@@ -1,5 +1,7 @@
 package com.x.program.init;
 
+import com.x.base.core.project.tools.DefaultCharset;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URISyntaxException;
@@ -9,6 +11,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.h2.tools.RunScript;
 
@@ -73,7 +76,8 @@ public class MissionSetSecret implements Mission {
 
 	private void changeTokenPassword(String secret) throws Exception {
 		Config.token().setPassword(secret);
-		Config.token().save();
+		File file = new File(Config.base(), Config.PATH_CONFIG_TOKEN);
+		FileUtils.write(file, XGsonBuilder.toJson(Config.token()), DefaultCharset.charset);
 		Config.flush();
 	}
 
