@@ -14,6 +14,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -32,8 +33,6 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.Work_;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2TriggerProcessingWo;
-
-import fr.opensagres.poi.xwpf.converter.core.utils.StringUtils;
 
 public class TouchDetained extends AbstractJob {
 

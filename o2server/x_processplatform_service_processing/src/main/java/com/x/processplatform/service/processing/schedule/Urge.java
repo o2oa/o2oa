@@ -13,6 +13,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -29,8 +30,6 @@ import com.x.base.core.project.utils.time.TimeStamp;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Task_;
 import com.x.processplatform.service.processing.ThisApplication;
-
-import fr.opensagres.poi.xwpf.converter.core.utils.StringUtils;
 
 public class Urge extends AbstractJob {
 

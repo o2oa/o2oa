@@ -13,6 +13,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -32,12 +33,10 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkCompleted_;
 import com.x.processplatform.service.processing.ThisApplication;
 
-import fr.opensagres.poi.xwpf.converter.core.utils.StringUtils;
-
 @Deprecated
 public class Merge extends AbstractJob {
 
-	private static Logger logger = LoggerFactory.getLogger(Merge.class);
+	private static final Logger logger = LoggerFactory.getLogger(Merge.class);
 
 	@Override
 	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {

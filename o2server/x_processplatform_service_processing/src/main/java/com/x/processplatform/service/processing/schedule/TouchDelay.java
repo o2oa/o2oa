@@ -12,6 +12,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -30,8 +31,6 @@ import com.x.processplatform.core.entity.content.Work_;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.ThisApplication;
-
-import fr.opensagres.poi.xwpf.converter.core.utils.StringUtils;
 
 public class TouchDelay extends AbstractJob {
 
