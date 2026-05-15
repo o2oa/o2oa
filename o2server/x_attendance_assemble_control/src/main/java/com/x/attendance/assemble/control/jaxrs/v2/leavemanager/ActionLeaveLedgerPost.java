@@ -1,6 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.v2.leavemanager;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,6 +37,10 @@ public class ActionLeaveLedgerPost extends BaseAction {
             Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
             AttendanceV2LeaveLedger ledger = buildLedger(wi, new Date(), hasField(jsonElement,
                     AttendanceV2LeaveLedger.grantAmount_FIELDNAME));
+            validateLedgerNotExists(emc.listEqualAndEqualAndEqual(AttendanceV2LeaveLedger.class,
+                    AttendanceV2LeaveLedger.grantPeriod_FIELDNAME, ledger.getGrantPeriod(),
+                    AttendanceV2LeaveLedger.leaveTypeId_FIELDNAME, ledger.getLeaveTypeId(),
+                    AttendanceV2LeaveLedger.person_FIELDNAME, ledger.getPerson()));
 
             emc.beginTransaction(AttendanceV2LeaveLedger.class);
             emc.persist(ledger, CheckPersistType.all);
@@ -75,6 +80,12 @@ public class ActionLeaveLedgerPost extends BaseAction {
         ledger.setGrantTime(now);
         ledger.setActive(true);
         return ledger;
+    }
+
+    static void validateLedgerNotExists(List<AttendanceV2LeaveLedger> ledgers) throws Exception {
+        if (ledgers != null && !ledgers.isEmpty()) {
+            throw new ExceptionWithMessage("当前用户该假期类型在当前发放周期已存在发放批次");
+        }
     }
 
     private static boolean hasField(JsonElement jsonElement, String fieldName) {

@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
+import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
 import com.x.attendance.entity.v2.AttendanceV2LeaveLedger;
+import java.util.Collections;
 import java.util.Date;
 import org.junit.jupiter.api.Test;
 
@@ -51,5 +53,16 @@ class ActionLeaveLedgerPostTest {
         wi.setGrantPeriod("2026");
 
         assertThrows(ExceptionEmptyParameter.class, () -> ActionLeaveLedgerPost.buildLedger(wi, now, false));
+    }
+
+    @Test
+    void validateLedgerNotExistsRejectsDuplicateLedger() {
+        AttendanceV2LeaveLedger ledger = new AttendanceV2LeaveLedger();
+        ledger.setPerson("张三@P");
+        ledger.setLeaveTypeId("leaveTypeId");
+        ledger.setGrantPeriod("2026");
+
+        assertThrows(ExceptionWithMessage.class,
+                () -> ActionLeaveLedgerPost.validateLedgerNotExists(Collections.singletonList(ledger)));
     }
 }

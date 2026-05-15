@@ -106,7 +106,7 @@ public class QueueAttendanceV2LeavePolicyGrant extends
                         grantAmount = 0;
                     } else {
                         if ("SERVICELEN".equalsIgnoreCase(grantAmountTypeProperties.getType())) {
-                            Person person = business.organization().person().getObject(grantPeriod);
+                            Person person = business.organization().person().getObject(user);
                             Date boardDate = person.getBoardDate();
                             if (boardDate != null) {
                                 double yearGap = (double) (today.getTime() - boardDate.getTime())
