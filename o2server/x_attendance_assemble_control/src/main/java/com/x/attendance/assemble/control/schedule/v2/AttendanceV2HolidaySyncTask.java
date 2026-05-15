@@ -65,8 +65,9 @@ public class AttendanceV2HolidaySyncTask extends AbstractJob {
     }
 
     private boolean existsYearData(EntityManagerContainer emc, int year) throws Exception {
-        List<AttendanceV2Holiday> list = emc.listEqual(AttendanceV2Holiday.class,
-                AttendanceV2Holiday.year_FIELDNAME, year);
+        List<AttendanceV2Holiday> list = emc.listEqualAndEqual(AttendanceV2Holiday.class,
+                AttendanceV2Holiday.year_FIELDNAME, year, AttendanceV2Holiday.source_FIELDNAME,
+                AttendanceV2Holiday.SOURCE_SYNC);
         return list != null && !list.isEmpty();
     }
 
@@ -105,6 +106,15 @@ public class AttendanceV2HolidaySyncTask extends AbstractJob {
     private int persistDays(EntityManagerContainer emc, int year, List<HolidaySourceDay> days) throws Exception {
         int count = 0;
         Set<String> dateSet = new HashSet<>();
+        List<AttendanceV2Holiday> existingList = emc.listEqual(AttendanceV2Holiday.class,
+                AttendanceV2Holiday.year_FIELDNAME, year);
+        if (existingList != null) {
+            for (AttendanceV2Holiday holiday : existingList) {
+                if (StringUtils.isNotBlank(holiday.getDateString())) {
+                    dateSet.add(holiday.getDateString());
+                }
+            }
+        }
         emc.beginTransaction(AttendanceV2Holiday.class);
         for (HolidaySourceDay day : days) {
             if (day == null || StringUtils.isBlank(day.getDate()) || day.getIsOffDay() == null
@@ -116,6 +126,7 @@ public class AttendanceV2HolidaySyncTask extends AbstractJob {
             holiday.setDateString(day.getDate());
             holiday.setName(day.getName());
             holiday.setOffDay(day.getIsOffDay());
+            holiday.setSource(AttendanceV2Holiday.SOURCE_SYNC);
             emc.persist(holiday, CheckPersistType.all);
             count++;
         }

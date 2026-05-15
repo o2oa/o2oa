@@ -31,6 +31,8 @@ public class AttendanceV2Holiday extends SliceJpaObject {
 
     private static final String TABLE = PersistenceProperties.AttendanceV2Holiday.table;
     private static final long serialVersionUID = 4601040815595094715L;
+    public static final String SOURCE_SYNC = "SYNC";
+    public static final String SOURCE_API = "API";
 
     public String getId() {
         return id;
@@ -68,6 +70,11 @@ public class AttendanceV2Holiday extends SliceJpaObject {
     @Column(name = ColumnNamePrefix + offDay_FIELDNAME)
     private Boolean offDay;
 
+    public static final String source_FIELDNAME = "source";
+    @FieldDescribe("数据来源，SYNC 定时任务同步，API 前端接口新增")
+    @Column(length = JpaObject.length_16B, name = ColumnNamePrefix + source_FIELDNAME)
+    private String source;
+
     public Integer getYear() {
         return year;
     }
@@ -98,5 +105,13 @@ public class AttendanceV2Holiday extends SliceJpaObject {
 
     public void setOffDay(Boolean offDay) {
         this.offDay = offDay;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }
