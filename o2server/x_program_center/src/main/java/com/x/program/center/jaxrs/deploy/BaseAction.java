@@ -2,7 +2,6 @@ package com.x.program.center.jaxrs.deploy;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Config;
@@ -15,19 +14,11 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.program.center.core.entity.DeployLog;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-import java.net.URISyntaxException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import org.apache.commons.lang3.StringUtils;
 
 abstract class BaseAction extends StandardJaxrsAction {
@@ -49,8 +40,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected String executeCommand(String ctl, String nodeName, int nodePort, InputStream inputStream,
 			String fileName)
-			throws IOException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
-			InvalidKeySpecException, IllegalBlockSizeException, BadPaddingException, URISyntaxException {
+			throws Exception {
 		try (Socket socket = new Socket(nodeName, nodePort);
 				DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 				DataInputStream dis = new DataInputStream(socket.getInputStream())) {
@@ -58,7 +48,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			socket.setSoTimeout(30000);
 			Map<String, Object> commandObject = new HashMap<>();
 			commandObject.put("command", "redeploy:" + ctl);
-			commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+			commandObject.put("credential", Crypto.rsaEncrypt(Config.token().getPassword(), Crypto.NODE_PUBLIC_KEY));
 			dos.writeUTF(XGsonBuilder.toJson(commandObject));
 			dos.flush();
 			dos.writeUTF(fileName);

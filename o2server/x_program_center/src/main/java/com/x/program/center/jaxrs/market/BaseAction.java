@@ -67,7 +67,7 @@ import org.apache.commons.lang3.StringUtils;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-    private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(BaseAction.class);
 
     protected static final String COLLECT_MARKET_CATEGORY = "/o2_collect_assemble/jaxrs/application2/list/category";
     protected static final String COLLECT_MARKET_LIST_INFO = "/o2_collect_assemble/jaxrs/application2/list/paging/{page}/size/{size}";
@@ -360,7 +360,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                         }else{
                             return;
                         }
-                        commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+                        commandObject.put("credential", Crypto.rsaEncrypt(Config.token().getPassword(), Crypto.NODE_PUBLIC_KEY));
 
                         dos.writeUTF(XGsonBuilder.toJson(commandObject));
                         dos.flush();
