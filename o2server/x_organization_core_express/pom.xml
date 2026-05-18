@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>net.o2oa</groupId>
 		<artifactId>o2server</artifactId>
-		<version>9.2</version>
+		<version>9.5</version>
 	</parent>
 	<artifactId>x_organization_core_express</artifactId>
 	<packaging>jar</packaging>
