@@ -1,0 +1,260 @@
+.leave-calendar-page {
+    display: flex;
+    flex-direction: column;
+}
+
+.leave-calendar-back {
+    margin-left: 0;
+    margin-right: 10px;
+}
+
+.leave-calendar-content {
+    overflow-x: auto;
+}
+
+.leave-calendar-toolbar {
+    min-width: 920px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* border-bottom: 2px solid #4aa3ff; */
+    padding: 10px 0 12px;
+}
+
+.leave-calendar-pickers {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.leave-calendar-picker {
+    display: flex;
+    align-items: center;
+    margin-right: 18px;
+    position: relative;
+}
+
+.leave-calendar-arrow {
+    height: 40px;
+    font-size: 22px;
+    font-weight: 700;
+    padding: 6px 20px;
+    cursor: pointer;
+    width: 42px;
+    line-height: 40px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+ 
+
+.leave-calendar-current {
+    height: 40px;
+    min-width: 80px;
+    margin: 0 8px;
+    background: #fff;
+    color: #3d3333;
+    font-size: 18px;
+    line-height: 40px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.leave-calendar-dropdown {
+    position: absolute;
+    left: 40px;
+    top: 44px;
+    z-index: 20;
+    width: 80px;
+    max-height: 240px;
+    overflow-y: auto;
+    border: 1px solid #c8c8c8;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+}
+
+.leave-calendar-month-dropdown {
+    width: 80px;
+}
+
+.leave-calendar-dropdown-item {
+    height: 40px;
+    line-height: 40px;
+    padding: 0 16px;
+    color: #333;
+    font-size: 18px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.leave-calendar-dropdown-item:hover,
+.leave-calendar-dropdown-item-current {
+    background: #eaf4ff;
+    color: #0879be;
+    font-weight: 700;
+}
+
+.leave-calendar-title {
+    min-width: 220px;
+    text-align: right;
+    color: #000;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.leave-calendar-week {
+    min-width: 920px;
+    display: flex;
+    height: 40px;
+    background: var(--att-color-bg);
+    border-radius: 8px;
+    /* border-bottom: 2px solid #c9c9c9; */
+}
+
+.leave-calendar-week-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #111;
+    font-size: 22px;
+}
+
+.leave-calendar-body {
+    min-width: 920px;
+}
+
+.leave-calendar-row {
+    display: flex;
+    min-height: 116px;
+    /* border-bottom: 2px solid #c9c9c9; */
+}
+
+.leave-calendar-cell {
+    flex: 1;
+    position: relative;
+    min-width: 0;
+    margin: 5px 4px;
+    padding: 12px 6px 8px;
+    box-sizing: border-box;
+    text-align: center;
+    border: 1px solid #e6e6e6;
+    border-radius: 16px;
+}
+
+.leave-calendar-cell-empty {
+    background: #fff;
+}
+
+.leave-calendar-cell-offday,
+.leave-calendar-cell-weekend {
+    background: #fff3f3;
+}
+
+.leave-calendar-cell-workday {
+    background: #f1f1f1;
+}
+
+.leave-calendar-cell-today {
+    box-shadow: inset 0 0 0 3px #ffc928;
+}
+
+.leave-calendar-day-number {
+    color: #0879be;
+    font-size: 32px;
+    line-height: 38px;
+    font-weight: 700;
+}
+
+.leave-calendar-tag {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 32px;
+    height: 32px;
+    color: #fff;
+    font-size: 22px;
+    line-height: 32px;
+    text-align: center;
+    font-weight: 700;
+}
+
+.leave-calendar-tag-offday {
+    background: #f24b42;
+}
+
+.leave-calendar-tag-weekend {
+    background: #ff9c95;
+}
+
+.leave-calendar-tag-workday {
+    background: #9a9a9a;
+}
+
+.leave-calendar-label {
+    margin-top: 12px;
+    color: #999;
+    font-size: 22px;
+    line-height: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.leave-calendar-label-offday,
+.leave-calendar-label-festival {
+    color: #ff3b17;
+}
+
+.leave-calendar-label-solar {
+    color: #169a43;
+}
+
+.leave-calendar-legend {
+    min-width: 920px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 12px;
+    color: #666;
+    font-size: 13px;
+}
+
+.leave-calendar-legend span {
+    display: flex;
+    align-items: center;
+    margin-left: 18px;
+}
+
+.leave-calendar-legend-item {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    margin-right: 6px;
+    border-radius: 2px;
+}
+
+.leave-calendar-legend-offday {
+    background: #fff3f3;
+    border: 1px solid #f24b42;
+}
+
+.leave-calendar-legend-weekend {
+    background: #fff3f3;
+    border: 1px solid #ff9c95;
+}
+
+.leave-calendar-legend-workday {
+    background: #f1f1f1;
+    border: 1px solid #9a9a9a;
+}
+
+.leave-calendar-legend-today {
+    border: 2px solid #ffc928;
+}

@@ -1,0 +1,57 @@
+<!-- 节假日日历 -->
+<div class="leave-calendar-page">
+    <div class="index_page_header_container">
+        <div class="index_page_header_title"><button class="leave-calendar-back" @click="clickBackTypeList"><i class="ooicon-process-goback"></i></button> {{
+            $.lp.leaveManagerV2.holidayCalendar }}</div>
+    </div>
+    <div class="manager-box-content leave-calendar-content">
+        <div class="leave-calendar-toolbar">
+            <div class="leave-calendar-pickers">
+                <div class="leave-calendar-picker">
+                    <div class="leave-calendar-arrow" @click="clickPreYear"><i class="o2icon-icon_arrow_left"></i></div>
+                    <div class="leave-calendar-current" @click="toggleYearSelector">
+                        <span>{{$.currentYear}}</span>
+                    </div>
+                    <div class="leave-calendar-dropdown" id="holidayYearDropdown" oo-if="$.yearSelectorOpen">
+                        <div oo-each="$.yearList" oo-item="year" class="{{this.yearItemClass(year.value)}}"
+                            @click="this.chooseYearItem(year.value)">{{year.value}}</div>
+                    </div>
+                    <div class="leave-calendar-arrow" @click="clickNextYear"><i class="o2icon-icon_arrow_right"></i></div>
+                </div>
+                <div class="leave-calendar-picker">
+                    <div class="leave-calendar-arrow" @click="clickPreMonth"><i class="o2icon-icon_arrow_left"></i></div>
+                    <div class="leave-calendar-current" @click="toggleMonthSelector">
+                        <span>{{$.currentMonthText}}</span>
+                    </div>
+                    <div class="leave-calendar-dropdown leave-calendar-month-dropdown" id="holidayMonthDropdown" oo-if="$.monthSelectorOpen">
+                        <div oo-each="$.monthList" oo-item="month" class="{{this.monthItemClass(month.value.value)}}"
+                            @click="this.chooseMonthItem(month.value.value)">{{month.value.name}}</div>
+                    </div>
+                    <div class="leave-calendar-arrow" @click="clickNextMonth"><i class="o2icon-icon_arrow_right"></i></div>
+                </div>
+                <button class="mainColor_bg" @click="clickToday">{{$.lp.leaveManagerV2.calendar.today}}</button>
+            </div>
+            <div class="leave-calendar-title">{{$.currentTitle}}</div>
+        </div>
+        <div class="leave-calendar-week">
+            <div class="leave-calendar-week-item" oo-each="$.weekList" oo-item="week">{{week.value}}</div>
+        </div>
+        <div class="leave-calendar-body">
+            <div class="leave-calendar-row" oo-each="$.calendarRows" oo-item="line">
+                <div oo-each="line.value" oo-item="day" class="{{this.calendarCellClass(day.value)}}">
+                    <div oo-if="!day.value.empty">
+                        <div class="{{this.calendarTagClass(day.value)}}" oo-if="day.value.tagText">{{day.value.tagText}}</div>
+                        <div class="leave-calendar-day-number">{{day.value.dayText}}</div>
+                        <div class="{{this.calendarLabelClass(day.value)}}">{{day.value.showName}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="leave-calendar-legend">
+            <span><i class="leave-calendar-legend-item leave-calendar-legend-offday"></i>{{$.lp.leaveManagerV2.calendar.offday}}</span>
+            <span><i class="leave-calendar-legend-item leave-calendar-legend-weekend"></i>{{$.lp.leaveManagerV2.calendar.weekend}}</span>
+            <span><i class="leave-calendar-legend-item leave-calendar-legend-workday"></i>{{$.lp.leaveManagerV2.calendar.workday}}</span>
+            <span><i class="leave-calendar-legend-item leave-calendar-legend-today"></i>{{$.lp.leaveManagerV2.calendar.today}}</span>
+        </div>
+    </div>
+</div>

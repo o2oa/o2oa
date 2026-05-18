@@ -83,6 +83,12 @@ export default content({
     const c = (await import('./requestList/index.js')).default;
     this.openOtherListViewVm(c, bindData);
   },
+  // 打开节假日日历视图
+  async clickOpenHolidayCalendarView() {
+    const bindData = {  };
+    const c = (await import('./calendar/index.js')).default;
+    this.openOtherListViewVm(c, bindData);
+  },
   // 打开某一个假期类型的规则列表
   clickOpenPolicyList(typeId) {
     console.log("点击打开配置规则列表", typeId);

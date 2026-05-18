@@ -371,6 +371,14 @@ MWF.xApplication.attendancev2.LP = {
     confirmDelete: "确认要删除这条【{name}】数据？",
     accountBlance: "假期余额",
     requestList: "请假申请",
+    holidayCalendar: "节假日日历",
+    calendar: {
+      today: "回到今天",
+      offday: "节假日",
+      weekend: "周末",
+      workday: "特殊工作日",
+      loadError: "节假日数据获取失败！",
+    },
     type: {
       name: "假期类型名称",
       namePlaceholder: "请输入假期类型名称",
