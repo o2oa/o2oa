@@ -1,9 +1,23 @@
 package com.x.processplatform.service.processing.schedule;
 
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject_;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.schedule.AbstractJob;
+import com.x.base.core.project.utils.time.TimeStamp;
+import com.x.base.core.project.x_processplatform_service_processing;
+import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.Work_;
+import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.express.ProcessingAttributes;
+import com.x.processplatform.service.processing.ThisApplication;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -11,27 +25,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject_;
-import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_processplatform_service_processing;
-import com.x.base.core.project.jaxrs.WoId;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.schedule.AbstractJob;
-import com.x.base.core.project.utils.time.TimeStamp;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.Work_;
-import com.x.processplatform.core.entity.element.ActivityType;
-import com.x.processplatform.core.express.ProcessingAttributes;
-import com.x.processplatform.service.processing.ThisApplication;
-
-import fr.opensagres.poi.xwpf.converter.core.utils.StringUtils;
 
 public class TouchDelay extends AbstractJob {
 
