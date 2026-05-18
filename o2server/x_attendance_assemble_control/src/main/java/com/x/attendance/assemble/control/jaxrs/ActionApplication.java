@@ -1,5 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs;
 
+
 import java.util.Set;
 
 import javax.ws.rs.ApplicationPath;
@@ -11,6 +12,7 @@ import com.x.attendance.assemble.control.jaxrs.v2.group.GroupAction;
 import com.x.attendance.assemble.control.jaxrs.v2.group.schedule.GroupScheduleAction;
 import com.x.attendance.assemble.control.jaxrs.v2.leave.LeaveAction;
 import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.LeaveManagerAction;
+import com.x.attendance.assemble.control.jaxrs.v2.file.FileAction;
 import com.x.attendance.assemble.control.jaxrs.v2.mobile.MobileAction;
 import com.x.attendance.assemble.control.jaxrs.v2.my.MyAction;
 import com.x.attendance.assemble.control.jaxrs.v2.record.RecordAction;
@@ -35,6 +37,7 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add(RecordAction.class);
 		this.classes.add(GroupScheduleAction.class);
 		this.classes.add(LeaveManagerAction.class);
+		this.classes.add(FileAction.class);
 		return this.classes;
 	}
 
