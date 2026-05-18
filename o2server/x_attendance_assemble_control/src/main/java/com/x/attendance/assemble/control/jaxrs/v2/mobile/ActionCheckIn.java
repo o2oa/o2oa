@@ -137,6 +137,9 @@ public class ActionCheckIn extends BaseAction {
         @FieldDescribe("外勤打卡说明")
         private String signDescription;
 
+        @FieldDescribe("外勤打卡拍照附件文件ID列表")
+        private List<String> fieldWorkPhotoFileIdList;
+
         @FieldDescribe("来源设备：Mac|Windows|IOS|Android|其他")
         private String sourceDevice;
 
@@ -201,6 +204,14 @@ public class ActionCheckIn extends BaseAction {
 
         public void setSignDescription(String signDescription) {
             this.signDescription = signDescription;
+        }
+
+        public List<String> getFieldWorkPhotoFileIdList() {
+            return fieldWorkPhotoFileIdList;
+        }
+
+        public void setFieldWorkPhotoFileIdList(List<String> fieldWorkPhotoFileIdList) {
+            this.fieldWorkPhotoFileIdList = fieldWorkPhotoFileIdList;
         }
 
         public String getSourceDevice() {

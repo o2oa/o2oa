@@ -10,9 +10,14 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.PersistentCollection;
+import org.apache.openjpa.persistence.jdbc.ContainerTable;
+import org.apache.openjpa.persistence.jdbc.ElementColumn;
+import org.apache.openjpa.persistence.jdbc.ElementIndex;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 打卡考勤记录
@@ -178,6 +183,16 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
     @Column(name = ColumnNamePrefix + fieldWork_FIELDNAME)
     private Boolean fieldWork;
 
+    public static final String fieldWorkPhotoFileIdList_FIELDNAME = "fieldWorkPhotoFileIdList";
+    @FieldDescribe("外勤打卡拍照附件文件ID列表.")
+    @PersistentCollection(fetch = FetchType.EAGER)
+    @OrderColumn(name = ORDERCOLUMNCOLUMN)
+    @ContainerTable(name = TABLE + ContainerTableNameMiddle
+            + fieldWorkPhotoFileIdList_FIELDNAME, joinIndex = @org.apache.openjpa.persistence.jdbc.Index(name = TABLE + fieldWorkPhotoFileIdList_FIELDNAME + JoinIndexNameSuffix))
+    @ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + fieldWorkPhotoFileIdList_FIELDNAME)
+    @ElementIndex(name = TABLE + fieldWorkPhotoFileIdList_FIELDNAME + ElementIndexNameSuffix)
+    private List<String> fieldWorkPhotoFileIdList;
+
 
     public static final String groupId_FIELDNAME = "groupId";
     @FieldDescribe("对应的考勤组id.")
@@ -316,6 +331,14 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
 
     public void setFieldWork(Boolean fieldWork) {
         this.fieldWork = fieldWork;
+    }
+
+    public List<String> getFieldWorkPhotoFileIdList() {
+        return fieldWorkPhotoFileIdList;
+    }
+
+    public void setFieldWorkPhotoFileIdList(List<String> fieldWorkPhotoFileIdList) {
+        this.fieldWorkPhotoFileIdList = fieldWorkPhotoFileIdList;
     }
 
     public String getUserId() {

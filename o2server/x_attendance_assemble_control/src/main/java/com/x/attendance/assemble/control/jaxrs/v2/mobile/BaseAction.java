@@ -322,6 +322,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                     }
                     record.setFieldWork(wi.getFieldWork());
                     record.setSignDescription(wi.getSignDescription());
+                    record.setFieldWorkPhotoFileIdList(wi.getFieldWorkPhotoFileIdList());
                     record.setLatitude(wi.getLatitude());
                     record.setLongitude(wi.getLongitude());
                     record.setRecordAddress(wi.getRecordAddress());
@@ -667,6 +668,7 @@ abstract class BaseAction extends StandardJaxrsAction {
             checkInWi.setWorkPlaceId(wi.getWorkPlaceId());
             checkInWi.setFieldWork(wi.getFieldWork());
             checkInWi.setSignDescription(wi.getSignDescription());
+            checkInWi.setFieldWorkPhotoFileIdList(wi.getFieldWorkPhotoFileIdList());
             checkInWi.setSourceDevice(wi.getSourceDevice());
             checkInWi.setDescription(wi.getDescription());
             checkInWi.setLongitude(wi.getLongitude());
@@ -709,6 +711,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 
         @FieldDescribe("外勤打卡说明")
         private String signDescription;
+
+        @FieldDescribe("外勤打卡拍照附件文件ID列表")
+        private List<String> fieldWorkPhotoFileIdList;
 
         @FieldDescribe("来源设备：Mac|Windows|IOS|Android|其他")
         private String sourceDevice;
@@ -783,6 +788,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 
         public void setSignDescription(String signDescription) {
             this.signDescription = signDescription;
+        }
+
+        public List<String> getFieldWorkPhotoFileIdList() {
+            return fieldWorkPhotoFileIdList;
+        }
+
+        public void setFieldWorkPhotoFileIdList(List<String> fieldWorkPhotoFileIdList) {
+            this.fieldWorkPhotoFileIdList = fieldWorkPhotoFileIdList;
         }
 
         public String getSourceDevice() {

@@ -73,6 +73,7 @@ public class ActionPreCheck extends BaseAction {
             wo.setCanCheckIn(true);
             wo.setAllowFieldWork(group.getAllowFieldWork());
             wo.setRequiredFieldWorkRemarks(group.getRequiredFieldWorkRemarks());
+            wo.setRequiredFieldWorkPhoto(group.getRequiredFieldWorkPhoto());
             wo.setCheckItemList(recordList);
             if (group.getWorkPlaceIdList() != null && !group.getWorkPlaceIdList().isEmpty()) {
                 List<AttendanceV2WorkPlace> workPlaceList = new ArrayList<>();
@@ -109,6 +110,8 @@ public class ActionPreCheck extends BaseAction {
         private Boolean allowFieldWork;
         @FieldDescribe("外勤打卡备注是否必填")
         private Boolean requiredFieldWorkRemarks;
+        @FieldDescribe("外勤打卡是否必须拍照")
+        private Boolean requiredFieldWorkPhoto;
         @FieldDescribe("当前时间是否能够打卡")
         private Boolean canCheckIn;
         @FieldDescribe("不能打卡的原因")
@@ -132,6 +135,14 @@ public class ActionPreCheck extends BaseAction {
 
         public void setRequiredFieldWorkRemarks(Boolean requiredFieldWorkRemarks) {
             this.requiredFieldWorkRemarks = requiredFieldWorkRemarks;
+        }
+
+        public Boolean getRequiredFieldWorkPhoto() {
+            return requiredFieldWorkPhoto;
+        }
+
+        public void setRequiredFieldWorkPhoto(Boolean requiredFieldWorkPhoto) {
+            this.requiredFieldWorkPhoto = requiredFieldWorkPhoto;
         }
 
         public Boolean getCanCheckIn() {

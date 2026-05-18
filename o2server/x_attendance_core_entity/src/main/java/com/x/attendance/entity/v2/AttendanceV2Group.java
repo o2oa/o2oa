@@ -166,6 +166,11 @@ public class AttendanceV2Group extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + requiredFieldWorkRemarks_FIELDNAME)
 	private Boolean requiredFieldWorkRemarks = true;
 
+	public static final String requiredFieldWorkPhoto_FIELDNAME = "requiredFieldWorkPhoto";
+	@FieldDescribe("外勤打卡是否必须拍照.")
+	@Column(name = ColumnNamePrefix + requiredFieldWorkPhoto_FIELDNAME)
+	private Boolean requiredFieldWorkPhoto = false;
+
 	public static final String fieldWorkMarkError_FIELDNAME = "fieldWorkMarkError";
 	@FieldDescribe("外勤打卡是否作为异常数据处理.")
 	@Column(name = ColumnNamePrefix + fieldWorkMarkError_FIELDNAME)
@@ -284,6 +289,14 @@ public class AttendanceV2Group extends SliceJpaObject {
 
 	public void setRequiredFieldWorkRemarks(Boolean requiredFieldWorkRemarks) {
 		this.requiredFieldWorkRemarks = requiredFieldWorkRemarks;
+	}
+
+	public Boolean getRequiredFieldWorkPhoto() {
+		return requiredFieldWorkPhoto;
+	}
+
+	public void setRequiredFieldWorkPhoto(Boolean requiredFieldWorkPhoto) {
+		this.requiredFieldWorkPhoto = requiredFieldWorkPhoto;
 	}
 
 	public List<String> getWorkPlaceIdList() {
