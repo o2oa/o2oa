@@ -30,6 +30,7 @@
                     <div class="leave-calendar-arrow" @click="clickNextMonth"><i class="o2icon-icon_arrow_right"></i></div>
                 </div>
                 <button class="mainColor_bg" @click="clickToday">{{$.lp.leaveManagerV2.calendar.today}}</button>
+                <button class="mainColor_bg leave-calendar-add" @click="clickOpenHolidayForm">{{$.lp.leaveManagerV2.calendar.addHoliday}}</button>
             </div>
             <div class="leave-calendar-title">{{$.currentTitle}}</div>
         </div>
@@ -41,6 +42,8 @@
                 <div oo-each="line.value" oo-item="day" class="{{this.calendarCellClass(day.value)}}">
                     <div oo-if="!day.value.empty">
                         <div class="{{this.calendarTagClass(day.value)}}" oo-if="day.value.tagText">{{day.value.tagText}}</div>
+                        <div class="leave-calendar-delete" oo-if="day.value.canDelete" @click="this.clickDeleteHoliday(day.value.holiday)">
+                            {{$.lp.delete}}</div>
                         <div class="leave-calendar-day-number">{{day.value.dayText}}</div>
                         <div class="{{this.calendarLabelClass(day.value)}}">{{day.value.showName}}</div>
                     </div>
@@ -52,6 +55,42 @@
             <span><i class="leave-calendar-legend-item leave-calendar-legend-weekend"></i>{{$.lp.leaveManagerV2.calendar.weekend}}</span>
             <span><i class="leave-calendar-legend-item leave-calendar-legend-workday"></i>{{$.lp.leaveManagerV2.calendar.workday}}</span>
             <span><i class="leave-calendar-legend-item leave-calendar-legend-today"></i>{{$.lp.leaveManagerV2.calendar.today}}</span>
+        </div>
+        <div class="leave-calendar-form-mask" oo-if="$.holidayFormShow">
+            <div class="leave-calendar-form">
+                <div class="leave-calendar-form-header">
+                    <span>{{$.lp.leaveManagerV2.calendar.addHoliday}}</span>
+                    <button class="close" @click="closeHolidayForm"><i class="o2icon-icon_off"></i></button>
+                </div>
+                <div class="leave-calendar-form-content">
+                    <div class="leave-calendar-form-line">
+                        <div class="leave-calendar-form-label"><span class="required">*</span>{{$.lp.leaveManagerV2.calendar.name}}</div>
+                        <input class="leave-calendar-form-input" oo-model="holidayForm.name"
+                            placeholder="{{$.lp.leaveManagerV2.calendar.namePlaceholder}}" />
+                    </div>
+                    <div class="leave-calendar-form-line">
+                        <div class="leave-calendar-form-label"><span class="required">*</span>{{$.lp.leaveManagerV2.calendar.dateString}}</div>
+                        <o-date-picker oo-prop="{'value': $.holidayForm.dateString}" oo-model="holidayForm.dateString"></o-date-picker>
+                    </div>
+                    <div class="leave-calendar-form-line">
+                        <div class="leave-calendar-form-label"><span class="required">*</span>{{$.lp.leaveManagerV2.calendar.offDay}}</div>
+                        <div class="leave-calendar-radio-list">
+                            <div class="leave-calendar-radio-item" @click="this.clickChangeHolidayType(true)">
+                                <div class="o2-icon-14"><i class="{{ $.holidayForm.offDay === true ? 'o2icon-icon_xuanzhong primary_color' : 'o2icon-icon_quan'}}"></i></div>
+                                <label>{{$.lp.leaveManagerV2.calendar.offday}}</label>
+                            </div>
+                            <div class="leave-calendar-radio-item" @click="this.clickChangeHolidayType(false)">
+                                <div class="o2-icon-14"><i class="{{ $.holidayForm.offDay === false ? 'o2icon-icon_xuanzhong primary_color' : 'o2icon-icon_quan'}}"></i></div>
+                                <label>{{$.lp.leaveManagerV2.calendar.workday}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="leave-calendar-form-footer">
+                    <button class="mainColor_bg" @click="submitHolidayForm">{{$.lp.save}}</button>
+                    <button class="lightColor_bg" @click="closeHolidayForm">{{$.lp.cancel}}</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

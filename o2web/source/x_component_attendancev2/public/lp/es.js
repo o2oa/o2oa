@@ -354,6 +354,22 @@ MWF.xApplication.attendancev2.LP={
 		"confirmDelete": "¿Está seguro de que desea eliminar estos datos de 【{name}】?",
 		"accountBlance": "Saldo de vacaciones",
 		"requestList": "Solicitudes de vacaciones",
+		"holidayCalendar": "Calendario de festivos",
+		"calendar": {
+			"today": "Volver a hoy",
+			"offday": "Festivo",
+			"weekend": "Fin de semana",
+			"workday": "Día laborable especial",
+			"loadError": "¡No se pudieron cargar los datos de festivos!",
+			"addHoliday": "Agregar festivo",
+			"name": "Nombre del festivo",
+			"namePlaceholder": "Ingrese el nombre del festivo",
+			"nameEmptyPlaceholder": "¡Ingrese el nombre del festivo!",
+			"dateString": "Fecha",
+			"dateError": "¡Seleccione una fecha válida!",
+			"offDay": "Tipo",
+			"deleteConfirm": "¿Está seguro de que desea eliminar este registro de festivo?"
+		},
 		"type": {
 			"name": "Nombre del tipo de vacaciones",
 			"namePlaceholder": "Ingrese el nombre del tipo de vacaciones",

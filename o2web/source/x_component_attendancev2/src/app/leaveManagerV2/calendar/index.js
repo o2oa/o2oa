@@ -1,7 +1,8 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
-import { convertTo2DArray, formatDate, hideLoading, showLoading } from "../../../utils/common";
+import { convertTo2DArray, formatDate, hideLoading, isEmpty, showLoading } from "../../../utils/common";
 import { leaveManagerAction } from "../../../utils/actions";
+import oDatePicker from "../../../components/o-date-picker";
 import template from "./template.html";
 import style from "./style.scope.css";
 
@@ -37,6 +38,7 @@ let lunarFormatter = null;
 export default content({
     template,
     style,
+    components: { oDatePicker },
     autoUpdate: true,
     bind() {
         const today = new Date();
@@ -51,6 +53,12 @@ export default content({
             monthList: [],
             yearSelectorOpen: false,
             monthSelectorOpen: false,
+            holidayFormShow: false,
+            holidayForm: {
+                name: "",
+                dateString: formatDate(today),
+                offDay: true,
+            },
             weekList: ["一", "二", "三", "四", "五", "六", "日"],
             calendarRows: [],
             workdayMap: {},
@@ -131,6 +139,93 @@ export default content({
         this.bind.todayString = formatDate(today);
         this.changeDate(today.getFullYear(), today.getMonth() + 1);
     },
+    clickOpenHolidayForm() {
+        this.closeSelector();
+        this.bind.holidayForm = {
+            name: "",
+            dateString: this.defaultHolidayDateString(),
+            offDay: true,
+        };
+        this.bind.holidayFormShow = true;
+    },
+    closeHolidayForm() {
+        this.bind.holidayFormShow = false;
+    },
+    clickChangeHolidayType(offDay) {
+        this.bind.holidayForm.offDay = offDay;
+    },
+    async submitHolidayForm() {
+        if (this.submitLoading) {
+            return;
+        }
+        const form = this.bind.holidayForm || {};
+        if (isEmpty(form.name)) {
+            o2.api.page.notice(lp.leaveManagerV2.calendar.nameEmptyPlaceholder, "error");
+            return;
+        }
+        if (!this.isDateString(form.dateString)) {
+            o2.api.page.notice(lp.leaveManagerV2.calendar.dateError, "error");
+            return;
+        }
+        this.submitLoading = true;
+        let savedDateString = "";
+        try {
+            await showLoading(this);
+            await leaveManagerAction("holidayPost", {
+                name: form.name,
+                dateString: form.dateString,
+                offDay: form.offDay === true,
+            });
+            savedDateString = form.dateString;
+            o2.api.page.notice(lp.saveSuccess, "success");
+            this.bind.holidayFormShow = false;
+        } finally {
+            this.submitLoading = false;
+            await hideLoading(this);
+        }
+        if (savedDateString) {
+            await this.refreshByDateString(savedDateString);
+        }
+    },
+    clickDeleteHoliday(holiday) {
+        if (!holiday || holiday.source !== "API") {
+            return;
+        }
+        const _self = this;
+        const c = `${lp.leaveManagerV2.calendar.deleteConfirm}${holiday.name || holiday.dateString}`;
+        o2.api.page.confirm(
+            "warn",
+            lp.alert,
+            c,
+            300,
+            100,
+            function () {
+                _self.deleteHoliday(holiday);
+                this.close();
+            },
+            function () {
+                this.close();
+            }
+        );
+    },
+    async deleteHoliday(holiday) {
+        if (this.deleteLoading || !holiday || !holiday.id) {
+            return;
+        }
+        this.deleteLoading = true;
+        let deletedDateString = "";
+        try {
+            await showLoading(this);
+            await leaveManagerAction("holidayDelete", holiday.id);
+            deletedDateString = holiday.dateString;
+        } finally {
+            this.deleteLoading = false;
+            await hideLoading(this);
+        }
+        if (deletedDateString) {
+            await this.refreshByDateString(deletedDateString);
+        }
+    },
     changeDate(year, month) {
         if (month < 1 || month > 12) {
             return;
@@ -198,6 +293,43 @@ export default content({
         }
         return list;
     },
+    defaultHolidayDateString() {
+        const today = new Date();
+        if (today.getFullYear() === this.bind.currentYear && today.getMonth() + 1 === this.bind.currentMonth) {
+            return formatDate(today);
+        }
+        return `${this.bind.currentYear}-${this.bind.currentMonth > 9 ? this.bind.currentMonth : `0${this.bind.currentMonth}`}-01`;
+    },
+    async refreshByDateString(dateString) {
+        const date = this.parseDateString(dateString);
+        if (!date) {
+            await this.loadHolidayData(this.bind.currentYear);
+            return;
+        }
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        if (year !== this.bind.currentYear) {
+            this.changeDate(year, month);
+        } else {
+            this.bind.currentMonth = month;
+            this.buildCalendarRows();
+            await this.loadHolidayData(year);
+        }
+    },
+    isDateString(value) {
+        return !!this.parseDateString(value);
+    },
+    parseDateString(value) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(value || "")) {
+            return null;
+        }
+        const parts = value.split("-").map((item) => Number(item));
+        const date = new Date(parts[0], parts[1] - 1, parts[2]);
+        if (date.getFullYear() !== parts[0] || date.getMonth() !== parts[1] - 1 || date.getDate() !== parts[2]) {
+            return null;
+        }
+        return date;
+    },
     formatMonthText(month) {
         return `${month > 9 ? month : `0${month}`}月`;
     },
@@ -250,7 +382,12 @@ export default content({
             isToday: dateString === this.bind.todayString,
             showName: label.text,
             labelType: label.type,
+            holiday: workday || offday || null,
+            canDelete: this.canDeleteHoliday(workday || offday),
         };
+    },
+    canDeleteHoliday(holiday) {
+        return !!(holiday && holiday.source === "API");
     },
     buildDayLabel(date, workday, offday) {
         if (offday && offday.name) {

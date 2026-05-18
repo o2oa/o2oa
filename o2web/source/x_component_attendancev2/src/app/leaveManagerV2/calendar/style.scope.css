@@ -17,7 +17,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* border-bottom: 2px solid #4aa3ff; */
     padding: 10px 0 12px;
 }
 
@@ -47,7 +46,7 @@
     justify-content: center;
     align-items: center;
 }
- 
+
 
 .leave-calendar-current {
     height: 40px;
@@ -114,7 +113,7 @@
     height: 40px;
     background: var(--att-color-bg);
     border-radius: 8px;
-    /* border-bottom: 2px solid #c9c9c9; */
+    margin-bottom: 20px;
 }
 
 .leave-calendar-week-item {
@@ -133,7 +132,6 @@
 .leave-calendar-row {
     display: flex;
     min-height: 116px;
-    /* border-bottom: 2px solid #c9c9c9; */
 }
 
 .leave-calendar-cell {
@@ -257,4 +255,104 @@
 
 .leave-calendar-legend-today {
     border: 2px solid #ffc928;
+}
+
+.leave-calendar-add {
+    margin-left: 10px;
+}
+
+.leave-calendar-delete {
+    position: absolute;
+    right: 8px;
+    top: 6px;
+    z-index: 2;
+    color: #ff3b17;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.leave-calendar-form-mask {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.32);
+}
+
+.leave-calendar-form {
+    width: 460px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+.leave-calendar-form-header {
+    height: 48px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e6e6e6;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.leave-calendar-form-header .close {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.leave-calendar-form-content {
+    padding: 18px 24px 8px;
+}
+
+.leave-calendar-form-line {
+    margin-bottom: 16px;
+}
+
+.leave-calendar-form-label {
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 14px;
+}
+
+.leave-calendar-form-input {
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #c8c8c8;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.leave-calendar-radio-list {
+    display: flex;
+    align-items: center;
+}
+
+.leave-calendar-radio-item {
+    display: flex;
+    align-items: center;
+    margin-right: 24px;
+    cursor: pointer;
+}
+
+.leave-calendar-radio-item label {
+    margin-left: 6px;
+    cursor: pointer;
+}
+
+.leave-calendar-form-footer {
+    padding: 12px 24px 18px;
+    text-align: right;
+}
+
+.leave-calendar-form-footer button {
+    margin-left: 8px;
 }

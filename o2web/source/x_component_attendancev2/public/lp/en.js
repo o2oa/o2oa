@@ -354,6 +354,22 @@ MWF.xApplication.attendancev2.LP={
 		"confirmDelete": "Are you sure you want to delete this '{name}' data?",
 		"accountBlance": "Leave Balance",
 		"requestList": "Leave Requests",
+		"holidayCalendar": "Holiday Calendar",
+		"calendar": {
+			"today": "Back to Today",
+			"offday": "Holiday",
+			"weekend": "Weekend",
+			"workday": "Special Workday",
+			"loadError": "Failed to load holiday data!",
+			"addHoliday": "Add Holiday",
+			"name": "Holiday Name",
+			"namePlaceholder": "Enter holiday name",
+			"nameEmptyPlaceholder": "Please enter a holiday name!",
+			"dateString": "Date",
+			"dateError": "Please select a valid date!",
+			"offDay": "Type",
+			"deleteConfirm": "Are you sure you want to delete this holiday record?"
+		},
 		"type": {
 			"name": "Leave Type Name",
 			"namePlaceholder": "Enter leave type name",
