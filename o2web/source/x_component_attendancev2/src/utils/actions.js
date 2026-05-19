@@ -315,6 +315,19 @@ function personalAction(method, ...args) {
   return doAction("x_organization_assemble_personal", "PersonAction", method, args);
 }
 
+/**
+ * 中心服务 脚本执行
+ * @param {*} method 
+ * @param  {...any} args 
+ * @returns 
+ */
+function invokeAction(method, ...args) {
+    return doAction("x_program_center", "InvokeAction", method, args);
+}
+
+function qywxAuthAction(method, ...args) {
+    return doAction("x_organization_assemble_authentication", "QiyeweixinAction", method, args);
+}
 
 export {
   getPublicData,
@@ -342,4 +355,6 @@ export {
   groupScheduleAction,
   leaveManagerAction,
   leaveManagerActionListByPaging,
+  invokeAction,
+  qywxAuthAction
 };
