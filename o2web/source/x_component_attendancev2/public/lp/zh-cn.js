@@ -162,11 +162,13 @@ MWF.xApplication.attendancev2.LP = {
   workAddressBDkeyConfigBtn: "设置地图服务",
   workAddressBDkeyConfig: "地图服务配置",
   workAddressBDkeyConfigDesc:
-    "工作场所管理使用了地图服务，目前支持百度地图和高德地图，你需要自行注册对应的地图账号获取密钥，才能正常使用。请将密钥填至下方的输入框。",
+    "工作场所管理使用了地图服务，目前支持百度地图、高德地图和腾讯地图，你需要自行注册对应的地图账号获取密钥，才能正常使用。请将密钥填至下方的输入框。",
   workAddressBDLinkTitle: "点此打开百度地图注册通道",
   workAddressAMAPLinkTitle: "点此打开高德地图注册通道",
+  workAddressTXLinkTitle: "点此打开腾讯地图注册通道",
   workAddressBDSecretTitle: "百度密钥(AK)",
   workAddressAMPSecretTitle: "高德密钥(AK)",
+  workAddressTXSecretTitle: "腾讯密钥(Key)",
   workAddressBDSecretTitlePlaceholder: "请输入地图应用的密钥(AK)",
   workAddressForm: {
     lnglatNotEmpty: "请先在地图上选择工作场所！",

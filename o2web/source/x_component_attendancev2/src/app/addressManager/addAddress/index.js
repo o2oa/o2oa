@@ -8,12 +8,13 @@ import oInput from '../../../components/o-input';
 import oTextarea from '../../../components/o-textarea';
 import baiduMap from './baidu-map'; // 百度地图
 import amap from './amap'; // 高德地图
+import tencentMap from './tencent-map'; // 腾讯地图
 
 
 export default content({
     style,
     template,
-    components: {oInput, oTextarea, baiduMap, amap},
+    components: {oInput, oTextarea, baiduMap, amap, tencentMap},
     autoUpdate: true,
     bind() {
         return {

@@ -10,6 +10,8 @@
                     target='_blank'>{{$.lp.workAddressBDLinkTitle}}</a></div>
             <div class="form-item-content margin-top"><a href='https://console.amap.com/dev/index'
                     target='_blank'>{{$.lp.workAddressAMAPLinkTitle}}</a></div>
+            <div class="form-item-content margin-top"><a href='https://lbs.qq.com/dev/console/application/mine'
+                    target='_blank'>{{$.lp.workAddressTXLinkTitle}}</a></div>
             <div class="form-item-content margin-top">{{$.lp.workAddressBDkeyConfigDesc}}</div>
             <div class="form-item-content margin-top">
                 <select name="{{$.mapConfig.mapType}}"    @change="chooseMapType">
@@ -24,6 +26,10 @@
                 oo-if="$.mapConfig.mapType == 'amap'"
                 oo-prop="{'label':$.lp.workAddressAMPSecretTitle, 'placeholder': $.lp.workAddressBDSecretTitlePlaceholder, 'value': $.mapConfig.aMapAccountKey  }"
                 oo-model="mapConfig.aMapAccountKey"></o-input>
+            <o-input
+                oo-if="$.mapConfig.mapType == 'tx'"
+                oo-prop="{'label':$.lp.workAddressTXSecretTitle, 'placeholder': $.lp.workAddressBDSecretTitlePlaceholder, 'value': $.mapConfig.txMapAccountKey  }"
+                oo-model="mapConfig.txMapAccountKey"></o-input>
 
         </div>
         <div class="o2-form-footer">

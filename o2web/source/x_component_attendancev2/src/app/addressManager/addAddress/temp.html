@@ -11,6 +11,7 @@
             <!-- 地图 -->
             <baidu-map :form="$.form" oo-if="$.form.positionType == 'baidu'" ></baidu-map>
             <amap :form="$.form" oo-if="$.form.positionType == 'amap'" ></amap> 
+            <tencent-map :form="$.form" oo-if="$.form.positionType == 'tx'" ></tencent-map>
             
             <div class="form-item-line" oo-if="$.form.isView || $.form.positionType !== ''">
                 <div class="form-item-line-label"><span class="required">*</span>{{$.lp.workAddressForm.locationCoordinateLabel}}</div>

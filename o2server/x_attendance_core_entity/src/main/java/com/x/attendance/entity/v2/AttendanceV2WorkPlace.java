@@ -76,8 +76,9 @@ public class AttendanceV2WorkPlace extends SliceJpaObject {
 
 	public static final String POSITION_TYPE_BAIDU = "baidu"; // 百度地图
 	public static final String POSITION_TYPE_AMAP = "amap"; // 高德地图
+	public static final String POSITION_TYPE_TX = "tx"; // 腾讯地图
 	public static final String positionType_FIELDNAME = "positionType";
-	@FieldDescribe("坐标类型，百度、高德")
+	@FieldDescribe("坐标类型，百度、高德、腾讯")
 	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + positionType_FIELDNAME)
 	private String positionType = POSITION_TYPE_BAIDU;
 
