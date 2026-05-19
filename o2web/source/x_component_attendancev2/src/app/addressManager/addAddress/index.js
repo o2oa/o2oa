@@ -27,7 +27,7 @@ export default content({
                 description: "",
                 status: "a", // a 新增 ，u 更新， v 查看
                 isView: false,
-                positionType: "amap" // baidu amap 如果为空需要输入经纬度
+                positionType: "amap" // baidu amap tx 如果为空需要输入经纬度
             },
         };
     },
