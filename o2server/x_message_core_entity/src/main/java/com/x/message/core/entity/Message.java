@@ -67,8 +67,7 @@ public class Message extends SliceJpaObject {
 
 	public static final String TITLE_FIELDNAME = "title";
 	@FieldDescribe("通知标题.")
-	@Column(length = length_255B, name = ColumnNamePrefix + TITLE_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + TITLE_FIELDNAME)
+	@Column(length = 500, name = ColumnNamePrefix + TITLE_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String title;
 
