@@ -60,9 +60,8 @@ public class Instant extends SliceJpaObject {
 
 	public static final String title_FIELDNAME = "title";
 	@FieldDescribe("通知标题.")
-	@Column(length = length_255B, name = ColumnNamePrefix + title_FIELDNAME)
+	@Column(length = 500, name = ColumnNamePrefix + title_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + title_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
 	private String title;
 
 	public static final String body_FIELDNAME = "body";
