@@ -238,6 +238,13 @@
                         </div>
                         <label style="margin: 5px;" >{{$.lp.groupForm.requiredFieldWorkRemarks}}</label>
                     </div>
+                    <div class="margin-top margin-left flex" @click="clickRequiredFieldWorkPhoto">
+                        <div class="o2-icon-14">
+                            <i class="{{ $.form.requiredFieldWorkPhoto ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}}"></i>
+                        </div>
+                        <label style="margin: 5px;" >{{$.lp.groupForm.requiredFieldWorkPhoto}}</label>
+                    </div>
+
                     <div class="margin-top margin-left flex" @click="clickFieldWorkMarkError">
                         <div class="o2-icon-14">
                             <i class="{{ $.form.fieldWorkMarkError ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}}"></i>

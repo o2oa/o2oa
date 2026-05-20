@@ -235,6 +235,7 @@ MWF.xApplication.attendancev2.LP = {
     fieldWork: "外勤打卡",
     allowFieldWork: "是否允许外勤打卡",
     requiredFieldWorkRemarks: "外勤打卡备注是否必填",
+    requiredFieldWorkPhoto: "外勤打卡是否需要拍照",
     fieldWorkMarkError: "外勤打卡是否作为异常数据处理",
     requiredCheckInDate: "必须打卡的日期",
     requiredCheckInDateThDate: "日期",
