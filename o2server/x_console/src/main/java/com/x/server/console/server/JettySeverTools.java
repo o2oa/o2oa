@@ -74,7 +74,7 @@ public abstract class JettySeverTools {
 				new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()),
 				new HttpConnectionFactory(config));
 		https.setAcceptQueueSize(-1);
-		https.setIdleTimeout(30000);
+		https.setIdleTimeout(3000);
 		https.setPort(port);
 		server.addConnector(https);
 	}
@@ -88,7 +88,7 @@ public abstract class JettySeverTools {
 		config.setSendDateHeader(false);
 		ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(config));
 		http.setAcceptQueueSize(-1);
-		http.setIdleTimeout(30000);
+		http.setIdleTimeout(3000);
 		http.setPort(port);
 		server.addConnector(http);
 	}
