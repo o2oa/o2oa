@@ -1,5 +1,5 @@
 import { component as content } from '@o2oa/oovm';
-import { lp } from '@o2oa/component';
+import { lp, o2 } from '@o2oa/component';
 import template from './template.html';
 import style from './style.scope.css';
 import { getPublicData, mobileAction, invokeAction, qywxAuthAction } from '../../utils/actions';
@@ -14,10 +14,14 @@ export default content({
         return {
             lp,
             checkInCycle: {
+                allowFieldWork: false,
+                requiredFieldWorkRemarks: false,
+                requiredFieldWorkPhoto: false,
                 canCheckIn: false,
                 title: lp.mobile.menu.checkIn,
                 time: '',
                 tip: '',
+                submitting: false,
             },
             location: {
                 status: false,
@@ -31,6 +35,7 @@ export default content({
             workPlaceList: [],
             recordItemList: [],
             nextCheckInRecord: null,
+            updateOffDutyRecord: null,
             bMapV2ApiLoaded: false,
             qywxSdkLoaded: false,
         };
@@ -59,12 +64,17 @@ export default content({
             this.bind.checkInCycle.canCheckIn = false;
             this.bind.checkInCycle.title = lp.mobile.menu.checkIn;
             this.bind.checkInCycle.tip = lp.dataError;
+            this.bind.updateOffDutyRecord = null;
             return;
         }
 
         this.bind.workPlaceList = preCheckData.workPlaceList || [];
+        this.bind.checkInCycle.allowFieldWork = !!preCheckData.allowFieldWork;
+        this.bind.checkInCycle.requiredFieldWorkRemarks = !!preCheckData.requiredFieldWorkRemarks;
+        this.bind.checkInCycle.requiredFieldWorkPhoto = !!preCheckData.requiredFieldWorkPhoto;
         this.bind.recordItemList = this.buildRecordList(preCheckData.checkItemList || []);
         this.bind.nextCheckInRecord = this.bind.recordItemList.find((item) => item.checkInResult === 'PreCheckIn') || null;
+        this.bind.updateOffDutyRecord = this.getUpdateOffDutyRecord(this.bind.recordItemList);
         this.bind.checkInCycle.canCheckIn = !!(preCheckData.canCheckIn && this.bind.nextCheckInRecord);
 
         if (this.bind.nextCheckInRecord) {
@@ -78,16 +88,34 @@ export default content({
     },
     buildRecordList(list) {
         return list.map((item, index) => {
-            const checked = item.checkInResult !== 'PreCheckIn';
-            const preDutyTime = item.preDutyTime || this.formatTime(item.recordDate);
+            const checkStatusIcon = this.getCheckStatusIcon(item.checkInResult);
+            const preDutyTime = item.checkInResult === 'PreCheckIn' ? item.preDutyTime : this.formatTime(item.recordDate);
             return Object.assign({}, item, {
-                checked,
+                checkStatusIcon,
+                checkStatusClass: item.checkInResult === 'Normal' ? 'shift-checked' : 'shift-abnormal',
                 preDutyTime,
                 checkInTypeShort: item.checkInType === 'OnDuty' ? lp.onDutySimple : lp.offDutySimple,
                 checkInTypeText: item.checkInType === 'OnDuty' ? lp.onDuty : lp.offDuty,
                 isLast: index === list.length - 1,
             });
         });
+    },
+    getCheckStatusIcon(checkInResult) {
+        if (!checkInResult || checkInResult === 'PreCheckIn') {
+            return '';
+        }
+        return checkInResult === 'Normal' ? '✓' : '!';
+    },
+    getUpdateOffDutyRecord(list) {
+        if (!list.length || list.some((item) => item.checkInResult === 'PreCheckIn')) {
+            return null;
+        }
+        for (let i = list.length - 1; i >= 0; i--) {
+            if (list[i].checkInType === 'OffDuty') {
+                return list[i];
+            }
+        }
+        return null;
     },
     formatTime(dateString) {
         if (!dateString || dateString.length < 16) {
@@ -162,7 +190,7 @@ export default content({
         // 先注册 api
         const re = await ww.register({
             corpId: this.configSignature.corpId,
-            jsApiList: ['getLocation'],
+            jsApiList: ['getLocation', 'chooseImage', 'getLocalImgData'],
             getConfigSignature: this.getConfigSignatureCache.bind(this), 
         })
         console.log('register result', re);
@@ -319,6 +347,264 @@ export default content({
         this.bind.location.title = matchedPlace ? (matchedPlace.placeAlias || matchedPlace.placeName) : this.bind.location.address;
     },
     actionCheckIn() {
-        // 打卡提交功能后续接入；当前页面先完成预打卡、定位和范围判断展示。
+        if (!this.bind.checkInCycle.canCheckIn || this.bind.checkInCycle.submitting) {
+            return;
+        }
+
+        const record = this.bind.nextCheckInRecord;
+        if (!record) {
+            o2.api.page.notice(lp.dataError, 'error');
+            return;
+        }
+
+        this.submitCheckInRecord(record);
+    },
+    actionUpdateOffDuty() {
+        if (!this.bind.updateOffDutyRecord || this.bind.checkInCycle.submitting) {
+            return;
+        }
+        const record = this.bind.updateOffDutyRecord;
+        this.confirmCheckIn('会将当前时间更新到最后一条下班打卡记录，是否继续？', () => {
+            this.submitCheckInRecord(record);
+        });
+    },
+    submitCheckInRecord(record) {
+        if (!this.bind.location.status || !this.bind.location.lnglat.longitude || !this.bind.location.lnglat.latitude) {
+            o2.api.page.notice(lp.mobile.locationError, 'error');
+            return;
+        }
+
+        const submit = () => {
+            if (this.bind.location.inRange) {
+                this.checkInPost(record, this.bind.location.workPlace.id, false, '', []);
+            } else {
+                this.fieldWorkCheckIn(record);
+            }
+        };
+
+        const confirmMessage = this.getExceptionCheckInMessage(record);
+        if (confirmMessage) {
+            this.confirmCheckIn(confirmMessage, submit);
+        } else {
+            submit();
+        }
+    },
+    confirmCheckIn(message, okAction) {
+        o2.api.page.confirm(
+            'warn',
+            lp.alert,
+            message,
+            300,
+            120,
+            function () {
+                okAction();
+                this.close();
+            },
+            function () {
+                this.close();
+            }
+        );
+    },
+    getExceptionCheckInMessage(record) {
+        const dutyTime = this.getRecordDutyTime(record);
+        if (!dutyTime) {
+            return '';
+        }
+        const now = new Date();
+        if (record.checkInType === 'OnDuty' && now.getTime() > dutyTime.getTime()) {
+            return '当前已超过上班打卡时间，打卡可能会记为迟到，是否继续？';
+        }
+        if (record.checkInType === 'OffDuty' && now.getTime() < dutyTime.getTime()) {
+            return '当前未到下班打卡时间，打卡可能会记为早退，是否继续？';
+        }
+        return '';
+    },
+    getRecordDutyTime(record) {
+        if (!record) {
+            return null;
+        }
+        if (record.recordDate) {
+            const date = new Date(record.recordDate);
+            if (!Number.isNaN(date.getTime())) {
+                return date;
+            }
+        }
+        if (!record.preDutyTime) {
+            return null;
+        }
+        const date = new Date();
+        const time = record.preDutyTime.split(':');
+        if (time.length < 2) {
+            return null;
+        }
+        date.setHours(parseInt(time[0], 10), parseInt(time[1], 10), 0, 0);
+        return Number.isNaN(date.getTime()) ? null : date;
+    },
+    fieldWorkCheckIn(record) {
+        if (!this.bind.checkInCycle.allowFieldWork) {
+            o2.api.page.notice(lp.mobile.outsideNotAllow, 'error');
+            return;
+        }
+        if (!this.bind.checkInCycle.requiredFieldWorkRemarks && !this.bind.checkInCycle.requiredFieldWorkPhoto) {
+            this.checkInPost(record, null, true, '', []);
+            return;
+        }
+        this.openFieldWorkDialog(record);
+    },
+    openFieldWorkDialog(record) {
+        const requiredRemark = this.bind.checkInCycle.requiredFieldWorkRemarks;
+        const requiredPhoto = this.bind.checkInCycle.requiredFieldWorkPhoto;
+        const html = [
+            "<div class='check-in-fieldwork-dialog' style='padding:10px 0;'>",
+            "<textarea class='check-in-fieldwork-remark' style='box-sizing:border-box;width:100%;height:96px;padding:8px;border:1px solid #dcdcdc;border-radius:4px;font-size:14px;line-height:20px;resize:none;' placeholder='" + lp.mobile.outsideRemarkPlaceholder + "'></textarea>",
+            requiredPhoto ? "<div class='check-in-fieldwork-photo-tip' style='margin-top:8px;color:#8c8c8c;font-size:13px;line-height:20px;'>需拍照后提交</div>" : '',
+            '</div>'
+        ].join('');
+        const _self = this;
+        o2.DL.open({
+            title: lp.mobile.outsideTitle,
+            width: '100%',
+            height: requiredPhoto ? '220' : '180',
+            style: 'user',
+            html: html,
+            buttonList: [
+                {
+                    text: lp.positive,
+                    class: 'comment_dlg_button_ok',
+                    action: function () {
+                        const remarkNode = this.node.getElement('.check-in-fieldwork-remark');
+                        const signDescription = remarkNode ? remarkNode.value.trim() : '';
+                        if (requiredRemark && !signDescription) {
+                            o2.api.page.notice(lp.mobile.outsideRemarkPlaceholder, 'error');
+                            return;
+                        }
+                        const dialog = this;
+                        _self.prepareFieldWorkPhotoIds(requiredPhoto).then((photoIds) => {
+                            _self.checkInPost(record, null, true, signDescription, photoIds);
+                            dialog.close();
+                        }).catch((err) => {
+                            console.error('外勤拍照上传失败', err);
+                            o2.api.page.notice('外勤拍照上传失败，请重试！', 'error');
+                        });
+                    }
+                },
+                {
+                    type: 'cancel',
+                    text: lp.cancel,
+                    action: function () {
+                        this.close();
+                    }
+                }
+            ]
+        });
+    },
+    async prepareFieldWorkPhotoIds(requiredPhoto) {
+        if (!requiredPhoto) {
+            return [];
+        }
+        if (!window.ww || !ww.chooseImage || !ww.getLocalImgData) {
+            throw new Error('qywx image sdk not ready');
+        }
+        const chooseResult = await ww.chooseImage({
+            count: 1,
+            sizeType: ['compressed'],
+            sourceType: ['camera'],
+            defaultCameraMode: 'normal'
+        });
+        const localIds = chooseResult && chooseResult.localIds ? chooseResult.localIds : [];
+        if (!localIds.length) {
+            throw new Error('no image selected');
+        }
+        const localDataResult = await ww.getLocalImgData({
+            localId: localIds[0]
+        });
+        const localData = localDataResult && localDataResult.localData ? localDataResult.localData : '';
+        const blob = this.localImageDataToBlob(localData);
+        const fileId = await this.uploadFieldWorkPhoto(blob);
+        return [fileId];
+    },
+    localImageDataToBlob(localData) {
+        let data = localData || '';
+        let mimeType = 'image/jpeg';
+        if (data.indexOf('data:') === 0) {
+            const parts = data.split(',');
+            const match = parts[0].match(/data:(.*);base64/);
+            mimeType = match && match[1] ? match[1] : mimeType;
+            data = parts[1] || '';
+        }
+        data = data.replace(/\s/g, '');
+        const binary = window.atob(data);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+        }
+        return new Blob([bytes], { type: mimeType });
+    },
+    uploadFieldWorkPhoto(blob) {
+        return new Promise((resolve, reject) => {
+            const formData = new FormData();
+            formData.append('file', blob, `field-work-${Date.now()}.jpg`);
+            o2.Actions.load('x_attendance_assemble_control').FileAction.upload(
+                formData,
+                {},
+                (json) => {
+                    const id = json && json.data ? json.data.id : '';
+                    if (id) {
+                        resolve(id);
+                    } else {
+                        reject(new Error('empty upload result'));
+                    }
+                },
+                reject,
+                false
+            );
+        });
+    },
+    async checkInPost(record, workPlaceId, fieldWork, signDescription, fieldWorkPhotoFileIdList) {
+        const post = {
+            recordId: record.id,
+            checkInType: record.checkInType,
+            workPlaceId: workPlaceId || '',
+            fieldWork: !!fieldWork,
+            signDescription: signDescription || '',
+            fieldWorkPhotoFileIdList: fieldWorkPhotoFileIdList || [],
+            sourceDevice: this.getSourceDevice(),
+            longitude: `${this.bind.location.lnglat.longitude}`,
+            latitude: `${this.bind.location.lnglat.latitude}`,
+            recordAddress: this.bind.location.address || '',
+            sourceType: 'USER_CHECK'
+        };
+        this.bind.checkInCycle.submitting = true;
+        let checked = false;
+        try {
+            const result = await mobileAction('checkIn', post);
+            console.debug('打卡结果', result);
+            checked = true;
+            o2.api.page.notice('打卡成功！', 'success');
+        } catch (err) {
+            console.error('打卡失败', err);
+            o2.api.page.notice('打卡失败，请重试！', 'error');
+        } finally {
+            this.bind.checkInCycle.submitting = false;
+        }
+        if (checked) {
+            this.getPreCheckData().catch((err) => {
+                console.error('刷新预打卡数据失败', err);
+            });
+        }
+    },
+    getSourceDevice() {
+        const ua = window.navigator.userAgent || '';
+        let deviceType = 'Other';
+        if (/android/i.test(ua)) {
+            deviceType = 'Android';
+        } else if (/iphone|ipad|ipod/i.test(ua)) {
+            deviceType = 'IOS';
+        } else if (/macintosh|mac os x/i.test(ua)) {
+            deviceType = 'Mac';
+        } else if (/windows/i.test(ua)) {
+            deviceType = 'Windows';
+        }
+        return `qywx_${deviceType}`;
     },
 });

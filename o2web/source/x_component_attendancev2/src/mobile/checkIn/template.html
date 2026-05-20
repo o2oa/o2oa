@@ -18,11 +18,11 @@
     <div class="shift-summary" oo-if="$.recordItemList.length">
       <div oo-each="$.recordItemList" oo-item="record" class="shift-summary-item">
         <span>{{record.value.checkInTypeShort}} {{record.value.preDutyTime}}</span>
-        <span class="shift-checked" oo-if="record.value.checked">✓</span>
+        <span class="{{record.value.checkStatusClass}}" oo-if="record.value.checkStatusIcon">{{record.value.checkStatusIcon}}</span>
         <span class="shift-separator" oo-if="!record.value.isLast">-</span>
       </div>
-      <span class="shift-more">›</span>
     </div>
+    <button class="update-off-duty" oo-if="$.updateOffDutyRecord" @click="actionUpdateOffDuty">更新下班卡</button>
   </div>
   <div class="check-in-bmap"></div>
 </div>
