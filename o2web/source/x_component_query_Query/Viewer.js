@@ -935,6 +935,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
              this.viewSearchFilterItemAreaNode.empty();
             if (data && data.filterList && data.filterList.length){
                 data.filterList.each(function(filter){
+                    if (filter.type === "restrict") return;
                     if (filter.value==="") return;
                     const filterItem = new Element('div.filter-item', {
                         html: `<div class="filter-item-title">${filter.title}:</div><div class="filter-item-value">${filter.value}</div><div style="margin-left:0.5em" class=ooicon-close></div>`
