@@ -123,6 +123,10 @@ public class Token extends ConfigObject {
 		return this._password;
 	}
 
+	public String getConfigPwd() {
+		return Crypto.plainText(this.password);
+	}
+
 	public void setPassword(String password)
 			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
 			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {

@@ -41,6 +41,7 @@ public class Tasks {
 		Task task = new Task(aeiObjects.getWork(), ticket.act(), ticket.distinguishedName(), person, unit,
 				ticket.fromDistinguishedName(), new Date(), null, aeiObjects.getRoutes(), manual.getAllowRapid());
 		task.setLabel(ticket.label());
+		task.setActPerson(ticket.actPerson());
 		// 是第一条待办,进行标记，调度过的待办都标记为非第一个待办
 		if (BooleanUtils.isTrue(aeiObjects.getProcessingAttributes().getForceJoinAtArrive())) {
 			task.setFirst(false);

@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import com.x.base.core.project.annotation.FieldDescribe;
 import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -108,27 +109,54 @@ class ActionUploadWithUrl extends BaseAction {
 				throw new IllegalStateException("fileName can not empty.");
 			}
 			fileName = fileName.replace("\r", " ").replace("\n", " ");
-			fileName = this.adjustFileName(business, attachment.getJob(), fileName);
 			this.verifyConstraint(bytes.length, fileName, null);
-
-			StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
-			attachment.saveContent(mapping, bytes, fileName, Config.general().getStorageEncrypt());
-			attachment.setType((new Tika()).detect(bytes, fileName));
-			if (BooleanUtils.isTrue(Config.query().getExtractImage())
-					&& ExtractTextTools.supportImage(attachment.getName()) && ExtractTextTools.available(bytes)) {
-				attachment.setText(ExtractTextTools.image(bytes));
-			}
-			emc.beginTransaction(Attachment.class);
-			emc.persist(attachment, CheckPersistType.all);
-			emc.commit();
+			String id = this.saveOrUpdateAtt(wi, business, attachment, wi.getFileName(), bytes);
 			Wo wo = new Wo();
-			wo.setId(attachment.getId());
+			wo.setId(id);
 			result.setData(wo);
 			return result;
 		}
 	}
 
-	private Attachment concreteAttachment(Work work, String person, String site) throws Exception {
+	private String saveOrUpdateAtt(Wi wi, Business business, Attachment attachment, String fileName, byte[] bytes) throws Exception {
+		EntityManagerContainer emc = business.entityManagerContainer();
+		Attachment oldAtt = emc.firstEqualAndEqualAndEqual(Attachment.class,
+				Attachment.job_FIELDNAME, attachment.getJob(), Attachment.name_FIELDNAME, fileName, Attachment.site_FIELDNAME,
+				wi.getSite());
+		if(BooleanUtils.isTrue(wi.getCoverWithNameAndSite()) && oldAtt != null){
+			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
+					oldAtt.getStorage());
+			oldAtt.updateContent(mapping, bytes, Config.general().getStorageEncrypt());
+			if (BooleanUtils.isTrue(Config.query().getExtractImage())
+					&& ExtractTextTools.supportImage(attachment.getName())
+					&& ExtractTextTools.available(bytes)) {
+				attachment.setText(ExtractTextTools.image(bytes));
+			}
+			emc.beginTransaction(Attachment.class);
+			emc.check(oldAtt, CheckPersistType.all);
+			emc.commit();
+			attachment = oldAtt;
+		}else {
+			fileName = this.adjustFileName(business, attachment.getJob(), fileName);
+
+			StorageMapping mapping = ThisApplication.context().storageMappings()
+					.random(Attachment.class);
+			attachment.saveContent(mapping, bytes, fileName,
+					Config.general().getStorageEncrypt());
+			attachment.setType((new Tika()).detect(bytes, fileName));
+			if (BooleanUtils.isTrue(Config.query().getExtractImage())
+					&& ExtractTextTools.supportImage(attachment.getName())
+					&& ExtractTextTools.available(bytes)) {
+				attachment.setText(ExtractTextTools.image(bytes));
+			}
+			emc.beginTransaction(Attachment.class);
+			emc.persist(attachment, CheckPersistType.all);
+			emc.commit();
+		}
+		return attachment.getId();
+	}
+
+	private Attachment concreteAttachment(Work work, String person, String site) {
 		Attachment attachment = new Attachment();
 		attachment.setCompleted(false);
 		attachment.setPerson(person);
@@ -170,6 +198,16 @@ class ActionUploadWithUrl extends BaseAction {
 
 		private static final long serialVersionUID = -861366251609881667L;
 
+		@FieldDescribe("是否根据名字和site覆盖文件.")
+		private Boolean coverWithNameAndSite = false;
+
+		public Boolean getCoverWithNameAndSite() {
+			return coverWithNameAndSite;
+		}
+
+		public void setCoverWithNameAndSite(Boolean coverWithNameAndSite) {
+			this.coverWithNameAndSite = coverWithNameAndSite;
+		}
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionUploadWithUrl$Wo")

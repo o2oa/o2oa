@@ -38,13 +38,13 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Business {
 
-	private static Logger logger = LoggerFactory.getLogger(Business.class);
+	private static final Logger logger = LoggerFactory.getLogger(Business.class);
 
-	private static Map<String, String> tokenMap = new HashMap();
+	private static final Map<String, String> tokenMap = new HashMap<>();
 
 	private EntityManagerContainer emc;
 
-	public Business(EntityManagerContainer emc) throws Exception {
+	public Business(EntityManagerContainer emc) {
 		this.emc = emc;
 	}
 
@@ -264,7 +264,7 @@ public class Business {
 					 DataInputStream dis = new DataInputStream(socket.getInputStream())){
 					Map<String, Object> commandObject = new HashMap<>();
 					commandObject.put("command", "uploadResource:"+fileName);
-					commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+					commandObject.put("credential", Crypto.rsaEncrypt(Config.token().getPassword(), Crypto.NODE_PUBLIC_KEY));
 
 					Map<String, Object> param = new HashMap<>();
 					param.put("fileName", fileName);

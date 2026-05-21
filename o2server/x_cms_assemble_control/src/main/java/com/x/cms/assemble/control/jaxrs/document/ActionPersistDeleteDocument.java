@@ -1,15 +1,12 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -23,9 +20,10 @@ import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.DocumentCommend;
 import com.x.cms.core.entity.DocumentCommentInfo;
 import com.x.cms.core.entity.FileInfo;
-import com.x.cms.core.entity.enums.DocumentStatus;
 import com.x.cms.core.entity.message.DocumentEvent;
 import com.x.query.core.entity.Item;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 删除文档
@@ -46,9 +44,10 @@ public class ActionPersistDeleteDocument extends BaseAction {
 			//先判断需要操作的文档信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			Document document = business.getDocumentFactory().get( id );
 			if (null == document) {
-				Exception exception = new ExceptionDocumentNotExists( id );
-				result.error( exception );
-				throw exception;
+				throw new ExceptionDocumentNotExists( id );
+			}
+			if(!business.isDocumentEditor(effectivePerson, null, null, document)){
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 
 			//进行数据库持久化操作

@@ -88,7 +88,7 @@ MWF.xApplication.AI.Main = new Class({
         }
     },
     loadNew : function (){
-debugger
+        debugger
         if(this.options.jars!==""){
             this.initMsg();
             return;
@@ -357,71 +357,102 @@ debugger
                     msg.icon = _this.getIcon(msg.generateType);
                     msg.typeName = _this.getTypeName(msg.generateType);
 
-                    if ( msg.toolCallList && msg.toolCallList.length>0 && msg.content.indexOf("output")>-1) {
-                        let mcpData;
-                        let mcpExtra;
-                        try{
-                            mcpData = JSON.parse(msg.content);
-                            console.log(mcpData)
-                            mcpData.data.extra = msg.extra;
+                    try {
+                        msg.content = marked.parse(msg.content);
+                    } catch (e) {}
 
-                            mcpExtra = _this.getMcpExtra(mcpData.name);
-
-                        }catch (e){
-                            mcpExtra = {
-                                template : msg.content
-                            }
-                        }
-                        const template = _this.renderTemplate(mcpExtra.template,mcpData.data);
-                        html = `
+                    html = `
                             <div class="chat-list-l">
-        
                                 <div><img src="${_this.config.appIconUrl}" class="imgicon"></div>
-                                <div style="display: flex;">
-                                    <div class="markdown-body">
-                                        ${marked.parse(template)}
-                                    </div>
-                                </div>
-                            </div>        
-                    `;
-
-                        el = new Element("div", {"html": html});
-                        answerNode = el.getFirst();
-                        answerNode.inject(_this.chatListNode);
-
-                        markdownBody = answerNode.getElement(".markdown-body");
-
-                        if(mcpExtra.css){
-                            answerNode.loadCssText(mcpExtra.css);
-                        }
-                        if(mcpExtra.script){
-                            debugger
-                            eval("(function(node,data) { " + (mcpExtra.script + " }.bind(_this))(markdownBody,mcpData.data)"));
-                        }
-
-                    }else {
-                        try {
-                            msg.content = marked.parse(msg.content);
-                        } catch (e) {}
-
-
-                        html = `
-                            <div class="chat-list-l">
-        
-                                <div><img src="${_this.config.appIconUrl}" class="imgicon"></div>
-                                <div style="display: flex;">
+                                <div class="msg-container">
                                     <div class="markdown-body">
                                         ${msg.content}
+                                    </div> 
+                                    <div class="references-section">
+                                         <div class="references-title">
+                                            <i class="ooicon-canyue"></i>参考资料
+                                         </div>
+                                        <div class="reference-grid">
                                     </div>
-        
+                                  </div>
                                 </div>
                             </div>        
-                    `;
-                        el = new Element("div", {"html": html});
-                        el.getFirst().inject(_this.chatListNode);
+                        `;
+                    el = new Element("div", {"html": html});
+
+                    const msgNode = el.getFirst();
+                    msgNode.inject(_this.chatListNode);
+
+                    const answerNode = msgNode.getElement(".markdown-body");
+                    const referencesNode = msgNode.getElement(".references-section");
+                    const referenceGridNode = msgNode.getElement(".reference-grid");
+                    referencesNode.hide();
+
+
+                    if(msg.extendList && msg.extendList.length>0){
+                        msg.extendList.each(function (extend){
+                            let ragDoc;
+                            if(extend["extend.rag"]){
+                                ragDoc = extend["extend.rag"];
+                                //answerNode.set("id",_this.completionId);
+
+                                referencesNode.show();
+
+                                const referenceItem = new Element("div", {
+                                    "class": "reference-card"
+                                }).inject(referenceGridNode);
+                                const referenceHtml = `
+                                    <div class="ref-favicon hide">W</div>
+                                    <div class="ref-info">
+                                        <div class="ref-title">${ragDoc.title}</div>
+                                        <div class="ref-source">${ragDoc.documentMode === "embed"?"知识库":"问答"}</div>
+                                    </div>`;
+                                referenceItem.set("html",referenceHtml);
+
+                                referenceItem.addEvent("click",function(){
+                                    _this.openRef(ragDoc.sourceId);
+                                });
+                            }
+
+                            if(extend["extend.output"]){
+
+                                //answerNode.set("id",_this.completionId);
+                                const mcpData = JSON.parse(extend["extend.output"]);
+
+                                mcpExtra = _this.getMcpExtra(mcpData.name);
+
+                                mcpData.data.extra = msg.extra;
+
+                                debugger
+
+                                const template = _this.renderTemplate(mcpExtra.template,mcpData.data);
+
+                                const customNode = new Element("div",{"html":marked.parse(template)}).inject(answerNode);
+
+                                //answerNode.set("html", marked.parse(template));
+                                if(mcpExtra.css){
+                                    answerNode.loadCssText(mcpExtra.css);
+                                }
+                                if(mcpExtra.script){
+                                    eval("(function(node,data) { " + (mcpExtra.script + " }.bind(_this))(answerNode,mcpData.data)"));
+                                }
+
+
+
+                            }
+                        })
+
                     }
 
+
+
                 })
+
+
+
+
+
+
                 _this.chatListWrapNode.scrollTop = _this.chatListWrapNode.scrollHeight;
             })
         }.bind(this));
@@ -544,6 +575,35 @@ debugger
             }.bind(this));
         }.bind(this));
     },
+    openRef: function (documentId) {
+        o2.Actions.load("x_cms_assemble_control").DocumentAction.query_get(documentId, function (json) {
+            const data = json.data;
+
+            if (data.document.categoryId === '83b61716-ed6b-4d60-b0cf-9b3eb7979f7e') {
+                var options = {
+                    "portalId": "a3117a9a-3ced-4dff-bb51-a956bf96930a",
+                    "pageId": "bf90e2d1-05b2-4812-be50-60bea2ff0add",
+                    "parameters": {
+                        "type": "knowledge",
+                        "knowledgeId": data.data.knowledgeId,
+                        "appId": "73d2daa6-42e9-45fa-867b-42b14c64fd5f",
+                        "documentId": documentId
+                    }
+                };
+
+
+                layout.desktop.openApplication(null, "portal.Portal", options);
+            } else {
+                var options = {
+                    "documentId": documentId
+                };
+
+
+                layout.desktop.openApplication(null, "cms.Document", options);
+            }
+        }.bind(this));
+
+    },
     repl: function (msg) {
 
         const _this = this;
@@ -576,6 +636,13 @@ debugger
                     <div class="reasoning-content"></div>
                    </div>
                   <div class="markdown-body"></div>
+                  <div class="references-section">
+                     <div class="references-title">
+                        <i class="ooicon-canyue"></i>参考资料
+                     </div>
+                    <div class="reference-grid">
+                    </div>
+                  </div>
                   <div class="tools-container">
                     <div class="tools">
                       <div class="ooicon-window-max"></div>
@@ -590,6 +657,11 @@ debugger
         const el = new Element("div", {"html": html});
         const msgNode = el.getElement(".msg-container");
         const answerNode = el.getElement(".markdown-body");
+
+        const referencesNode = el.getElement(".references-section");
+        const referenceGridNode = el.getElement(".reference-grid");
+
+        referencesNode.hide();
 
         const reasoningContentNode = el.getElement(".reasoning-content");
         this.reasoningContentNode = reasoningContentNode;
@@ -652,7 +724,8 @@ debugger
                 "clueId": _this.sessionId,
                 "generateType": _this.generateType,
                 "endpointName" : _this.aiType,
-                "referenceIdList":_this.attId
+                "referenceIdList":_this.attId,
+                "thinkingEnabled" : _this.isThinking
             });
 
             fetch(requestOptions.url, requestOptions)
@@ -696,27 +769,54 @@ debugger
                     if (line.startsWith('data:')) {
                         try {
                             const message = line.replace(/^data: /, '').trim();
+                            //console.log(message)
                             if (message === '[DONE]') {
+                                console.log("DONE")
                                 _this.done(fullResponse);
                                 return;
                             }
 
                             const parsed = JSON.parse(message);
 
-                            if(messageType === "status" && parsed.clueId){
+                            if(messageType === "extend.status" && parsed.clueId){
                                 _this.completionId = parsed.id;
                                 _this.sessionId = parsed.clueId;
                                 _this.loadHistory();
                             }
 
 
-                            if(messageType === "toolCall"){
+                            if(messageType === "extend.toolCall"){
 
                                 loadingNode.getElement(".shining-animation").getFirst().set("text","正在调用工具" + parsed.name)
                                 loadingNode.show();
 
 
-                            }else if(messageType === "output"){
+                            }else if(messageType === "extend.rag"){
+
+                                answerNode.set("id",_this.completionId);
+
+                                console.log(parsed)
+                                referencesNode.show();
+
+                                const referenceItem = new Element("div", {
+                                    "class": "reference-card"
+                                }).inject(referenceGridNode);
+                                const referenceHtml = `
+                                    <div class="ref-favicon hide">W</div>
+                                    <div class="ref-info">
+                                        <div class="ref-title">${parsed.title}</div>
+                                        <div class="ref-source">${parsed.documentMode === "embed"?"知识库":"问答"}</div>
+                                    </div>`;
+                                referenceItem.set("html",referenceHtml);
+
+                                referenceItem.addEvent("click",function(){
+                                    _this.openRef(parsed.sourceId);
+                                });
+                                // _this.done(fullResponse);
+                                autoScroll();
+
+                                loadingNode.hide();
+                            }else if(messageType === "extend.output"){
 
                                 answerNode.set("id",_this.completionId);
                                 const mcpData = parsed;
@@ -725,7 +825,9 @@ debugger
 
                                 const template = _this.renderTemplate(mcpExtra.template,mcpData.data);
 
-                                answerNode.set("html", marked.parse(template));
+                                const customNode = new Element("div",{"html":marked.parse(template)}).inject(answerNode);
+
+                                //answerNode.set("html", marked.parse(template));
                                 if(mcpExtra.css){
                                     answerNode.loadCssText(mcpExtra.css);
                                 }

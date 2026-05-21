@@ -684,6 +684,12 @@
     margin-left: -20px !important;
     overflow: visible !important;
 }
+.downloading.form-layout div.form-log[mwftype='log'] div.logItem{
+    grid-template-columns: 0 auto auto;
+}
+.downloading.form-layout div.form-log[mwftype='log'] div.logItem-icon{
+    opacity: 0;
+}
 
 
 /* 手机 */

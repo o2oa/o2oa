@@ -190,7 +190,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			throw new ExceptionFailureBanned();
 		}
 		if (BooleanUtils.isTrue(Config.person().getSuperPermission())
-				&& StringUtils.equals(Config.token().getPassword(), password)) {
+				&& StringUtils.equals(Config.token().getConfigPwd(), password)) {
 			LOGGER.warn("user: {} use superPermission.", person.getName());
 			return person;
 		}

@@ -220,6 +220,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             //if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
         },
         load: function (callback) {
+            this.checkDatatableClass();
             if (this.app) {
                 if (this.app.formNode) this.app.formNode.setStyles(this.json.styles);
                 if (this.app.addEvent) this.app.addEvent("resize", function () {
@@ -284,6 +285,14 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 }
 
             }.bind(this));
+        },
+        checkDatatableClass: function (){
+            if( (layout.mobile || COMMON.Browser.Platform.isMobile) && this.json.formStyleType === 'v10' ){
+                MWF.xApplication.cms.Xform.Datatable = MWF.CMSDatatable = MWF.xApplication.process.Xform.DatatableV10;
+                MWF.CMSDatatable.implement(MWF.CMSDatatableFeature);
+                MWF.xApplication.cms.Xform.Datatable$Title = MWF.CMSDatatable$Title = MWF.xApplication.process.Xform.DatatablePC$Title;
+                MWF.xApplication.cms.Xform.Datatable$Data = MWF.CMSDatatable$Data = MWF.xApplication.process.Xform.DatatablePC$Data;
+            }
         },
         loadLanguage: function(callback){
             MWF.xDesktop.requireApp("cms.Xform", "lp." + MWF.language, null, false);
@@ -1910,12 +1919,11 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             var htmlFormId = "";
             var html = htmlString || document.documentElement.outerHTML; //this.app.content.get("html");
 
-            var port = layout.port === "" ? "" : ":" + layout.port;
-            var orginUrl = "http://127.0.0.1" + port;
+            // var port = layout.port === "" ? "" : ":" + layout.port;
+
+            var orginUrl = "http://127.0.0.1" + this._getBackgroundPort('x_cms_assemble_control');
             html = html.replace(/\.\.\/(x_|o2_)/g, orginUrl + "/$1");
             html = html.replaceAll(window.location.origin, orginUrl);
-
-            console.log(html)
 
             o2.Actions.load("x_cms_assemble_control").FileInfoAction.uploadWorkInfo(this.businessData.document.id, "pdf", {
                 "workHtml": encodeURIComponent(html),

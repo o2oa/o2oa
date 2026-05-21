@@ -96,12 +96,14 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
     },
     clean: function(){
         (this.modules || []).each(function(module){
-            if( module.json && module.json.type === "Widget" ){
+            if( module && module.json && module.json.type === "Widget" ){
                 if(module.clean)module.clean();
             }
         }.bind(this));
 
         Object.each(this.moduleList || {}, function (module, formKey) {
+            if(!module)return;
+
             if (this.form.all[module.id]) delete this.form.all[module.id];
             if (this.form.forms[module.id])delete this.form.forms[module.id];
             this.form.modules.erase(module);
@@ -263,14 +265,16 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class(
                     if (node.get("MWFtype")!=="form"){
                         var _self = this;
                         var json = this.form._getDomjson(node);
-                        var module = this.form._loadModule(json, node, function(){
-                            this.widget = _self;
-                            this.parentpageIdList = _self.getParentpageIdList();
-                        });
-                        this.form.modules.push(module);
-                        this.modules.push(module);
+                        if(json){
+                            var module = this.form._loadModule(json, node, function(){
+                                this.widget = _self;
+                                this.parentpageIdList = _self.getParentpageIdList();
+                            });
+                            this.form.modules.push(module);
+                            this.modules.push(module);
 
-                        widgetModules[ json.orgiginalId || json.id ] = module;
+                            widgetModules[ json.orgiginalId || json.id ] = module;
+                        }
                     }
                 }.bind(this));
 

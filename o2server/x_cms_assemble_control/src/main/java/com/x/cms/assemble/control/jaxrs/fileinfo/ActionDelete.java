@@ -4,6 +4,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -35,7 +36,9 @@ public class ActionDelete extends BaseAction {
 			if (null == document) {
 				throw new ExceptionEntityNotExist(fileInfo.getDocumentId(), Document.class);
 			}
-			// 如果信息存在，再判断用户是否有操作的权限，如果没权限不允许继续操作
+			if(!business.isDocumentEditor(effectivePerson, null, null, document)){
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
 
 			// 删除文件，并且删除记录及文档的关联信息
 			StorageMapping mapping = ThisApplication.context().storageMappings().get(FileInfo.class, fileInfo.getStorage());

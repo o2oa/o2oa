@@ -35,7 +35,7 @@ MWF.xApplication.AI.LP = {
 	"navi" : {
 		"index" : "对话",
 		"newmcp" : "新建MCP",
-		"mcp" : "MCP设置",
+		"mcp" : "工具设置",
 		"model" : "模型设置",
 		"setting" : "AI助手设置",
 		"knowledge" : "知识库索引"

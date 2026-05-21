@@ -80,8 +80,9 @@
   "tab": {
     "styles": {},
     "tabAreaStyles": {
-      "height": "40px",
-      "border-bottom": "2px solid #3c76b7"
+      "height": "41px",
+      "border-bottom": "1px solid #d8dce6",
+      "position": "relative"
     },
     "contentAreaStyles": {
       "line-height": "normal",
@@ -95,17 +96,15 @@
       "margin-right": "0px",
       "float": "left",
       "height": "40px",
+      "font-size": "14px",
       "cursor": "pointer",
-      "min-width": "100px",
-      "background": "transparent ",
-      "border-top-left-radius": "5px",
-      "border-top-right-radius": "5px",
-      "border": "0px solid #f0f0f0",
-      "border-bottom": "1px solid #3c76b7"
+      "min-width": "80px",
+      "background": "#fff",
+      "border-bottom": "0px"
     },
     "tabTextStyles": {
-      "color": "#666",
-      "font-weight": "bold",
+      "color": "#000000",
+      "font-weight": "normal",
       "line-height": "40px",
       "text-align": "center",
       "margin-right": "8px",
@@ -115,22 +114,18 @@
     "tabCurrentStyles": {
       "position": "relative",
       "margin-top": "0px",
-      "margin-left": "2px",
+      "margin-left": "4px",
       "margin-right": "0px",
+      "margin-bottom": "0px",
       "float": "left",
       "height": "40px",
-      "min-width": "100px",
-      "background": "#3c76b7",
-      "border-top-left-radius": "5px",
-      "border-top-right-radius": "5px",
-      "border-top": "0px solid #f0f0f0",
-      "border-left": "0px solid #f0f0f0",
-      "border-right": "0px solid #f0f0f0",
-      "border-bottom": "1px solid #3c76b7"
+      "font-size": "14px",
+      "min-width": "80px",
+      "border-bottom": "2px solid #0080EB"
     },
     "tabCurrentTextStyles": {
-      "color": "#FFF",
-      "font-weight": "bold",
+      "color": "#0080EB",
+      "font-weight": "normal",
       "line-height": "40px",
       "text-align": "center",
       "margin-right": "8px",
@@ -140,7 +135,7 @@
   },
   "tab$Content": {
     "styles": {
-      "padding": "20px 0px"
+      "padding": "0px 0px"
     }
   },
   "table": {

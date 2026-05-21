@@ -4676,8 +4676,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             //匹配@font-face{}内的所有url(./xxx)
             const fontReg = /url\(['"]?\.\/([^'")]+)['"]?\)(?=[\s\S]*?\})/g;
 
-            var port = layout.port === "" ? "" : ":" + layout.port;
-            const FONT_BASE_URL = "http://127.0.0.1" + port + "/x_desktop/css/v10/";
+            //var port = layout.port === "" ? "" : ":" + layout.port;
+
+            var backgroundPort = this._getBackgroundPort('x_processplatform_assemble_surface');
+
+            const FONT_BASE_URL = "http://127.0.0.1" + backgroundPort + "/x_desktop/css/v10/";
             allStyleList.forEach(styleEl => {
                styleEl.textContent = styleEl.textContent.replace(fontReg, `url("${FONT_BASE_URL}$1")`);
             });
@@ -4810,12 +4813,25 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }, null, null, this.json.confirmStyle);
         }
     },
+    _getBackgroundPort: function (root){
+        var port;
+        var host = o2.Actions.getHost( root );
+        var defaultPort = host.startsWith('https://') ? '443' : '80';
+        if( layout.serviceAddressListWithPort ){
+            var config = layout.serviceAddressListWithPort[root];
+            port = config.port ? config.port.toString() : config.port;
+        }else{
+            port = new URL(host).port;
+        }
+        return (!port || port === defaultPort) ? '' : `:${port}`;
+    },
     _downloadAll: function (htmlString, callback) {
 
         var htmlFormId = "";
         var html = htmlString || document.documentElement.outerHTML; //this.app.content.get("html");
-        var port = layout.port === "" ? "" : ":" + layout.port;
-        var orginUrl = "http://127.0.0.1" + port;
+        //var port = layout.port === "" ? "" : ":" + layout.port;
+
+        var orginUrl = "http://127.0.0.1" + this._getBackgroundPort('x_processplatform_assemble_surface');
         html = html.replace(/\.\.\/(x_|o2_)/g, orginUrl + "/$1");
         html = html.replaceAll(window.location.origin, orginUrl);
         

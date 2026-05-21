@@ -78,7 +78,7 @@ class ActionExecute extends BaseAction {
 				resources);
 	}
 
-	private Source getSource(CacheCategory cacheCategory, CacheKey cacheKey, Agent agent) {
+	private Source getSource(CacheCategory cacheCategory, CacheKey cacheKey, Agent agent) throws Exception {
 		Source source = null;
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		if (optional.isPresent()) {

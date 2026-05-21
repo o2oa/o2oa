@@ -52,6 +52,7 @@ MWF.xApplication.query.TableDesigner.LP = {
     "tableNameNotBeLetterAndNumber" : "数据表名称必须是全字母或字母加数字",
     "tableAliasNotBeLetterAndNumber" : "数据表别名必须是全字母或字母加数字",
     "save_success": "数据表保存成功！",
+    "saveSuccess": "保存成功",
     "deleteColumnTitle": "删除列确认",
     "deleteColumn": "是否确定删除当前列？",
     "statusBuildTitle": "发布数据表",
@@ -139,5 +140,13 @@ MWF.xApplication.query.TableDesigner.LP = {
     "asc": "正序",
     "desc": "倒序",
     "searchPlacholder": "输入名称/别名/id搜索",
-    "searchAndSort": "排序和搜索"
+    "searchAndSort": "排序和搜索",
+    "editColumns": "编辑字段列表",
+    "columnIsEmpty": "字段列表不能为空",
+    "mustBeArray": "必须是数组格式",
+    "mustBeJson": "第{index}条字段数据格式错误，必须为JSON对象",
+    "noName": "第{index}条字段缺少【name】字段名",
+    "noType": "第{index}条字段【{name}】缺少type类型",
+    "nameConflict": "字段名重复：【{name}】",
+    "errorType": "第{index}条字段【{name}】类型错误！\n仅支持：{type}",
 };

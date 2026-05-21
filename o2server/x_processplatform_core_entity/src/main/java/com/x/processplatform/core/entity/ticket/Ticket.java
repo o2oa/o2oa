@@ -43,6 +43,8 @@ public class Ticket implements Serializable {
 	private String parent;
 	// 授权标识
 	private String fromDistinguishedName;
+	// 操作人,在加签的时候记录加签人
+	private String actPerson;
 
 	public Ticket() {
 		this.label = UUID.randomUUID().toString();
@@ -223,6 +225,15 @@ public class Ticket implements Serializable {
 
 	public Ticket act(String act) {
 		this.act = act;
+		return this;
+	}
+
+	public String actPerson() {
+		return actPerson;
+	}
+
+	public Ticket actPerson(String actPerson) {
+		this.actPerson = actPerson;
 		return this;
 	}
 

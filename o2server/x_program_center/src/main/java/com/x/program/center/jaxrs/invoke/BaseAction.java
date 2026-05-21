@@ -255,7 +255,7 @@ abstract class BaseAction extends StandardJaxrsAction {
         }
     }
 
-    protected Source getSource(CacheCategory cacheCategory, Invoke invoke) {
+    protected Source getSource(CacheCategory cacheCategory, Invoke invoke) throws Exception {
         CacheKey cacheKey = new CacheKey(ActionExecuteToken.class, Source.class.getSimpleName(),
                 invoke.getId());
         Source source = null;
