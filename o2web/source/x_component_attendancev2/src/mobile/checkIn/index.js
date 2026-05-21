@@ -457,14 +457,14 @@ export default content({
         const html = [
             "<div class='check-in-fieldwork-dialog' style='padding:10px 0;'>",
             "<textarea class='check-in-fieldwork-remark' style='box-sizing:border-box;width:100%;height:96px;padding:8px;border:1px solid #dcdcdc;border-radius:4px;font-size:14px;line-height:20px;resize:none;' placeholder='" + lp.mobile.outsideRemarkPlaceholder + "'></textarea>",
-            requiredPhoto ? "<div class='check-in-fieldwork-photo-tip' style='margin-top:8px;color:#8c8c8c;font-size:13px;line-height:20px;'>需拍照后提交</div>" : '',
+            requiredPhoto ? "<div class='check-in-fieldwork-photo-tip' style='margin-top:8px;color:#8c8c8c;font-size:13px;line-height:20px;'>点击确定后需拍照提交</div>" : '',
             '</div>'
         ].join('');
         const _self = this;
         o2.DL.open({
             title: lp.mobile.outsideTitle,
             width: '100%',
-            height: requiredPhoto ? '220' : '180',
+            height: requiredPhoto ? '250' : '200',
             style: 'user',
             html: html,
             buttonList: [
@@ -520,7 +520,8 @@ export default content({
         });
         const localData = localDataResult && localDataResult.localData ? localDataResult.localData : '';
         const blob = this.localImageDataToBlob(localData);
-        const fileId = await this.uploadFieldWorkPhoto(blob);
+        const watermarkedBlob = await this.addFieldWorkPhotoWatermark(blob);
+        const fileId = await this.uploadFieldWorkPhoto(watermarkedBlob);
         return [fileId];
     },
     localImageDataToBlob(localData) {
@@ -539,6 +540,98 @@ export default content({
             bytes[i] = binary.charCodeAt(i);
         }
         return new Blob([bytes], { type: mimeType });
+    },
+    addFieldWorkPhotoWatermark(blob) {
+        return new Promise((resolve, reject) => {
+            const image = new Image();
+            const objectUrl = window.URL || window.webkitURL;
+            if (!objectUrl) {
+                reject(new Error('object url not supported'));
+                return;
+            }
+            const url = objectUrl.createObjectURL(blob);
+            image.onload = () => {
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = image.naturalWidth || image.width;
+                    canvas.height = image.naturalHeight || image.height;
+                    const ctx = canvas.getContext('2d');
+                    if (!canvas.width || !canvas.height || !ctx) {
+                        throw new Error('canvas not ready');
+                    }
+                    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+                    this.drawFieldWorkPhotoWatermark(ctx, canvas.width, canvas.height);
+                    objectUrl.revokeObjectURL(url);
+                    if (canvas.toBlob) {
+                        canvas.toBlob((watermarkedBlob) => {
+                            if (watermarkedBlob) {
+                                resolve(watermarkedBlob);
+                            } else {
+                                reject(new Error('watermark image failed'));
+                            }
+                        }, 'image/jpeg', 0.9);
+                    } else {
+                        resolve(this.localImageDataToBlob(canvas.toDataURL('image/jpeg', 0.9)));
+                    }
+                } catch (err) {
+                    objectUrl.revokeObjectURL(url);
+                    reject(err);
+                }
+            };
+            image.onerror = () => {
+                objectUrl.revokeObjectURL(url);
+                reject(new Error('load image failed'));
+            };
+            image.src = url;
+        });
+    },
+    drawFieldWorkPhotoWatermark(ctx, width, height) {
+        const fontSize = Math.max(22, Math.round(width * 0.032));
+        const lineHeight = Math.round(fontSize * 1.45);
+        const padding = Math.round(fontSize * 0.9);
+        const maxTextWidth = width - padding * 2;
+        ctx.font = `${fontSize}px sans-serif`;
+        const lines = this.getFieldWorkPhotoWatermarkLines().reduce((result, line) => {
+            return result.concat(this.wrapWatermarkText(ctx, line, maxTextWidth));
+        }, []);
+        const panelHeight = padding * 2 + lineHeight * lines.length;
+        const panelY = Math.max(0, height - panelHeight);
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.52)';
+        ctx.fillRect(0, panelY, width, panelHeight);
+        ctx.fillStyle = '#ffffff';
+        ctx.textBaseline = 'top';
+        lines.forEach((line, index) => {
+            ctx.fillText(line, padding, panelY + padding + lineHeight * index);
+        });
+    },
+    getFieldWorkPhotoWatermarkLines() {
+        const user = typeof layout !== 'undefined' && layout.session && layout.session.user ? layout.session.user : {};
+        return [
+            `姓名：${user.name || ''}`,
+            `工号：${user.employee || ''}`,
+            `打卡时间：${this.formatWatermarkTime(new Date())}`,
+            `打卡地点：${this.bind.location.address || this.bind.location.title || ''}`
+        ];
+    },
+    formatWatermarkTime(date) {
+        return `${date.getFullYear()}-${this.pad(date.getMonth() + 1)}-${this.pad(date.getDate())} ${this.pad(date.getHours())}:${this.pad(date.getMinutes())}:${this.pad(date.getSeconds())}`;
+    },
+    wrapWatermarkText(ctx, text, maxWidth) {
+        const lines = [];
+        let line = '';
+        for (let i = 0; i < text.length; i++) {
+            const testLine = line + text.charAt(i);
+            if (line && ctx.measureText(testLine).width > maxWidth) {
+                lines.push(line);
+                line = text.charAt(i);
+            } else {
+                line = testLine;
+            }
+        }
+        if (line) {
+            lines.push(line);
+        }
+        return lines;
     },
     uploadFieldWorkPhoto(blob) {
         return new Promise((resolve, reject) => {
