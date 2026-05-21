@@ -45,7 +45,8 @@ public class GraalvmScriptingFactory {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GraalvmScriptingFactory.class);
 	private static final List<String> denyClassList = List.of("com.x.base.core.project.scripting.GraalvmScriptingFactory",
-			"com.x.base.core.project.config.Config");
+			"com.x.base.core.project.config.Config","java.lang.Runtime","java.lang.ProcessBuilder","java.lang.System",
+			"java.net.ServerSocket","java.net.Socket","javax.script.ScriptEngine","javax.script.ScriptEngineManager");
 	private static final Gson gson = XGsonBuilder.instance();
 
 	private GraalvmScriptingFactory() {
