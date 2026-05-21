@@ -1705,17 +1705,20 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }
     },
     getFlagDefaultHidden: function( key ){
+        if( this.isReadable === false )return "hidden";
         if( this.json[key] === "y" || this.json[key] === "true" )return true;
         if( this.json[key] === "n" || this.json[key] === "false" )return false;
         if( this.json[key] === "hidden" )return "hidden";
         return "hidden";
     },
     getFlagDefaultFalse: function( key ){
+        if( this.isReadable === false )return false;
         if( this.json[key] === "y" || this.json[key] === "true" )return true;
         if( this.json[key] === "hidden" )return "hidden";
         return false;
     },
     getFlagDefaultTrue: function( key ){
+        if( this.isReadable === false )return false;
         if( this.json[key] === "n" || this.json[key] === "false" )return false;
         if( this.json[key] === "hidden" )return "hidden";
         return true;
@@ -3222,19 +3225,21 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
         // if (d) d.each(function (att) {
         //     this.attachmentController.addAttachment(att);
         // }.bind(this));
-        if(this.json.ignoreSite) {
-            ( this._getBusinessData() || [] ).each(function (att) {
-                var flag = this.form.businessData.attachmentList.some(function (attData) {
-                    return (att.businessId && att.businessId === attData.businessId) || att.id === attData.id;
+        if( this.isReadable !== false){
+            if(this.json.ignoreSite) {
+                ( this._getBusinessData() || [] ).each(function (att) {
+                    var flag = this.form.businessData.attachmentList.some(function (attData) {
+                        return (att.businessId && att.businessId === attData.businessId) || att.id === attData.id;
+                    }.bind(this));
+                    if(flag)this.attachmentController.addAttachment(att);
                 }.bind(this));
-                if(flag)this.attachmentController.addAttachment(att);
-            }.bind(this));
-        }else{
-            this.form.businessData.attachmentList.each(function (att) {
-                if (att.site === (this.json.site || this.json.id)) this.attachmentController.addAttachment(att);
-            }.bind(this));
+            }else{
+                this.form.businessData.attachmentList.each(function (att) {
+                    if (att.site === (this.json.site || this.json.id)) this.attachmentController.addAttachment(att);
+                }.bind(this));
+            }
+            this.setAttachmentBusinessData();
         }
-        this.setAttachmentBusinessData();
     },
     setAttachmentBusinessData: function(){
         if (this.attachmentController) {
