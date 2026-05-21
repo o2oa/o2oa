@@ -19,6 +19,7 @@
     {{end if}}
 
     {{each $.data.app}}
+        {{if ($.processList && $.processList.length)}}
         <div class="st_processListApp">
             <div class="st_processListAppTitle">
                 {{if ($.id)}}
@@ -48,6 +49,7 @@
                 {{end each}}
             </div>
         </div>
+        {{end if}}
     {{end each}}
 
     {{each $.data.column}}
