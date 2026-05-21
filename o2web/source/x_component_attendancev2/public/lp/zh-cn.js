@@ -315,6 +315,7 @@ MWF.xApplication.attendancev2.LP = {
     result: "打卡结果",
     address: "打卡地址",
     signDesc: "外勤说明",
+    fieldWorkPhoto: "外勤照片",
   },
 
   // 配置信息
@@ -494,6 +495,7 @@ MWF.xApplication.attendancev2.LP = {
     fieldWork: "是否外勤打卡",
     fieldWorkDesc: "外勤说明",
     fieldWorkAddress: "打卡地址",
+    fieldWorkPhoto: "外勤打卡照片",
     sourceTypeUser: "用户打卡",
     sourceTypeAuto: "系统生成",
     sourceTypeFast: "极速打卡",
