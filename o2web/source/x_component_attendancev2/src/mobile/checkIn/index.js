@@ -455,12 +455,14 @@ export default content({
         const requiredRemark = this.bind.checkInCycle.requiredFieldWorkRemarks;
         const requiredPhoto = this.bind.checkInCycle.requiredFieldWorkPhoto;
         const html = [
-            "<div class='check-in-fieldwork-dialog' style='padding:10px 0;'>",
+            "<div class='check-in-fieldwork-dialog' style='position:relative;padding:10px 0;'>",
             "<textarea class='check-in-fieldwork-remark' style='box-sizing:border-box;width:100%;height:96px;padding:8px;border:1px solid #dcdcdc;border-radius:4px;font-size:14px;line-height:20px;resize:none;' placeholder='" + lp.mobile.outsideRemarkPlaceholder + "'></textarea>",
             requiredPhoto ? "<div class='check-in-fieldwork-photo-tip' style='margin-top:8px;color:#8c8c8c;font-size:13px;line-height:20px;'>点击确定后需拍照提交</div>" : '',
+            "<div class='check-in-fieldwork-loading' style='display:none;position:fixed;left:0;right:0;top:0;bottom:0;z-index:9999;align-items:center;justify-content:center;background:rgba(255,255,255,0.72);color:#333;font-size:15px;line-height:24px;text-align:center;'>正在提交，请稍候...</div>",
             '</div>'
         ].join('');
         const _self = this;
+        let submitting = false;
         o2.DL.open({
             title: lp.mobile.outsideTitle,
             width: '100%',
@@ -472,6 +474,9 @@ export default content({
                     text: lp.positive,
                     class: 'comment_dlg_button_ok',
                     action: function () {
+                        if (submitting) {
+                            return;
+                        }
                         const remarkNode = this.node.getElement('.check-in-fieldwork-remark');
                         const signDescription = remarkNode ? remarkNode.value.trim() : '';
                         if (requiredRemark && !signDescription) {
@@ -479,12 +484,16 @@ export default content({
                             return;
                         }
                         const dialog = this;
+                        submitting = true;
+                        _self.setFieldWorkDialogLoading(dialog, true);
                         _self.prepareFieldWorkPhotoIds(requiredPhoto).then((photoIds) => {
                             _self.checkInPost(record, null, true, signDescription, photoIds);
                             dialog.close();
                         }).catch((err) => {
                             console.error('外勤拍照上传失败', err);
                             o2.api.page.notice('外勤拍照上传失败，请重试！', 'error');
+                            submitting = false;
+                            _self.setFieldWorkDialogLoading(dialog, false);
                         });
                     }
                 },
@@ -492,11 +501,27 @@ export default content({
                     type: 'cancel',
                     text: lp.cancel,
                     action: function () {
+                        if (submitting) {
+                            return;
+                        }
                         this.close();
                     }
                 }
             ]
         });
+    },
+    setFieldWorkDialogLoading(dialog, loading) {
+        if (!dialog || !dialog.node) {
+            return;
+        }
+        const loadingNode = dialog.node.getElement('.check-in-fieldwork-loading');
+        const remarkNode = dialog.node.getElement('.check-in-fieldwork-remark');
+        if (loadingNode) {
+            loadingNode.setStyle('display', loading ? 'flex' : 'none');
+        }
+        if (remarkNode) {
+            remarkNode.disabled = !!loading;
+        }
     },
     async prepareFieldWorkPhotoIds(requiredPhoto) {
         if (!requiredPhoto) {
