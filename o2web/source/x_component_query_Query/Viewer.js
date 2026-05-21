@@ -2765,6 +2765,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         this.json.filter = filter;
         if( this.viewAreaNode ){
             this.currentFilterData = {"filterList": this.json.filter  ? this.json.filter.clone() : null};
+            this.currentPage = 1;
             this.createViewNode(this.currentFilterData, callback, keepSelected);
         }
     },
