@@ -80,8 +80,9 @@
   "tab": {
     "styles": {},
     "tabAreaStyles": {
-      "height": "40px",
-      "border-bottom": "2px solid #3c76b7"
+            "height": "41px",
+            "border-bottom": "1px solid #d8dce6",
+            "position": "relative"
     },
     "contentAreaStyles": {
       "line-height": "normal",
@@ -95,17 +96,15 @@
       "margin-right": "0px",
       "float": "left",
       "height": "40px",
+       "font-size": "14px",
       "cursor": "pointer",
-      "min-width": "100px",
-      "background": "transparent ",
-      "border-top-left-radius": "5px",
-      "border-top-right-radius": "5px",
-      "border": "0px solid #f0f0f0",
-      "border-bottom": "1px solid #3c76b7"
+        "min-width": "80px",
+        "background": "#fff",
+        "border-bottom": "0px"
     },
     "tabTextStyles": {
-      "color": "#666",
-      "font-weight": "bold",
+    "color": "#000000",
+    "font-weight": "normal",
       "line-height": "40px",
       "text-align": "center",
       "margin-right": "8px",
@@ -115,22 +114,18 @@
     "tabCurrentStyles": {
       "position": "relative",
       "margin-top": "0px",
-      "margin-left": "2px",
+            "margin-left": "4px",
       "margin-right": "0px",
+            "margin-bottom": "0px",
       "float": "left",
       "height": "40px",
-      "min-width": "100px",
-      "background": "#3c76b7",
-      "border-top-left-radius": "5px",
-      "border-top-right-radius": "5px",
-      "border-top": "0px solid #f0f0f0",
-      "border-left": "0px solid #f0f0f0",
-      "border-right": "0px solid #f0f0f0",
-      "border-bottom": "1px solid #3c76b7"
+            "font-size": "14px",
+            "min-width": "80px",
+            "border-bottom": "2px solid var(--oo-color-main)"
     },
     "tabCurrentTextStyles": {
-      "color": "#FFF",
-      "font-weight": "bold",
+            "color": "var(--oo-color-main)",
+            "font-weight": "normal",
       "line-height": "40px",
       "text-align": "center",
       "margin-right": "8px",
@@ -140,217 +135,7 @@
   },
   "tab$Content": {
     "styles": {
-      "padding": "20px 0px"
-    }
-  },
-  "table": {
-    "styles": {},
-    "titleStyles":{},
-    "contentStyles": {},
-    "layoutStyles": {},
-    "properties": {}
-  },
-  "log" : {
-    "standard": {
-      "name": "标准样式",
-      "styles": {
-        "flex": "1 1 100%"
-      },
-      "properties": {
-        "class": "form-log"
-      },
-      "textStyle": "<div class=\"logItem\"><div style=\"flex: 0 0 4em\"><div class=\"logItemIcon\" style=\"background-image: url('/x_organization_assemble_control/jaxrs/person/{person}/icon');\"></div></div><div style=\"flex: 1;     display: flex; justify-content: space-between; align-items: center;\"><div><div><font style='color:#ff5400;'>{person}</font>（{department}）选择<font style='color: var(--oo-color-main)'>【{route}】</font></div><div>处理意见：<font>{opinion}</font></div></div><div><b>{activity}</b></div></div><div style=\"flex: 0 0 11.85em; display: block\">{img}</div><div>{time}</div></div>",
-      "textTaskStyle": "<div class=\"logItem\"><div style=\"flex: 0 0 4em\"><div class=\"logItemIcon\" style=\"background-image: url('/x_organization_assemble_control/jaxrs/person/{person}/icon');\"></div></div><div style=\"flex: 1;     display: flex; justify-content: space-between; align-items: center;\"><div><div><font style='color:#ff5400;'>{person}</font>（{department}）<font style='color: var(--oo-color-main)'>{route}</font></div><div></div></div><div><b>{activity}</b></div></div><div style=\"flex: 0 0 11.85em; display: block\">{img}</div><div>{time}</div></div>",
-      "mode": "default"
-    },
-
-    "simple": {
-      "name": "简单样式",
-      "styles": {
-        "flex": "1 1 100%"
-      },
-      "properties": {
-        "class": "form-log-simple"
-      },
-      "textStyle": "<div style=\"padding: 0.5em 2em 0.5em 1em;\"><div><div>{opinion}</div><div style=\"display: none\">{img}</div></div><div style=\"text-align: right; font-size: 0.875em; color: #666666\"><span>{person}</span><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span>{time}</span></div></div>",
-      "textTaskStyle": "<div style=\"padding: 0.5em 2em 0.5em 1em;\"><div>{person} <font style='color: var(--oo-color-main)'>{route}</font></div></div>",
-      "mode": "text"
-    }
-  },
-  "datagrid": {
-    "styles": {},
-    "tableStyles": {},
-    "titleStyles": {},
-    "contentStyles": {},
-    "actionStyles": {},
-    "editStyles": {},
-    "amountStyles": {},
-    "itemTitleStyles": {},
-    "importActionStyles" : {},
-    "exportActionStyles" : {},
-    "properties": {}
-  },
-  "datagrid$Title": {
-    "styles": {}
-  },
-  "datatable": {
-    "styles": {
-      "border": "1px solid #DEDEDE",
-      "border-radius": "4px",
-      "padding-bottom": "1em"
-    },
-    "tableStyles": {},
-    "titleStyles": {
-      "border-bottom": "1px solid #DEDEDE",
-      "color": "var(--oo-color-text2)",
-      "height": "2.4em",
-      "text-align": "center",
-      "background-color": "#F7F7F7",
-      "white-space": "nowrap"
-    },
-    "contentStyles": {
-      "padding": "0.5em 0.142857em",
-      "border-bottom": "1px solid #dedede"
-    },
-    "actionStyles": {
-      "text-align": "center"
-    },
-    "editStyles": {},
-    "amountStyles": {
-      "padding": "0.5em 0.7em",
-      "background-color": "#f7f7f7"
-    },
-    "sectionAmountStyles": {},
-    "itemTitleStyles": {},
-    "importActionStyles" : {},
-    "exportActionStyles" : {},
-    "sectionKeyStyles": {},
-    "properties": {
-      "class": "form-datatable"
-    }
-  },
-  "datatable$Title": {
-    "styles": {
-      "text-align": "left",
-      "padding": "0 0.7em"
-    }
-  },
-  "address": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "combox": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "textfield": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "calendar": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "number": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "currency": {
-    "styles": {},
-    "inputStyles": {},
-    "symbolStyles": {}
-  },
-  "personfield": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "orgfield": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "org": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "select": {
-    "styles": {}
-  },
-  "textarea": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "opinion": {
-    "styles": {},
-    "inputStyles": {}
-  },
-  "actionbar": {
-    "iconType": "font",
-    "style": "v10",
-    "styles": {
-      "background-color": "#ffffff"
-    },
-    "customIconStyle" : ""
-  },
-  "attachment" : {
-    "style" : "v10"
-  },
-  "writingBoard": {
-    "styles": {
-      "overflow": "hidden"
-    },
-    "actionStyles": {
-      "float": "right",
-      "border": "1px solid #6681a5",
-      "border-radius": "3px",
-      "cursor": "pointer",
-      "height": "25px",
-      "line-height": "25px",
-      "min-width": "30px",
-      "padding-left": "24px",
-      "padding-right": "5px",
-      "margin-left": "5px",
-      "background": "url(../x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
-    },
-    "imageStyles": {
-
-    }
-  },
-  "relatedlink": {
-    "buttonStyles": {
-      "border-radius": "10px",
-      "height": "30px",
-      "line-height": "30px",
-      "padding-left": "34px",
-      "padding-right": "5px",
-      "cursor": "pointer",
-      "border": "1px solid #6681a5",
-      "margin": "10px auto",
-      "background": "url(../x_component_process_FormDesigner/Module/Relatedlink/default/icon/down_blue.png) no-repeat 15px center",
-      "width": "70px"
-    },
-    "tableStyles": {
-      "border-top": "1px solid #CCC",
-      "font-size": "12px"
-    },
-    "tableTitleCellStyles": {
-      "text-align": "center",
-      "font-weight": "bold",
-      "line-height": "28px",
-      "border-bottom": "1px solid #CCC",
-      "background": "#f7f7f7"
-    },
-    "tableContentLineStyles": {
-      "background": "#ffffff"
-    },
-    "tableContentLineStyles_over": {
-      "background": "#f6f6f6"
-    },
-    "tableContentCellStyles": {
-      "line-height": "28px",
-      "border-bottom": "1px solid #CCC"
-    },
-    "tableContentCellStyles_title": {
-      "font-size": "14px"
+            "padding": "0px 0px"
     }
   },
   "OOInput": {
