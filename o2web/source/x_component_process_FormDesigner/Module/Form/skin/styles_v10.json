@@ -83,7 +83,7 @@
         "styles": {},
         "tabAreaStyles": {
             "height": "40px",
-            "border-bottom": "2px solid #3c76b7"
+            "border-bottom": "2px solid var(--oo-color-main)"
         },
         "contentAreaStyles": {
             "line-height": "normal",
@@ -103,7 +103,7 @@
             "border-top-left-radius": "5px",
             "border-top-right-radius": "5px",
             "border": "0px solid #f0f0f0",
-            "border-bottom": "1px solid #3c76b7"
+            "border-bottom": "1px solid var(--oo-color-main)"
         },
         "tabTextStyles": {
             "color": "#666",
@@ -122,13 +122,13 @@
             "float": "left",
             "height": "40px",
             "min-width": "100px",
-            "background": "#3c76b7",
+            "background": "var(--oo-color-main)",
             "border-top-left-radius": "5px",
             "border-top-right-radius": "5px",
             "border-top": "0px solid #f0f0f0",
             "border-left": "0px solid #f0f0f0",
             "border-right": "0px solid #f0f0f0",
-            "border-bottom": "1px solid #3c76b7"
+            "border-bottom": "1px solid var(--oo-color-main)"
         },
         "tabCurrentTextStyles": {
             "color": "#FFF",
