@@ -251,15 +251,16 @@ export default content({
         });
     },
     async getQywxGeoAddress(latitude, longitude) {
-        const result = await invokeAction('execute', 'wx_geocoder', {
+        const result = await invokeAction('execute', 'geocoder_search_address', {
             latitude,
             longitude
         });
         const address = result && result.value ? result.value.address : '';
         const err = result && result.value ? result.value.err : '';
         if (err) {
-            this.setLocationError();
-            return;
+            console.error('查询地址错误',  err);
+            // this.setLocationError();
+            // return;
         }
         this.bind.location.status = true;
         this.bind.location.locating = false;
