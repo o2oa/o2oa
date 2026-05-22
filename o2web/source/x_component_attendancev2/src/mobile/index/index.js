@@ -24,6 +24,7 @@ export default content({
         }
         const menuList = [
           {action: "checkIn", name: lp.mobile.menu.checkIn},
+          {action: "myRecord", name: "记录", title: "我的打卡记录"},
           {action: "statistic", name: lp.mobile.menu.statistic},
         //   {action: "settings", name: lp.mobile.menu.settings},
         ];

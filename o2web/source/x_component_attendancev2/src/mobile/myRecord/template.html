@@ -1,0 +1,50 @@
+<div class="my-record-page">
+  <div class="week-panel" @touchstart="onWeekTouchStart" @touchend="onWeekTouchEnd">
+    <div class="week-header">
+      <div class="week-title">{{$.calendarTitle}}</div>
+      <div class="week-actions">
+        <button class="week-arrow" @click="prevWeek"><i class="o2icon-icon_arrow_left"></i></button>
+        <button class="week-arrow" @click="nextWeek"><i class="o2icon-icon_arrow_right"></i></button>
+      </div>
+    </div>
+    <div class="week-days">
+      <div oo-each="$.weekList" oo-item="day" class="{{day.value.selected ? 'week-day active' : (day.value.isToday ? 'week-day today' : 'week-day')}}" @click="this.selectDate(day.value)">
+        <div class="week-day-name">{{day.value.dayName}}</div>
+        <div class="week-day-number">{{day.value.day}}</div>
+        <div class="week-day-dot"></div>
+      </div>
+    </div>
+    <div class="week-indicator"></div>
+  </div>
+
+  <div class="record-scroll">
+    <div class="record-card" oo-if="$.recordList.length">
+      <div class="record-card-header">
+        <div class="record-card-title">{{$.summaryTitle}}</div>
+      </div>
+      <div class="record-list">
+        <div oo-each="$.recordList" oo-item="record" class="{{record.value.lineClass}}">
+          <div class="record-time-column">
+            <div class="record-plan-time">{{record.value.planTime}}</div>
+            <div class="record-axis" oo-if="!record.value.isLast"></div>
+          </div>
+          <div class="record-content">
+            <div class="record-main">
+              <span>{{record.value.checkInTypeText}}</span>
+              <span oo-if="record.value.sourceText"> · {{record.value.sourceText}}</span>
+            </div>
+            <div class="{{record.value.statusClass}}">
+              <span>{{record.value.resultText}}</span>
+              <span oo-if="record.value.actualTime">（{{record.value.actualTime}}）</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="record-empty" oo-if="!$.recordList.length">
+      <div oo-if="$.loading">加载中...</div>
+      <div oo-else>{{$.emptyText}}</div>
+    </div>
+  </div>
+</div>

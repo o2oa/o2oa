@@ -726,4 +726,7 @@ export default content({
         }
         return `qywx_${deviceType}`;
     },
+    gotoMyRecord() {
+        window.location.href = `appMobile.html?app=attendancev2&page=myRecord`;
+    }
 });
