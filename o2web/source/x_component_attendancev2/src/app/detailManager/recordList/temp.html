@@ -74,11 +74,12 @@
                         {{$.lp.detailRecordList.fieldWorkPhoto}}
                     </div>
                     <div style=" width: 320px;">
-                        div style="display: flex;justify-content: flex-end;gap: 10px;">
-                        <img oo-each="r.value.fieldWorkPhotoFileIdList" oo-item="photoFile"
-                            src="{{$m.getFileDownloadUrl(photoFile.value)}}"
-                            style="width: 80px;height: 80px;object-fit: cover;border-radius: 4px;cursor: pointer;"
-                            onclick="window.open('{{$m.getFileDownloadUrl(photoFile.value)}}', '_blank')" />
+                        <div style="display: flex;justify-content: flex-end;gap: 10px;">
+                            <img oo-each="r.value.fieldWorkPhotoFileIdList" oo-item="photoFile"
+                                src="{{$m.getFileDownloadUrl(photoFile.value)}}"
+                                style="width: 80px;height: 80px;object-fit: cover;border-radius: 4px;cursor: pointer;"
+                                onclick="window.open('{{$m.getFileDownloadUrl(photoFile.value)}}', '_blank')" />
+                        </div>
                     </div>
                 </div>
             </div>
