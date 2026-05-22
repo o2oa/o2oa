@@ -89,6 +89,23 @@ public class MyAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "根据日期查询我的打卡记录列表.", action = ActionListCheckInRecordWithDate.class)
+    @POST
+    @Path("checkin/record/list")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void listCheckInRecordWithDate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
+        ActionResult<List<ActionListCheckInRecordWithDate.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionListCheckInRecordWithDate().execute(effectivePerson, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "根据日期查询我的考勤统计.", action = ActionMyStatistic.class)
     @POST
     @Path("statistic")
