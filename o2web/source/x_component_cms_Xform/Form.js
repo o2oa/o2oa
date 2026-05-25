@@ -288,6 +288,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
         },
         checkDatatableClass: function (){
             if( (layout.mobile || COMMON.Browser.Platform.isMobile) && this.json.formStyleType === 'v10' ){
+                MWF.xDesktop.requireApp("cms.Xform", "Datatable", null, false);
                 MWF.xApplication.cms.Xform.Datatable = MWF.CMSDatatable = MWF.xApplication.process.Xform.DatatableV10;
                 MWF.CMSDatatable.implement(MWF.CMSDatatableFeature);
                 MWF.xApplication.cms.Xform.Datatable$Title = MWF.CMSDatatable$Title = MWF.xApplication.process.Xform.DatatablePC$Title;
