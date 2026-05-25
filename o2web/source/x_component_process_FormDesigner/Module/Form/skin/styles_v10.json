@@ -123,10 +123,10 @@
             "height": "40px",
             "font-size": "14px",
             "min-width": "80px",
-            "border-bottom": "2px solid #0080EB"
+            "border-bottom": "2px solid var(--oo-color-main)"
         },
         "tabCurrentTextStyles": {
-            "color": "#0080EB",
+            "color": "var(--oo-color-main)",
             "font-weight": "normal",
             "line-height": "40px",
             "text-align": "center",
