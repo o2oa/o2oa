@@ -471,6 +471,7 @@ MWF.xApplication.attendancev2.LP = {
     status2: "审批通过",
     status3: "审批不通过",
     status4: "已处理",
+    status5: "已锁定",
 
     startProcess: "发起申诉",
     openJob: "查看申诉",

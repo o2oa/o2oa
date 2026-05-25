@@ -15,6 +15,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.tools.DateTools;
+import java.util.Objects;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -41,7 +42,9 @@ public class ActionUpdateForStart extends BaseAction {
             if (!person.getDistinguishedName().equals(info.getUserId())) {
                 throw new ExceptionPersonNotEqual();
             }
-
+            if (Objects.equals(info.getStatus(), AttendanceV2AppealInfo.status_TYPE_LOCK)) {
+                throw new ExceptionAppealLocked();
+            }
             // 申诉次数限制查询
             List<AttendanceV2Config> list = emc.listAll(AttendanceV2Config.class);
             AttendanceV2Config config;
