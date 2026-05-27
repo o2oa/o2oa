@@ -48,6 +48,43 @@ export default content({
     console.log("点击编辑假期类型", id);
     this.$parent.openLeaveTypeForm({ bind: { updateId: id } });
   },
+  async clickCopyLeaveTypeId(id) {
+    if (isEmpty(id)) {
+      o2.api.page.notice("假期类型 ID 为空", "error");
+      return;
+    }
+    try {
+      await this.copyText(id);
+      o2.api.page.notice("复制成功", "success");
+    } catch (e) {
+      console.error("复制假期类型 ID 失败", e);
+      o2.api.page.notice("复制失败", "error");
+    }
+  },
+  copyText(text) {
+    const fallbackCopy = () => new Promise((resolve, reject) => {
+      const input = document.createElement("textarea");
+      input.value = text;
+      input.setAttribute("readonly", "readonly");
+      input.style.position = "fixed";
+      input.style.left = "-9999px";
+      input.style.top = "-9999px";
+      document.body.appendChild(input);
+      input.select();
+      try {
+        const success = document.execCommand("copy");
+        document.body.removeChild(input);
+        success ? resolve() : reject(new Error("execCommand copy failed"));
+      } catch (e) {
+        document.body.removeChild(input);
+        reject(e);
+      }
+    });
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).catch(() => fallbackCopy());
+    }
+    return fallbackCopy();
+  },
   clickOpenLedgerImport(type) {
     if (!type || type.quotaType !== "QUOTA") {
       return;

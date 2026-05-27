@@ -6,6 +6,18 @@
     display: block;
 }
 
+.leave-copy-id {
+    margin-left: 10px;
+    color: #2f80ed;
+    text-decoration: underline;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.leave-copy-id:hover {
+    color: #1b5fc4;
+}
+
 .leave-import-mask {
     position: fixed;
     z-index: 1000;

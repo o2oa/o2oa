@@ -25,7 +25,10 @@
                     <th style="width: 240px;">{{$.lp.operate}}</th>
                 </thead>
                 <tr oo-each="$.leaveTypeList" oo-item="d">
-                    <td>{{d.value.name}}</td>
+                    <td>
+                        <span>{{d.value.name}}</span>
+                        <span class="leave-copy-id" @click="this.clickCopyLeaveTypeId(d.value.id)">[复制 ID]</span>
+                    </td>
                     <td>{{d.value.quotaType == 'QUOTA' ? $.lp.leaveManagerV2.type.quotaTypeLimited :
                         $.lp.leaveManagerV2.type.quotaTypeUnlimited}}</td>
                     <td>
