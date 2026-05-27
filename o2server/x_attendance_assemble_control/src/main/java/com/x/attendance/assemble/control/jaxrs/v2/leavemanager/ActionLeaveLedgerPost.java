@@ -94,7 +94,7 @@ public class ActionLeaveLedgerPost extends BaseAction {
                 && !jsonElement.getAsJsonObject().get(fieldName).isJsonNull();
     }
 
-    private static void addLeaveTransaction(EntityManagerContainer emc, AttendanceV2LeaveLedger ledger)
+    static void addLeaveTransaction(EntityManagerContainer emc, AttendanceV2LeaveLedger ledger)
             throws Exception {
         emc.beginTransaction(AttendanceV2LeaveTransaction.class);
         AttendanceV2LeaveTransaction transaction = new AttendanceV2LeaveTransaction();

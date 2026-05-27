@@ -25,6 +25,8 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 @Path("v2/leavemanager")
 @JaxrsDescribe("假期管理")
@@ -288,6 +290,29 @@ public class LeaveManagerAction extends StandardJaxrsAction {
             result = new ActionLeaveLedgerPost().execute(effectivePerson, jsonElement);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "Excel导入假期发放批次.", action = ActionLeaveLedgerImportExcel.class)
+    @POST
+    @Path("ledger/import")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public void ledgerImport(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request,
+            @JaxrsParameterDescribe("假期类型ID") @FormDataParam("leaveTypeId") String leaveTypeId,
+            @JaxrsParameterDescribe("发放周期") @FormDataParam("grantPeriod") String grantPeriod,
+            @FormDataParam(FILE_FIELD) final byte[] bytes,
+            @JaxrsParameterDescribe("Excel文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
+        ActionResult<ActionLeaveLedgerImportExcel.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLeaveLedgerImportExcel().execute(effectivePerson, leaveTypeId, grantPeriod, bytes,
+                    disposition);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
             result.error(e);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

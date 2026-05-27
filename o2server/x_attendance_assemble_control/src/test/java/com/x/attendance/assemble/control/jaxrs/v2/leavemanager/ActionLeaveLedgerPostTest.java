@@ -20,6 +20,8 @@ class ActionLeaveLedgerPostTest {
         wi.setLeaveTypeId("leaveTypeId");
         wi.setGrantPeriod("2026");
         wi.setGrantAmount(10.0);
+        Date expireTime = new Date(now.getTime() + 86400000L);
+        wi.setExpireTime(expireTime);
 
         AttendanceV2LeaveLedger ledger = ActionLeaveLedgerPost.buildLedger(wi, now, true);
 
@@ -30,6 +32,7 @@ class ActionLeaveLedgerPostTest {
         assertEquals(0.0, ledger.getUsedAmount());
         assertEquals(10.0, ledger.getRemainingAmount());
         assertEquals(now, ledger.getGrantTime());
+        assertEquals(expireTime, ledger.getExpireTime());
         assertEquals(true, ledger.getActive());
     }
 
