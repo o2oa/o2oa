@@ -432,6 +432,24 @@ public class LeaveManagerAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "根据人员和假期类型ID查询今年请假次数.", action = ActionLeaveRequestCountYear.class)
+    @POST
+    @Path("request/count/year")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void requestCountYear(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request, JsonElement jsonElement) {
+        ActionResult<ActionLeaveRequestCountYear.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLeaveRequestCountYear().execute(jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "假期申请.", action = ActionLeaveRequestApply.class)
     @POST
     @Path("request/apply")
