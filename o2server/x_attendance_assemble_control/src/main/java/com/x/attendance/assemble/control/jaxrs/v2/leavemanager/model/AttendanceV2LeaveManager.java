@@ -39,49 +39,55 @@ public class AttendanceV2LeaveManager {
         }
         Thread thread = new Thread(() -> {
             try {
-                EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
-                List<AttendanceV2LeaveLedger> ledgers = emc.listEqualAndEqualAndEqual(AttendanceV2LeaveLedger.class,
-                        AttendanceV2LeaveLedger.person_FIELDNAME, personDN,
-                        AttendanceV2LeaveLedger.leaveTypeId_FIELDNAME, leaveTypeId,
-                        AttendanceV2LeaveLedger.active_FIELDNAME, true);
-                List<AttendanceV2LeaveAccount> accounts = emc.listEqualAndEqual(AttendanceV2LeaveAccount.class,
-                        AttendanceV2LeaveAccount.person_FIELDNAME, personDN,
-                        AttendanceV2LeaveAccount.leaveTypeId_FIELDNAME, leaveTypeId);
-                AttendanceV2LeaveAccount account = null;
-                if (accounts == null || accounts.isEmpty()) {
-                    account = new AttendanceV2LeaveAccount();
-                    account.setPerson(personDN);
-                    account.setLeaveTypeId(leaveTypeId);
-                    emc.beginTransaction(AttendanceV2LeaveAccount.class);
-                    emc.persist(account, CheckPersistType.all);
-                    emc.commit();
-                } else {
-                    account = accounts.get(0);
-                }
-                if (ledgers != null && !ledgers.isEmpty()) {
-                    double totalGranted = 0.0;
-                    double totalUsed = 0.0;
-                    double balance = 0.0;
-                    for (AttendanceV2LeaveLedger ledger : ledgers) {
-                        totalGranted += ledger.getGrantAmount() != null ? ledger.getGrantAmount() : 0.0;
-                        totalUsed += ledger.getUsedAmount() != null ? ledger.getUsedAmount() : 0.0;
-                        balance += ledger.getRemainingAmount() != null ? ledger.getRemainingAmount() : 0.0;
-                    }
-                    account.setTotalGranted(totalGranted);
-                    account.setTotalUsed(totalUsed);
-                    account.setBalance(balance);
-                    emc.beginTransaction(AttendanceV2LeaveAccount.class);
-                    AttendanceV2LeaveAccount old = emc.find(account.getId(), AttendanceV2LeaveAccount.class);
-                    account.copyTo(old, JpaObject.FieldsUnmodify);
-                    emc.check(old, CheckPersistType.all);
-                    emc.commit();
-                }
+                updateLeaveAccount(personDN, leaveTypeId);
             } catch (Exception e) {
                 logger.error(e);
             }
 
         });
         thread.start();
+    }
+
+    public static void updateLeaveAccount(String personDN, String leaveTypeId) throws Exception {
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            List<AttendanceV2LeaveLedger> ledgers = emc.listEqualAndEqualAndEqual(AttendanceV2LeaveLedger.class,
+                    AttendanceV2LeaveLedger.person_FIELDNAME, personDN,
+                    AttendanceV2LeaveLedger.leaveTypeId_FIELDNAME, leaveTypeId,
+                    AttendanceV2LeaveLedger.active_FIELDNAME, true);
+            List<AttendanceV2LeaveAccount> accounts = emc.listEqualAndEqual(AttendanceV2LeaveAccount.class,
+                    AttendanceV2LeaveAccount.person_FIELDNAME, personDN,
+                    AttendanceV2LeaveAccount.leaveTypeId_FIELDNAME, leaveTypeId);
+            AttendanceV2LeaveAccount account = null;
+            if (accounts == null || accounts.isEmpty()) {
+                account = new AttendanceV2LeaveAccount();
+                account.setPerson(personDN);
+                account.setLeaveTypeId(leaveTypeId);
+                emc.beginTransaction(AttendanceV2LeaveAccount.class);
+                emc.persist(account, CheckPersistType.all);
+                emc.commit();
+            } else {
+                account = accounts.get(0);
+            }
+
+            double totalGranted = 0.0;
+            double totalUsed = 0.0;
+            double balance = 0.0;
+            if (ledgers != null && !ledgers.isEmpty()) {
+                for (AttendanceV2LeaveLedger ledger : ledgers) {
+                    totalGranted += ledger.getGrantAmount() != null ? ledger.getGrantAmount() : 0.0;
+                    totalUsed += ledger.getUsedAmount() != null ? ledger.getUsedAmount() : 0.0;
+                    balance += ledger.getRemainingAmount() != null ? ledger.getRemainingAmount() : 0.0;
+                }
+            }
+            account.setTotalGranted(totalGranted);
+            account.setTotalUsed(totalUsed);
+            account.setBalance(balance);
+            emc.beginTransaction(AttendanceV2LeaveAccount.class);
+            AttendanceV2LeaveAccount old = emc.find(account.getId(), AttendanceV2LeaveAccount.class);
+            account.copyTo(old, JpaObject.FieldsUnmodify);
+            emc.check(old, CheckPersistType.all);
+            emc.commit();
+        }
     }
 
 

@@ -295,6 +295,24 @@ public class LeaveManagerAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "批量删除假期发放批次.", action = ActionLeaveLedgerBatchDelete.class)
+    @POST
+    @Path("ledger/delete/batch")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void ledgerBatchDelete(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request, JsonElement jsonElement) {
+        ActionResult<ActionLeaveLedgerBatchDelete.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLeaveLedgerBatchDelete().execute(effectivePerson, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "Excel导入假期发放批次.", action = ActionLeaveLedgerImportExcel.class)
     @POST
     @Path("ledger/import")
