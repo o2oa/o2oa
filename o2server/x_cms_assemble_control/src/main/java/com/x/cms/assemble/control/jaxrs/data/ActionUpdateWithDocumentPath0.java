@@ -10,6 +10,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.Document;
+import java.util.Date;
 
 class ActionUpdateWithDocumentPath0 extends BaseAction {
 
@@ -30,6 +31,9 @@ class ActionUpdateWithDocumentPath0 extends BaseAction {
 				this.updateTitleSerialObjectSecurityClearance(business, document, jsonElement);
 			}
 			this.updateData(business, document, jsonElement, path0);
+			emc.beginTransaction(Document.class);
+			document.setModifyTime(new Date());
+			emc.commit();
 			Wo wo = new Wo();
 			wo.setId(document.getId());
 			result.setData(wo);
