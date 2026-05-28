@@ -1,7 +1,10 @@
 package com.x.attendance.assemble.control.jaxrs.v2.leavemanager;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -49,7 +52,7 @@ public class ActionLeaveRequestCountYear extends BaseAction {
                 throw new ExceptionNotExistObject("请假类型 " + wi.getLeaveTypeId());
             }
             YearRange yearRange = currentYearRange();
-            Long count = countLeaveRequest(emc, person.getDistinguishedName(), wi.getLeaveTypeId(),
+            Statistic statistic = statisticLeaveRequest(emc, person.getDistinguishedName(), wi.getLeaveTypeId(),
                     yearRange.getStartDate(), yearRange.getEndDate());
             Wo wo = new Wo();
             wo.setPerson(person.getDistinguishedName());
@@ -57,26 +60,46 @@ public class ActionLeaveRequestCountYear extends BaseAction {
             wo.setYear(yearRange.getYear());
             wo.setStartDate(DateTools.format(yearRange.getStartDate(), DateTools.format_yyyyMMdd));
             wo.setEndDate(DateTools.format(yearRange.getEndDate(), DateTools.format_yyyyMMdd));
-            wo.setCount(count);
+            wo.setCount(statistic.getCount());
+            wo.setTotalDays(statistic.getTotalDays());
             result.setData(wo);
-            result.setCount(count);
+            result.setCount(statistic.getCount());
             return result;
         }
     }
 
-    private Long countLeaveRequest(EntityManagerContainer emc, String person, String leaveTypeId, Date startDate,
+    private Statistic statisticLeaveRequest(EntityManagerContainer emc, String person, String leaveTypeId, Date startDate,
             Date endDate) throws Exception {
         EntityManager em = emc.get(AttendanceV2LeaveRequest.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        CriteriaQuery<AttendanceV2LeaveRequest> cq = cb.createQuery(AttendanceV2LeaveRequest.class);
         Root<AttendanceV2LeaveRequest> root = cq.from(AttendanceV2LeaveRequest.class);
         Predicate p = cb.equal(root.get(AttendanceV2LeaveRequest_.person), person);
         p = cb.and(p, cb.equal(root.get(AttendanceV2LeaveRequest_.leaveTypeId), leaveTypeId));
         p = cb.and(p, cb.lessThanOrEqualTo(root.get(AttendanceV2LeaveRequest_.startTime), endDate));
         p = cb.and(p, cb.greaterThanOrEqualTo(root.get(AttendanceV2LeaveRequest_.endTime), startDate));
         p = cb.and(p, cb.equal(root.get(AttendanceV2LeaveRequest_.status), LeaveRequestStatusEnum.APPLYING.getValue()));
-        cq.select(cb.count(root)).where(p);
-        return em.createQuery(cq).getSingleResult();
+        cq.select(root).where(p);
+        List<AttendanceV2LeaveRequest> list = em.createQuery(cq).getResultList();
+        double totalDays = 0.0;
+        for (AttendanceV2LeaveRequest request : list) {
+            totalDays += calculateDuration(request);
+        }
+        totalDays = BigDecimal.valueOf(totalDays).setScale(1, RoundingMode.HALF_UP).doubleValue();
+        return new Statistic((long) list.size(), totalDays);
+    }
+
+    private Double calculateDuration(AttendanceV2LeaveRequest request) {
+        if (request.getDuration() != null) {
+            return request.getDuration();
+        }
+        if (request.getStartTime() == null || request.getEndTime() == null
+                || request.getEndTime().before(request.getStartTime())) {
+            return 0.0;
+        }
+        long interval = request.getEndTime().getTime() - request.getStartTime().getTime();
+        double days = interval / (1000.0 * 3600 * 24);
+        return BigDecimal.valueOf(days).setScale(1, RoundingMode.HALF_UP).doubleValue();
     }
 
     private YearRange currentYearRange() {
@@ -141,6 +164,9 @@ public class ActionLeaveRequestCountYear extends BaseAction {
         @FieldDescribe("请假次数")
         private Long count;
 
+        @FieldDescribe("请假总天数")
+        private Double totalDays;
+
         public String getPerson() {
             return person;
         }
@@ -187,6 +213,33 @@ public class ActionLeaveRequestCountYear extends BaseAction {
 
         public void setCount(Long count) {
             this.count = count;
+        }
+
+        public Double getTotalDays() {
+            return totalDays;
+        }
+
+        public void setTotalDays(Double totalDays) {
+            this.totalDays = totalDays;
+        }
+    }
+
+    private static class Statistic {
+
+        private final Long count;
+        private final Double totalDays;
+
+        private Statistic(Long count, Double totalDays) {
+            this.count = count;
+            this.totalDays = totalDays;
+        }
+
+        private Long getCount() {
+            return count;
+        }
+
+        private Double getTotalDays() {
+            return totalDays;
         }
     }
 
