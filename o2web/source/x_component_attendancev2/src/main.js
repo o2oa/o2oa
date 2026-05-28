@@ -11,14 +11,24 @@ loadComponent('attendancev2', (d, cb) => {
         const url = window.location.href;
         const uri = url.toURI();
         const page = uri.getData("page");
-        if (page === "myRecord") {
-            myRecord.render(d).then(() => {
-                cb();
-            });
-        } else {
-            checkIn.render(d).then(() => {
-                cb();
-            });
+        switch (page) {
+            case "qywx":
+                document.title = "打卡";
+                checkIn.render(d).then(() => {
+                    cb();
+                });
+                break;
+            case "myRecord":
+                document.title = "我的记录";
+                myRecord.render(d).then(() => {
+                    cb();
+                });
+                break;
+            default:
+                document.title = "考勤";
+                mobile.render(d).then(() => {
+                    cb();
+                });
         }
     } else {
         index.render(d).then(() => {

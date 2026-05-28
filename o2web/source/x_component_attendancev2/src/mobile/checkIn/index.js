@@ -193,7 +193,6 @@ export default content({
             jsApiList: ['getLocation', 'chooseImage', 'getLocalImgData'],
             getConfigSignature: this.getConfigSignatureCache.bind(this), 
         })
-        console.log('register result', re);
         ww.getLocation({
             type: 'gcj02'
         }).then((res) => {
