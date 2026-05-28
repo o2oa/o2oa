@@ -451,7 +451,7 @@ public class LeaveManagerAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
-    @JaxrsMethodDescribe(value = "根据开始结束日期计算实际请假天数.", action = ActionLeaveDurationCalculate.class)
+    @JaxrsMethodDescribe(value = "根据开始结束时间计算实际请假天数.", action = ActionLeaveDurationCalculate.class)
     @POST
     @Path("request/duration/calculate")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

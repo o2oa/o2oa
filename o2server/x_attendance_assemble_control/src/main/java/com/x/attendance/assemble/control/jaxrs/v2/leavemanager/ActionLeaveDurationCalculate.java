@@ -1,10 +1,13 @@
 package com.x.attendance.assemble.control.jaxrs.v2.leavemanager;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -12,7 +15,10 @@ import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2RestDayHelper;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
+import com.x.attendance.assemble.control.jaxrs.v2.WoGroupShift;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.ExceptionDateEndBeforeStartError;
+import com.x.attendance.entity.v2.AttendanceV2Shift;
+import com.x.attendance.entity.v2.AttendanceV2ShiftCheckTime;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -30,15 +36,21 @@ public class ActionLeaveDurationCalculate extends BaseAction {
             if (StringUtils.isEmpty(wi.getPerson())) {
                 throw new ExceptionEmptyParameter("人员标识");
             }
-            if (StringUtils.isEmpty(wi.getStartDate())) {
-                throw new ExceptionEmptyParameter("开始日期");
+            Date startTime = wi.getStartTime();
+            Date endTime = wi.getEndTime();
+            if (startTime == null && StringUtils.isNotEmpty(wi.getStartDate())) {
+                startTime = DateTools.parse(wi.getStartDate(), DateTools.format_yyyyMMdd);
             }
-            if (StringUtils.isEmpty(wi.getEndDate())) {
-                throw new ExceptionEmptyParameter("结束日期");
+            if (endTime == null && StringUtils.isNotEmpty(wi.getEndDate())) {
+                endTime = DateTools.addDay(DateTools.parse(wi.getEndDate(), DateTools.format_yyyyMMdd), 1);
             }
-            Date startDate = DateTools.parse(wi.getStartDate(), DateTools.format_yyyyMMdd);
-            Date endDate = DateTools.parse(wi.getEndDate(), DateTools.format_yyyyMMdd);
-            if (startDate.after(endDate)) {
+            if (startTime == null) {
+                throw new ExceptionEmptyParameter("开始时间");
+            }
+            if (endTime == null) {
+                throw new ExceptionEmptyParameter("结束时间");
+            }
+            if (startTime.after(endTime)) {
                 throw new ExceptionDateEndBeforeStartError();
             }
 
@@ -48,18 +60,98 @@ public class ActionLeaveDurationCalculate extends BaseAction {
                 throw new ExceptionNotExistObject("人员 " + wi.getPerson());
             }
 
+            Date startDate = DateTools.floorDate(startTime, 0);
+            Date endDate = DateTools.floorDate(startTime.before(endTime) ? DateTools.addMinutes(endTime, -1) : endTime,
+                    0);
             List<String> dateList = AttendanceV2RestDayHelper.listDateRange(startDate, endDate);
             List<String> restDateList = AttendanceV2RestDayHelper.listRestDate(business, person.getDistinguishedName(), dateList);
-            List<String> leaveDateList = dateList.stream().filter(date -> !restDateList.contains(date))
+            List<String> workDateList = dateList.stream().filter(date -> !restDateList.contains(date))
                     .collect(Collectors.toList());
+            List<String> leaveDateList = new ArrayList<>();
+            long durationMinutes = 0;
+            double duration = 0.0;
+            for (String date : workDateList) {
+                DayDuration dayDuration = calculateDayDuration(business, person.getDistinguishedName(), date, startTime, endTime);
+                if (dayDuration.getDurationMinutes() > 0) {
+                    leaveDateList.add(date);
+                }
+                durationMinutes += dayDuration.getDurationMinutes();
+                duration += dayDuration.getDuration();
+            }
 
             Wo wo = new Wo();
             wo.setTotalDays(dateList.size());
-            wo.setDuration((double) leaveDateList.size());
+            wo.setDuration(new BigDecimal(duration).setScale(1, RoundingMode.HALF_UP).doubleValue());
+            wo.setDurationMinutes(durationMinutes);
             wo.setLeaveDateList(leaveDateList);
             wo.setRestDateList(restDateList);
             result.setData(wo);
             return result;
+        }
+    }
+
+    private DayDuration calculateDayDuration(Business business, String personDn, String date, Date startTime,
+            Date endTime) throws Exception {
+        WoGroupShift woGroupShift = business.getAttendanceV2ManagerFactory().getGroupShiftByPersonDate(personDn, date);
+        AttendanceV2Shift shift = woGroupShift.getShift();
+        if (shift == null || shift.getProperties() == null || shift.getProperties().getTimeList().isEmpty()) {
+            return calculateDayDurationWithoutShift(date, startTime, endTime);
+        }
+        long shiftWorkMinutes = shift.getWorkTime();
+        long calculatedWorkMinutes = 0;
+        long durationMinutes = 0;
+        for (AttendanceV2ShiftCheckTime checkTime : shift.getProperties().getTimeList()) {
+            Date onDuty = DateTools.parse(date + " " + checkTime.getOnDutyTime(), DateTools.format_yyyyMMddHHmm);
+            Date offDuty = DateTools.parse(date + " " + checkTime.getOffDutyTime(), DateTools.format_yyyyMMddHHmm);
+            if (BooleanUtils.isTrue(checkTime.getOffDutyNextDay())) {
+                offDuty = DateTools.addDay(offDuty, 1);
+            }
+            calculatedWorkMinutes += standardMinutes(onDuty, offDuty);
+            durationMinutes += overlapMinutes(startTime, endTime, onDuty, offDuty);
+        }
+        long standardMinutes = shiftWorkMinutes > 0 ? shiftWorkMinutes : calculatedWorkMinutes;
+        double duration = standardMinutes > 0 ? durationMinutes * 1.0 / standardMinutes : 0.0;
+        return new DayDuration(durationMinutes, duration);
+    }
+
+    private DayDuration calculateDayDurationWithoutShift(String date, Date startTime, Date endTime) throws Exception {
+        Date dayStart = DateTools.parse(date + " 00:00:00", DateTools.format_yyyyMMddHHmmss);
+        Date dayEnd = DateTools.addDay(dayStart, 1);
+        long durationMinutes = overlapMinutes(startTime, endTime, dayStart, dayEnd);
+        double duration = durationMinutes > 0 ? durationMinutes * 1.0 / (24 * 60) : 0.0;
+        return new DayDuration(durationMinutes, duration);
+    }
+
+    private long standardMinutes(Date onDuty, Date offDuty) {
+        return Math.max(0, (offDuty.getTime() - onDuty.getTime()) / (60 * 1000));
+    }
+
+    private long overlapMinutes(Date startTime, Date endTime, Date rangeStart, Date rangeEnd) {
+        long start = Math.max(startTime.getTime(), rangeStart.getTime());
+        long end = Math.min(endTime.getTime(), rangeEnd.getTime());
+        if (end <= start) {
+            return 0;
+        }
+        return (end - start) / (60 * 1000);
+    }
+
+    private static class DayDuration {
+
+        private long durationMinutes;
+
+        private double duration;
+
+        private DayDuration(long durationMinutes, double duration) {
+            this.durationMinutes = durationMinutes;
+            this.duration = duration;
+        }
+
+        private long getDurationMinutes() {
+            return durationMinutes;
+        }
+
+        private double getDuration() {
+            return duration;
         }
     }
 
@@ -70,10 +162,16 @@ public class ActionLeaveDurationCalculate extends BaseAction {
         @FieldDescribe("人员标识")
         private String person;
 
-        @FieldDescribe("开始日期，yyyy-MM-dd")
+        @FieldDescribe("开始时间，yyyy-MM-dd HH:mm:ss")
+        private Date startTime;
+
+        @FieldDescribe("结束时间，yyyy-MM-dd HH:mm:ss")
+        private Date endTime;
+
+        @FieldDescribe("开始日期，yyyy-MM-dd，兼容旧参数")
         private String startDate;
 
-        @FieldDescribe("结束日期，yyyy-MM-dd")
+        @FieldDescribe("结束日期，yyyy-MM-dd，兼容旧参数")
         private String endDate;
 
         public String getPerson() {
@@ -82,6 +180,22 @@ public class ActionLeaveDurationCalculate extends BaseAction {
 
         public void setPerson(String person) {
             this.person = person;
+        }
+
+        public Date getStartTime() {
+            return startTime;
+        }
+
+        public void setStartTime(Date startTime) {
+            this.startTime = startTime;
+        }
+
+        public Date getEndTime() {
+            return endTime;
+        }
+
+        public void setEndTime(Date endTime) {
+            this.endTime = endTime;
         }
 
         public String getStartDate() {
@@ -111,6 +225,9 @@ public class ActionLeaveDurationCalculate extends BaseAction {
         @FieldDescribe("实际请假天数")
         private Double duration = 0.0;
 
+        @FieldDescribe("实际请假分钟数")
+        private Long durationMinutes = 0L;
+
         @FieldDescribe("实际请假的日期列表，yyyy-MM-dd")
         private List<String> leaveDateList = new ArrayList<>();
 
@@ -131,6 +248,14 @@ public class ActionLeaveDurationCalculate extends BaseAction {
 
         public void setDuration(Double duration) {
             this.duration = duration;
+        }
+
+        public Long getDurationMinutes() {
+            return durationMinutes;
+        }
+
+        public void setDurationMinutes(Long durationMinutes) {
+            this.durationMinutes = durationMinutes;
         }
 
         public List<String> getLeaveDateList() {
