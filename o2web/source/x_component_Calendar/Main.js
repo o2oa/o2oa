@@ -807,8 +807,8 @@ MWF.xApplication.Calendar.MainMobile = new Class({
             endTime: `${dateString} 23:59:59`
         }).then((json)=>{
             json.data = json.data.map((d)=>{
-                const start = new Date(d.startTime);
-                const end = new Date(d.endTime);
+                const start = new Date(d.startTimeStr);
+                const end = new Date(d.endTimeStr);
                 d.range = {
                     start: start.format(O2_CALENDAR_FORMAT_TIME),
                     end: end.format(O2_CALENDAR_FORMAT_TIME),
