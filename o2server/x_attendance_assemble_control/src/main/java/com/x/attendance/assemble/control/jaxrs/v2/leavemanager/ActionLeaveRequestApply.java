@@ -98,6 +98,7 @@ public class ActionLeaveRequestApply extends BaseAction {
         leaveRequest.setLeaveTypeId(wi.getLeaveTypeId());
         leaveRequest.setStartTime(wi.getStartTime());
         leaveRequest.setEndTime(wi.getEndTime());
+        leaveRequest.setDuration(wi.getDuration());
         leaveRequest.setDescription(wi.getDescription());
         leaveRequest.setStatus(LeaveRequestStatusEnum.APPLYING.getValue());
         emc.persist(leaveRequest, CheckPersistType.all);
