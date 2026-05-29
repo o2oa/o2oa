@@ -9,6 +9,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -42,7 +43,8 @@ import org.graalvm.polyglot.Value;
 public class GraalvmScriptingFactory {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GraalvmScriptingFactory.class);
-	private static final List<String> denyClassList = List.of("com.x.base.core.project.scripting.GraalvmScriptingFactory",
+	private static final List<String> denyClassList = List.of(GraalvmScriptingFactory.class.getName(),
+			CipherConnectionAction.class.getName(),
 			"com.x.base.core.project.config.Config","java.lang.Runtime","java.lang.ProcessBuilder","java.lang.System",
 			"java.net.ServerSocket","java.net.Socket","javax.script.ScriptEngine","javax.script.ScriptEngineManager");
 	private static final Gson gson = XGsonBuilder.instance();

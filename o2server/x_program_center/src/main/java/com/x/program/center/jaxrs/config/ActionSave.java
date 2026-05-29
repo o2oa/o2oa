@@ -1,5 +1,6 @@
 package com.x.program.center.jaxrs.config;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -42,6 +43,9 @@ public class ActionSave extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement)
 			throws Exception {
+		if(effectivePerson.isCipher()){
+			throw new ExceptionAccessDenied(effectivePerson);
+		}
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Wo wo = new Wo();
