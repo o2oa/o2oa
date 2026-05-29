@@ -145,7 +145,9 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
 
                 var htmlData = this._getBusinessData();
                 if (htmlData) {
-                    editorDiv.set("html", htmlData || "");
+                    o2.require("o2.widget.ImageLazyLoader", null, null, false);
+                    var loadder = new o2.widget.ImageLazyLoader(this.node, htmlData);
+                    editorDiv.set("html", loadder.clearHtml());
                 } else if (this.json.templateCode) {
                     editorDiv.set("html", this.json.templateCode || "");
                 }

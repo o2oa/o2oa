@@ -119,12 +119,14 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
         }.bind(this));
     },
     loadCkeditor: function(config){
+        o2.require("o2.widget.ImageLazyLoader", null, null, false);
         COMMON.AjaxModule.loadDom("ckeditor", function(){
             CKEDITOR.disableAutoInline = true;
             var editorDiv = new Element("div").inject(this.node);
             var htmlData = this._getBusinessData();
             if (htmlData){
-                editorDiv.set("html", htmlData);
+                var loadder = new o2.widget.ImageLazyLoader(this.node, htmlData);
+                editorDiv.set("html", loadder.clearHtml());
             }else if (this.json.templateCode){
                 editorDiv.set("html", this.json.templateCode);
             }
