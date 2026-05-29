@@ -38,4 +38,13 @@
   color: #666666;
   font-size: 14px;
 }
- 
+.config-form-input {
+    height: 30px;
+    width: 40px;
+    padding: 0 10px;
+    border: 1px solid #DEDEDE;
+    border-radius: var(--att-default-radius);
+    box-sizing: border-box;
+    font-size: 14px;
+    text-align: center;
+}

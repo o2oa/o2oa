@@ -88,14 +88,19 @@ public class AttendanceV2LeaveManagerService {
             EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
             AttendanceV2Config config;
             List<AttendanceV2Config> list = emc.listAll(AttendanceV2Config.class);
-            AttendanceV2ConfigProperties properties = new AttendanceV2ConfigProperties();
-            properties.setLeaveTypeInitialized(true);
+
             if (list != null && !list.isEmpty()) {
                 config = list.get(0);
             } else {
                 config = new AttendanceV2Config();
             }
-            config.setProperties(properties);
+            if (config.getProperties() != null) {
+                config.getProperties().setLeaveTypeInitialized(true);
+            } else {
+                AttendanceV2ConfigProperties properties = new AttendanceV2ConfigProperties();
+                properties.setLeaveTypeInitialized(true);
+                config.setProperties(properties);
+            }
             emc.beginTransaction(AttendanceV2Config.class);
             emc.persist(config, CheckPersistType.all);
             emc.commit();

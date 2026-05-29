@@ -93,9 +93,9 @@ public class AttendanceV2TodayMessageDataGenerateTask extends AbstractJob {
                     }
                     for (AttendanceV2ShiftCheckTime shiftCheckTime : timeList) {
                         // 上班提醒消息
-                        saveMessage(emc, today, person, shiftCheckTime.getOnDutyTime(), AttendanceV2CheckInRecord.OnDuty, false);
+                        saveMessage(emc, today, person, shiftCheckTime.getOnDutyTime(), AttendanceV2CheckInRecord.OnDuty, false, config);
                         // 下班提醒消息
-                        saveMessage(emc, today, person, shiftCheckTime.getOffDutyTime(), AttendanceV2CheckInRecord.OffDuty, BooleanUtils.isTrue( shiftCheckTime.getOffDutyNextDay()));
+                        saveMessage(emc, today, person, shiftCheckTime.getOffDutyTime(), AttendanceV2CheckInRecord.OffDuty, BooleanUtils.isTrue( shiftCheckTime.getOffDutyNextDay()), config);
                     }
                 }
             }
@@ -112,17 +112,23 @@ public class AttendanceV2TodayMessageDataGenerateTask extends AbstractJob {
      * @param dutyType
      * @throws Exception
      */
-    private void saveMessage(EntityManagerContainer emc, String today, String person, String dutyTimeString, String dutyType, boolean offDutyNext) throws Exception {
+    private void saveMessage(EntityManagerContainer emc, String today, String person, String dutyTimeString, String dutyType, boolean offDutyNext, AttendanceV2Config config) throws Exception {
         AttendanceV2AlertMessage messageOnDuty = new AttendanceV2AlertMessage();
         messageOnDuty.setUserId(person);
         String dutyTimeStringFull = today + " " + dutyTimeString;
         Date dutyTime = DateTools.parse(dutyTimeStringFull, DateTools.format_yyyyMMddHHmm);
+        Integer checkInAlertOffDutyAfterMinutes = config.getProperties()
+                .getCheckInAlertOffDutyAfterMinutes();
+        Integer checkInAlertOnDutyBeforeMinutes = config.getProperties()
+                .getCheckInAlertOnDutyBeforeMinutes();
         if (offDutyNext) { // 跨天
             dutyTime = DateTools.addDay(dutyTime, 1);
         }
-        // 上班打卡 提前 10 分钟， 下班打卡按照打卡时间来。 后续个人配置中可调整时间
+        // 上班打卡 提前 checkInAlertOnDutyBeforeMinutes 分钟， 下班打卡 下班后checkInAlertOffDutyAfterMinutes 分钟。
         if (AttendanceV2CheckInRecord.OnDuty.equals(dutyType)) {
-            dutyTime = DateTools.addMinutes(dutyTime, -10);
+            dutyTime = DateTools.addMinutes(dutyTime, -checkInAlertOnDutyBeforeMinutes);
+        } else {
+            dutyTime = DateTools.addMinutes(dutyTime, checkInAlertOffDutyAfterMinutes);
         }
         messageOnDuty.setCheckInType(dutyType);
         messageOnDuty.setSendDateTime(dutyTime);

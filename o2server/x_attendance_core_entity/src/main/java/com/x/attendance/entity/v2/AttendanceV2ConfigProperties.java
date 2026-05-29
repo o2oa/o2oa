@@ -10,7 +10,27 @@ public class AttendanceV2ConfigProperties  extends JsonProperties {
 
     @FieldDescribe("假期管理默认数据是否已经初始化.")
     private Boolean leaveTypeInitialized = false;
+    @FieldDescribe("下班后提醒分钟数.")
+    private Integer checkInAlertOffDutyAfterMinutes = 10;
+    @FieldDescribe("上班前提醒分钟数.")
+    private Integer checkInAlertOnDutyBeforeMinutes = 10;
 
+
+    public Integer getCheckInAlertOffDutyAfterMinutes() {
+        return checkInAlertOffDutyAfterMinutes;
+    }
+
+    public void setCheckInAlertOffDutyAfterMinutes(Integer checkInAlertOffDutyAfterMinutes) {
+        this.checkInAlertOffDutyAfterMinutes = checkInAlertOffDutyAfterMinutes;
+    }
+
+    public Integer getCheckInAlertOnDutyBeforeMinutes() {
+        return checkInAlertOnDutyBeforeMinutes;
+    }
+
+    public void setCheckInAlertOnDutyBeforeMinutes(Integer checkInAlertOnDutyBeforeMinutes) {
+        this.checkInAlertOnDutyBeforeMinutes = checkInAlertOnDutyBeforeMinutes;
+    }
 
     public Boolean getLeaveTypeInitialized() {
         return leaveTypeInitialized;
