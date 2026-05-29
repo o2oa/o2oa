@@ -492,6 +492,32 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
     }
 
     /**
+     * 查询指定人员指定日期范围和状态的申诉记录.
+     *
+     * @param person    人员 dn
+     * @param startDate 开始日期 yyyy-MM-dd
+     * @param endDate   结束日期 yyyy-MM-dd
+     * @param statuses  申诉状态
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2AppealInfo> listAppealInfoByPersonDateAndStatus(String person, String startDate,
+            String endDate, Integer... statuses) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2AppealInfo.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2AppealInfo> cq = cb.createQuery(AttendanceV2AppealInfo.class);
+        Root<AttendanceV2AppealInfo> root = cq.from(AttendanceV2AppealInfo.class);
+        Predicate p = cb.equal(root.get(AttendanceV2AppealInfo_.userId), person);
+        p = cb.and(p, cb.greaterThanOrEqualTo(root.get(AttendanceV2AppealInfo_.recordDateString), startDate));
+        p = cb.and(p, cb.lessThanOrEqualTo(root.get(AttendanceV2AppealInfo_.recordDateString), endDate));
+        if (statuses != null && statuses.length > 0) {
+            p = cb.and(p, root.get(AttendanceV2AppealInfo_.status).in((Object[]) statuses));
+        }
+        cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2AppealInfo_.recordDate)));
+        return em.createQuery(cq).getResultList();
+    }
+
+    /**
      * 查询申诉记录
      * 分页查询需要
      * startDate 和 endDate 必须同时有值
