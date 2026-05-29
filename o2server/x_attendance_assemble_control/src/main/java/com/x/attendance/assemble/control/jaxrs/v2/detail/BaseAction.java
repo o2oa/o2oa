@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.control.Business;
@@ -45,14 +46,14 @@ abstract class BaseAction extends StandardJaxrsAction {
                 int lateTimes = 0;
                 int leaveEarlierTimes = 0;
                 int absenceTimes = 0;
-                // int workDayCount = 0;
+                int workDayCount = 0;
                 int fieldWorkTimes = 0;
                 int leaveDays = 0;
                 int appealNums = 0;
                 for (AttendanceV2Detail attendanceV2Detail : list) {
-                    // if (BooleanUtils.isTrue( attendanceV2Detail.getWorkDay()) && (attendanceV2Detail.getLeaveDays() == null || attendanceV2Detail.getLeaveDays() < 1)) {
-                    //     workDayCount += 1; //工作日加1
-                    // }
+                     if (BooleanUtils.isTrue(attendanceV2Detail.getWorkDay())) {
+                         workDayCount += 1; //工作日加1
+                     }
                     if (attendanceV2Detail.getWorkTimeDuration() != null && attendanceV2Detail.getWorkTimeDuration() > 0) {
                         workTimeDuration += attendanceV2Detail.getWorkTimeDuration();
                     }
@@ -114,6 +115,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                     wo.setAverageWorkTimeDuration(df.format(((float) workTimeDuration.intValue() / attendance) / 60));
                 }
                 wo.setWorkTimeDuration(workTimeDuration);
+                wo.setWorkDays(workDayCount);
                 wo.setAttendance(attendance);
                 wo.setRest(rest);
                 wo.setAbsenteeismDays(absenteeismDays);
