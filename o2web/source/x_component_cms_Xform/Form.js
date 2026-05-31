@@ -1152,8 +1152,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
 
             var copyData = Object.clone(data);
             this.documentAction.saveDocument(documentData, function () {
-                o2.Actions.load('x_cms_assemble_control').DataAction.updateWithDocument(
-                    this.businessData.document.id,
+                this._partUpdateData(
                     this.modifedData,
                     ()=>{
                         this.businessData.data.isNew = false;
@@ -1161,9 +1160,22 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                         this.businessData.originalData = copyData;
                         this.saving = false;
                         if (callback && typeof callback === "function") callback();
-                    }, null, !sync
+                    }, sync
                 )
             }.bind(this), null, !sync);
+        },
+        _partUpdateData: function (data, callback, sync){
+            if(Object.keys(data).length === 0){
+                if (callback && typeof callback === "function") callback();
+            }else{
+                o2.Actions.load('x_cms_assemble_control').DataAction.updateWithDocument(
+                    this.businessData.document.id,
+                    data,
+                    ()=>{
+                        if (callback && typeof callback === "function") callback();
+                    }, null, !sync
+                )
+            }
         },
         saveDocument: function (callback, sync, silent) {
             this.fireEvent("beforeSave");
@@ -1210,8 +1222,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             var copyData = Object.clone(data);
             this.documentAction.saveDocument(documentData, function () {
                 //this.documentAction.saveData(function(json){
-                    o2.Actions.load('x_cms_assemble_control').DataAction.updateWithDocument(
-                        this.businessData.document.id,
+                    this._partUpdateData(
                         this.modifedData,
                         ()=>{
                             if(!silent)this.app.notice(MWF.xApplication.cms.Xform.LP.dataSaved, "success");
@@ -1225,7 +1236,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                             if( !this.json.notReloadWhenSave ){
                                 this._reloadReadForm();
                             }
-                        }, null, !sync
+                        }, sync
                     )
                 //}.bind(this), null, this.businessData.document.id, data, !sync );
             }.bind(this), null, !sync);
