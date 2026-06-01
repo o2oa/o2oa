@@ -25,7 +25,7 @@ public class ActionDelete extends BaseAction {
             }
             AttendanceV2LeaveData leaveData = emc.find(id, AttendanceV2LeaveData.class);
             if (leaveData == null) {
-                throw new ExceptionNotExistObject("请假数据"+ id);
+                throw new ExceptionNotExistObject("外出数据"+ id);
             }
             ActionResult<Wo> result = new ActionResult<>();
             emc.beginTransaction(AttendanceV2LeaveData.class);

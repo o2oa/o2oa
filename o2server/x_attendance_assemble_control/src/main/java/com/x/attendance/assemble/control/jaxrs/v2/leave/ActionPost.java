@@ -34,7 +34,7 @@ public class ActionPost extends BaseAction {
                 throw new ExceptionEmptyParameter("人员标识");
             }
             if (StringUtils.isEmpty(wi.getLeaveType())) {
-                throw new ExceptionEmptyParameter("请假类型");
+                throw new ExceptionEmptyParameter("外出类型");
             }
             if (null == wi.getStartTime()) {
                 throw new ExceptionEmptyParameter("开始时间");

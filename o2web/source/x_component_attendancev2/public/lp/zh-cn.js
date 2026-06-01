@@ -18,7 +18,7 @@ MWF.xApplication.attendancev2.LP = {
     groupmanager: "考勤组管理",
     addressmanger: "工作场所管理",
     leavemanager: "外出请假记录",
-    leavemanagerv2: "假期管理",
+    leavemanagerv2: "外出假期管理",
     configmanager: "配置管理",
   },
 
@@ -347,8 +347,8 @@ MWF.xApplication.attendancev2.LP = {
     faceDetectionLabel: "人脸比对",
     faceDetectionEnableLabel: "打卡前是否启用人脸比对",
   },
-  // 请假外出记录
-  leaveManagerTitle: "外出请假记录",
+  // 外出记录
+  leaveManagerTitle: "外出记录",
   leave: {
     personName: "人员名称",
     leaveType: "类型",
@@ -363,7 +363,7 @@ MWF.xApplication.attendancev2.LP = {
     deleteConfirm: "确定要删除这条记录数据吗？",
   },
   // 假期管理
-  leaveManagerV2Title: "假期管理",
+  leaveManagerV2Title: "外出假期管理",
   leaveManagerV2: {
     gotoOld: "查看旧的请假记录数据",
     back2V2: "返回假期管理",
@@ -375,6 +375,7 @@ MWF.xApplication.attendancev2.LP = {
     confirmDelete: "确认要删除这条【{name}】数据？",
     accountBlance: "假期余额",
     requestList: "请假申请",
+    leaveData: "外出数据",
     holidayCalendar: "节假日日历",
     calendar: {
       today: "回到今天",

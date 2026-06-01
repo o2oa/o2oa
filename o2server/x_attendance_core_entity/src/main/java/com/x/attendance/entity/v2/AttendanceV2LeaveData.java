@@ -15,7 +15,7 @@ import java.util.Date;
  * Created by fancyLou on 2023/3/2.
  * Copyright © 2023 O2. All rights reserved.
  */
-@Schema(name = "AttendanceV2LeaveData", description = "请假数据表.")
+@Schema(name = "AttendanceV2LeaveData", description = "外出数据表.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.AttendanceV2LeaveData.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceV2LeaveData.table
@@ -66,7 +66,7 @@ public class AttendanceV2LeaveData extends SliceJpaObject {
     private String person;
 
     public static final String leaveType_FIELDNAME = "leaveType";
-    @FieldDescribe("请假类型:带薪年休假|带薪病假|带薪福利假|扣薪事假|出差|培训|其他")
+    @FieldDescribe("外出类型:出差|培训|其他")
     @Column( length = JpaObject.length_32B, name = ColumnNamePrefix + leaveType_FIELDNAME )
     @CheckPersist(allowEmpty = false)
     private String leaveType;
@@ -86,17 +86,17 @@ public class AttendanceV2LeaveData extends SliceJpaObject {
     private Date endTime;
 
     public static final String leaveDayNumber_FIELDNAME = "leaveDayNumber";
-    @FieldDescribe("请假天数")
+    @FieldDescribe("外出天数")
     @Column( name = ColumnNamePrefix + leaveDayNumber_FIELDNAME )
     private Double leaveDayNumber = 0.0;
 
     public static final String description_FIELDNAME = "description";
-    @FieldDescribe("请假说明")
+    @FieldDescribe("外出说明")
     @Column( length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME )
     private String description;
 
     public static final String jobId_FIELDNAME = "jobId";
-    @FieldDescribe("流程的jobId，申诉流程结束后写入.")
+    @FieldDescribe("外出的jobId.")
     @Column( length = JpaObject.length_id, name = ColumnNamePrefix + jobId_FIELDNAME)
     private String jobId;
 

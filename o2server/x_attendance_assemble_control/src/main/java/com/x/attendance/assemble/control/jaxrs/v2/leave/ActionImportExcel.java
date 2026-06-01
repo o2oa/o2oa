@@ -73,9 +73,9 @@ public class ActionImportExcel extends BaseAction {
                     setExcelCellError(row, "用户标识找不到对应的人员");
                     continue;
                 }
-                String type = AttendanceV2Helper.getExcelCellStringValue(row.getCell(1)); // 第二条是请假类型:带薪年休假|带薪病假|带薪福利假|扣薪事假|出差|培训|其他
+                String type = AttendanceV2Helper.getExcelCellStringValue(row.getCell(1)); // 第二条是外出类型:出差|培训|其他
                 if (StringUtils.isEmpty(type)) {
-                    setExcelCellError(row, "请假类型不能为空");
+                    setExcelCellError(row, "外出类型不能为空");
                     continue;
                 }
                 String start = AttendanceV2Helper.getExcelCellStringValue(row.getCell(2)); // 开始时间：yyyy-MM-dd HH:mm:ss
@@ -102,7 +102,7 @@ public class ActionImportExcel extends BaseAction {
                     setExcelCellError(row, "结束时间格式不正确");
                     continue;
                 }
-                String desc = AttendanceV2Helper.getExcelCellStringValue(row.getCell(4)); // 请假说明
+                String desc = AttendanceV2Helper.getExcelCellStringValue(row.getCell(4)); // 外出说明
                 if (StringUtils.isEmpty(desc)) {
                     desc = "";
                 }

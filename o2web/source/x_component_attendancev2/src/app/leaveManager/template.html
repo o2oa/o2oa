@@ -1,10 +1,11 @@
-<div class="manager-box white-bg">
-    <div class="index_page_header_container">
-        <div class="index_page_header_title">{{$.lp.leaveManagerTitle}}</div>
-        <span oo-if="$.menu.name === '3-4'" class="operator_link_underline"  @click="back2V2">{{$.lp.leaveManagerV2.back2V2}}</span>
+<div style="display: flex; flex-direction: column;">
+     <div class="index_page_header_container">
+        <div class="index_page_header_title"><button style="margin-left: 0;margin-right: 10px;"
+                @click="clickBackTypeList"><i class="ooicon-process-goback"></i></button> {{
+            $.lp.leaveManagerTitle }}</div>
     </div>
-    <div class="manager-box-content">{{ $m.search($.menu.name === '3-4') }}
-        <div class="form" oo-if="$.menu.name === '3-4'">
+    <div class="manager-box-content">
+        <div class="form" >
             <!--人员组织选择  -->
             <div style="margin-right: 10px;float: left;">
                 <o-org-person-selector
@@ -15,13 +16,13 @@
                 <button class="mainColor_bg" @click="search">{{$.lp.search}}</button>
             </div>
 
-            <div style="float: right;margin: 10px 10px 10px 0;">
+            <!-- <div style="float: right;margin: 10px 10px 10px 0;">
                 <button class="light-border-button "  @click="excelTemplateDownload">{{$.lp.leave.excelTemplate}}</button>
             </div>
             <div style="float: right;margin: 10px 10px 10px 0;">
                 <button class="light-border-button "
                     @click="importExcel">{{$.lp.leave.importExcel}}</button>
-            </div>
+            </div> -->
         </div>
 
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">

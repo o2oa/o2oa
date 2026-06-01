@@ -17,7 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Schema(name = "AttendanceV2LeaveRequest", description = "请假申请.")
+@Schema(name = "AttendanceV2LeaveRequest", description = "请假数据.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.AttendanceV2LeaveRequest.table)
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -74,7 +74,7 @@ public class AttendanceV2LeaveRequest extends SliceJpaObject {
     private String status;
 
     public static final String jobId_FIELDNAME = "jobId";
-    @FieldDescribe("流程的jobId，申诉流程结束后写入.")
+    @FieldDescribe("流程的jobId.")
     @Column( length = JpaObject.length_id, name = ColumnNamePrefix + jobId_FIELDNAME)
     private String jobId;
 
