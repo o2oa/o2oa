@@ -6,6 +6,72 @@
     display: block;
 }
 
+.leave-page-header {
+    align-items: flex-start;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.leave-page-header .index_page_header_title {
+    flex: 0 0 auto;
+    padding-top: 6px;
+}
+
+.leave-subnav {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    min-width: 0;
+    margin: -4px 0 0 20px;
+}
+
+.leave-subnav-button {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 112px;
+    height: 34px;
+    margin: 4px 0 4px 8px !important;
+    padding: 0 14px !important;
+    border: 1px solid #dddddd !important;
+    border-radius: 4px !important;
+    background-color: #ffffff !important;
+    color: #555555;
+    font-size: 14px;
+    line-height: 32px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    white-space: nowrap;
+}
+
+.leave-subnav-button i {
+    margin-right: 6px;
+    color: var(--oo-color-main);
+    font-size: 15px;
+}
+
+.leave-subnav-button:hover {
+    border-color: var(--oo-color-main) !important;
+    color: #333333;
+    box-shadow: 0 3px 10px rgba(74, 144, 226, 0.14);
+}
+
+.leave-section-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 36px;
+    margin: 0 0 14px;
+}
+
+.leave-section-title {
+    padding-left: 10px;
+    color: #333333;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 36px;
+}
+
 .leave-copy-id {
     margin-left: 10px;
     color: #2f80ed;

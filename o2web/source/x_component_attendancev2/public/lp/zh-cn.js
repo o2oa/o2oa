@@ -374,7 +374,7 @@ MWF.xApplication.attendancev2.LP = {
     editTypePolicy: "编辑假期类型规则",
     confirmDelete: "确认要删除这条【{name}】数据？",
     accountBlance: "假期余额",
-    requestList: "请假申请",
+    requestList: "请假数据",
     leaveData: "外出数据",
     holidayCalendar: "节假日日历",
     calendar: {

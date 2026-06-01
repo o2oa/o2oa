@@ -224,6 +224,7 @@ MWF.xApplication.attendancev2.LP={
 		"fieldWork": "Field Work Clock-In",
 		"allowFieldWork": "Allow Field Work Clock-In",
 		"requiredFieldWorkRemarks": "Required Field Work Remarks",
+		"requiredFieldWorkPhoto": "Require photo for field work clock-in",
 		"fieldWorkMarkError": "Field Work Clock-In as Exception Data",
 		"requiredCheckInDate": "Required Clock-In Dates",
 		"requiredCheckInDateThDate": "Date",
@@ -301,7 +302,8 @@ MWF.xApplication.attendancev2.LP={
 		"time": "Clock-In Time",
 		"result": "Clock-In Result",
 		"address": "Clock-In Address",
-		"signDesc": "Field Work Description"
+		"signDesc": "Field Work Description",
+		"fieldWorkPhoto": "Field Work Photo"
 	},
 	"configManagerTitle": "Attendance Configuration",
 	"config": {
@@ -355,7 +357,8 @@ MWF.xApplication.attendancev2.LP={
 		"editTypePolicy": "Edit Leave Type Rule",
 		"confirmDelete": "Are you sure you want to delete this '{name}' data?",
 		"accountBlance": "Leave Balance",
-		"requestList": "Leave Requests",
+		"requestList": "Leave Data",
+		"leaveData": "Out-of-Office Data",
 		"holidayCalendar": "Holiday Calendar",
 		"calendar": {
 			"today": "Back to Today",
@@ -447,6 +450,7 @@ MWF.xApplication.attendancev2.LP={
 		"status2": "Approved",
 		"status3": "Not Approved",
 		"status4": "Processed",
+		"status5": "Locked",
 		"startProcess": "Initiate Appeal",
 		"openJob": "View Appeal",
 		"startProcessNoConfigError": "No appeal process configured. Unable to start a process!",
@@ -468,6 +472,7 @@ MWF.xApplication.attendancev2.LP={
 		"fieldWork": "Field Work Clock-In",
 		"fieldWorkDesc": "Field Work Description",
 		"fieldWorkAddress": "Clock-In Address",
+		"fieldWorkPhoto": "Field Work Clock-In Photo",
 		"sourceTypeUser": "User Clock-In",
 		"sourceTypeAuto": "System Generated",
 		"sourceTypeFast": "Quick Clock-In",

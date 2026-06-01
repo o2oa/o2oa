@@ -224,6 +224,7 @@ MWF.xApplication.attendancev2.LP={
 		"fieldWork": "Registro de trabajo en campo",
 		"allowFieldWork": "¿Permitir registro de trabajo en campo?",
 		"requiredFieldWorkRemarks": "¿Se requiere observaciones en el registro de trabajo en campo?",
+		"requiredFieldWorkPhoto": "¿Se requiere foto para el registro de trabajo en campo?",
 		"fieldWorkMarkError": "¿Tratar el registro de trabajo en campo como datos anómalos?",
 		"requiredCheckInDate": "Fechas de registro obligatorio",
 		"requiredCheckInDateThDate": "Fecha",
@@ -301,7 +302,8 @@ MWF.xApplication.attendancev2.LP={
 		"time": "Hora de asistencia",
 		"result": "Resultado de asistencia",
 		"address": "Dirección de punzonado",
-		"signDesc": "Instrucciones sobre el terreno"
+		"signDesc": "Instrucciones sobre el terreno",
+		"fieldWorkPhoto": "Foto de trabajo en campo"
 	},
 	"configManagerTitle": "Configuración de asistencia",
 	"config": {
@@ -355,7 +357,8 @@ MWF.xApplication.attendancev2.LP={
 		"editTypePolicy": "Editar regla de tipo de vacaciones",
 		"confirmDelete": "¿Está seguro de que desea eliminar estos datos de 【{name}】?",
 		"accountBlance": "Saldo de vacaciones",
-		"requestList": "Solicitudes de vacaciones",
+		"requestList": "Datos de permisos",
+		"leaveData": "Datos de salidas",
 		"holidayCalendar": "Calendario de festivos",
 		"calendar": {
 			"today": "Volver a hoy",
@@ -447,6 +450,7 @@ MWF.xApplication.attendancev2.LP={
 		"status2": "Aprobado",
 		"status3": "Rechazado",
 		"status4": "Procesado",
+		"status5": "Bloqueado",
 		"startProcess": "Iniciar apelación",
 		"openJob": "Ver apelación",
 		"startProcessNoConfigError": "No se ha configurado el proceso de apelación. ¡No se puede iniciar el proceso!",
@@ -472,6 +476,7 @@ MWF.xApplication.attendancev2.LP={
 		"sourceTypeAuto": "Generado por el sistema",
 		"sourceTypeFast": "Registro rápido",
 		"sourceTypeImport": "Importación de datos",
+		"fieldWorkPhoto": "Foto del registro de trabajo en campo",
 		"importExcelFileSuccess": "Importación completada, hay {number} registros con errores. ¡Haz clic en Aceptar para descargar y ver los resultados de la importación!",
 		"searchDateError": "¡¡ las fechas de inicio y fin deben estar vacías o valer la pena!"
 	},

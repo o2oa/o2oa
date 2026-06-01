@@ -1,27 +1,32 @@
 <div class="manager-box white-bg">
     <!-- 假期类型 -->
     <div class="l-display-block"  id="leaveTypeListView">
-        <div class="index_page_header_container">
+        <div class="index_page_header_container leave-page-header">
             <div class="index_page_header_title">{{$.lp.leaveManagerV2Title}}</div>
             <!-- <span class="operator_link_underline" @click="gotoOld">{{$.lp.leaveManagerV2.gotoOld}}</span> -->
+            <div class="leave-subnav">
+                <button class="leave-subnav-button" @click="clickOpenLeaveDataView">
+                    <i class="o2icon-icon_qingjia"></i>
+                    <span>{{ $.lp.leaveManagerV2.leaveData }}</span>
+                </button>
+                <button class="leave-subnav-button" @click="clickOpenRequestSearchView">
+                    <i class="o2icon-icon_yuanshijilu"></i>
+                    <span>{{ $.lp.leaveManagerV2.requestList }}</span>
+                </button>
+                <button class="leave-subnav-button" @click="clickOpenHolidayCalendarView">
+                    <i class="o2icon-icon_rili"></i>
+                    <span>{{ $.lp.leaveManagerV2.holidayCalendar }}</span>
+                </button>
+                <button class="leave-subnav-button" @click="clickOpenAccountSearchView">
+                    <i class="o2icon-icon_tongji"></i>
+                    <span>{{ $.lp.leaveManagerV2.accountBlance }}</span>
+                </button>
+            </div>
         </div>
         <div class="manager-box-content">
-            <!-- <div style="margin: 10px 0;float: left;">
-                <button class="mainColor_bg" @click="clickAddType">{{$.lp.leaveManagerV2.addType}}</button>
-            </div> -->
-            <div style="margin: 10px 0;float: right;">
-                <button class="light-border-button" @click="clickOpenAccountSearchView"> {{ $.lp.leaveManagerV2.accountBlance }}</button>
+            <div class="leave-section-toolbar">
+                <div class="leave-section-title">{{ $.lp.leaveManagerV2.leaveTypeTitle }}</div>
             </div>
-            <div style="margin: 10px 10px 10px 0;float: right;">
-                <button class="light-border-button" @click="clickOpenHolidayCalendarView"> {{ $.lp.leaveManagerV2.holidayCalendar }}</button>
-            </div>
-            <div style="margin: 10px 10px 10px 0;float: right;">
-                <button class="light-border-button" @click="clickOpenRequestSearchView"> {{ $.lp.leaveManagerV2.requestList }}</button>
-            </div>
-            <div style="margin: 10px 10px 10px 0;float: right;">
-                <button class="light-border-button" @click="clickOpenLeaveDataView"> {{ $.lp.leaveManagerV2.leaveData }}</button>
-            </div>
-            <div style="clear: both; font-size: 16px; font-weight: bold; margin: 10px 0;padding: 0 10px;">{{ $.lp.leaveManagerV2.leaveTypeTitle }}</div>
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
                 <thead>
                     <th>{{$.lp.leaveManagerV2.type.name}}</th>
