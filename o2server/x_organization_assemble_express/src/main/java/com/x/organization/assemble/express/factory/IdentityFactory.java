@@ -170,8 +170,7 @@ public class IdentityFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = cb.equal(root.get(Identity_.unit), unitId);
-		p = cb.and(p, cb.or(cb.equal(root.get(Identity_.major), true),
-				cb.isNull(root.get(Identity_.major))));
+		p = cb.and(p, cb.equal(root.get(Identity_.major), true));
 		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
 	}
 
