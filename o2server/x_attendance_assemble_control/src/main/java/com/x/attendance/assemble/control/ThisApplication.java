@@ -1,5 +1,6 @@
 package com.x.attendance.assemble.control;
 
+import com.x.base.core.project.message.MessageConnector;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -54,7 +55,7 @@ public class ThisApplication {
     public static void init() throws Exception {
         try {
             CacheManager.init(context.clazz().getSimpleName());
-
+            MessageConnector.start(context());
             /////////////////// V2///
             // 处理考勤统计相关的队列
             context.startQueue(queueV2Detail);
