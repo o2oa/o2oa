@@ -70,6 +70,27 @@ public class AttendanceV2MessageSendTask extends AbstractJob {
                 return;
             }
             for (AttendanceV2AlertMessage message : messageList) {
+                List<AttendanceV2PersonConfig> list = business.getAttendanceV2ManagerFactory()
+                        .personConfigWithPerson(message.getUserId());
+                boolean isOnDutySendPerson = true;
+                boolean isOffDutySendPerson = true;
+                if (list != null && !list.isEmpty()) {
+                    AttendanceV2PersonConfig personConfig = list.get(0);
+                    if (personConfig.getProperties() != null && BooleanUtils.isFalse(
+                            personConfig.getProperties().getCheckInAlertOnDutyEnable())) {
+                        isOnDutySendPerson = false;
+                    }
+                    if (personConfig.getProperties() != null && BooleanUtils.isFalse(
+                            personConfig.getProperties().getCheckInAlertOffDutyEnable())) {
+                        isOffDutySendPerson = false;
+                    }
+                }
+                if (message.getCheckInType().equals(AttendanceV2CheckInRecord.OnDuty) && !isOnDutySendPerson) {
+                    continue;
+                }
+                if (message.getCheckInType().equals(AttendanceV2CheckInRecord.OffDuty) && !isOffDutySendPerson) {
+                    continue;
+                }
                 String title;
                 if (AttendanceV2CheckInRecord.OnDuty.equals(message.getCheckInType())) {
                     title = "即将开始上班，请别忘记打卡哦！";

@@ -20,27 +20,30 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 每天凌晨 3 点半，生成当天需要发送消息的数据
- * Created by fancyLou on 2023/5/8.
- * Copyright © 2023 O2. All rights reserved.
+ * 每天凌晨 3 点半，生成当天需要发送消息的数据 Created by fancyLou on 2023/5/8. Copyright © 2023 O2. All rights
+ * reserved.
  */
 public class AttendanceV2TodayMessageDataGenerateTask extends AbstractJob {
 
-    private static final Logger logger = LoggerFactory.getLogger(AttendanceV2TodayMessageDataGenerateTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(
+            AttendanceV2TodayMessageDataGenerateTask.class);
 
     @Override
     public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Date nowDate = new Date();
-            logger.info("======================新版考勤消息生成定时器开始执行，日期：{}=============================", nowDate.toString());
+            logger.info(
+                    "======================新版考勤消息生成定时器开始执行，日期：{}=============================",
+                    nowDate.toString());
             if (logger.isDebugEnabled()) {
                 logger.debug("首先删除旧数据=====================7 天以前的数据");
             }
             Business business = new Business(emc);
             Date now = new Date();
             now = DateTools.addDay(now, -7);
-            List<AttendanceV2AlertMessage> messageList = business.getAttendanceV2ManagerFactory().listAlertMessageBeforeDate(now);
+            List<AttendanceV2AlertMessage> messageList = business.getAttendanceV2ManagerFactory()
+                    .listAlertMessageBeforeDate(now);
             if (messageList != null && !messageList.isEmpty()) {
                 List<String> ids = new ArrayList<>();
                 for (int i = 0; i < messageList.size(); i++) {
@@ -77,25 +80,51 @@ public class AttendanceV2TodayMessageDataGenerateTask extends AbstractJob {
                 if (group.getStatus() == AttendanceV2Group.status_auto) {
                     continue;
                 }
-                if (!group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Fixed) && !group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Arrangement)) {
+                if (!group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Fixed)
+                    && !group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Arrangement)) {
                     continue;
                 }
                 for (String person : group.getTrueParticipantList()) {
-                    WoGroupShift woGroupShift = business.getAttendanceV2ManagerFactory().getGroupShiftByPersonDate(person, today);
+                    WoGroupShift woGroupShift = business.getAttendanceV2ManagerFactory()
+                            .getGroupShiftByPersonDate(person, today);
                     AttendanceV2Shift shift = woGroupShift.getShift();
                     if (shift == null) { // 没有班次对象 不需要发送消息
                         continue;
                     }
-                    List<AttendanceV2ShiftCheckTime> timeList = Optional.ofNullable(shift.getProperties().getTimeList())
+                    List<AttendanceV2ShiftCheckTime> timeList = Optional.ofNullable(
+                                    shift.getProperties().getTimeList())
                             .orElse(Collections.emptyList());
                     if (timeList.isEmpty()) {
                         continue;
                     }
+                    List<AttendanceV2PersonConfig> list = business.getAttendanceV2ManagerFactory()
+                            .personConfigWithPerson(person);
+                    boolean isOnDutySendPerson = true;
+                    boolean isOffDutySendPerson = true;
+                    if (list != null && !list.isEmpty()) {
+                        AttendanceV2PersonConfig personConfig = list.get(0);
+                        if (personConfig.getProperties() != null && BooleanUtils.isFalse(
+                                personConfig.getProperties().getCheckInAlertOnDutyEnable())) {
+                            isOnDutySendPerson = false;
+                        }
+                        if (personConfig.getProperties() != null && BooleanUtils.isFalse(
+                                personConfig.getProperties().getCheckInAlertOffDutyEnable())) {
+                            isOffDutySendPerson = false;
+                        }
+                    }
                     for (AttendanceV2ShiftCheckTime shiftCheckTime : timeList) {
                         // 上班提醒消息
-                        saveMessage(emc, today, person, shiftCheckTime.getOnDutyTime(), AttendanceV2CheckInRecord.OnDuty, false, config);
+                        if (isOnDutySendPerson) {
+                            saveMessage(emc, today, person, shiftCheckTime.getOnDutyTime(),
+                                    AttendanceV2CheckInRecord.OnDuty, false, config);
+                        }
                         // 下班提醒消息
-                        saveMessage(emc, today, person, shiftCheckTime.getOffDutyTime(), AttendanceV2CheckInRecord.OffDuty, BooleanUtils.isTrue( shiftCheckTime.getOffDutyNextDay()), config);
+                        if (isOffDutySendPerson) {
+                            saveMessage(emc, today, person, shiftCheckTime.getOffDutyTime(),
+                                    AttendanceV2CheckInRecord.OffDuty,
+                                    BooleanUtils.isTrue(shiftCheckTime.getOffDutyNextDay()),
+                                    config);
+                        }
                     }
                 }
             }
@@ -112,7 +141,9 @@ public class AttendanceV2TodayMessageDataGenerateTask extends AbstractJob {
      * @param dutyType
      * @throws Exception
      */
-    private void saveMessage(EntityManagerContainer emc, String today, String person, String dutyTimeString, String dutyType, boolean offDutyNext, AttendanceV2Config config) throws Exception {
+    private void saveMessage(EntityManagerContainer emc, String today, String person,
+            String dutyTimeString, String dutyType, boolean offDutyNext, AttendanceV2Config config)
+            throws Exception {
         AttendanceV2AlertMessage messageOnDuty = new AttendanceV2AlertMessage();
         messageOnDuty.setUserId(person);
         String dutyTimeStringFull = today + " " + dutyTimeString;
