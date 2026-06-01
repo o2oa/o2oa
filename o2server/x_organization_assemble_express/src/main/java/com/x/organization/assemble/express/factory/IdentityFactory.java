@@ -164,6 +164,17 @@ public class IdentityFactory extends AbstractFactory {
 		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
 	}
 
+	public Long countMajorByUnit(String unitId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Identity.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<Identity> root = cq.from(Identity.class);
+		Predicate p = cb.equal(root.get(Identity_.unit), unitId);
+		p = cb.and(p, cb.or(cb.equal(root.get(Identity_.major), true),
+				cb.isNull(root.get(Identity_.major))));
+		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
+	}
+
 	public List<String> listPerson(List<String> identityIds) throws Exception {
 		List<Identity> list = this.entityManagerContainer().fetch(identityIds, Identity.class,
 				ListTools.toList(JpaObject.id_FIELDNAME, Identity.person_FIELDNAME));
