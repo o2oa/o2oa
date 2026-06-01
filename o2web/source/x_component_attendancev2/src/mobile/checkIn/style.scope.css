@@ -15,6 +15,22 @@
   padding: 20px 16px 28px;
 }
 
+.check-in-config-bar {
+  width: 100%;
+  height: 28px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.check-in-config-button {
+  width: 28px;
+  height: 28px;
+  margin-right: 10px;
+  text-align: center;
+  line-height: 28px;
+  cursor: pointer;
+}
+
 .location-panel {
   width: 100%;
   text-align: center;

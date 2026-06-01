@@ -2,7 +2,7 @@ import { component as content } from '@o2oa/oovm';
 import { lp, o2 } from '@o2oa/component';
 import template from './template.html';
 import style from './style.scope.css';
-import { getPublicData, mobileAction, invokeAction, qywxAuthAction } from '../../utils/actions';
+import { getPublicData, mobileAction, invokeAction, qywxAuthAction, configAction } from '../../utils/actions';
 import { WGS84_TO_GCJ02, getDistance } from '../../utils/common';
 
 
@@ -36,14 +36,27 @@ export default content({
             recordItemList: [],
             nextCheckInRecord: null,
             updateOffDutyRecord: null,
+            checkInAlertConfigEnable: true,
             bMapV2ApiLoaded: false,
             qywxSdkLoaded: false,
         };
+    },
+    async beforeRender() {
+        await this.loadCheckInAlertConfigEnable();
     },
     afterRender() {
         this.startTickTime();
         this.getPreCheckData();
         this.loadQywxSdk();
+    },
+    async loadCheckInAlertConfigEnable() {
+        try {
+            const config = await configAction('get');
+            this.bind.checkInAlertConfigEnable = !config || config.checkInAlertEnable !== false;
+        } catch (err) {
+            console.error('查询考勤配置失败', err);
+            this.bind.checkInAlertConfigEnable = true;
+        }
     },
     startTickTime() {
         this.tickTime();
@@ -366,6 +379,129 @@ export default content({
         const record = this.bind.updateOffDutyRecord;
         this.confirmCheckIn('会将当前时间更新到最后一条下班打卡记录，是否继续？', () => {
             this.submitCheckInRecord(record);
+        });
+    },
+    async openCheckInAlertConfig() {
+        try {
+            const personConfig = await this.loadPersonCheckInAlertConfig();
+            this.showCheckInAlertConfigDialog(personConfig);
+        } catch (err) {
+            console.error('查询个人打卡提醒配置失败', err);
+            o2.api.page.notice(lp.dataError, 'error');
+        }
+    },
+    async loadPersonCheckInAlertConfig() {
+        const personConfig = await configAction('getPersonConfig') || {};
+        if (!personConfig.properties) {
+            personConfig.properties = {};
+        }
+        if (personConfig.properties.checkInAlertOnDutyEnable !== false) {
+            personConfig.properties.checkInAlertOnDutyEnable = true;
+        }
+        if (personConfig.properties.checkInAlertOffDutyEnable !== false) {
+            personConfig.properties.checkInAlertOffDutyEnable = true;
+        }
+        return personConfig;
+    },
+    showCheckInAlertConfigDialog(personConfig) {
+        const node = document.createElement('div');
+        node.className = 'check-in-alert-config-dialog';
+        node.style.padding = '4px 0';
+        node.innerHTML = this.getCheckInAlertConfigDialogHtml(personConfig);
+        const _self = this;
+        Array.prototype.forEach.call(node.querySelectorAll('.check-in-alert-switch-row'), (item) => {
+            item.addEventListener('click', function () {
+                _self.toggleCheckInAlertConfig(personConfig, this.getAttribute('data-key'), node);
+            });
+        });
+        o2.DL.open({
+            title: '打卡提醒设置',
+            width: '100%',
+            height: '220',
+            style: 'user',
+            content: node,
+            buttonList: [
+                {
+                    type: 'cancel',
+                    text: lp.close || lp.cancel,
+                    action: function () {
+                        this.close();
+                    }
+                }
+            ]
+        });
+    },
+    getCheckInAlertConfigDialogHtml(personConfig) {
+        const properties = personConfig.properties || {};
+        return [
+            this.getCheckInAlertSwitchRowHtml('checkInAlertOnDutyEnable', '上班打卡提醒', properties.checkInAlertOnDutyEnable !== false),
+            this.getCheckInAlertSwitchRowHtml('checkInAlertOffDutyEnable', '下班打卡提醒', properties.checkInAlertOffDutyEnable !== false)
+        ].join('');
+    },
+    getCheckInAlertSwitchRowHtml(key, label, enable) {
+        const switchClass = enable ? 'check-in-alert-switch check-in-alert-switch-on' : 'check-in-alert-switch';
+        const switchStyle = enable ? 'background:#35a854;' : 'background:#d9d9d9;';
+        const switchDotStyle = enable ? 'left:22px;' : 'left:2px;';
+        return [
+            `<div class="check-in-alert-switch-row" data-key="${key}" style="min-height:52px;padding:0 4px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">`,
+            `<div class="check-in-alert-switch-label" style="color:#222222;font-size:16px;line-height:24px;">${label}</div>`,
+            `<div class="${switchClass}" style="width:48px;height:28px;border-radius:14px;position:relative;transition:background 0.2s;${switchStyle}"><span style="width:24px;height:24px;border-radius:50%;background:#ffffff;box-shadow:0 2px 5px rgba(0,0,0,0.18);position:absolute;top:2px;transition:left 0.2s;${switchDotStyle}"></span></div>`,
+            '</div>'
+        ].join('');
+    },
+    async toggleCheckInAlertConfig(personConfig, key, node) {
+        if (!key || !personConfig || this.isCheckInAlertConfigDialogSaving(node)) {
+            return;
+        }
+        if (!personConfig.properties) {
+            personConfig.properties = {};
+        }
+        const oldValue = personConfig.properties[key] !== false;
+        personConfig.properties[key] = !oldValue;
+        this.setCheckInAlertConfigDialogSaving(node, true);
+        this.renderCheckInAlertConfigDialog(node, personConfig);
+        try {
+            await configAction('postPersonConfig', personConfig);
+            o2.api.page.notice(lp.saveSuccess, 'success');
+        } catch (err) {
+            personConfig.properties[key] = oldValue;
+            console.error('保存打卡提醒配置失败', err);
+            o2.api.page.notice(lp.saveFail || '保存失败', 'error');
+        }
+        this.setCheckInAlertConfigDialogSaving(node, false);
+        this.renderCheckInAlertConfigDialog(node, personConfig);
+    },
+    isCheckInAlertConfigDialogSaving(node) {
+        return !!(node && node.getAttribute('data-saving') === 'true');
+    },
+    setCheckInAlertConfigDialogSaving(node, saving) {
+        if (!node) {
+            return;
+        }
+        node.setAttribute('data-saving', saving ? 'true' : 'false');
+        node.style.opacity = saving ? '0.72' : '1';
+        node.style.pointerEvents = saving ? 'none' : 'auto';
+    },
+    renderCheckInAlertConfigDialog(node, personConfig) {
+        if (!node) {
+            return;
+        }
+        const properties = personConfig.properties || {};
+        ['checkInAlertOnDutyEnable', 'checkInAlertOffDutyEnable'].forEach((key) => {
+            const row = node.querySelector(`[data-key="${key}"]`);
+            if (!row) {
+                return;
+            }
+            const switchNode = row.querySelector('.check-in-alert-switch');
+            if (switchNode) {
+                const enable = properties[key] !== false;
+                const switchDotNode = switchNode.querySelector('span');
+                switchNode.className = enable ? 'check-in-alert-switch check-in-alert-switch-on' : 'check-in-alert-switch';
+                switchNode.style.background = enable ? '#35a854' : '#d9d9d9';
+                if (switchDotNode) {
+                    switchDotNode.style.left = enable ? '22px' : '2px';
+                }
+            }
         });
     },
     submitCheckInRecord(record) {

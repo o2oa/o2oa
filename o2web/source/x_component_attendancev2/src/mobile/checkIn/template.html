@@ -1,5 +1,8 @@
 <div class="check-in-page">
   <div class="check-in-card">
+    <div class="check-in-config-bar" oo-if="$.checkInAlertConfigEnable">
+      <div class="ooicon-config check-in-config-button" @click="openCheckInAlertConfig"></div>
+    </div>
     <div class="{{ $.location.locating ? 'location-panel location-panel-pending' : ($.location.inRange ? 'location-panel location-panel-success' : 'location-panel location-panel-error') }}">
       <div class="location-title" oo-if="$.location.inRange">你已在打卡范围内</div>
       <div class="location-title" oo-else>{{ $.location.locating ? $.lp.mobile.locationIng : '你不在打卡范围内' }}</div>

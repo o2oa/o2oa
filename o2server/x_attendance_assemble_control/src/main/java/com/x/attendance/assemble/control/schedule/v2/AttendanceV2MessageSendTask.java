@@ -70,6 +70,13 @@ public class AttendanceV2MessageSendTask extends AbstractJob {
                 return;
             }
             for (AttendanceV2AlertMessage message : messageList) {
+                // 先更新消息状态，避免重复发送
+                AttendanceV2AlertMessage old = emc.find(message.getId(), AttendanceV2AlertMessage.class);
+                old.setSendStatus(true); // 已经发送
+                emc.beginTransaction(AttendanceV2AlertMessage.class);
+                emc.persist(old, CheckPersistType.all);
+                emc.commit();
+                // 判断个人配置 是否需要真实的发送消息
                 List<AttendanceV2PersonConfig> list = business.getAttendanceV2ManagerFactory()
                         .personConfigWithPerson(message.getUserId());
                 boolean isOnDutySendPerson = true;
@@ -98,11 +105,6 @@ public class AttendanceV2MessageSendTask extends AbstractJob {
                     title = "已经下班啦，请别忘记打卡哦！";
                 }
                 MessageConnector.send(MessageConnector.TYPE_ATTENDANCE_CHECK_IN_ALERT, title, message.getUserId(), message);
-                AttendanceV2AlertMessage old = emc.find(message.getId(), AttendanceV2AlertMessage.class);
-                old.setSendStatus(true); // 已经发送
-                emc.beginTransaction(AttendanceV2AlertMessage.class);
-                emc.persist(old, CheckPersistType.all);
-                emc.commit();
             }
         }catch (Exception e) {
             logger.error(e);
