@@ -14,6 +14,7 @@ const RESULT_TEXT = {
     SeriousLate: '严重迟到',
     Absenteeism: '旷工'
 };
+const NOT_CHECKED_RESULTS = ['PreCheckIn', 'NotSigned'];
 
 function formatDateValue(date) {
     const pad = (value) => (value > 9 ? value : `0${value}`);
@@ -121,8 +122,9 @@ export default content({
                 return;
             }
             const normalized = this.normalizeRecordData(data);
-            this.bind.recordList = this.buildRecordList(normalized.recordList);
-            this.bind.summaryTitle = this.buildSummaryTitle(normalized);
+            const recordList = this.getDisplayRecordList(normalized);
+            this.bind.recordList = this.buildRecordList(recordList);
+            this.bind.summaryTitle = this.buildSummaryTitle(Object.assign({}, normalized, { recordList }));
             this.bind.emptyText = '暂无打卡记录';
         } catch (err) {
             if (this.loadingDate !== date) {
@@ -164,6 +166,23 @@ export default content({
         }
         return { recordList: [] };
     },
+    getDisplayRecordList(detail) {
+        const recordList = detail.recordList || [];
+        if (this.isRestDay(detail) && !this.hasCheckedRecord(recordList)) {
+            return [];
+        }
+        return recordList;
+    },
+    isRestDay(detail) {
+        const recordDetail = detail && detail.detail ? detail.detail : detail;
+        return recordDetail && recordDetail.workDay === false;
+    },
+    hasCheckedRecord(list) {
+        return (list || []).some((record) => record && NOT_CHECKED_RESULTS.indexOf(record.checkInResult || 'PreCheckIn') === -1);
+    },
+    hasNotCheckedRecord(list) {
+        return (list || []).some((record) => record && NOT_CHECKED_RESULTS.indexOf(record.checkInResult || 'PreCheckIn') > -1);
+    },
     buildRecordList(list) {
         return (list || []).map((record, index) => {
             const result = record.checkInResult || 'PreCheckIn';
@@ -183,13 +202,17 @@ export default content({
         });
     },
     buildSummaryTitle(detail) {
-        const duration = detail.workTimeDuration || detail.workTimeMinutes || detail.duration || this.calcWorkDuration(detail.recordList);
+        const recordList = detail.recordList || [];
+        const duration = this.hasNotCheckedRecord(recordList) ? 0 : (detail.workTimeDuration || detail.workTimeMinutes || detail.duration || this.calcWorkDuration(recordList));
         if (!duration) {
             return '上下班打卡';
         }
         return `上下班打卡（工时 ${this.formatDuration(duration)}）`;
     },
     calcWorkDuration(list) {
+        if (this.hasNotCheckedRecord(list)) {
+            return 0;
+        }
         const times = (list || []).map((record) => {
             const date = record.recordDate ? new Date(record.recordDate.replace(/-/g, '/')) : null;
             return date && !Number.isNaN(date.getTime()) ? date.getTime() : null;

@@ -1,5 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.v2.my;
 
+import com.x.attendance.entity.v2.AttendanceV2Detail;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,8 +24,8 @@ import com.x.base.core.project.tools.DateTools;
 
 public class ActionListCheckInRecordWithDate extends BaseAction {
 
-    ActionResult<List<Wo>> execute(EffectivePerson person, JsonElement jsonElement) throws Exception {
-        ActionResult<List<Wo>> result = new ActionResult<>();
+    ActionResult<WoDetail> execute(EffectivePerson person, JsonElement jsonElement) throws Exception {
+        ActionResult<WoDetail> result = new ActionResult<>();
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
             String date = wi.getDate();
@@ -32,8 +33,12 @@ public class ActionListCheckInRecordWithDate extends BaseAction {
                 throw new ExceptionEmptyParameter("日期");
             }
             DateTools.parse(date, DateTools.format_yyyyMMdd);
-
+            WoDetail detail = new WoDetail();
             Business business = new Business(emc);
+            List<AttendanceV2Detail> dList = business.getAttendanceV2ManagerFactory().listDetailWithPersonAndDate(person.getDistinguishedName(), date);
+            if (dList != null && !dList.isEmpty()) {
+                detail.setDetail(dList.get(0));
+            }
             List<AttendanceV2CheckInRecord> list = business.getAttendanceV2ManagerFactory()
                     .listRecordWithPersonAndDate(person.getDistinguishedName(), date);
             List<Wo> wos = Wo.copier.copy(list);
@@ -51,7 +56,8 @@ public class ActionListCheckInRecordWithDate extends BaseAction {
                     }
                 }
             }
-            result.setData(wos);
+            detail.setRecordList(wos);
+            result.setData(detail);
             return result;
         }
     }
@@ -71,6 +77,34 @@ public class ActionListCheckInRecordWithDate extends BaseAction {
             this.date = date;
         }
 
+    }
+
+    public static class WoDetail extends GsonPropertyObject {
+
+        private static final long serialVersionUID = 2764109224722244861L;
+
+        @FieldDescribe("打卡记录")
+        private List<Wo> recordList;
+
+        @FieldDescribe("考勤详细数据")
+        private AttendanceV2Detail detail;
+
+        public List<Wo> getRecordList() {
+            return recordList;
+        }
+
+        public void setRecordList(
+                List<Wo> recordList) {
+            this.recordList = recordList;
+        }
+
+        public AttendanceV2Detail getDetail() {
+            return detail;
+        }
+
+        public void setDetail(AttendanceV2Detail detail) {
+            this.detail = detail;
+        }
     }
 
     public static class Wo extends AttendanceV2CheckInRecord {

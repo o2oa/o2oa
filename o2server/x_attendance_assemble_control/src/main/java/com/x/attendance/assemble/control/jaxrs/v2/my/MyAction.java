@@ -95,7 +95,7 @@ public class MyAction extends StandardJaxrsAction {
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
     public void listCheckInRecordWithDate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
-        ActionResult<List<ActionListCheckInRecordWithDate.Wo>> result = new ActionResult<>();
+        ActionResult<ActionListCheckInRecordWithDate.WoDetail> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
             result = new ActionListCheckInRecordWithDate().execute(effectivePerson, jsonElement);
