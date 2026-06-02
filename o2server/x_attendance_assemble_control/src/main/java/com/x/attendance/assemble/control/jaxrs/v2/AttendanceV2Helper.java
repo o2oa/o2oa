@@ -119,7 +119,7 @@ public class AttendanceV2Helper {
     public static boolean isRecordAttendance(AttendanceV2CheckInRecord r) {
         return (!r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned)
                 && !r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn))
-                || StringUtils.isNotEmpty(r.getLeaveDataId());
+                || r.hasLeaveOrRequest();
     }
 
     /**
@@ -132,7 +132,7 @@ public class AttendanceV2Helper {
      */
     public static boolean isRecordNotSign(AttendanceV2CheckInRecord r) {
         return r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned)
-                && StringUtils.isEmpty(r.getLeaveDataId());
+                && !r.hasLeaveOrRequest();
     }
 
     /**

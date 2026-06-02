@@ -1,5 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.v2.detail;
 
+import com.x.attendance.entity.v2.AttendanceV2LeaveRequest;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,6 +103,12 @@ abstract class BaseAction extends StandardJaxrsAction {
                                 AttendanceV2AppealInfo appealData = business.entityManagerContainer().find(recordWo.getAppealId(), AttendanceV2AppealInfo.class);
                                 if (appealData != null) {
                                     recordWo.setAppealData(appealData);
+                                }
+                            }
+                            if (StringUtils.isNotEmpty(recordWo.getRequestDataId())) {
+                                AttendanceV2LeaveRequest leaveRequest = business.entityManagerContainer().find(recordWo.getRequestDataId(), AttendanceV2LeaveRequest.class);
+                                if (leaveRequest != null) {
+                                    recordWo.setLeaveRequest(leaveRequest);
                                 }
                             }
                         } catch (Exception ignore) {}

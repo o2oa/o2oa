@@ -1,6 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.v2.my;
 
 import com.x.attendance.entity.v2.AttendanceV2Detail;
+import com.x.attendance.entity.v2.AttendanceV2LeaveRequest;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -47,6 +48,12 @@ public class ActionListCheckInRecordWithDate extends BaseAction {
                     AttendanceV2LeaveData leaveData = emc.find(wo.getLeaveDataId(), AttendanceV2LeaveData.class);
                     if (leaveData != null) {
                         wo.setLeaveData(leaveData);
+                    }
+                }
+                if (StringUtils.isNotEmpty(wo.getRequestDataId())) {
+                    AttendanceV2LeaveRequest leaveRequest = emc.find(wo.getRequestDataId(), AttendanceV2LeaveRequest.class);
+                    if (leaveRequest != null) {
+                        wo.setLeaveRequest(leaveRequest);
                     }
                 }
                 if (StringUtils.isNotEmpty(wo.getAppealId())) {
@@ -114,9 +121,10 @@ public class ActionListCheckInRecordWithDate extends BaseAction {
         static WrapCopier<AttendanceV2CheckInRecord, Wo> copier = WrapCopierFactory.wo(AttendanceV2CheckInRecord.class,
                 Wo.class, null, JpaObject.FieldsInvisible);
 
-        @FieldDescribe("外出请假记录")
+        @FieldDescribe("外出记录")
         private AttendanceV2LeaveData leaveData;
-
+        @FieldDescribe("请假记录")
+        private AttendanceV2LeaveRequest leaveRequest;
         @FieldDescribe("申诉记录")
         private AttendanceV2AppealInfo appealData;
 
@@ -134,6 +142,14 @@ public class ActionListCheckInRecordWithDate extends BaseAction {
 
         public void setAppealData(AttendanceV2AppealInfo appealData) {
             this.appealData = appealData;
+        }
+
+        public AttendanceV2LeaveRequest getLeaveRequest() {
+            return leaveRequest;
+        }
+
+        public void setLeaveRequest(AttendanceV2LeaveRequest leaveRequest) {
+            this.leaveRequest = leaveRequest;
         }
     }
 }

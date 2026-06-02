@@ -146,7 +146,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 }
                 // 迟到数据
                 List<AttendanceV2CheckInRecord> late = recordList.stream()
-                        .filter((r) -> (r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_Late) || r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_SeriousLate)) && StringUtils.isEmpty(r.getLeaveDataId()))
+                        .filter((r) -> (r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_Late) || r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_SeriousLate)) && !r.hasLeaveOrRequest())
                         .collect(Collectors.toList());
                 if (!late.isEmpty()) {
                     for (AttendanceV2CheckInRecord record : late) {
@@ -158,7 +158,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 }
                 // 早退数据
                 List<AttendanceV2CheckInRecord> early = recordList.stream()
-                        .filter((r) -> r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_Early) && StringUtils.isEmpty(r.getLeaveDataId()))
+                        .filter((r) -> r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_Early) && !r.hasLeaveOrRequest())
                         .collect(Collectors.toList());
                 if (!early.isEmpty()) {
                     for (AttendanceV2CheckInRecord record : early) {
@@ -197,7 +197,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                     .collect(Collectors.toList());
             // 有请假的列表
             List<AttendanceV2CheckInRecord> leaveList = recordList.stream()
-                    .filter((r) -> StringUtils.isNotEmpty(r.getLeaveDataId())).collect(Collectors.toList());
+                    .filter(AttendanceV2CheckInRecord::hasLeaveOrRequest).collect(Collectors.toList());
 
             // 考勤对象
             List<AttendanceV2Detail> details = business.getAttendanceV2ManagerFactory()
@@ -349,8 +349,16 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                                           AttendanceV2CheckInRecord record) throws Exception {
         List<AttendanceV2LeaveData> list = business.getAttendanceV2ManagerFactory()
                 .listLeaveDataWithRecordTime(record.getUserId(), record.getRecordDate());
+        List<AttendanceV2LeaveRequest> requestList = business.getAttendanceV2ManagerFactory()
+                .listLeaveRequestWithRecordTime(record.getUserId(), record.getRecordDate());
+        boolean hasLeave = (list != null && !list.isEmpty()) || (requestList != null && !requestList.isEmpty());
         if (list != null && !list.isEmpty()) {
             record.setLeaveDataId(list.get(0).getId());
+        }
+        if (requestList != null && !requestList.isEmpty()) {
+            record.setRequestDataId(requestList.get(0).getId());
+        }
+        if (hasLeave) {
             emc.beginTransaction(AttendanceV2CheckInRecord.class);
             emc.persist(record, CheckPersistType.all);
             emc.commit();

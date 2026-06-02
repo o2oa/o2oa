@@ -1,5 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.v2.record;
 
+import com.x.attendance.entity.v2.AttendanceV2LeaveRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -61,6 +62,12 @@ public class ActionListByPage extends BaseAction {
                         AttendanceV2LeaveData leaveData = emc.find(wo.getLeaveDataId(), AttendanceV2LeaveData.class);
                         if (leaveData != null) {
                             wo.setLeaveData(leaveData);
+                        }
+                    }
+                    if (StringUtils.isNotEmpty(wo.getRequestDataId())) {
+                        AttendanceV2LeaveRequest leaveRequest = emc.find(wo.getRequestDataId(), AttendanceV2LeaveRequest.class);
+                        if (leaveRequest != null) {
+                            wo.setLeaveRequest(leaveRequest);
                         }
                     }
                 } catch (Exception ignore) {}
@@ -153,15 +160,24 @@ public class ActionListByPage extends BaseAction {
 
     public static class Wo extends AttendanceV2CheckInRecord {
 
-        @FieldDescribe("外出请假记录")
+        @FieldDescribe("外出记录")
         private AttendanceV2LeaveData leaveData;
-
+        @FieldDescribe("请假记录")
+        private AttendanceV2LeaveRequest leaveRequest;
         public AttendanceV2LeaveData getLeaveData() {
             return leaveData;
         }
 
         public void setLeaveData(AttendanceV2LeaveData leaveData) {
             this.leaveData = leaveData;
+        }
+
+        public AttendanceV2LeaveRequest getLeaveRequest() {
+            return leaveRequest;
+        }
+
+        public void setLeaveRequest(AttendanceV2LeaveRequest leaveRequest) {
+            this.leaveRequest = leaveRequest;
         }
 
         static WrapCopier<AttendanceV2CheckInRecord, Wo> copier = WrapCopierFactory.wo(AttendanceV2CheckInRecord.class, Wo.class, null,

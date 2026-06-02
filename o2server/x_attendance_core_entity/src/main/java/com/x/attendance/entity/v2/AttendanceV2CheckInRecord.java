@@ -249,9 +249,14 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
 
 
     public static final String leaveDataId_FIELDNAME = "leaveDataId";
-    @FieldDescribe("请假数据id，关联请假数据，如果有值表示在请假时间段内.")
+    @FieldDescribe("外出数据id，关联外出数据，如果有值表示在外出时间段内.")
     @Column( length = JpaObject.length_id, name = ColumnNamePrefix + leaveDataId_FIELDNAME)
     private String leaveDataId;
+
+    public static final String requestDataId_FIELDNAME = "requestDataId";
+    @FieldDescribe("请假数据id，关联请假数据，如果有值表示在请假时间段内.")
+    @Column( length = JpaObject.length_id, name = ColumnNamePrefix + requestDataId_FIELDNAME)
+    private String requestDataId;
 
 
     /**
@@ -265,16 +270,21 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
                     || (
                             !getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)
                                     && !getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL)
-                                    && StringUtils.isEmpty(getLeaveDataId())));
+                                    && !hasLeaveOrRequest()));
         } else {
             return !getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)
-                    && StringUtils.isEmpty(getLeaveDataId())
+                    && !hasLeaveOrRequest()
                     && !getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL);
         }
     }
 
 
-    
+    /**
+     * 是否有请假或外出记录
+     */
+    public boolean hasLeaveOrRequest() {
+        return StringUtils.isNotEmpty(getLeaveDataId()) || StringUtils.isNotEmpty(getRequestDataId());
+    }
 
 
     public Boolean getOffDutyNextDay() {
@@ -283,6 +293,14 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
 
     public void setOffDutyNextDay(Boolean offDutyNextDay) {
         this.offDutyNextDay = offDutyNextDay;
+    }
+
+    public String getRequestDataId() {
+        return requestDataId;
+    }
+
+    public void setRequestDataId(String requestDataId) {
+        this.requestDataId = requestDataId;
     }
 
     public String getLeaveDataId() {

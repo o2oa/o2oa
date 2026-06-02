@@ -4,15 +4,17 @@ package com.x.attendance.assemble.control.jaxrs.v2.detail.model;
 import com.x.attendance.entity.v2.AttendanceV2AppealInfo;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2LeaveData;
+import com.x.attendance.entity.v2.AttendanceV2LeaveRequest;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 
 public class RecordWo extends AttendanceV2CheckInRecord {
-  @FieldDescribe("外出请假记录")
+  @FieldDescribe("外出记录")
   private AttendanceV2LeaveData leaveData;
-
+  @FieldDescribe("请假记录")
+  private AttendanceV2LeaveRequest leaveRequest;
   @FieldDescribe("申诉记录")
   private AttendanceV2AppealInfo appealData;
 
@@ -36,6 +38,11 @@ public class RecordWo extends AttendanceV2CheckInRecord {
     this.appealData = appealData;
   }
 
-  
+  public AttendanceV2LeaveRequest getLeaveRequest() {
+    return leaveRequest;
+  }
 
+  public void setLeaveRequest(AttendanceV2LeaveRequest leaveRequest) {
+    this.leaveRequest = leaveRequest;
+  }
 }
