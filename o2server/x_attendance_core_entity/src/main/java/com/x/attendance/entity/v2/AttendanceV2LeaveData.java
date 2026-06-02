@@ -18,9 +18,16 @@ import java.util.Date;
 @Schema(name = "AttendanceV2LeaveData", description = "外出数据表.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
-@Table(name = PersistenceProperties.AttendanceV2LeaveData.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceV2LeaveData.table
-        + JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
-        JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }))
+@Table(name = PersistenceProperties.AttendanceV2LeaveData.table, indexes = {
+        @Index(name = PersistenceProperties.AttendanceV2LeaveData.table + JpaObject.IndexNameMiddle
+                + "person_time_IDX", columnList = JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveData.person_FIELDNAME + "," + JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveData.startTime_FIELDNAME + "," + JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveData.endTime_FIELDNAME)},
+        uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceV2LeaveData.table
+                + JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = {
+                JpaObject.IDCOLUMN, JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN,
+                JpaObject.SEQUENCECOLUMN }))
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AttendanceV2LeaveData extends SliceJpaObject {
 

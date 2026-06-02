@@ -25,9 +25,13 @@ import org.apache.openjpa.persistence.jdbc.Strategy;
 @Schema(name = "AttendanceV2PersonConfig", description = "考勤个人配置信息.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
-@Table(name = PersistenceProperties.AttendanceV2PersonConfig.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceV2PersonConfig.table
-        + JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = {JpaObject.IDCOLUMN,
-        JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN}))
+@Table(name = PersistenceProperties.AttendanceV2PersonConfig.table, uniqueConstraints = {
+        @UniqueConstraint(name = PersistenceProperties.AttendanceV2PersonConfig.table + JpaObject.IndexNameMiddle
+                + JpaObject.DefaultUniqueConstraintSuffix, columnNames = {JpaObject.IDCOLUMN,
+                JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN}),
+        @UniqueConstraint(name = PersistenceProperties.AttendanceV2PersonConfig.table + JpaObject.IndexNameMiddle
+                + "person_UNIQUE", columnNames = {JpaObject.ColumnNamePrefix
+                + AttendanceV2PersonConfig.person_FIELDNAME})})
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AttendanceV2PersonConfig extends SliceJpaObject {
 

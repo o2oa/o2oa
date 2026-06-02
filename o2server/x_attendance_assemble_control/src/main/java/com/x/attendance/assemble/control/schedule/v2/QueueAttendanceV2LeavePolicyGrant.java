@@ -146,8 +146,6 @@ public class QueueAttendanceV2LeavePolicyGrant extends
                             policy.getId(), user, grantPeriod);
                     continue;
                 }
-                // 发放数据保存
-                emc.beginTransaction(AttendanceV2LeaveLedger.class);
                 AttendanceV2LeaveLedger ledger = new AttendanceV2LeaveLedger();
                 ledger.setLeaveTypeId(policy.getLeaveTypeId());
                 ledger.setPerson(user);
@@ -164,10 +162,7 @@ public class QueueAttendanceV2LeavePolicyGrant extends
                         ledger.setExpireTime(expireTime);
                     }
                 } //
-                emc.persist(ledger, CheckPersistType.all);
-                emc.commit();
-                // 完成后增加流水
-                addLeaveTransactionAndRefreshAccount(emc, ledger);
+                grantLeaveLedgerAndRefreshAccount(emc, ledger);
             }
             logger.info("发放完成，政策ID: {}, 用户数量: {} 。 开始更新下一次执行时间",
                     policy.getId(), userList.size());
@@ -200,9 +195,10 @@ public class QueueAttendanceV2LeavePolicyGrant extends
         }
     }
 
-    // 增加一条流水
-    private void addLeaveTransactionAndRefreshAccount(EntityManagerContainer emc, AttendanceV2LeaveLedger ledger) throws Exception {
+    private void grantLeaveLedgerAndRefreshAccount(EntityManagerContainer emc, AttendanceV2LeaveLedger ledger) throws Exception {
+        emc.beginTransaction(AttendanceV2LeaveLedger.class);
         emc.beginTransaction(AttendanceV2LeaveTransaction.class);
+        emc.persist(ledger, CheckPersistType.all);
         AttendanceV2LeaveTransaction transaction = new AttendanceV2LeaveTransaction();
         transaction.setPerson(ledger.getPerson());
         transaction.setLeaveTypeId(ledger.getLeaveTypeId());

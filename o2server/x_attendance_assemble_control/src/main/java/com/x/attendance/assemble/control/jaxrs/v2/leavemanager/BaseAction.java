@@ -39,85 +39,86 @@ abstract class BaseAction extends StandardJaxrsAction {
      */
     protected void deductingLeaveBalance(AttendanceV2LeaveType leaveType, String personDN, Double useAmount,
             String leaveRequestId) throws Exception {
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            emc.beginTransaction(AttendanceV2LeaveLedger.class);
+            emc.beginTransaction(AttendanceV2LeaveTransaction.class);
+            deductingLeaveBalance(emc, leaveType, personDN, useAmount, leaveRequestId);
+            emc.commit();
+            AttendanceV2LeaveManager.asyncUpdateLeaveAccount(personDN, leaveType.getId());
+        }
+    }
+
+    protected void deductingLeaveBalance(EntityManagerContainer emc, AttendanceV2LeaveType leaveType, String personDN,
+            Double useAmount, String leaveRequestId) throws Exception {
         if (QuotaTypeEnum.UNLIMITED.getValue().equals(leaveType.getQuotaType())) {
             logger.warn("请假类型 {} 的额度类型是 {}，不扣减余额。", leaveType.getName(), leaveType.getQuotaType());
             return; // 不扣减余额
         }
-        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            List<AttendanceV2LeaveLedger> ledgers = emc.listEqualAndEqualAndEqual(AttendanceV2LeaveLedger.class,
-                    AttendanceV2LeaveLedger.person_FIELDNAME, personDN, AttendanceV2LeaveLedger.leaveTypeId_FIELDNAME,
-                    leaveType.getId(), AttendanceV2LeaveLedger.active_FIELDNAME, true);
-            if (ledgers == null || ledgers.isEmpty()) {
-                throw new ExceptionWithMessage("没有找到用户 " + personDN + " 的请假类型 " + leaveType.getName() + " 的假期余额记录");
+        List<AttendanceV2LeaveLedger> ledgers = emc.listEqualAndEqualAndEqual(AttendanceV2LeaveLedger.class,
+                AttendanceV2LeaveLedger.person_FIELDNAME, personDN, AttendanceV2LeaveLedger.leaveTypeId_FIELDNAME,
+                leaveType.getId(), AttendanceV2LeaveLedger.active_FIELDNAME, true);
+        if (ledgers == null || ledgers.isEmpty()) {
+            throw new ExceptionWithMessage("没有找到用户 " + personDN + " 的请假类型 " + leaveType.getName() + " 的假期余额记录");
+        }
+        ledgers.sort(new Comparator<AttendanceV2LeaveLedger>() {
+            @Override
+            public int compare(AttendanceV2LeaveLedger a, AttendanceV2LeaveLedger b) {
+                boolean aOne = AttendanceV2LeaveManager.ONE_TIME.equals(a.getGrantPeriod());
+                boolean bOne = AttendanceV2LeaveManager.ONE_TIME.equals(b.getGrantPeriod());
+                // ONE_TIME 放最后
+                if (aOne != bOne) {
+                    return aOne ? 1 : -1;
+                }
+                // 正常时间排序
+                return grantPeriodParse(a.getGrantPeriod()).compareTo(grantPeriodParse(b.getGrantPeriod()));
             }
-            ledgers.sort(new Comparator<AttendanceV2LeaveLedger>() {
-                @Override
-                public int compare(AttendanceV2LeaveLedger a, AttendanceV2LeaveLedger b) {
-                    boolean aOne = AttendanceV2LeaveManager.ONE_TIME.equals(a.getGrantPeriod());
-                    boolean bOne = AttendanceV2LeaveManager.ONE_TIME.equals(b.getGrantPeriod());
-                    // ONE_TIME 放最后
-                    if (aOne != bOne) {
-                        return aOne ? 1 : -1;
-                    }
-                    // 正常时间排序
-                    return grantPeriodParse(a.getGrantPeriod()).compareTo(grantPeriodParse(b.getGrantPeriod()));
-                }
-            });
-            // AttendanceV2LeaveLedger中的remainingAmount是剩余额度，
-            // 根据传入的useAmount来扣减余额，扣减规则是按照发放时间顺序来扣减，先扣减最早发放的额度。
-            // 如果第一条不够扣减完，就继续扣减第二条，直到扣减完或者没有余额了。扣减过程中要更新每条记录的remainingAmount字段。
-            double totalRemainingAmount = 0.0;
-            for (AttendanceV2LeaveLedger ledger : ledgers) {
-                double remaining = ledger.getRemainingAmount() != null ? ledger.getRemainingAmount() : 0.0;
-                totalRemainingAmount += remaining;
+        });
+        // AttendanceV2LeaveLedger中的remainingAmount是剩余额度，
+        // 根据传入的useAmount来扣减余额，扣减规则是按照发放时间顺序来扣减，先扣减最早发放的额度。
+        // 如果第一条不够扣减完，就继续扣减第二条，直到扣减完或者没有余额了。扣减过程中要更新每条记录的remainingAmount字段。
+        double totalRemainingAmount = 0.0;
+        for (AttendanceV2LeaveLedger ledger : ledgers) {
+            double remaining = ledger.getRemainingAmount() != null ? ledger.getRemainingAmount() : 0.0;
+            totalRemainingAmount += remaining;
+        }
+        if (totalRemainingAmount < useAmount) {
+            throw new ExceptionWithMessage(
+                    "用户 " + personDN + " 的请假类型 " + leaveType.getName() + " 的假期余额不足，无法扣减 " + useAmount + " 天");
+        }
+        for (AttendanceV2LeaveLedger ledger : ledgers) {
+            if (useAmount <= 0) {
+                break; // 扣减完了
             }
-            if (totalRemainingAmount < useAmount) {
-                throw new ExceptionWithMessage(
-                        "用户 " + personDN + " 的请假类型 " + leaveType.getName() + " 的假期余额不足，无法扣减 " + useAmount + " 天");
+            double remaining = ledger.getRemainingAmount() != null ? ledger.getRemainingAmount() : 0.0;
+            if (remaining <= 0) {
+                continue; // 没有余额了，继续扣减下一条
             }
-            for (AttendanceV2LeaveLedger ledger : ledgers) {
-                if (useAmount <= 0) {
-                    break; // 扣减完了
-                }
-                double remaining = ledger.getRemainingAmount() != null ? ledger.getRemainingAmount() : 0.0;
-                if (remaining <= 0) {
-                    continue; // 没有余额了，继续扣减下一条
-                }
-                double indexUseAmount = 0.0;
-                if (remaining >= useAmount) {
-                    indexUseAmount = useAmount;
-                    // 余额足够扣减完
-                    ledger.setRemainingAmount(remaining - useAmount);
-                    useAmount = 0.0;
-                } else {
-                    indexUseAmount = remaining;
-                    // 余额不够扣减完，扣减剩余的余额，继续扣减下一条
-                    ledger.setRemainingAmount(0.0);
-                    useAmount -= remaining;
-                }
-                ledger.setUsedAmount(indexUseAmount + (ledger.getUsedAmount() != null ? ledger.getUsedAmount() : 0.0));
-                // 更新当前ledger的remainingAmount
-                emc.beginTransaction(AttendanceV2LeaveLedger.class);
-                AttendanceV2LeaveLedger old = emc.find(ledger.getId(), AttendanceV2LeaveLedger.class);
-                ledger.copyTo(old, JpaObject.FieldsUnmodify);
-                emc.check(old, CheckPersistType.all);
-                emc.commit();
-                // 增加一条流水
-                emc.beginTransaction(AttendanceV2LeaveTransaction.class);
-                AttendanceV2LeaveTransaction transaction = new AttendanceV2LeaveTransaction();
-                transaction.setPerson(personDN);
-                transaction.setLeaveTypeId(leaveType.getId());
-                transaction.setLedgerId(ledger.getId());
-                if (StringUtils.isNotBlank(leaveRequestId)) {
-                    transaction.setLeaveRequestId(leaveRequestId);
-                }
-                transaction.setBizType(BizTypeEnum.USE.getValue());
-                transaction.setAmount(indexUseAmount); // 扣除数量
-                emc.persist(transaction, CheckPersistType.all);
-                emc.commit();
+            double indexUseAmount = 0.0;
+            if (remaining >= useAmount) {
+                indexUseAmount = useAmount;
+                // 余额足够扣减完
+                ledger.setRemainingAmount(remaining - useAmount);
+                useAmount = 0.0;
+            } else {
+                indexUseAmount = remaining;
+                // 余额不够扣减完，扣减剩余的余额，继续扣减下一条
+                ledger.setRemainingAmount(0.0);
+                useAmount -= remaining;
             }
-            // 扣减完后异步更新账户余额数据
-            AttendanceV2LeaveManager.asyncUpdateLeaveAccount(personDN, leaveType.getId());
+            ledger.setUsedAmount(indexUseAmount + (ledger.getUsedAmount() != null ? ledger.getUsedAmount() : 0.0));
+            AttendanceV2LeaveLedger old = emc.find(ledger.getId(), AttendanceV2LeaveLedger.class);
+            ledger.copyTo(old, JpaObject.FieldsUnmodify);
+            emc.check(old, CheckPersistType.all);
+            AttendanceV2LeaveTransaction transaction = new AttendanceV2LeaveTransaction();
+            transaction.setPerson(personDN);
+            transaction.setLeaveTypeId(leaveType.getId());
+            transaction.setLedgerId(ledger.getId());
+            if (StringUtils.isNotBlank(leaveRequestId)) {
+                transaction.setLeaveRequestId(leaveRequestId);
+            }
+            transaction.setBizType(BizTypeEnum.USE.getValue());
+            transaction.setAmount(indexUseAmount); // 扣除数量
+            emc.persist(transaction, CheckPersistType.all);
         }
     }
 

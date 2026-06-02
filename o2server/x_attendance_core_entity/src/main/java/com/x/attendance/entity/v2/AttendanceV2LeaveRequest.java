@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -19,7 +20,22 @@ import javax.persistence.TemporalType;
 @Entity
 @Schema(name = "AttendanceV2LeaveRequest", description = "请假数据.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
-@Table(name = PersistenceProperties.AttendanceV2LeaveRequest.table)
+@Table(name = PersistenceProperties.AttendanceV2LeaveRequest.table, indexes = {
+        @Index(name = PersistenceProperties.AttendanceV2LeaveRequest.table + JpaObject.IndexNameMiddle
+                + "person_time_IDX", columnList = JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveRequest.person_FIELDNAME + "," + JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveRequest.startTime_FIELDNAME + "," + JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveRequest.endTime_FIELDNAME),
+        @Index(name = PersistenceProperties.AttendanceV2LeaveRequest.table + JpaObject.IndexNameMiddle
+                + "person_status_time_IDX", columnList = JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveRequest.person_FIELDNAME + "," + JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveRequest.status_FIELDNAME + "," + JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveRequest.startTime_FIELDNAME + "," + JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveRequest.endTime_FIELDNAME),
+        @Index(name = PersistenceProperties.AttendanceV2LeaveRequest.table + JpaObject.IndexNameMiddle
+                + "person_type_IDX", columnList = JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveRequest.person_FIELDNAME + "," + JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveRequest.leaveTypeId_FIELDNAME)})
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AttendanceV2LeaveRequest extends SliceJpaObject {
 

@@ -12,12 +12,24 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 @Entity
 @Schema(name = "AttendanceV2LeaveTransaction", description = "假期账户流水.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
-@Table(name = PersistenceProperties.AttendanceV2LeaveTransaction.table)
+@Table(name = PersistenceProperties.AttendanceV2LeaveTransaction.table, indexes = {
+        @Index(name = PersistenceProperties.AttendanceV2LeaveTransaction.table + JpaObject.IndexNameMiddle
+                + "person_type_IDX", columnList = JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveTransaction.person_FIELDNAME + "," + JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveTransaction.leaveTypeId_FIELDNAME),
+        @Index(name = PersistenceProperties.AttendanceV2LeaveTransaction.table + JpaObject.IndexNameMiddle
+                + "request_biz_IDX", columnList = JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveTransaction.leaveRequestId_FIELDNAME + "," + JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveTransaction.bizType_FIELDNAME),
+        @Index(name = PersistenceProperties.AttendanceV2LeaveTransaction.table + JpaObject.IndexNameMiddle
+                + "ledger_IDX", columnList = JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveTransaction.ledgerId_FIELDNAME)})
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AttendanceV2LeaveTransaction extends SliceJpaObject {
 

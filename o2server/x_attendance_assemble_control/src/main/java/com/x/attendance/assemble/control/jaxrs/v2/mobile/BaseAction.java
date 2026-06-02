@@ -181,17 +181,13 @@ abstract class BaseAction extends StandardJaxrsAction {
                         throw new ExceptionNotExistObject("班次对象");
                     }
                     if (StringUtils.isNotEmpty(record.getPreDutyTimeBeforeLimit())) {
-                        Date beforeOnDuty = DateTools.parse(
-                                today + " " + record.getPreDutyTimeBeforeLimit(),
-                                DateTools.format_yyyyMMddHHmm);
+                        Date beforeOnDuty = parseRecordDutyTime(record, record.getPreDutyTimeBeforeLimit());
                         if (checkTime.before(beforeOnDuty)) { // 不到开始时间不能打卡
                             throw new ExceptionTimeError("不到开始时间不能打卡");
                         }
                     }
                     if (StringUtils.isNotEmpty(record.getPreDutyTimeAfterLimit())) {
-                        Date afterDuty = DateTools.parse(
-                                today + " " + record.getPreDutyTimeAfterLimit(),
-                                DateTools.format_yyyyMMddHHmm);
+                        Date afterDuty = parseRecordDutyTime(record, record.getPreDutyTimeAfterLimit());
                         if (checkTime.after(afterDuty)) { // 超过结束时间不能打卡
                             throw new ExceptionTimeError("超过结束时间不能打卡");
                         }
@@ -199,8 +195,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                     // 上班打卡
                     if (record.getCheckInType().equals(AttendanceV2CheckInRecord.OnDuty)) {
 
-                        Date dutyTime = DateTools.parse(today + " " + record.getPreDutyTime(),
-                                DateTools.format_yyyyMMddHHmm);
+                        Date dutyTime = parseRecordDutyTime(record, record.getPreDutyTime());
                         checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
                         // 迟到
                         if (checkTime.after(dutyTime)) {
@@ -230,8 +225,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                         }
 
                     } else if (record.getCheckInType().equals(AttendanceV2CheckInRecord.OffDuty)) {
-                        Date offDutyTime = DateTools.parse(today + " " + record.getPreDutyTime(),
-                                DateTools.format_yyyyMMddHHmm);
+                        Date offDutyTime = parseRecordDutyTime(record, record.getPreDutyTime());
                         checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
                         // 早退
                         if (checkTime.before(offDutyTime)) {
@@ -553,6 +547,15 @@ abstract class BaseAction extends StandardJaxrsAction {
                 .findFirst().orElse(null);
     }
 
+    private Date parseRecordDutyTime(AttendanceV2CheckInRecord record, String dutyTime) throws Exception {
+        Date date = DateTools.parse(record.getRecordDateString() + " " + dutyTime, DateTools.format_yyyyMMddHHmm);
+        if (AttendanceV2CheckInRecord.OffDuty.equals(record.getCheckInType())
+                && BooleanUtils.isTrue(record.getOffDutyNextDay())) {
+            date = DateTools.addDay(date, 1);
+        }
+        return date;
+    }
+
     /**
      * 处理超过时间的打卡记录 标记为未打卡
      *
@@ -570,25 +573,17 @@ abstract class BaseAction extends StandardJaxrsAction {
             if (record.getCheckInResult()
                     .equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)) {
                 if (StringUtils.isNotEmpty(record.getPreDutyTimeAfterLimit())) { // 有打卡结束限制
-                    Date onDutyAfterTime = DateTools.parse(
-                            today + " " + record.getPreDutyTimeAfterLimit(),
-                            DateTools.format_yyyyMMddHHmm);
+                    Date onDutyAfterTime = parseRecordDutyTime(record, record.getPreDutyTimeAfterLimit());
                     if (nowDate.after(onDutyAfterTime)) { // 超过了打卡结束限制时间，直接生成未打卡数据
                         update2NoCheckInRecord(emc, record);
                     }
                 } else {
-                    Date onDutyTime = DateTools.parse(today + " " + record.getPreDutyTime(),
-                            DateTools.format_yyyyMMddHHmm);
+                    Date onDutyTime = parseRecordDutyTime(record, record.getPreDutyTime());
                     if (nowDate.after(onDutyTime)) {
                         // 查询下一条数据 下班打卡
                         if (i < recordList.size() - 1) {
                             AttendanceV2CheckInRecord nextRecord = recordList.get(i + 1);
-                            Date offDutyTime = DateTools.parse(
-                                    today + " " + nextRecord.getPreDutyTime(),
-                                    DateTools.format_yyyyMMddHHmm);
-                            if (nextRecord.getOffDutyNextDay()) { // 跨天的数据
-                                offDutyTime = DateTools.addDay(offDutyTime, 1);
-                            }
+                            Date offDutyTime = parseRecordDutyTime(nextRecord, nextRecord.getPreDutyTime());
                             long minutes = (offDutyTime.getTime() - onDutyTime.getTime()) / 60000
                                            / 2; // 一半间隔时间
                             Date middleTime = DateTools.addMinutes(onDutyTime, (int) minutes);

@@ -11,9 +11,12 @@ import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.ExceptionDateEndBeforeStartError;
+import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeaveManager;
 import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeaveRequestEnums.LeaveRequestStatusEnum;
 import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeaveTypeEnums.QuotaTypeEnum;
+import com.x.attendance.entity.v2.AttendanceV2LeaveLedger;
 import com.x.attendance.entity.v2.AttendanceV2LeaveRequest;
+import com.x.attendance.entity.v2.AttendanceV2LeaveTransaction;
 import com.x.attendance.entity.v2.AttendanceV2LeaveType;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -61,7 +64,7 @@ public class ActionLeaveRequestApply extends BaseAction {
                 throw new ExceptionNotExistObject("请假类型 " + wi.getLeaveTypeId());
             }
 
-            if (wi.getDuration() <= 0.0) { // 有传入数据 就不计算 按照传入的值来。
+            if (wi.getDuration() == null || wi.getDuration() <= 0.0) { // 有传入数据 就不计算 按照传入的值来。
                 // 计算日期间隔
                 long interval = wi.getEndTime().getTime() - wi.getStartTime().getTime();
                 double days = interval / (1000.0 * 3600 * 24);
@@ -70,15 +73,23 @@ public class ActionLeaveRequestApply extends BaseAction {
                 days = b.setScale(1, RoundingMode.HALF_UP).doubleValue();
                 wi.setDuration(days);
             }
-            String id = saveLeaveRequest(emc, wi);
+            String id;
+            if (QuotaTypeEnum.QUOTA.getValue().equals(leaveType.getQuotaType())) {
+                emc.beginTransaction(AttendanceV2LeaveRequest.class);
+                emc.beginTransaction(AttendanceV2LeaveLedger.class);
+                emc.beginTransaction(AttendanceV2LeaveTransaction.class);
+                id = saveLeaveRequest(emc, wi);
+                deductingLeaveBalance(emc, leaveType, person.getDistinguishedName(), wi.getDuration(), id);
+                emc.commit();
+                AttendanceV2LeaveManager.asyncUpdateLeaveAccount(person.getDistinguishedName(), leaveType.getId());
+            } else {
+                emc.beginTransaction(AttendanceV2LeaveRequest.class);
+                id = saveLeaveRequest(emc, wi);
+                emc.commit();
+            }
             Wo wo = new Wo();
             wo.setId(id);
             result.setData(wo);
-            if (QuotaTypeEnum.QUOTA.getValue().equals(leaveType.getQuotaType())) {
-                // 处理有限制配额的情况
-                deductingLeaveBalance(leaveType, person.getDistinguishedName(), wi.getDuration(), id);
-            }
-
             return result;
         }
     }
@@ -92,7 +103,6 @@ public class ActionLeaveRequestApply extends BaseAction {
      * @throws Exception
      */
     private String saveLeaveRequest(EntityManagerContainer emc, Wi wi) throws Exception {
-        emc.beginTransaction(AttendanceV2LeaveRequest.class);
         AttendanceV2LeaveRequest leaveRequest = new AttendanceV2LeaveRequest();
         leaveRequest.setPerson(wi.getPerson());
         leaveRequest.setLeaveTypeId(wi.getLeaveTypeId());
@@ -102,7 +112,6 @@ public class ActionLeaveRequestApply extends BaseAction {
         leaveRequest.setDescription(wi.getDescription());
         leaveRequest.setStatus(LeaveRequestStatusEnum.APPLYING.getValue());
         emc.persist(leaveRequest, CheckPersistType.all);
-        emc.commit();
         return leaveRequest.getId();
     }
 

@@ -402,7 +402,7 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
         p = cb.and(p, cb.lessThanOrEqualTo(root.get(AttendanceV2Detail_.recordDateString), endDate));
         p = cb.and(p, cb.greaterThanOrEqualTo(root.get(AttendanceV2Detail_.recordDateString), startDate));
         cq.select(root).where(p).orderBy(cb.asc(root.get(AttendanceV2Detail_.recordDateString)));
-        return em.createQuery(cq.select(root).where(p)).getResultList();
+        return em.createQuery(cq).getResultList();
     }
 
     /**

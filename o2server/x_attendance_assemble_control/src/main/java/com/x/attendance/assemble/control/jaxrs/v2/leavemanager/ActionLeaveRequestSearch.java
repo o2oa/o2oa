@@ -105,9 +105,13 @@ public class ActionLeaveRequestSearch extends BaseAction {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<AttendanceV2LeaveRequest> root = cq.from(AttendanceV2LeaveRequest.class);
-         Predicate p = root.get(AttendanceV2LeaveRequest_.person).in(userList);
-        p = cb.and(p, cb.lessThanOrEqualTo(root.get(AttendanceV2LeaveRequest_.startTime), endDate));
-        p = cb.and(p, cb.greaterThanOrEqualTo(root.get(AttendanceV2LeaveRequest_.endTime), startDate));
+        Predicate p = root.get(AttendanceV2LeaveRequest_.person).in(userList);
+        if (endDate != null) {
+            p = cb.and(p, cb.lessThanOrEqualTo(root.get(AttendanceV2LeaveRequest_.startTime), endDate));
+        }
+        if (startDate != null) {
+            p = cb.and(p, cb.greaterThanOrEqualTo(root.get(AttendanceV2LeaveRequest_.endTime), startDate));
+        }
         cq.select(cb.count(root)).where(p);
         return em.createQuery(cq).getSingleResult();
     }

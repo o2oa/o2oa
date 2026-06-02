@@ -16,7 +16,13 @@ import javax.persistence.*;
 @Entity
 @Schema(name = "AttendanceV2LeaveAccount", description = "假期账户汇总.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
-@Table(name = PersistenceProperties.AttendanceV2LeaveAccount.table)
+@Table(name = PersistenceProperties.AttendanceV2LeaveAccount.table, indexes = {
+        @Index(name = PersistenceProperties.AttendanceV2LeaveAccount.table + JpaObject.IndexNameMiddle
+                + "person_IDX", columnList = JpaObject.ColumnNamePrefix + AttendanceV2LeaveAccount.person_FIELDNAME)},
+        uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceV2LeaveAccount.table
+                + JpaObject.IndexNameMiddle + "person_type_UNIQUE", columnNames = {
+                JpaObject.ColumnNamePrefix + AttendanceV2LeaveAccount.person_FIELDNAME,
+                JpaObject.ColumnNamePrefix + AttendanceV2LeaveAccount.leaveTypeId_FIELDNAME}))
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AttendanceV2LeaveAccount extends SliceJpaObject {
 

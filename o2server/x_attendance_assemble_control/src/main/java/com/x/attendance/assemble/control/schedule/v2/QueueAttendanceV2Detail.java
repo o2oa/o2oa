@@ -150,10 +150,9 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                         .collect(Collectors.toList());
                 if (!late.isEmpty()) {
                     for (AttendanceV2CheckInRecord record : late) {
-                        Date dutyTime = DateTools.parse(model.getDate() + " " + record.getPreDutyTime(),
-                                DateTools.format_yyyyMMddHHmm);
+                        Date dutyTime = parseRecordDutyTime(record);
                         long time = record.getRecordDate().getTime() - dutyTime.getTime();
-                        lateMinute += (time > 0 ? time : -time) / 1000 / 60;
+                        lateMinute += Math.max(0, time) / 1000 / 60;
                     }
                 }
                 // 早退数据
@@ -162,10 +161,9 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                         .collect(Collectors.toList());
                 if (!early.isEmpty()) {
                     for (AttendanceV2CheckInRecord record : early) {
-                        Date dutyTime = DateTools.parse(model.getDate() + " " + record.getPreDutyTime(),
-                                DateTools.format_yyyyMMddHHmm);
+                        Date dutyTime = parseRecordDutyTime(record);
                         long time = dutyTime.getTime() - record.getRecordDate().getTime();
-                        earlyMinute += (time > 0 ? time : -time) / 1000 / 60;
+                        earlyMinute += Math.max(0, time) / 1000 / 60;
                     }
                 }
             }
@@ -205,6 +203,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
             AttendanceV2Detail v2Detail;
             if (details != null && !details.isEmpty()) {
                 v2Detail = details.get(0);
+                deleteDuplicateDetails(emc, details);
             } else {
                 v2Detail = new AttendanceV2Detail();
             }
@@ -277,6 +276,30 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                     isWorkDay);
         }
 
+    }
+
+    private Date parseRecordDutyTime(AttendanceV2CheckInRecord record) throws Exception {
+        Date dutyTime = DateTools.parse(record.getRecordDateString() + " " + record.getPreDutyTime(),
+                DateTools.format_yyyyMMddHHmm);
+        if (AttendanceV2CheckInRecord.OffDuty.equals(record.getCheckInType())
+                && BooleanUtils.isTrue(record.getOffDutyNextDay())) {
+            dutyTime = DateTools.addDay(dutyTime, 1);
+        }
+        return dutyTime;
+    }
+
+    private void deleteDuplicateDetails(EntityManagerContainer emc, List<AttendanceV2Detail> details) throws Exception {
+        if (details == null || details.size() < 2) {
+            return;
+        }
+        List<String> deleteIds = new ArrayList<>();
+        for (int i = 1; i < details.size(); i++) {
+            deleteIds.add(details.get(i).getId());
+        }
+        emc.beginTransaction(AttendanceV2Detail.class);
+        emc.delete(AttendanceV2Detail.class, deleteIds);
+        emc.commit();
+        logger.warn("删除重复考勤明细数据：{}", StringUtils.join(deleteIds, ","));
     }
 
     // 格式化班次名称

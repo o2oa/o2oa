@@ -12,16 +12,36 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 
 // 假期余额最核心的表。
 @Entity
 @Schema(name = "AttendanceV2LeaveLedger", description = "假期额度批次.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
-@Table(name = PersistenceProperties.AttendanceV2LeaveLedger.table)
+@Table(name = PersistenceProperties.AttendanceV2LeaveLedger.table, indexes = {
+        @Index(name = PersistenceProperties.AttendanceV2LeaveLedger.table + JpaObject.IndexNameMiddle
+                + "person_type_active_IDX", columnList = JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveLedger.person_FIELDNAME + "," + JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveLedger.leaveTypeId_FIELDNAME + "," + JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveLedger.active_FIELDNAME),
+        @Index(name = PersistenceProperties.AttendanceV2LeaveLedger.table + JpaObject.IndexNameMiddle
+                + "active_expire_IDX", columnList = JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveLedger.active_FIELDNAME + "," + JpaObject.ColumnNamePrefix
+                + AttendanceV2LeaveLedger.expireTime_FIELDNAME),
+        @Index(name = PersistenceProperties.AttendanceV2LeaveLedger.table + JpaObject.IndexNameMiddle
+                + "person_IDX", columnList = JpaObject.ColumnNamePrefix + AttendanceV2LeaveLedger.person_FIELDNAME),
+        @Index(name = PersistenceProperties.AttendanceV2LeaveLedger.table + JpaObject.IndexNameMiddle
+                + "type_IDX", columnList = JpaObject.ColumnNamePrefix + AttendanceV2LeaveLedger.leaveTypeId_FIELDNAME)},
+        uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceV2LeaveLedger.table
+                + JpaObject.IndexNameMiddle + "person_type_period_UNIQUE", columnNames = {
+                JpaObject.ColumnNamePrefix + AttendanceV2LeaveLedger.person_FIELDNAME,
+                JpaObject.ColumnNamePrefix + AttendanceV2LeaveLedger.leaveTypeId_FIELDNAME,
+                JpaObject.ColumnNamePrefix + AttendanceV2LeaveLedger.grantPeriod_FIELDNAME}))
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AttendanceV2LeaveLedger extends SliceJpaObject {
 
