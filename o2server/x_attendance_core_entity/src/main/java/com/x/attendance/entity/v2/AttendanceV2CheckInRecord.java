@@ -34,7 +34,12 @@ import java.util.List;
 }, uniqueConstraints = {
         @UniqueConstraint(name = PersistenceProperties.AttendanceV2CheckInRecord.table + JpaObject.IndexNameMiddle
                 + JpaObject.DefaultUniqueConstraintSuffix, columnNames = {JpaObject.IDCOLUMN,
-                JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN})})
+                JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN}),
+        @UniqueConstraint(name = PersistenceProperties.AttendanceV2CheckInRecord.table + JpaObject.IndexNameMiddle
+                + "person_date_type_time_UNIQUE", columnNames = {JpaObject.ColumnNamePrefix + AttendanceV2CheckInRecord.userId_FIELDNAME,
+                JpaObject.ColumnNamePrefix + AttendanceV2CheckInRecord.recordDateString_FIELDNAME,
+                JpaObject.ColumnNamePrefix + AttendanceV2CheckInRecord.checkInType_FIELDNAME,
+                JpaObject.ColumnNamePrefix + AttendanceV2CheckInRecord.preDutyTime_FIELDNAME})})
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AttendanceV2CheckInRecord extends SliceJpaObject {
 

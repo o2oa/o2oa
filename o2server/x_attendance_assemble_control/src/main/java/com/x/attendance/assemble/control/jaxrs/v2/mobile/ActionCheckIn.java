@@ -2,7 +2,6 @@ package com.x.attendance.assemble.control.jaxrs.v2.mobile;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
-import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
@@ -69,7 +68,8 @@ public class ActionCheckIn extends BaseAction {
             }
             // 打卡时间
             Date nowDate = new Date();
-            AttendanceV2CheckInRecord back = ThisApplication.checkInExecutor.submit(new CheckInCallableImpl(nowDate, record.getId(), CheckInWi.fromApp(wi))).get();
+            AttendanceV2CheckInRecord back = executeWithCheckLock("check:" + record.getId(),
+                    new CheckInCallableImpl(nowDate, record.getId(), CheckInWi.fromApp(wi)));
             if (back != null) {
                 // 异常数据
                 generateAppealInfo(back, groups.get(0).getFieldWorkMarkError(), emc, business);

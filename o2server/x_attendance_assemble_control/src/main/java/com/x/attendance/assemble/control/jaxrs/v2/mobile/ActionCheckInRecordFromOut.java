@@ -2,7 +2,6 @@ package com.x.attendance.assemble.control.jaxrs.v2.mobile;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
-import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
@@ -73,10 +72,12 @@ public class ActionCheckInRecordFromOut extends BaseAction {
                 throw new ExceptionNotExistObject("考勤组信息");
             }
 
-            // 处理并发的问题
-            List<AttendanceV2CheckInRecord> recordList = ThisApplication.executor
-                    .submit(new CallableImpl(p.getDistinguishedName(), woGroupShift.getGroup(),
-                            woGroupShift.getShift(), checkInDate)).get();
+            // 同一人员同一天的预打卡生成串行化，其他人员可以并行处理。
+            String checkInDateString = DateTools.format(checkInDate, DateTools.format_yyyyMMdd);
+            List<AttendanceV2CheckInRecord> recordList = executeWithCheckLock(
+                    "pre:" + p.getDistinguishedName() + ":" + checkInDateString,
+                    new CallableImpl(p.getDistinguishedName(), woGroupShift.getGroup(),
+                            woGroupShift.getShift(), checkInDate));
             if (recordList == null || recordList.isEmpty()) {
                 throw new ExceptionNotExistObject("打卡记录");
             }
@@ -91,7 +92,8 @@ public class ActionCheckInRecordFromOut extends BaseAction {
             ActionResult<Wo> result = new ActionResult<>();
             if (record != null) {
 //                checkIn(emc, business, checkInDate, rInstance, null, null, wi);
-                AttendanceV2CheckInRecord back = ThisApplication.checkInExecutor.submit(new CheckInCallableImpl(checkInDate, record.getId(), CheckInWi.fromOutside(wi))).get();
+                AttendanceV2CheckInRecord back = executeWithCheckLock("check:" + record.getId(),
+                        new CheckInCallableImpl(checkInDate, record.getId(), CheckInWi.fromOutside(wi)));
                 if (BooleanUtils.isTrue(wi.getGenerateErrorInfo())) {
                     // 异常数据
                     generateAppealInfo(back, woGroupShift.getGroup().getFieldWorkMarkError(), emc,

@@ -1,7 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.v2.mobile;
 
 import com.x.attendance.assemble.control.Business;
-import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.WoGroupShift;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
@@ -56,9 +55,10 @@ public class ActionPreCheck extends BaseAction {
                 result.setData(cannotCheckIn("没有配置工作地址"));
                 return result;
             }
-            // 处理并发的问题
-            List<AttendanceV2CheckInRecord> recordList = ThisApplication.executor
-                    .submit(new CallableImpl(person, group, woGroupShift.getShift(), nowDate)).get();
+            // 同一人员同一天的预打卡生成串行化，避免全局单线程在高峰期阻塞所有人。
+            String lockKey = "pre:" + person + ":" + today;
+            List<AttendanceV2CheckInRecord> recordList = executeWithCheckLock(lockKey,
+                    new CallableImpl(person, group, woGroupShift.getShift(), nowDate));
             if (recordList == null || recordList.isEmpty()) {
                 result.setData(cannotCheckIn("没有对应的上下班打卡时间"));
                 return result;

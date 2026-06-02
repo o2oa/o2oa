@@ -2,8 +2,6 @@ package com.x.attendance.assemble.control;
 
 import com.x.base.core.project.message.MessageConnector;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -46,11 +44,6 @@ public class ThisApplication {
     // V2
     public static final QueueAttendanceV2Detail queueV2Detail = new QueueAttendanceV2Detail();
     public static final QueueAttendanceV2LeavePolicyGrant queueV2LeavePolicyGrant = new QueueAttendanceV2LeavePolicyGrant();
-    
-    // 同步执行器  这里还有集群服务器的问题
-    public static final ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
-    // 打卡
-    public static final ThreadPoolExecutor checkInExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
 
     public static void init() throws Exception {
         try {
@@ -108,8 +101,6 @@ public class ThisApplication {
     public static void destroy() {
         try {
             CacheManager.shutdown();
-            executor.shutdown();
-            checkInExecutor.shutdown();
         } catch (Exception e) {
             LOGGER.error(e);
         }

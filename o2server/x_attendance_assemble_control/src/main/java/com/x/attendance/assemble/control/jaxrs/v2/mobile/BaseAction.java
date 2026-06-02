@@ -24,6 +24,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +34,20 @@ import org.apache.commons.lang3.StringUtils;
 abstract class BaseAction extends StandardJaxrsAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
+    private static final ConcurrentMap<String, ReentrantLock> CHECK_LOCKS = new ConcurrentHashMap<>();
+
+    protected <T> T executeWithCheckLock(String lockKey, Callable<T> callable) throws Exception {
+        ReentrantLock lock = CHECK_LOCKS.computeIfAbsent(lockKey, key -> new ReentrantLock());
+        lock.lock();
+        try {
+            return callable.call();
+        } finally {
+            lock.unlock();
+            if (!lock.hasQueuedThreads()) {
+                CHECK_LOCKS.remove(lockKey, lock);
+            }
+        }
+    }
 
 
     protected class CallableImpl implements Callable<List<AttendanceV2CheckInRecord>> {
@@ -421,7 +438,7 @@ abstract class BaseAction extends StandardJaxrsAction {
             recordList = createNewRecordList(shift, emc, person, group, today, timeList);
         } else if (recordList.size() < (timeList.size() * 2)) {
             // 这里是为了处理异常数据，生成recordList的逻辑在上面，但是有可能有异常导致recordList数据保存不全，比如数据库异常
-            List<AttendanceV2CheckInRecord> recordListNew = createNewRecordList(shift, emc, person, group, today, timeList);
+            List<AttendanceV2CheckInRecord> recordListNew = createNewRecordList(shift, emc, person, group, today, timeList, false);
             for (AttendanceV2CheckInRecord newRecord :  recordListNew) {
                 AttendanceV2CheckInRecord oldOnDutyRecord = findRecordByExist(recordList,
                         newRecord.getCheckInType(), today,
@@ -486,13 +503,19 @@ abstract class BaseAction extends StandardJaxrsAction {
     private List<AttendanceV2CheckInRecord> createNewRecordList(AttendanceV2Shift shift,
             EntityManagerContainer emc, String person, AttendanceV2Group group, String today,
             List<AttendanceV2ShiftCheckTime> timeList) throws Exception {
+        return createNewRecordList(shift, emc, person, group, today, timeList, true);
+    }
+
+    private List<AttendanceV2CheckInRecord> createNewRecordList(AttendanceV2Shift shift,
+            EntityManagerContainer emc, String person, AttendanceV2Group group, String today,
+            List<AttendanceV2ShiftCheckTime> timeList, boolean reuseExisting) throws Exception {
         List<AttendanceV2CheckInRecord>  recordList = new ArrayList<>();
         for (AttendanceV2ShiftCheckTime shiftCheckTime : timeList) {
             // 上班打卡
             AttendanceV2CheckInRecord onDutyRecord = savePreCheckInRecord(emc, person,
                     AttendanceV2CheckInRecord.OnDuty, group, shift, today,
                     shiftCheckTime.getOnDutyTime(), shiftCheckTime.getOnDutyTimeBeforeLimit(),
-                    shiftCheckTime.getOnDutyTimeAfterLimit(), false);
+                    shiftCheckTime.getOnDutyTimeAfterLimit(), false, reuseExisting);
             recordList.add(onDutyRecord);
             // 下班打卡
 
@@ -500,7 +523,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                     AttendanceV2CheckInRecord.OffDuty, group, shift, today,
                     shiftCheckTime.getOffDutyTime(), shiftCheckTime.getOffDutyTimeBeforeLimit(),
                     shiftCheckTime.getOffDutyTimeAfterLimit(),
-                    BooleanUtils.isTrue(shiftCheckTime.getOffDutyNextDay()));
+                    BooleanUtils.isTrue(shiftCheckTime.getOffDutyNextDay()), reuseExisting);
             recordList.add(offDutyRecord);
         }
         return recordList;
@@ -511,6 +534,9 @@ abstract class BaseAction extends StandardJaxrsAction {
      */
     private AttendanceV2CheckInRecord findRecordByExist(List<AttendanceV2CheckInRecord> recordList,
             String dutyType, String today, String dutyTime) {
+        if (recordList == null || recordList.isEmpty()) {
+            return null;
+        }
         // 打卡时间
         if (StringUtils.isEmpty(dutyTime)) {
             if (AttendanceV2CheckInRecord.OnDuty.equals(dutyType)) {
@@ -521,8 +547,9 @@ abstract class BaseAction extends StandardJaxrsAction {
         }
         String finalDutyTime = dutyTime;
         return recordList.stream()
-                .filter((r) -> r.getCheckInType().equals(dutyType) && r.getPreDutyTime().equals(
-                        finalDutyTime) && r.getRecordDateString().equals(today))
+                .filter((r) -> StringUtils.equals(r.getCheckInType(), dutyType)
+                        && StringUtils.equals(r.getPreDutyTime(), finalDutyTime)
+                        && StringUtils.equals(r.getRecordDateString(), today))
                 .findFirst().orElse(null);
     }
 
@@ -586,10 +613,15 @@ abstract class BaseAction extends StandardJaxrsAction {
             AttendanceV2Group group, AttendanceV2Shift shift, String today,
             String dutyTime, String dutyTimeBeforeLimit, String dutyTimeAfterLimit,
             boolean offDutyNextDay) throws Exception {
-        AttendanceV2CheckInRecord noCheckRecord = new AttendanceV2CheckInRecord();
-        noCheckRecord.setCheckInType(dutyType);
-        noCheckRecord.setCheckInResult(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn);
-        noCheckRecord.setUserId(person);
+        return savePreCheckInRecord(emc, person, dutyType, group, shift, today, dutyTime,
+                dutyTimeBeforeLimit, dutyTimeAfterLimit, offDutyNextDay, true);
+    }
+
+    private AttendanceV2CheckInRecord savePreCheckInRecord(EntityManagerContainer emc,
+            String person, String dutyType,
+            AttendanceV2Group group, AttendanceV2Shift shift, String today,
+            String dutyTime, String dutyTimeBeforeLimit, String dutyTimeAfterLimit,
+            boolean offDutyNextDay, boolean reuseExisting) throws Exception {
         // 打卡时间
         if (StringUtils.isEmpty(dutyTime)) {
             if (AttendanceV2CheckInRecord.OnDuty.equals(dutyType)) {
@@ -598,6 +630,19 @@ abstract class BaseAction extends StandardJaxrsAction {
                 dutyTime = "18:00";
             }
         }
+        if (reuseExisting) {
+            Business business = new Business(emc);
+            AttendanceV2CheckInRecord existing = findRecordByExist(
+                    business.getAttendanceV2ManagerFactory().listRecordWithPersonAndDate(person, today),
+                    dutyType, today, dutyTime);
+            if (existing != null) {
+                return existing;
+            }
+        }
+        AttendanceV2CheckInRecord noCheckRecord = new AttendanceV2CheckInRecord();
+        noCheckRecord.setCheckInType(dutyType);
+        noCheckRecord.setCheckInResult(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn);
+        noCheckRecord.setUserId(person);
         Date onDutyTime = DateTools.parse(today + " " + dutyTime, DateTools.format_yyyyMMddHHmm);
         if (AttendanceV2CheckInRecord.OffDuty.equals(dutyType) && offDutyNextDay) {
             Date nextDate = DateTools.addDay(onDutyTime, 1);

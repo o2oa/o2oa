@@ -382,10 +382,6 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                                                           String dutyTime, String dutyTimeBeforeLimit, String dutyTimeAfterLimit, boolean offDutyNextDay)
             throws Exception {
         String result = AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned;
-        AttendanceV2CheckInRecord noCheckRecord = new AttendanceV2CheckInRecord();
-        noCheckRecord.setCheckInType(dutyType);
-        noCheckRecord.setCheckInResult(result);
-        noCheckRecord.setUserId(person);
         // 打卡时间
         if (StringUtils.isEmpty(dutyTime)) {
             if (AttendanceV2CheckInRecord.OnDuty.equals(dutyType)) {
@@ -394,6 +390,18 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 dutyTime = "18:00";
             }
         }
+        Business business = new Business(emc);
+        AttendanceV2CheckInRecord existing = findRecordByExist(
+                business.getAttendanceV2ManagerFactory().listRecordWithPersonAndDate(person, cDate), dutyType, cDate,
+                dutyTime);
+        if (existing != null) {
+            return existing;
+        }
+
+        AttendanceV2CheckInRecord noCheckRecord = new AttendanceV2CheckInRecord();
+        noCheckRecord.setCheckInType(dutyType);
+        noCheckRecord.setCheckInResult(result);
+        noCheckRecord.setUserId(person);
         Date onDutyTime = DateTools.parse(cDate + " " + dutyTime, DateTools.format_yyyyMMddHHmm);
         if (AttendanceV2CheckInRecord.OffDuty.equals(dutyType) && offDutyNextDay) {
             Date nextDate = DateTools.addDay(onDutyTime, 1);
@@ -425,5 +433,17 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
         emc.commit();
         logger.info("打卡记录保存：{}, {}, {} ", person, cDate, result);
         return noCheckRecord;
+    }
+
+    private AttendanceV2CheckInRecord findRecordByExist(List<AttendanceV2CheckInRecord> recordList, String dutyType,
+                                                        String date, String dutyTime) {
+        if (recordList == null || recordList.isEmpty()) {
+            return null;
+        }
+        return recordList.stream()
+                .filter((r) -> StringUtils.equals(r.getCheckInType(), dutyType)
+                        && StringUtils.equals(r.getPreDutyTime(), dutyTime)
+                        && StringUtils.equals(r.getRecordDateString(), date))
+                .findFirst().orElse(null);
     }
 }
