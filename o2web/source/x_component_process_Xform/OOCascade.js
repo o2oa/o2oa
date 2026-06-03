@@ -164,6 +164,9 @@ MWF.xApplication.process.Xform.OOCascade = MWF.APPOOCascade =  new Class({
 				return this.getOptionsWithDict(async, refresh);
 		}
 	},
+	parseDictOptions: function (options){
+		return options;
+	},
 	_getLazyLoadFunction: function (){
 		if( this.lazyLoadFunction ){
 			return this.lazyLoadFunction;
