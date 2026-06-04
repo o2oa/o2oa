@@ -28,6 +28,9 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 	@FieldDescribe( "最近修改时间" )
 	private Date updateTime;
 
+	@FieldDescribe("文档修改时间")
+	private Date modifyTime;
+
 	@FieldDescribe("文档摘要")
 	private String summary;
 
@@ -385,6 +388,14 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 
 	public void setIsAllRead(Boolean isAllRead) {
 		this.isAllRead = isAllRead;
+	}
+
+	public Date getModifyTime() {
+		return modifyTime;
+	}
+
+	public void setModifyTime(Date modifyTime) {
+		this.modifyTime = modifyTime;
 	}
 
 	public String getStringValue01() {
