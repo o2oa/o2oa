@@ -220,6 +220,16 @@
   text-align: center;
 }
 
+.appeal-manager-link {
+  margin: 16px 0 4px;
+  color: var(--oo-color-main);
+  font-size: 15px;
+  line-height: 24px;
+  text-align: center;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 @media (max-width: 360px) {
   .week-panel {
     padding-left: 14px;

@@ -1,0 +1,53 @@
+<div class="appeal-manager-page">
+  <div class="appeal-toolbar">
+    <div class="appeal-count">共 {{$.totalCount}} 条</div>
+    <button class="appeal-refresh" @click="refresh">
+      <span>刷新</span>
+    </button>
+  </div>
+
+  <div class="appeal-scroll">
+    <div oo-each="$.appealList" oo-item="appeal" class="appeal-card">
+      <div class="appeal-card-header">
+        <div class="appeal-date">{{appeal.value.recordDateString}}</div>
+        <div class="{{appeal.value.statusClass}}">{{appeal.value.statusText}}</div>
+      </div>
+
+      <div class="appeal-main">
+        <div class="appeal-time">{{appeal.value.recordDate}}</div>
+        <div class="{{appeal.value.recordResultClass}}">{{appeal.value.recordResultText}}</div>
+      </div>
+
+      <div class="appeal-fields">
+        <div class="appeal-field">
+          <div class="field-label">{{$.lp.appeal.dutyType}}</div>
+          <div class="field-value">{{appeal.value.dutyTypeText}}</div>
+        </div>
+        <div class="appeal-field">
+          <div class="field-label">{{$.lp.appeal.recordTime}}</div>
+          <div class="field-value">{{appeal.value.recordDate}}</div>
+        </div>
+      </div>
+
+      <div class="appeal-actions" oo-if="appeal.value.canStartProcess || appeal.value.canOpenJob">
+        <button class="appeal-action primary" oo-if="appeal.value.canStartProcess" @click="this.startProcess(appeal.value)">{{$.lp.appeal.startProcess}}</button>
+        <button class="appeal-action success" oo-if="appeal.value.canOpenJob" @click="this.openJob(appeal.value.jobId, appeal.value.id)">{{$.lp.appeal.openJob}}</button>
+      </div>
+    </div>
+
+    <div class="appeal-empty" oo-if="!$.appealList.length">
+      <div oo-if="$.loading">加载中...</div>
+      <div oo-else>{{$.emptyText}}</div>
+    </div>
+  </div>
+
+  <div class="appeal-pager">
+    <button class="{{$.page <= 1 || $.loading ? 'pager-button disabled' : 'pager-button'}}" @click="prevPage">
+      <i class="o2icon-icon_arrow_left"></i>
+    </button>
+    <div class="pager-text">{{$.page}} / {{$.totalPage}}</div>
+    <button class="{{$.page >= $.totalPage || $.loading ? 'pager-button disabled' : 'pager-button'}}" @click="nextPage">
+      <i class="o2icon-icon_arrow_right"></i>
+    </button>
+  </div>
+</div>

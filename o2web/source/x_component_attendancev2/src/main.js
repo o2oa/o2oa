@@ -3,6 +3,7 @@ import index from './app/index';
 import mobile from './mobile/main';
 import checkIn from './mobile/checkIn';
 import myRecord from './mobile/myRecord';
+import appealManager from './mobile/appealManager';
 
 
 loadComponent('attendancev2', (d, cb) => {
@@ -21,6 +22,12 @@ loadComponent('attendancev2', (d, cb) => {
             case "myRecord":
                 document.title = "我的记录";
                 myRecord.render(d).then(() => {
+                    cb();
+                });
+                break;
+            case "appealManager":
+                document.title = "考勤异常";
+                appealManager.render(d).then(() => {
                     cb();
                 });
                 break;

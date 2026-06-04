@@ -862,6 +862,11 @@ export default content({
         return `qywx_${deviceType}`;
     },
     gotoMyRecord() {
-        window.location.href = `appMobile.html?app=attendancev2&page=myRecord`;
+        let myRecordUrl = `appMobile.html?app=attendancev2&page=myRecord`;
+        const url = window.location.href;
+        if (url.indexOf("debugger") != -1) {
+            myRecordUrl += "&debugger";
+        }
+        window.location.href = myRecordUrl;
     }
 });

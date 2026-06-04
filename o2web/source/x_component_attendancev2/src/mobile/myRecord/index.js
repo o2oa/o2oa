@@ -285,5 +285,13 @@ export default content({
     parseDate(dateString) {
         const parts = dateString.split('-').map((part) => parseInt(part, 10));
         return new Date(parts[0], parts[1] - 1, parts[2]);
+    },
+    goAppealManagerPage() {
+        let appealUrl = `appMobile.html?app=attendancev2&page=appealManager`;
+        const url = window.location.href;
+        if (url.indexOf("debugger") != -1) {
+            appealUrl += "&debugger";
+        }
+        window.location.href = appealUrl;
     }
 });
