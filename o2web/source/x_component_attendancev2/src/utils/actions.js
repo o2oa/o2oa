@@ -169,6 +169,24 @@ function leaveAction(method, ...args) {
   );
 }
 
+function leaveManagerAction(method, ...args) {
+  return doAction(
+    "x_attendance_assemble_control",
+    "LeaveManagerAction",
+    method,
+    args
+  );
+}
+
+function leaveManagerActionListByPaging(method, ...args) {
+  return doActionBackResult(
+    "x_attendance_assemble_control",
+    "LeaveManagerAction",
+    method,
+    args
+  );
+}
+
 
 /**
  * 考勤配置API
@@ -297,6 +315,31 @@ function personalAction(method, ...args) {
   return doAction("x_organization_assemble_personal", "PersonAction", method, args);
 }
 
+/**
+ * 中心服务 脚本执行
+ * @param {*} method 
+ * @param  {...any} args 
+ * @returns 
+ */
+function invokeAction(method, ...args) {
+    return doAction("x_program_center", "InvokeAction", method, args);
+}
+
+function qywxAuthAction(method, ...args) {
+    return doAction("x_organization_assemble_authentication", "QiyeweixinAction", method, args);
+}
+
+
+
+
+//file 下载的url
+const getFileDownloadUrl = (id) => {
+    var action = o2.Actions.load('x_attendance_assemble_control').FileAction.action;
+    var url = action.getAddress() + action.actions.download.uri;
+    url = url.replace('{id}', encodeURIComponent(id));
+    return url;
+};
+
 
 export {
   getPublicData,
@@ -322,4 +365,9 @@ export {
   leaveAction,
   recordActionListByPaging,
   groupScheduleAction,
+  leaveManagerAction,
+  leaveManagerActionListByPaging,
+  invokeAction,
+  qywxAuthAction,
+  getFileDownloadUrl
 };

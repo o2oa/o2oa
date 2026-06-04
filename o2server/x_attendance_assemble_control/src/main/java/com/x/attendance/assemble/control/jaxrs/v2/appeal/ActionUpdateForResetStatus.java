@@ -1,5 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.v2.appeal;
 
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
@@ -32,10 +33,15 @@ public class ActionUpdateForResetStatus extends BaseAction {
             if (!person.getDistinguishedName().equals(info.getUserId())) {
                 throw new ExceptionPersonNotEqual();
             }
+            if (Objects.equals(info.getStatus(), AttendanceV2AppealInfo.status_TYPE_LOCK)) {
+                throw new ExceptionAppealLocked();
+            }
 
             emc.beginTransaction(AttendanceV2AppealInfo.class);
             info.setJobId(""); // 设置 job  前端根据 job 显示打开流程的按钮
-            info.setStatus(AttendanceV2AppealInfo.status_TYPE_INIT); // 还原状态 初始化
+            if (Objects.equals(info.getStatus(), AttendanceV2AppealInfo.status_TYPE_PROCESSING)) {
+                info.setStatus(AttendanceV2AppealInfo.status_TYPE_INIT); // 还原状态 初始化
+            }
             emc.check(info, CheckPersistType.all);
             emc.commit();
             ActionResult<Wo> result = new ActionResult<>();

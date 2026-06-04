@@ -117,7 +117,9 @@ export default content({
           name =  name.split("@")[0];
         }
         return lp.appeal.status4 + " ["+ name + "]";
-      }  
+      } else if (appeal.status === 5) {
+        return lp.appeal.status5;
+      }
     }
     return "";
   },

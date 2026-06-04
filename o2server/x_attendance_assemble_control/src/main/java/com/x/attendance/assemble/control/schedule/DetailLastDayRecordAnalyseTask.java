@@ -41,7 +41,7 @@ public class DetailLastDayRecordAnalyseTask extends AbstractJob {
 			logger.debug( date + "有 " + ids.size() + "条考勤打卡数据需要重新分析。");
 			for( String id : ids ){
 				try {
-					ThisApplication.detailAnalyseQueue.send( id );
+//					ThisApplication.detailAnalyseQueue.send( id );
 				} catch ( Exception e1 ) {
 					e1.printStackTrace();
 				}

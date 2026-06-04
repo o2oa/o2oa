@@ -8,6 +8,7 @@ import com.x.attendance.entity.v2.AttendanceV2AppealInfo;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2Detail;
 import com.x.attendance.entity.v2.AttendanceV2LeaveData;
+import com.x.attendance.entity.v2.AttendanceV2LeaveRequest;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -68,8 +69,14 @@ public class ActionListDetailWithDate extends BaseAction {
                                             woRecord.setLeaveData(leaveData);
                                         }
                                     }
+                                    if (StringUtils.isNotEmpty(woRecord.getRequestDataId())) {
+                                        AttendanceV2LeaveRequest leaveRequest = emc.find(woRecord.getRequestDataId(), AttendanceV2LeaveRequest.class);
+                                        if (leaveRequest != null) {
+                                            woRecord.setLeaveRequest(leaveRequest);
+                                        }
+                                    }
                                     if (StringUtils.isNotEmpty(woRecord.getAppealId())) {
-                                        AttendanceV2AppealInfo appealData = business.entityManagerContainer().find(woRecord.getAppealId(), AttendanceV2AppealInfo.class);
+                                        AttendanceV2AppealInfo appealData = emc.find(woRecord.getAppealId(), AttendanceV2AppealInfo.class);
                                         if (appealData != null) {
                                             woRecord.setAppealData(appealData);
                                         }
@@ -146,10 +153,10 @@ public class ActionListDetailWithDate extends BaseAction {
     }
 
     public static class WoRecord extends AttendanceV2CheckInRecord {
-        @FieldDescribe("外出请假记录")
+        @FieldDescribe("外出记录")
         private AttendanceV2LeaveData leaveData;
-
-
+        @FieldDescribe("请假记录")
+        private AttendanceV2LeaveRequest leaveRequest;
         @FieldDescribe("申诉记录")
         private AttendanceV2AppealInfo appealData;
 
@@ -171,6 +178,13 @@ public class ActionListDetailWithDate extends BaseAction {
         public void setAppealData(AttendanceV2AppealInfo appealData) {
           this.appealData = appealData;
         }
-        
+
+        public AttendanceV2LeaveRequest getLeaveRequest() {
+            return leaveRequest;
+        }
+
+        public void setLeaveRequest(AttendanceV2LeaveRequest leaveRequest) {
+            this.leaveRequest = leaveRequest;
+        }
     }
 }

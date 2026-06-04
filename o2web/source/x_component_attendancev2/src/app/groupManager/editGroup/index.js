@@ -27,6 +27,7 @@ export default content({
         workPlaceIdList: [],
         allowFieldWork: false,  // 是否允许外勤打卡.
         requiredFieldWorkRemarks: false, // 外勤打卡备注是否必填.
+        requiredFieldWorkPhoto: false, // 外勤打卡是否需要照片.
         fieldWorkMarkError: false, // 外勤打卡是否作为异常数据处理.
         requiredCheckInDateList: [], // 必须打卡的日期，如 2023-01-01.
         noNeedCheckInDateList: [], // 无需打卡的日期，如 2023-01-01.
@@ -307,6 +308,9 @@ export default content({
   // 外勤是否必填说明
   clickRequiredFieldWorkRemarks() {
     this.bind.form.requiredFieldWorkRemarks = !this.bind.form.requiredFieldWorkRemarks;
+  },
+  clickRequiredFieldWorkPhoto() {
+    this.bind.form.requiredFieldWorkPhoto = !this.bind.form.requiredFieldWorkPhoto;
   },
   // 外勤是否作为异常数据处理
   clickFieldWorkMarkError() {

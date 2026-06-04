@@ -146,26 +146,24 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 }
                 // 迟到数据
                 List<AttendanceV2CheckInRecord> late = recordList.stream()
-                        .filter((r) -> (r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_Late) || r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_SeriousLate)) && StringUtils.isEmpty(r.getLeaveDataId()))
+                        .filter((r) -> (r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_Late) || r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_SeriousLate)) && !r.hasLeaveOrRequest())
                         .collect(Collectors.toList());
                 if (!late.isEmpty()) {
                     for (AttendanceV2CheckInRecord record : late) {
-                        Date dutyTime = DateTools.parse(model.getDate() + " " + record.getPreDutyTime(),
-                                DateTools.format_yyyyMMddHHmm);
+                        Date dutyTime = parseRecordDutyTime(record);
                         long time = record.getRecordDate().getTime() - dutyTime.getTime();
-                        lateMinute += (time > 0 ? time : -time) / 1000 / 60;
+                        lateMinute += Math.max(0, time) / 1000 / 60;
                     }
                 }
                 // 早退数据
                 List<AttendanceV2CheckInRecord> early = recordList.stream()
-                        .filter((r) -> r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_Early) && StringUtils.isEmpty(r.getLeaveDataId()))
+                        .filter((r) -> r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_Early) && !r.hasLeaveOrRequest())
                         .collect(Collectors.toList());
                 if (!early.isEmpty()) {
                     for (AttendanceV2CheckInRecord record : early) {
-                        Date dutyTime = DateTools.parse(model.getDate() + " " + record.getPreDutyTime(),
-                                DateTools.format_yyyyMMddHHmm);
+                        Date dutyTime = parseRecordDutyTime(record);
                         long time = dutyTime.getTime() - record.getRecordDate().getTime();
-                        earlyMinute += (time > 0 ? time : -time) / 1000 / 60;
+                        earlyMinute += Math.max(0, time) / 1000 / 60;
                     }
                 }
             }
@@ -197,7 +195,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                     .collect(Collectors.toList());
             // 有请假的列表
             List<AttendanceV2CheckInRecord> leaveList = recordList.stream()
-                    .filter((r) -> StringUtils.isNotEmpty(r.getLeaveDataId())).collect(Collectors.toList());
+                    .filter(AttendanceV2CheckInRecord::hasLeaveOrRequest).collect(Collectors.toList());
 
             // 考勤对象
             List<AttendanceV2Detail> details = business.getAttendanceV2ManagerFactory()
@@ -205,6 +203,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
             AttendanceV2Detail v2Detail;
             if (details != null && !details.isEmpty()) {
                 v2Detail = details.get(0);
+                deleteDuplicateDetails(emc, details);
             } else {
                 v2Detail = new AttendanceV2Detail();
             }
@@ -279,6 +278,30 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
 
     }
 
+    private Date parseRecordDutyTime(AttendanceV2CheckInRecord record) throws Exception {
+        Date dutyTime = DateTools.parse(record.getRecordDateString() + " " + record.getPreDutyTime(),
+                DateTools.format_yyyyMMddHHmm);
+        if (AttendanceV2CheckInRecord.OffDuty.equals(record.getCheckInType())
+                && BooleanUtils.isTrue(record.getOffDutyNextDay())) {
+            dutyTime = DateTools.addDay(dutyTime, 1);
+        }
+        return dutyTime;
+    }
+
+    private void deleteDuplicateDetails(EntityManagerContainer emc, List<AttendanceV2Detail> details) throws Exception {
+        if (details == null || details.size() < 2) {
+            return;
+        }
+        List<String> deleteIds = new ArrayList<>();
+        for (int i = 1; i < details.size(); i++) {
+            deleteIds.add(details.get(i).getId());
+        }
+        emc.beginTransaction(AttendanceV2Detail.class);
+        emc.delete(AttendanceV2Detail.class, deleteIds);
+        emc.commit();
+        logger.warn("删除重复考勤明细数据：{}", StringUtils.join(deleteIds, ","));
+    }
+
     // 格式化班次名称
     private String formatShiftName(AttendanceV2Shift shift) {
         String name = shift.getShiftName();
@@ -349,8 +372,16 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                                           AttendanceV2CheckInRecord record) throws Exception {
         List<AttendanceV2LeaveData> list = business.getAttendanceV2ManagerFactory()
                 .listLeaveDataWithRecordTime(record.getUserId(), record.getRecordDate());
+        List<AttendanceV2LeaveRequest> requestList = business.getAttendanceV2ManagerFactory()
+                .listLeaveRequestWithRecordTime(record.getUserId(), record.getRecordDate());
+        boolean hasLeave = (list != null && !list.isEmpty()) || (requestList != null && !requestList.isEmpty());
         if (list != null && !list.isEmpty()) {
             record.setLeaveDataId(list.get(0).getId());
+        }
+        if (requestList != null && !requestList.isEmpty()) {
+            record.setRequestDataId(requestList.get(0).getId());
+        }
+        if (hasLeave) {
             emc.beginTransaction(AttendanceV2CheckInRecord.class);
             emc.persist(record, CheckPersistType.all);
             emc.commit();
@@ -374,10 +405,6 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                                                           String dutyTime, String dutyTimeBeforeLimit, String dutyTimeAfterLimit, boolean offDutyNextDay)
             throws Exception {
         String result = AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned;
-        AttendanceV2CheckInRecord noCheckRecord = new AttendanceV2CheckInRecord();
-        noCheckRecord.setCheckInType(dutyType);
-        noCheckRecord.setCheckInResult(result);
-        noCheckRecord.setUserId(person);
         // 打卡时间
         if (StringUtils.isEmpty(dutyTime)) {
             if (AttendanceV2CheckInRecord.OnDuty.equals(dutyType)) {
@@ -386,6 +413,18 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 dutyTime = "18:00";
             }
         }
+        Business business = new Business(emc);
+        AttendanceV2CheckInRecord existing = findRecordByExist(
+                business.getAttendanceV2ManagerFactory().listRecordWithPersonAndDate(person, cDate), dutyType, cDate,
+                dutyTime);
+        if (existing != null) {
+            return existing;
+        }
+
+        AttendanceV2CheckInRecord noCheckRecord = new AttendanceV2CheckInRecord();
+        noCheckRecord.setCheckInType(dutyType);
+        noCheckRecord.setCheckInResult(result);
+        noCheckRecord.setUserId(person);
         Date onDutyTime = DateTools.parse(cDate + " " + dutyTime, DateTools.format_yyyyMMddHHmm);
         if (AttendanceV2CheckInRecord.OffDuty.equals(dutyType) && offDutyNextDay) {
             Date nextDate = DateTools.addDay(onDutyTime, 1);
@@ -417,5 +456,17 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
         emc.commit();
         logger.info("打卡记录保存：{}, {}, {} ", person, cDate, result);
         return noCheckRecord;
+    }
+
+    private AttendanceV2CheckInRecord findRecordByExist(List<AttendanceV2CheckInRecord> recordList, String dutyType,
+                                                        String date, String dutyTime) {
+        if (recordList == null || recordList.isEmpty()) {
+            return null;
+        }
+        return recordList.stream()
+                .filter((r) -> StringUtils.equals(r.getCheckInType(), dutyType)
+                        && StringUtils.equals(r.getPreDutyTime(), dutyTime)
+                        && StringUtils.equals(r.getRecordDateString(), date))
+                .findFirst().orElse(null);
     }
 }

@@ -1,12 +1,19 @@
 package com.x.attendance.assemble.control.jaxrs.v2;
 
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.ExceptionDateError;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2Group;
+import com.x.attendance.entity.v2.AttendanceV2Holiday;
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.x_attendance_assemble_control;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -32,6 +39,9 @@ import java.util.regex.Pattern;
  * Copyright © 2023 O2. All rights reserved.
  */
 public class AttendanceV2Helper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AttendanceV2Helper.class);
+
 
     /**
      * 是否是今天之前的日期
@@ -109,7 +119,7 @@ public class AttendanceV2Helper {
     public static boolean isRecordAttendance(AttendanceV2CheckInRecord r) {
         return (!r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned)
                 && !r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn))
-                || StringUtils.isNotEmpty(r.getLeaveDataId());
+                || r.hasLeaveOrRequest();
     }
 
     /**
@@ -122,7 +132,7 @@ public class AttendanceV2Helper {
      */
     public static boolean isRecordNotSign(AttendanceV2CheckInRecord r) {
         return r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned)
-                && StringUtils.isEmpty(r.getLeaveDataId());
+                && !r.hasLeaveOrRequest();
     }
 
     /**
@@ -189,6 +199,38 @@ public class AttendanceV2Helper {
     }
 
     /**
+     * 是否是中国节假日
+     * @param date yyyy-MM-dd
+     */
+    public static boolean checkIsChineseHoliday(String date) throws Exception {
+        boolean isHoliday = false;
+        HolidayGetWithDateWo wo =  ThisApplication.context().applications().getQuery(x_attendance_assemble_control.class, "v2/leavemanager/holiday/date/"+date).getData(HolidayGetWithDateWo.class);
+        if (wo != null && BooleanUtils.isTrue(wo.getOffDay())) {
+            isHoliday = true;
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("日期 {} 是节假日，节假日名称：{}", date, wo.getName());
+            }
+        }
+        return isHoliday;
+    }
+
+    /**
+     * 是否中国节假日调休的工作日
+     * @param date  yyyy-MM-dd
+     */
+    public static boolean checkIsChineseWorkday(String date) throws Exception {
+        boolean isWorkday = false;
+        HolidayGetWithDateWo wo =  ThisApplication.context().applications().getQuery(x_attendance_assemble_control.class, "v2/leavemanager/holiday/date/"+date).getData(HolidayGetWithDateWo.class);
+        if (wo != null && BooleanUtils.isTrue(wo.getWorkDay())) {
+            isWorkday = true;
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("日期 {} 是节假日调休的工作日，节假日名称：{}", date, wo.getName());
+            }
+        }
+        return isWorkday;
+    }
+
+    /**
      * 是否特殊节假日
      * 
      * @param date  yyyy-MM-dd
@@ -201,6 +243,9 @@ public class AttendanceV2Helper {
         // 考勤配置 节假日工作日
         Date myDate = DateTools.parse(date, DateTools.format_yyyyMMdd);
         if (Config.workTime() != null && Config.workTime().inDefinedHoliday(myDate)) {
+            isRestDay = true;
+        }
+        if (checkIsChineseHoliday(date)) {
             isRestDay = true;
         }
         // 考勤组的无需打卡日
@@ -252,6 +297,9 @@ public class AttendanceV2Helper {
         // 工作日
         Date myDate = DateTools.parse(date, DateTools.format_yyyyMMdd);
         if (Config.workTime() != null && Config.workTime().inDefinedWorkday(myDate)) {
+            shiftId = group.getShiftId();
+        }
+        if (checkIsChineseWorkday(date)) {
             shiftId = group.getShiftId();
         }
         // 考勤组的必须打卡日
@@ -344,5 +392,77 @@ public class AttendanceV2Helper {
     private static Date parseDate(String dateString) throws ParseException {
         return DateUtils.parseDate(dateString,
                 new String[] { DateTools.format_yyyyMMdd, DateTools.format_yyyyMMddHHmmss, DateTools.format_HHmmss, DateTools.format_HHmm, DateTools.format_yyyyMMddHHmm });
+    }
+
+
+    private static class HolidayGetWithDateWo extends GsonPropertyObject {
+
+
+        private static final long serialVersionUID = -2684730459120409608L;
+        @FieldDescribe("查询日期，格式 yyyy-MM-dd")
+        private String dateString;
+
+        @FieldDescribe("判断结果：WORKDAY 工作日，OFFDAY 放假日，NOT_FOUND 未找到")
+        private String result;
+
+        @FieldDescribe("节假日名称")
+        private String name;
+
+        @FieldDescribe("是否工作日")
+        private Boolean workDay;
+
+        @FieldDescribe("是否放假日")
+        private Boolean offDay;
+
+        @FieldDescribe("节假日数据")
+        private AttendanceV2Holiday holiday;
+
+        public String getDateString() {
+            return dateString;
+        }
+
+        public void setDateString(String dateString) {
+            this.dateString = dateString;
+        }
+
+        public String getResult() {
+            return result;
+        }
+
+        public void setResult(String result) {
+            this.result = result;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Boolean getWorkDay() {
+            return workDay;
+        }
+
+        public void setWorkDay(Boolean workDay) {
+            this.workDay = workDay;
+        }
+
+        public Boolean getOffDay() {
+            return offDay;
+        }
+
+        public void setOffDay(Boolean offDay) {
+            this.offDay = offDay;
+        }
+
+        public AttendanceV2Holiday getHoliday() {
+            return holiday;
+        }
+
+        public void setHoliday(AttendanceV2Holiday holiday) {
+            this.holiday = holiday;
+        }
     }
 }

@@ -623,7 +623,7 @@ public class AttendanceDetailAnalyseService {
 
 				//统计考勤数据
 				try {
-					ThisApplication.detailStatisticQueue.send( log.getId() );
+					// ThisApplication.detailStatisticQueue.send( log.getId() );
 				} catch ( Exception e1 ) {
 					e1.printStackTrace();
 				}
@@ -645,7 +645,7 @@ public class AttendanceDetailAnalyseService {
 				emc.commit();
 				//统计考勤数据
 				try {
-					ThisApplication.detailStatisticQueue.send( log.getId() );
+					// ThisApplication.detailStatisticQueue.send( log.getId() );
 				} catch ( Exception e1 ) {
 					e1.printStackTrace();
 				}
@@ -667,7 +667,7 @@ public class AttendanceDetailAnalyseService {
 				emc.commit();
 				//统计考勤数据
 				try {
-					ThisApplication.detailStatisticQueue.send( log.getId() );
+					// ThisApplication.detailStatisticQueue.send( log.getId() );
 				} catch ( Exception e1 ) {
 					e1.printStackTrace();
 				}
@@ -690,7 +690,7 @@ public class AttendanceDetailAnalyseService {
 				emc.commit();
 				//统计考勤数据
 				try {
-					ThisApplication.detailStatisticQueue.send( log.getId() );
+					// ThisApplication.detailStatisticQueue.send( log.getId() );
 				} catch ( Exception e1 ) {
 					e1.printStackTrace();
 				}
@@ -713,7 +713,7 @@ public class AttendanceDetailAnalyseService {
 				emc.commit();
 				//统计考勤数据
 				try {
-					ThisApplication.detailStatisticQueue.send( log.getId() );
+					// ThisApplication.detailStatisticQueue.send( log.getId() );
 				} catch ( Exception e1 ) {
 					e1.printStackTrace();
 				}

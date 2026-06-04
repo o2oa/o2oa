@@ -19,16 +19,14 @@ public class StatisticWo extends GsonPropertyObject {
     private Long workTimeDuration = 0L;
     @FieldDescribe("平均工时，工作时长/工作日数量，(小时)") //
     private String averageWorkTimeDuration = "0.0";
-
-
+    @FieldDescribe("应出勤天数")
+    private Integer workDays = 0;
     @FieldDescribe("出勤天数")
     private Integer attendance = 0;
     @FieldDescribe("休息天数")
     private Integer rest = 0;
     @FieldDescribe("旷工天数")
     private Integer absenteeismDays = 0;
-
-
     @FieldDescribe("迟到次数")
     private Integer lateTimes = 0;
     @FieldDescribe("早退次数")//
@@ -46,7 +44,13 @@ public class StatisticWo extends GsonPropertyObject {
     private List<DetailWo> detailList;
 
 
-    
+    public Integer getWorkDays() {
+        return workDays;
+    }
+
+    public void setWorkDays(Integer workDays) {
+        this.workDays = workDays;
+    }
 
     public Integer getFieldWorkTimes() {
         return fieldWorkTimes;

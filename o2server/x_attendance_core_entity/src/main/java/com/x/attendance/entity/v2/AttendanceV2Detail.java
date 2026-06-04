@@ -24,9 +24,13 @@ import java.util.List;
 @Schema(name = "AttendanceV2Detail", description = "考勤每日详细信息.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
-@Table(name = PersistenceProperties.AttendanceV2Detail.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceV2Detail.table
-        + JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = {JpaObject.IDCOLUMN,
-        JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN}))
+@Table(name = PersistenceProperties.AttendanceV2Detail.table, uniqueConstraints = {
+        @UniqueConstraint(name = PersistenceProperties.AttendanceV2Detail.table
+                + JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = {JpaObject.IDCOLUMN,
+                JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN}),
+        @UniqueConstraint(name = PersistenceProperties.AttendanceV2Detail.table + JpaObject.IndexNameMiddle
+                + "person_date_UNIQUE", columnNames = {JpaObject.ColumnNamePrefix + AttendanceV2Detail.userId_FIELDNAME,
+                JpaObject.ColumnNamePrefix + AttendanceV2Detail.recordDateString_FIELDNAME})})
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AttendanceV2Detail extends SliceJpaObject {
 

@@ -5,6 +5,7 @@ import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.WoGroupShift;
 import com.x.attendance.assemble.control.jaxrs.v2.appeal.AppealInfoWi;
+import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeaveRequestEnums.LeaveRequestStatusEnum;
 import com.x.attendance.entity.v2.*;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.x_attendance_assemble_control;
@@ -401,7 +402,7 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
         p = cb.and(p, cb.lessThanOrEqualTo(root.get(AttendanceV2Detail_.recordDateString), endDate));
         p = cb.and(p, cb.greaterThanOrEqualTo(root.get(AttendanceV2Detail_.recordDateString), startDate));
         cq.select(root).where(p).orderBy(cb.asc(root.get(AttendanceV2Detail_.recordDateString)));
-        return em.createQuery(cq.select(root).where(p)).getResultList();
+        return em.createQuery(cq).getResultList();
     }
 
     /**
@@ -489,6 +490,32 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
         Root<AttendanceV2AppealInfo> root = cq.from(AttendanceV2AppealInfo.class);
         Predicate p = cb.equal(root.get(AttendanceV2AppealInfo_.recordDateString), recordDateString);
         return em.createQuery(cq.select(root).where(p)).getResultList();
+    }
+
+    /**
+     * 查询指定人员指定日期范围和状态的申诉记录.
+     *
+     * @param person    人员 dn
+     * @param startDate 开始日期 yyyy-MM-dd
+     * @param endDate   结束日期 yyyy-MM-dd
+     * @param statuses  申诉状态
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2AppealInfo> listAppealInfoByPersonDateAndStatus(String person, String startDate,
+            String endDate, Integer... statuses) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2AppealInfo.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2AppealInfo> cq = cb.createQuery(AttendanceV2AppealInfo.class);
+        Root<AttendanceV2AppealInfo> root = cq.from(AttendanceV2AppealInfo.class);
+        Predicate p = cb.equal(root.get(AttendanceV2AppealInfo_.userId), person);
+        p = cb.and(p, cb.greaterThanOrEqualTo(root.get(AttendanceV2AppealInfo_.recordDateString), startDate));
+        p = cb.and(p, cb.lessThanOrEqualTo(root.get(AttendanceV2AppealInfo_.recordDateString), endDate));
+        if (statuses != null && statuses.length > 0) {
+            p = cb.and(p, root.get(AttendanceV2AppealInfo_.status).in((Object[]) statuses));
+        }
+        cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2AppealInfo_.recordDate)));
+        return em.createQuery(cq).getResultList();
     }
 
     /**
@@ -640,7 +667,7 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
     }
 
     /**
-     * 查询人员打卡时间是否在请假数据中
+     * 查询人员打卡时间是否在外出数据中
      * 
      * @param person     人员
      * @param recordTime 打卡时间
@@ -655,6 +682,25 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
         Predicate p = cb.equal(root.get(AttendanceV2LeaveData_.person), person);
         p = cb.and(p, cb.lessThanOrEqualTo(root.get(AttendanceV2LeaveData_.startTime), recordTime));
         p = cb.and(p, cb.greaterThanOrEqualTo(root.get(AttendanceV2LeaveData_.endTime), recordTime));
+        return em.createQuery(cq.select(root).where(p)).getResultList();
+    }
+
+    /**
+     * 查询人员打卡时间是否在请假数据中
+     * @param person
+     * @param recordTime
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2LeaveRequest> listLeaveRequestWithRecordTime(String person, Date recordTime) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2LeaveRequest.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2LeaveRequest> cq = cb.createQuery(AttendanceV2LeaveRequest.class);
+        Root<AttendanceV2LeaveRequest> root = cq.from(AttendanceV2LeaveRequest.class);
+        Predicate p = cb.equal(root.get(AttendanceV2LeaveRequest_.person), person);
+        p = cb.and(p, cb.equal(root.get(AttendanceV2LeaveRequest_.status), LeaveRequestStatusEnum.APPLYING.getValue()));
+        p = cb.and(p, cb.lessThanOrEqualTo(root.get(AttendanceV2LeaveRequest_.startTime), recordTime));
+        p = cb.and(p, cb.greaterThanOrEqualTo(root.get(AttendanceV2LeaveRequest_.endTime), recordTime));
         return em.createQuery(cq.select(root).where(p)).getResultList();
     }
 
@@ -755,5 +801,15 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
         Root<AttendanceV2GroupScheduleConfig> root = cq.from(AttendanceV2GroupScheduleConfig.class);
         Predicate p = cb.equal(root.get(AttendanceV2GroupScheduleConfig_.groupId), groupId);
         return em.createQuery(cq.select(root).where(p)).getResultList();
+    }
+
+    public Integer findAttendanceV2LeaveTypeBiggestOrderNumber() throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2LeaveType.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Integer> cq = cb.createQuery(Integer.class);
+        Root<AttendanceV2LeaveType> root = cq.from(AttendanceV2LeaveType.class);
+        cq.select(cb.max(root.get(AttendanceV2LeaveType_.orderNumber)));
+        Integer maxOrderNumber = em.createQuery(cq).getSingleResult();
+        return maxOrderNumber == null ? 100 : maxOrderNumber;
     }
 }

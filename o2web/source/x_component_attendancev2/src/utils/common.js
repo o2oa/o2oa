@@ -293,6 +293,104 @@ const chooseSingleFile = (callback) => {
   input.click();
 }
 
+
+/**
+ * WGS-84 转 GCJ-02 (火星坐标系)
+ * 适用于中国大陆地区
+ */
+const WGS84_TO_GCJ02 = {
+  // 常量定义
+  a: 6378245.0, // 克拉索夫斯基椭球长半轴
+  f: 1.0 / 298.3, // 克拉索夫斯基椭球扁率
+  ee: 0.00669342162296594323, // 偏心率平方
+  pi: 3.1415926535897932384626, // π
+  x_pi: 3.14159265358979324 * 3000.0 / 180.0,
+
+  /**
+   * 判断坐标是否在中国境内
+   * 注：港澳台及国外坐标不建议转换
+   */
+  isInChina(lat, lon) {
+    return (lon >= 72.004 && lon <= 135.05 && lat >= 3.86 && lat <= 53.55);
+  },
+
+  /**
+   * 主转换函数
+   * @param {number} lat WGS-84 纬度
+   * @param {number} lon WGS-84 经度
+   * @returns {object} {latitude: gcjLat, longitude: gcjLon}
+   */
+  transform(lat, lon) {
+    // 如果不在国内，直接返回原坐标（国外不加密）
+    if (!this.isInChina(lat, lon)) {
+      return { latitude: lat, longitude: lon };
+    }
+
+    let dLat = this.transformLat(lon - 105.0, lat - 35.0);
+    let dLon = this.transformLon(lon - 105.0, lat - 35.0);
+    
+    let radLat = lat / 180.0 * this.pi;
+    let magic = Math.sin(radLat);
+    magic = 1 - this.ee * magic * magic;
+    
+    const sqrtMagic = Math.sqrt(magic);
+    
+    dLat = (dLat * 180.0) / ((this.a * (1 - this.ee)) / (magic * sqrtMagic) * this.pi);
+    dLon = (dLon * 180.0) / (this.a / sqrtMagic * Math.cos(radLat) * this.pi);
+    
+    return {
+      latitude: lat + dLat,
+      longitude: lon + dLon
+    };
+  },
+
+  // 纬度偏移量计算
+  transformLat(x, y) {
+    let ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * Math.sqrt(Math.abs(x));
+    ret += (20.0 * Math.sin(6.0 * x * this.pi) + 20.0 * Math.sin(2.0 * x * this.pi)) * 2.0 / 3.0;
+    ret += (20.0 * Math.sin(y * this.pi) + 40.0 * Math.sin(y / 3.0 * this.pi)) * 2.0 / 3.0;
+    ret += (160.0 * Math.sin(y / 12.0 * this.pi) + 320 * Math.sin(y * this.pi / 30.0)) * 2.0 / 3.0;
+    return ret;
+  },
+
+  // 经度偏移量计算
+  transformLon(x, y) {
+    let ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x));
+    ret += (20.0 * Math.sin(6.0 * x * this.pi) + 20.0 * Math.sin(2.0 * x * this.pi)) * 2.0 / 3.0;
+    ret += (20.0 * Math.sin(x * this.pi) + 40.0 * Math.sin(x / 3.0 * this.pi)) * 2.0 / 3.0;
+    ret += (150.0 * Math.sin(x / 12.0 * this.pi) + 300.0 * Math.sin(x / 30.0 * this.pi)) * 2.0 / 3.0;
+    return ret;
+  }
+};
+
+/**
+ * 计算两个经纬度之间的距离（单位：米）
+ * @param {number} lat1 起点纬度
+ * @param {number} lon1 起点经度
+ * @param {number} lat2 终点纬度
+ * @param {number} lon2 终点经度
+ * @returns {number} 距离（米）
+ */
+function getDistance(lat1, lon1, lat2, lon2) {
+  const R = 6378137; // 地球半径（单位：米，使用 WGS84 标准）
+  const rad = Math.PI / 180;
+
+  // 将角度转为弧度
+  const lat1Rad = lat1 * rad;
+  const lat2Rad = lat2 * rad;
+  const deltaLat = (lat2 - lat1) * rad;
+  const deltaLon = (lon2 - lon1) * rad;
+
+  // Haversine 公式核心计算
+  const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+            Math.cos(lat1Rad) * Math.cos(lat2Rad) *
+            Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+  
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  
+  return R * c; // 返回距离（米）
+}
+
 export {
   getAllDatesInMonth,
   formatPersonName,
@@ -312,5 +410,7 @@ export {
   storageGet,
   replaceCustomString,
   generateExcelColumnNames,
-  chooseSingleFile
+  chooseSingleFile,
+  WGS84_TO_GCJ02,
+  getDistance,
 };

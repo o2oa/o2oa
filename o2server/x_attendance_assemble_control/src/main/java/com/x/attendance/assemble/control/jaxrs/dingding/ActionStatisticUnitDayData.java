@@ -27,7 +27,7 @@ public class ActionStatisticUnitDayData extends BaseAction {
         }
         logger.info("开始执行全部部门考勤信息统计 year:"+year+", month:"+month);
         Date date = DateTools.parse(year+"-"+month+"-"+day);
-        ThisApplication.unitStatisticQueue.send(date);
+//        ThisApplication.unitStatisticQueue.send(date);
         result.setData(new WrapBoolean(true));
         return result;
     }

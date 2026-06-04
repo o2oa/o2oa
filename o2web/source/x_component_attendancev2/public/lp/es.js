@@ -16,8 +16,10 @@ MWF.xApplication.attendancev2.LP={
 		"groupmanager": "Gestión de grupos de asistencia",
 		"addressmanger": "Gestión de lugares de trabajo",
 		"leavemanager": "Registros de ausencia",
+		"leavemanagerv2": "Gestión de vacaciones",
 		"configmanager": "Gestión de configuración"
 	},
+	"back": "Volver",
 	"alert": "Alerta",
 	"operate": "Operar",
 	"choose": "Elegir",
@@ -73,7 +75,10 @@ MWF.xApplication.attendancev2.LP={
 		"chooseDatePlaceholder": "Seleccionar fecha",
 		"selectPlaceholder": "Seleccionar",
 		"selectOrgPersonOverCount": "¡Solo se pueden seleccionar ({count}) datos!",
-		"errorPageNumber": "¡¡ introduzca el número de página correcto!"
+		"errorPageNumber": "¡¡ introduzca el número de página correcto!",
+		"monthDaySelectorPlaceholder": "Seleccione mes y día",
+		"monthDaySelectorMonth": "Mes",
+		"monthDaySelectorDay": "Día"
 	},
 	"myAttendanceTitle": "Mis estadísticas",
 	"myAttendanceCalendar": "Calendario de asistencia",
@@ -147,11 +152,13 @@ MWF.xApplication.attendancev2.LP={
 	"workAddressMapKeyConfigEmpty": "¡¡ por favor, establezca el Servicio de mapas primero!",
 	"workAddressBDkeyConfigBtn": "Configurar el Servicio de mapas",
 	"workAddressBDkeyConfig": "Configuración del Servicio de mapas",
-	"workAddressBDkeyConfigDesc": "La gestión del lugar de Trabajo utiliza el Servicio de mapas. actualmente admite mapas Baidu y mapas gaode. necesita registrar su cuenta de mapas correspondiente para obtener la clave para usarlo normalmente. Rellene la clave en el cuadro de entrada de abajo.",
+	"workAddressBDkeyConfigDesc": "La gestión del lugar de Trabajo utiliza el Servicio de mapas. Actualmente admite mapas Baidu, mapas Gaode y mapas Tencent. Necesita registrar su cuenta de mapas correspondiente para obtener la clave para usarlo normalmente. Rellene la clave en el cuadro de entrada de abajo.",
 	"workAddressBDLinkTitle": "Haga clic aquí para abrir el canal de registro de mapas de baidu",
 	"workAddressAMAPLinkTitle": "Haga clic aquí para abrir el canal de registro de mapas de gaode",
+	"workAddressTXLinkTitle": "Haga clic aquí para abrir el canal de registro de mapas de Tencent",
 	"workAddressBDSecretTitle": "BAIDU Clave (AK)",
 	"workAddressAMPSecretTitle": "GAODE Clave (AK)",
+	"workAddressTXSecretTitle": "Tencent Clave (Key)",
 	"workAddressBDSecretTitlePlaceholder": "Ingresa la clave (AK) de la aplicación de mapas",
 	"workAddressForm": {
 		"lnglatNotEmpty": "¡Selecciona un lugar de trabajo en el mapa primero!",
@@ -217,6 +224,7 @@ MWF.xApplication.attendancev2.LP={
 		"fieldWork": "Registro de trabajo en campo",
 		"allowFieldWork": "¿Permitir registro de trabajo en campo?",
 		"requiredFieldWorkRemarks": "¿Se requiere observaciones en el registro de trabajo en campo?",
+		"requiredFieldWorkPhoto": "¿Se requiere foto para el registro de trabajo en campo?",
 		"fieldWorkMarkError": "¿Tratar el registro de trabajo en campo como datos anómalos?",
 		"requiredCheckInDate": "Fechas de registro obligatorio",
 		"requiredCheckInDateThDate": "Fecha",
@@ -294,7 +302,8 @@ MWF.xApplication.attendancev2.LP={
 		"time": "Hora de asistencia",
 		"result": "Resultado de asistencia",
 		"address": "Dirección de punzonado",
-		"signDesc": "Instrucciones sobre el terreno"
+		"signDesc": "Instrucciones sobre el terreno",
+		"fieldWorkPhoto": "Foto de trabajo en campo"
 	},
 	"configManagerTitle": "Configuración de asistencia",
 	"config": {
@@ -337,6 +346,89 @@ MWF.xApplication.attendancev2.LP={
 		"importExcelFileSuccess": "Importación completada. ¡Haga clic en Aceptar para descargar y ver los resultados de la importación!",
 		"deleteConfirm": "¿Está seguro de que desea eliminar estos datos de registro?"
 	},
+	"leaveManagerV2Title": "Gestión de vacaciones",
+	"leaveManagerV2": {
+		"gotoOld": "Ver datos antiguos de permisos",
+		"back2V2": "Volver a Gestión de vacaciones",
+		"leaveTypeTitle": "Tipos de vacaciones",
+		"addType": "Agregar tipo de vacaciones",
+		"editType": "Editar tipo de vacaciones",
+		"addTypePolicy": "Agregar regla de tipo de vacaciones",
+		"editTypePolicy": "Editar regla de tipo de vacaciones",
+		"confirmDelete": "¿Está seguro de que desea eliminar estos datos de 【{name}】?",
+		"accountBlance": "Saldo de vacaciones",
+		"requestList": "Datos de permisos",
+		"leaveData": "Datos de salidas",
+		"holidayCalendar": "Calendario de festivos",
+		"calendar": {
+			"today": "Volver a hoy",
+			"offday": "Festivo",
+			"weekend": "Fin de semana",
+			"workday": "Día laborable especial",
+			"loadError": "¡No se pudieron cargar los datos de festivos!",
+			"addHoliday": "Agregar festivo",
+			"name": "Nombre del festivo",
+			"namePlaceholder": "Ingrese el nombre del festivo",
+			"nameEmptyPlaceholder": "¡Ingrese el nombre del festivo!",
+			"dateString": "Fecha",
+			"dateError": "¡Seleccione una fecha válida!",
+			"offDay": "Tipo",
+			"deleteConfirm": "¿Está seguro de que desea eliminar este registro de festivo?"
+		},
+		"type": {
+			"name": "Nombre del tipo de vacaciones",
+			"namePlaceholder": "Ingrese el nombre del tipo de vacaciones",
+			"quotaType": "Tipo de cuota",
+			"configPolicy": "Configurar reglas",
+			"quotaTypeLimited": "Limitada",
+			"quotaTypeUnlimited": "Ilimitada",
+		},
+		"policy": {
+			"policyName": "Nombre de la regla",
+			"policyNamePlaceholder": "Ingrese el nombre de la regla",
+			"grantScopeType": "Alcance de asignación",
+			"grantExludeLabel" : "Distribuir al personal excluido",
+      		"grantExludePlaceholder" : "Seleccione el personal excluido.",
+			"grantScopeTypeALL": "Todo el personal",
+			"grantScopeTypeDEPARTMENT": "Departamentos/personas",
+			"grantScopeListPickerPlaceholder": "Seleccione el alcance de asignación",
+			"grantType": "Método de asignación",
+			"grantTypeYEARLY": "Asignación anual",
+			"grantTypeYearLabel": "Fecha de asignación anual:",
+			"grantTypeYearPlaceholder": "Seleccione la fecha de asignación anual",
+			"grantTypeMONTHLY": "Asignación mensual",
+			"grantTypeMonthLabel": "Fecha de asignación mensual:",
+			"grantTypeMonthPlaceholder": "Ingrese la fecha de asignación mensual, un número del 1 al 28",
+			"grantTypeONE_TIME": "Asignación única",
+			"grantAmount": "Cuota asignada",
+			"grantAmountPlaceholder": "Ingrese la cuota asignada, debe ser un entero mayor que 0",
+			"description": "Descripción de la regla",
+			"grantTypeLabel": "Configuración del tipo de cuota",
+			"grantTypeFixedLabel": "Cuota fija",
+			"grantTypeServiceLenLabel": "Cuota por antigüedad",
+			"grantTypeRuleLengthLabel": "Las reglas de cuota por antigüedad requieren al menos 2 entradas",
+			"grantServiceAmountPlaceholder": "Ingrese la cuota asignada para cada regla de antigüedad, debe ser un número mayor que 0",
+			"grantTypeServiceLenRule": "Regla de antigüedad",
+			"grantTypeServiceLen": "Antigüedad",
+			"grantTypeAddRule": "Agregar regla",
+			"grantTypeServiceLenRuleScope": "Rango de antigüedad",
+			"expireTime": "Periodo de validez de las vacaciones",
+			"expireValuePlaceholder": "Ingrese el periodo de validez de las vacaciones, debe ser un entero mayor que 0"
+		},
+		"account": {
+			"filterSelectTitle": "Seleccionar persona u organización",
+			"filterEmptyPlaceholder": "Seleccione una persona u organización para consultar."
+		},
+		"request": {
+			"filterSelectTitle": "Seleccionar persona u organización",
+			"filterEmptyPlaceholder": "Seleccione una persona u organización para consultar.",
+			"dateEmptyPlaceholder": "Seleccione la fecha de inicio y la fecha de finalización.",
+			"dateRangeError": "La fecha de inicio no puede ser posterior a la fecha de finalización.",
+			"statusApplying": "En solicitud",
+			"statusRejected": "Rechazada",
+			"statusCancelled": "Cancelada"
+		}
+	},
 	"appealManagerTitle": "Datos de excepciones de asistencia",
 	"appeal": {
 		"date": "Fecha",
@@ -358,6 +450,7 @@ MWF.xApplication.attendancev2.LP={
 		"status2": "Aprobado",
 		"status3": "Rechazado",
 		"status4": "Procesado",
+		"status5": "Bloqueado",
 		"startProcess": "Iniciar apelación",
 		"openJob": "Ver apelación",
 		"startProcessNoConfigError": "No se ha configurado el proceso de apelación. ¡No se puede iniciar el proceso!",
@@ -383,6 +476,7 @@ MWF.xApplication.attendancev2.LP={
 		"sourceTypeAuto": "Generado por el sistema",
 		"sourceTypeFast": "Registro rápido",
 		"sourceTypeImport": "Importación de datos",
+		"fieldWorkPhoto": "Foto del registro de trabajo en campo",
 		"importExcelFileSuccess": "Importación completada, hay {number} registros con errores. ¡Haz clic en Aceptar para descargar y ver los resultados de la importación!",
 		"searchDateError": "¡¡ las fechas de inicio y fin deben estar vacías o valer la pena!"
 	},
@@ -401,7 +495,8 @@ MWF.xApplication.attendancev2.LP={
 		"outsideTitle": "Registro de trabajo de campo",
 		"outsideNotAllow": "No se permite el registro de trabajo de campo.",
 		"outsideRemarkPlaceholder": "Ingresa una descripción para el registro de trabajo de campo.",
-		"statisticMonthLabel": "Mes"
+		"statisticMonthLabel": "Mes",
+		"myTitle": "Mi asistencia"
 	}
 }
 MWF.xApplication.attendancev2["lp."+o2.language] = MWF.xApplication.attendancev2.LP

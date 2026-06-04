@@ -1,5 +1,6 @@
 import { component as content } from "@o2oa/oovm";
 import { lp } from "@o2oa/component";
+import { getFileDownloadUrl } from "../../../utils/actions";
 import template from "./temp.html";
 
 export default content({
@@ -74,4 +75,7 @@ export default content({
   close() {
     this.$parent.closeFormVm();
   },
+  getFileDownloadUrl(fileId) {
+    return getFileDownloadUrl(fileId);
+  }
 });

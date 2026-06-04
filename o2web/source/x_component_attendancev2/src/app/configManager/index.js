@@ -28,6 +28,10 @@ export default content({
         closeOldAttendance: true, // 是否关闭旧考勤
         aliFaceControlEnable: false, // 阿里云人脸扩展是否启用
         faceDetectionEnable: false, // 打卡前是否启用人脸比对
+        properties: {
+          checkInAlertOnDutyBeforeMinutes: 10, // 默认上班前 10 分钟
+          checkInAlertOffDutyAfterMinutes: 10, // 默认下班后 10 分钟 
+        }
       },
       holidayList: [],
       workDayList: [],
@@ -54,6 +58,15 @@ export default content({
     const json = await configAction("get");
     if (json) {
       this.bind.form = json || {};
+      if (!json.properties) {
+        this.bind.form.properties = {};
+      }
+      if (!json.properties.checkInAlertOnDutyBeforeMinutes) {
+        this.bind.form.properties.checkInAlertOnDutyBeforeMinutes = 10;
+      }
+      if (!json.properties.checkInAlertOffDutyAfterMinutes) {
+        this.bind.form.properties.checkInAlertOffDutyAfterMinutes = 10;
+      }
       if (json.holidayList) {
         this.bind.holidayList = json.holidayList;
       }
@@ -101,6 +114,20 @@ export default content({
       form.processId = "";
       form.processName = "";
       form.appealMaxTimes = 0;
+    }
+    if (form.checkInAlertEnable === true) {
+      const onDutyBefore = form.properties.checkInAlertOnDutyBeforeMinutes;
+      // 上班前提醒分钟数必须为整数且大于等于0 小于等于60
+      if (!isInt(onDutyBefore) || onDutyBefore < 0 || onDutyBefore > 60) {
+        o2.api.page.notice("上班前提醒分钟数必须为整数且大于等于0 小于等于60", "error");
+        return;
+      }
+      const offDutyAfter = form.properties.checkInAlertOffDutyAfterMinutes;
+      // 下班后提醒分钟数必须为整数且大于等于0 小于等于60
+      if (!isInt(offDutyAfter) || offDutyAfter < 0 || offDutyAfter > 60) {
+        o2.api.page.notice("下班后提醒分钟数必须为整数且大于等于0 小于等于60", "error");
+        return;
+      }
     }
     form.closeOldAttendance = true
     const result = await configAction("post", form);
@@ -249,31 +276,31 @@ export default content({
   loadDetailStatisticCronClick() {
     const cronTarget = this.dom.querySelector("#detailCron");
     o2.requireApp("Template", "widget.CronPicker", () => {
-        this.cronPicker = new MWF.xApplication.Template.widget.CronPicker(
-          c.content,
-          cronTarget,
-          c,
-          {},
-          {
-            style: "design",
-            position: {
-              //node 固定的位置
-              x: "right",
-              y: "auto",
-            },
-            onSelect: (value) => {
-              this.bind.form.detailStatisticCronString = value;
-            },
-            onQueryLoad: () => {
-              console.log(this.bind.form.detailStatisticCronString);
-              if (!this.cronPicker.node) {
-                this.cronPicker.options.value = this.bind.form.detailStatisticCronString;
-              } else {
-                this.cronPicker.setCronValue(this.bind.form.detailStatisticCronString);
-              }
-            },
-          }
-        );
+      this.cronPicker = new MWF.xApplication.Template.widget.CronPicker(
+        c.content,
+        cronTarget,
+        c,
+        {},
+        {
+          style: "design",
+          position: {
+            //node 固定的位置
+            x: "right",
+            y: "auto",
+          },
+          onSelect: (value) => {
+            this.bind.form.detailStatisticCronString = value;
+          },
+          onQueryLoad: () => {
+            console.log(this.bind.form.detailStatisticCronString);
+            if (!this.cronPicker.node) {
+              this.cronPicker.options.value = this.bind.form.detailStatisticCronString;
+            } else {
+              this.cronPicker.setCronValue(this.bind.form.detailStatisticCronString);
+            }
+          },
+        }
+      );
     });
   },
   clickFaceDetectionEnable() {

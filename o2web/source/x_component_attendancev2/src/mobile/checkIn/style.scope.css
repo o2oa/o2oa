@@ -1,156 +1,222 @@
-.check-in-container {
-  width: 100%;
-  height: 100%;
+.check-in-page {
+  width: calc(100% - 24px);
+  height: calc(100vh - 24px);
+  padding: 12px;
+  background: #f2f3f7;
+}
+
+.check-in-card {
+  min-height: calc( 100% - 48px );
+  border-radius: 8px;
+  background: white;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  padding: 20px 16px 28px;
 }
-.bmap {
-  width: 0px;
-  height: 0px;
-}
-.check-in-person {
-  margin: 20px 15px;
-  background-color: var(--main-bg-color);
-  border-radius: 8px;
-  height: 72px;
+
+.check-in-config-bar {
+  width: 100%;
+  height: 28px;
   display: flex;
-  flex-direction: row;
+  justify-content: flex-end;
 }
-.person-avatar {
-  height: 48px;
-  width: 48px;
-  padding: 12px;
-}
-.person-avatar img {
-  height: 48px;
-  width: 48px;
-  border: 2px solid var(--main-bg-color);
-  border-radius: 24px;
-  background-color: var(--main-bg-color);
+
+.check-in-config-button {
+  width: 28px;
+  height: 28px;
+  margin-right: 10px;
+  text-align: center;
+  line-height: 28px;
   cursor: pointer;
 }
-.person-info {
-  flex: 1;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-.person-info-name {
-  line-height: 28px;
-  font-size: 16px;
-  color: var(--font-primary-color);
-  flex:1;
-  align-items: center;
-  display: flex;
-}
-.person-info-unit {
-  color: var(--font-second-color);
-  flex:1;
-  align-items: center;
-  display: flex;
-}
 
-.check-in-business {
-  flex: 1;
-  background-color: var(--main-bg-color);
-  border-radius: 8px;
-  margin: 0px 15px 20px 15px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.check-in-record {
-  flex: 1;
+.location-panel {
   width: 100%;
-  display: flex;
-  flex-flow: row wrap;
-  align-content: flex-start;
-  padding: 0 0 10px 10px;
-}
-.check-in-record-child {
-  box-sizing: border-box;
-  background-color: var(--second-bg-color);
-  border-radius: 8px;
-  flex: 0 0 calc( 50% - 10px );
-  margin-right: 10px;
-  margin-top: 10px;
-  display: flex;
-  flex-flow: row wrap;
-  align-content: flex-start;
-}
-.check-in-record-child .item {
-  font-size: 14px;
-  margin-left: 10px;
-  margin-top: 10px;
-}
-.check-in-record-child > .check-in-type {
-  color: var(--font-primary-color);
-  flex: 0 0 calc( 50% - 10px );
-}
-.check-in-record-child > .check-in-time {
-  color: var(--font-primary-color);
-  margin-right: 10px;
-  flex: 0 0 calc( 50% - 20px );
-}
-.check-in-record-child > .check-in-status {
-  color: var(--font-hint-color);
-  flex: 0 0 calc( 50% - 10px );
-  margin-bottom: 10px;
-}
-.check-in-record-child > .check-in-update {
-  color: #fb4747;
-  margin-bottom: 10px;
-  margin-right: 10px;
-  flex: 0 0 calc( 50% - 20px );
-}
-
-.check-in-click-cycle {
-  width: 128px;
-  height: 128px;
-  border-radius: 64px;
-  background-color: #fb4747;
-  box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%),
-  0 9px 28px 8px rgb(0 0 0 / 5%);
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  justify-content: center;
-}
-.check-in-business > .check-disable {
-  background-color: #7A7977!important;
-}
-.check-in-click-cycle > .check-in-type {
-  color: #fff;
-  font-size: 18px;
-}
-.check-in-click-cycle > .check-in-time {
-  color: rgb(255 255 255 / 70%);
-  font-size: 16px;
-}
-.check-in-address {
-  height: 48px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-}
-.check-in-address .checked {
-  color: #66BB6A!important;
-}
-.check-in-address .noChecked {
-  color: #fb4747!important;
-}
-.check-in-address .label {
-  margin-left: 10px;
-  color: var(--font-primary-color);
-}
-.check-in-refresh-location {
-  height: 32px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
   text-align: center;
 }
-.check-in-refresh-location > span {
-  color: #66BB6A!important;
+
+.location-panel-success {
+  color: #35a854;
+}
+
+.location-panel-pending {
+  color: #8c8c8c;
+}
+
+.location-panel-error {
+  color: #e34d59;
+}
+
+.location-title {
+  font-size: 24px;
+  line-height: 34px;
+  font-weight: 700;
+}
+
+.location-address {
+  margin-top: 8px;
+  min-height: 24px;
+  font-size: 17px;
+  line-height: 24px;
+  word-break: break-word;
+}
+
+.location-refresh {
+  margin-top: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 14px;
+}
+
+.check-button {
+  width: 146px;
+  height: 146px;
+  border-radius: 50%;
+  margin-top: auto;
+  border: 12px solid #ffc52f;
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgb(255 197 47 / 24%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.check-button-disabled {
+  border-color: #d7d7d7;
+  box-shadow: none;
+}
+
+.check-button-inner {
+  width: 112px;
+  min-height: 92px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.check-button-title {
+  color: #111111;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 700;
+}
+
+.check-button-time {
+  margin-top: 4px;
+  color: #000000;
+  font-size: 27px;
+  line-height: 34px;
+  font-weight: 700;
+}
+
+.check-button-tip {
+  margin-top: 6px;
+  color: #8c8c8c;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.shift-summary {
+  margin-top: 28px;
+  min-height: 28px;
+  max-width: 100%;
+  color: #9a9a9a;
+  font-size: 18px;
+  line-height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.shift-summary-item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.shift-checked,
+.shift-abnormal {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  margin: 0 5px;
+  color: #ffffff;
+  font-size: 13px;
+  line-height: 18px;
+  text-align: center;
+}
+
+.shift-checked {
+  background: #2fc36a;
+}
+
+.shift-abnormal {
+  background: #e34d59;
+  font-weight: 700;
+}
+
+.shift-separator {
+  margin: 0 8px;
+}
+
+.update-off-duty {
+  margin-top: 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #2b6fd6;
+  font-size: 16px;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.shift-more {
+  margin-left: 5px;
+  color: #b4b4b4;
+  font-size: 24px;
+  line-height: 24px;
+}
+
+.check-in-bmap {
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+@media (max-height: 620px) {
+  .check-in-card {
+    padding-top: 16px;
+  }
+
+  .location-title {
+    font-size: 21px;
+    line-height: 30px;
+  }
+
+  .check-button {
+    width: 130px;
+    height: 130px;
+    border-width: 10px;
+  }
+
+  .check-button-title {
+    font-size: 21px;
+    line-height: 28px;
+  }
+
+  .check-button-time {
+    font-size: 24px;
+    line-height: 30px;
+  }
+
+  .shift-summary {
+    margin-top: 20px;
+    font-size: 16px;
+  }
 }

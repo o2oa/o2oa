@@ -33,6 +33,9 @@ export default content({
   afterRender() {
     this.search();
   },
+  clickBackTypeList() {
+    this.$parent.clickBackTypeList();
+  },
   search() {
     this.bind.pagerData.page = 1;
     this.loadLeaveList();
@@ -45,15 +48,10 @@ export default content({
   },
   async loadLeaveList() {
     let form = this.bind.form;
-    if (this.bind.menu.id === "3-4") {
-      /// 管理员
-      if (this.bind.filterList && this.bind.filterList.length > 0) {
-        form.person = this.bind.filterList[0];
-      } else {
-        form.person = "";
-      }
+    if (this.bind.filterList && this.bind.filterList.length > 0) {
+      form.person = this.bind.filterList[0];
     } else {
-      form.person = layout.session.user.distinguishedName;
+      form.person = "";
     }
     const json = await leaveActionListByPaging(
       this.bind.pagerData.page,
@@ -97,15 +95,15 @@ export default content({
   },
   // excel导入请假数据
   importExcel() {
-    chooseSingleFile((file)=>this._uploadExcel(file))
+    chooseSingleFile((file) => this._uploadExcel(file))
   },
 
   async _uploadExcel(file) {
     const fileExt = file.name.substring(file.name.lastIndexOf("."));
     console.debug("文件名", file.name, fileExt);
     if (
-        fileExt.toLowerCase() !== ".xls" &&
-        fileExt.toLowerCase() !== ".xlsx"
+      fileExt.toLowerCase() !== ".xls" &&
+      fileExt.toLowerCase() !== ".xlsx"
     ) {
       o2.api.page.notice(lp.leave.importExcelFileError, "error");
       return;
@@ -114,13 +112,13 @@ export default content({
     formData.append("file", file);
     formData.append("fileName", file.name);
     o2.Actions.load("x_attendance_assemble_control").LeaveAction.input(
-        formData,
-        "",
-        (json)=> {
-          if (json && json.data) {
-            this.downloadConfirm(json.data);
-          }
+      formData,
+      "",
+      (json) => {
+        if (json && json.data) {
+          this.downloadConfirm(json.data);
         }
+      }
     );
   },
   downloadConfirm(result) {

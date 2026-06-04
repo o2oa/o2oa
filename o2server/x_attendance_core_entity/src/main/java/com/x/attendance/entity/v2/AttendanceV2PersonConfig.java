@@ -6,6 +6,7 @@ import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
@@ -13,6 +14,7 @@ import org.apache.openjpa.persistence.jdbc.ElementIndex;
 
 import javax.persistence.*;
 import java.util.List;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 /**
  * 考勤个人配置
@@ -23,9 +25,13 @@ import java.util.List;
 @Schema(name = "AttendanceV2PersonConfig", description = "考勤个人配置信息.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
-@Table(name = PersistenceProperties.AttendanceV2PersonConfig.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceV2PersonConfig.table
-        + JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = {JpaObject.IDCOLUMN,
-        JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN}))
+@Table(name = PersistenceProperties.AttendanceV2PersonConfig.table, uniqueConstraints = {
+        @UniqueConstraint(name = PersistenceProperties.AttendanceV2PersonConfig.table + JpaObject.IndexNameMiddle
+                + JpaObject.DefaultUniqueConstraintSuffix, columnNames = {JpaObject.IDCOLUMN,
+                JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN}),
+        @UniqueConstraint(name = PersistenceProperties.AttendanceV2PersonConfig.table + JpaObject.IndexNameMiddle
+                + "person_UNIQUE", columnNames = {JpaObject.ColumnNamePrefix
+                + AttendanceV2PersonConfig.person_FIELDNAME})})
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AttendanceV2PersonConfig extends SliceJpaObject {
 
@@ -67,7 +73,6 @@ public class AttendanceV2PersonConfig extends SliceJpaObject {
     @Column(length = length_128B, name = ColumnNamePrefix + person_FIELDNAME)
     private String person;
 
-
     public static final String onDutyFastCheckInEnable_FIELDNAME = "onDutyFastCheckInEnable";
     @FieldDescribe("上班极速打卡，app端有效")
     @Column(name = ColumnNamePrefix + onDutyFastCheckInEnable_FIELDNAME)
@@ -82,8 +87,6 @@ public class AttendanceV2PersonConfig extends SliceJpaObject {
     @FieldDescribe("上班极速打卡结束，上班打卡后几分钟，默认到上班时间，app端有效")
     @Column(  name = ColumnNamePrefix + onDutyFastCheckInEnd_FIELDNAME)
     private Integer onDutyFastCheckInEnd = 0;
-
-
 
     public static final String offDutyFastCheckInEnable_FIELDNAME = "offDutyFastCheckInEnable";
     @FieldDescribe("下班极速打卡，app端有效")
@@ -100,6 +103,22 @@ public class AttendanceV2PersonConfig extends SliceJpaObject {
     @Column(  name = ColumnNamePrefix + offDutyFastCheckInEnd_FIELDNAME)
     private Integer offDutyFastCheckInEnd = 60;
 
+
+    public static final String PROPERTIES_FIELDNAME = "properties";
+    @FieldDescribe("更多配置信息.")
+    @Persistent
+    @Strategy(JsonPropertiesValueHandler)
+    @Column(length = JpaObject.length_1M, name = ColumnNamePrefix + PROPERTIES_FIELDNAME)
+    private AttendanceV2PersonConfigProperties properties;
+
+
+    public AttendanceV2PersonConfigProperties getProperties() {
+        return properties;
+    }
+
+    public void setProperties(AttendanceV2PersonConfigProperties properties) {
+        this.properties = properties;
+    }
 
     public String getPerson() {
         return person;

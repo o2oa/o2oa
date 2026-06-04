@@ -39,7 +39,13 @@
                     <div class="o2-icon-14">
                         <i class="{{ $.form.checkInAlertEnable ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}}"></i>
                     </div>
-                    <label style="margin: 5px;" >{{$.lp.config.checkInAlertEnable}}</label>
+                    <label style="margin: 5px;" >
+                        是否启用打卡提醒 (上班前
+                        <input class="config-form-input" oo-model="form.properties.checkInAlertOnDutyBeforeMinutes" name="checkInAlertOnDutyBeforeMinutes" type="text">
+                        分钟、下班后
+                        <input class="config-form-input" oo-model="form.properties.checkInAlertOffDutyAfterMinutes" name="checkInAlertOffDutyAfterMinutes" type="text">
+                        分钟会收到提醒消息，不要忘记打卡)
+                    </label>
                 </div>
                 <!-- 异常打卡提醒 -->
                 <div class="margin-top margin-left flex" @click="clickExceptionAlertEnable">

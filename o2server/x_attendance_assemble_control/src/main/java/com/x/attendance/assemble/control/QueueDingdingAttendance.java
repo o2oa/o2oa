@@ -140,8 +140,8 @@ public class QueueDingdingAttendance extends AbstractQueue<DingdingQywxSyncRecor
         Date statisticDate = fromDate;
         while (hasNextDate) {
             logger.info("发起钉钉考勤数据统计， date:"+ DateTools.format(statisticDate));
-            ThisApplication.personStatisticQueue.send(statisticDate);
-            ThisApplication.unitStatisticQueue.send(statisticDate);
+            // ThisApplication.personStatisticQueue.send(statisticDate);
+            // ThisApplication.unitStatisticQueue.send(statisticDate);
             if (!isSameDay(statisticDate, toDate)) {
                 statisticDate = DateTools.addDay(statisticDate, 1);
             }else {

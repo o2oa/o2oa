@@ -8,12 +8,13 @@ import oInput from '../../../components/o-input';
 import oTextarea from '../../../components/o-textarea';
 import baiduMap from './baidu-map'; // 百度地图
 import amap from './amap'; // 高德地图
+import tencentMap from './tencent-map'; // 腾讯地图
 
 
 export default content({
     style,
     template,
-    components: {oInput, oTextarea, baiduMap, amap},
+    components: {oInput, oTextarea, baiduMap, amap, tencentMap},
     autoUpdate: true,
     bind() {
         return {
@@ -27,7 +28,7 @@ export default content({
                 description: "",
                 status: "a", // a 新增 ，u 更新， v 查看
                 isView: false,
-                positionType: "amap" // baidu amap 如果为空需要输入经纬度
+                positionType: "amap" // baidu amap tx 如果为空需要输入经纬度
             },
         };
     },

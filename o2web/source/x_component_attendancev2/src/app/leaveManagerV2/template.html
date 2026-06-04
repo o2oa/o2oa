@@ -1,0 +1,96 @@
+<div class="manager-box white-bg">
+    <!-- 假期类型 -->
+    <div class="l-display-block"  id="leaveTypeListView">
+        <div class="index_page_header_container leave-page-header">
+            <div class="index_page_header_title">{{$.lp.leaveManagerV2Title}}</div>
+            <!-- <span class="operator_link_underline" @click="gotoOld">{{$.lp.leaveManagerV2.gotoOld}}</span> -->
+            <div class="leave-subnav">
+                <button class="leave-subnav-button" @click="clickOpenLeaveDataView">
+                    <i class="o2icon-icon_qingjia"></i>
+                    <span>{{ $.lp.leaveManagerV2.leaveData }}</span>
+                </button>
+                <button class="leave-subnav-button" @click="clickOpenRequestSearchView">
+                    <i class="o2icon-icon_yuanshijilu"></i>
+                    <span>{{ $.lp.leaveManagerV2.requestList }}</span>
+                </button>
+                <button class="leave-subnav-button" @click="clickOpenHolidayCalendarView">
+                    <i class="o2icon-icon_rili"></i>
+                    <span>{{ $.lp.leaveManagerV2.holidayCalendar }}</span>
+                </button>
+                <button class="leave-subnav-button" @click="clickOpenAccountSearchView">
+                    <i class="o2icon-icon_tongji"></i>
+                    <span>{{ $.lp.leaveManagerV2.accountBlance }}</span>
+                </button>
+            </div>
+        </div>
+        <div class="manager-box-content">
+            <div class="leave-section-toolbar">
+                <div class="leave-section-title">{{ $.lp.leaveManagerV2.leaveTypeTitle }}</div>
+            </div>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
+                <thead>
+                    <th>{{$.lp.leaveManagerV2.type.name}}</th>
+                    <th>{{$.lp.leaveManagerV2.type.quotaType}}</th>
+                    <th style="width: 240px;">{{$.lp.operate}}</th>
+                </thead>
+                <tr oo-each="$.leaveTypeList" oo-item="d">
+                    <td>
+                        <span>{{d.value.name}}</span>
+                        <span class="leave-copy-id" @click="this.clickCopyLeaveTypeId(d.value.id)">[复制 ID]</span>
+                    </td>
+                    <td>{{d.value.quotaType == 'QUOTA' ? $.lp.leaveManagerV2.type.quotaTypeLimited :
+                        $.lp.leaveManagerV2.type.quotaTypeUnlimited}}</td>
+                    <td>
+                        <span class="operator_link" @click="this.clickEditLeaveType(d.value.id)">{{$.lp.update}}</span>
+                        <!-- <span class="operator_link" @click="this.clickDeleteType(d.value.id)">{{$.lp.delete}}</span> -->
+                        <!-- <span class="operator_link" @click="this.clickOpenPolicyList(d.value.id)"
+                            oo-if="d.value.quotaType == 'QUOTA'">{{$.lp.leaveManagerV2.type.configPolicy}}</span> -->
+                        <span class="operator_link" @click="this.clickOpenLedgerImport(d.value)"
+                            oo-if="d.value.quotaType == 'QUOTA'">导入数据</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- 假期类型规则 -->
+    <div  class="l-display-none"  id="otherListView"></div>
+
+    <div class="leave-import-mask" oo-if="$.importFormShow">
+        <div class="o2-form leave-import-form">
+            <div class="o2-form-header">
+                <span class="title">{{$.currentLeaveType ? $.currentLeaveType.name : ''}}导入数据</span>
+                <button class="close" @click="closeLedgerImport"><i class="o2icon-icon_off"></i></button>
+            </div>
+            <div class="o2-form-content leave-import-content">
+                <div class="leave-import-row">
+                    <div class="leave-import-label">模板</div>
+                    <div class="leave-import-field">
+                        <button class="light-border-button" @click="downloadLedgerImportTemplate">模板下载</button>
+                    </div>
+                </div>
+                <div class="leave-import-row">
+                    <div class="leave-import-label">发放周期</div>
+                    <div class="leave-import-field">
+                        <input class="leave-import-input" type="text" oo-model="importForm.grantPeriod" placeholder="请输入发放周期" />
+                    </div>
+                </div>
+                <div class="leave-import-row">
+                    <div class="leave-import-label">Excel</div>
+                    <div class="leave-import-field">
+                        <div class="leave-import-upload" @click="selectLedgerImportFile">
+                            <span oo-if="!$.importForm.fileName">选择 Excel 文件</span>
+                            <span oo-if="$.importForm.fileName">{{$.importForm.fileName}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="o2-form-footer leave-import-footer">
+                <button style="width: 180px;" class="mainColor_bg" @click="submitLedgerImport">{{$.importSubmitting ? '导入中...' : '提交'}}</button>
+                <button class="lightColor_bg" @click="closeLedgerImport">{{$.lp.cancel}}</button>
+            </div>
+        </div>
+    </div>
+
+</div>

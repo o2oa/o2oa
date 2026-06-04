@@ -109,8 +109,9 @@ public class AttendanceV2AppealInfo  extends SliceJpaObject {
     public static final Integer status_TYPE_PROCESS_AGREE = 2; // 审批通过
     public static final Integer status_TYPE_PROCESS_DISAGREE = 3; // 审批不通过
     public static final Integer status_TYPE_END_BY_ADMIN = 4; // 管理员已处理
+    public static final Integer status_TYPE_LOCK = 5; // 已锁定
     public static final String status_FIELDNAME = "status";
-    @FieldDescribe("申诉状态:0-待处理，1-审批中（已发起流程），2-审批通过，3-审批不通过, 4-管理员处理")
+    @FieldDescribe("申诉状态:0-待处理，1-审批中（已发起流程），2-审批通过，3-审批不通过, 4-管理员处理, 5-已锁定(锁定的数据只能管理员处理)")
     @Column( name = ColumnNamePrefix + status_FIELDNAME)
     private Integer status = status_TYPE_INIT;
 

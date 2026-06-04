@@ -48,7 +48,7 @@ public class ActionSyncQywxData extends BaseAction {
                 emc.persist(record);
                 emc.commit();
                 //企业微信的处理队列
-                ThisApplication.qywxQueue.send(record);
+//                ThisApplication.qywxQueue.send(record);
                 result.setData(new WrapBoolean(true));
             } else {
                 throw new ExceptionNotManager();
