@@ -102,6 +102,9 @@ class ActionListObject extends BaseAction {
 		@FieldDescribe("直接下级身份数量")
 		private Long subDirectIdentityCount = 0L;
 
+		@FieldDescribe("直接下级主身份数量")
+		private Long subDirectMajorIdentityCount = 0L;
+
 		@FieldDescribe("直接下级职务数量")
 		private Long subDirectDutyCount = 0L;
 
@@ -110,6 +113,9 @@ class ActionListObject extends BaseAction {
 
 		@FieldDescribe("所有子级身份数量")
 		private Long subNestedIdentityCount;
+
+		@FieldDescribe("所有子级主身份数量")
+		private Long subNestedMajorIdentityCount;
 
 		@FieldDescribe("所有子级职务数量")
 		private Long subNestedDutyCount;
@@ -172,6 +178,22 @@ class ActionListObject extends BaseAction {
 		public void setSubNestedDutyCount(Long subNestedDutyCount) {
 			this.subNestedDutyCount = subNestedDutyCount;
 		}
+
+		public Long getSubDirectMajorIdentityCount() {
+			return subDirectMajorIdentityCount;
+		}
+
+		public void setSubDirectMajorIdentityCount(Long subDirectMajorIdentityCount) {
+			this.subDirectMajorIdentityCount = subDirectMajorIdentityCount;
+		}
+
+		public Long getSubNestedMajorIdentityCount() {
+			return subNestedMajorIdentityCount;
+		}
+
+		public void setSubNestedMajorIdentityCount(Long subNestedMajorIdentityCount) {
+			this.subNestedMajorIdentityCount = subNestedMajorIdentityCount;
+		}
 	}
 
 	private List<Wo> list(Wi wi) throws Exception {
@@ -206,18 +228,22 @@ class ActionListObject extends BaseAction {
 					}
 					wo.setControllerList(controllerList);
 					wo.setSubDirectIdentityCount(business.identity().countByUnit(wo.getId()));
+					wo.setSubDirectMajorIdentityCount(business.identity().countMajorByUnit(wo.getId()));
 					wo.setSubDirectUnitCount(business.unit().countBySuper(wo.getId()));
 					wo.setSubDirectDutyCount(business.unitDuty().countByUnit(wo.getId()));
 					if(BooleanUtils.isTrue(wi.getCountSubNested())){
 						Set<String> unitIdSet = new HashSet<>(business.unit().listSubNested(o.getId()));
 						wo.setSubNestedUnitCount((long)unitIdSet.size());
 						Long identityCount = wo.getSubDirectIdentityCount();
+						Long majorIdentityCount = wo.getSubDirectMajorIdentityCount();
 						Long dutyCount = wo.getSubDirectDutyCount();
 						for (String unitId : unitIdSet) {
 							identityCount += business.identity().countByUnit(unitId);
+							majorIdentityCount += business.identity().countMajorByUnit(unitId);
 							dutyCount += business.unitDuty().countByUnit(unitId);
 						}
 						wo.setSubNestedIdentityCount(identityCount);
+						wo.setSubNestedMajorIdentityCount(majorIdentityCount);
 						wo.setSubNestedDutyCount(dutyCount);
 					}
 					wos.add(wo);
