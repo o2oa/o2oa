@@ -259,7 +259,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                             this.container.loadCssText(json.data.text);
                         });
                     });
-                } 
+                }
                 if (this.json.cssLink) this.container.loadCss(this.json.cssLink);
 
                 this.container.set("html", this.html);
@@ -1139,21 +1139,43 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             documentData.pictureList = specialData.pictures;
             documentData.summary = specialData.summary;
             documentData.cloudPictures = specialData.cloudPictures;
-            documentData.docData = data;
+            //documentData.docData = data;
             delete documentData.attachmentList;
             if (this.officeList) {
                 this.officeList.each(function (module) {
                     module.save();
                 });
             }
+
+            this.modifedData = {};
+            this.setModifedData(data);
+
             var copyData = Object.clone(data);
             this.documentAction.saveDocument(documentData, function () {
-                this.businessData.data.isNew = false;
-                this.businessData.originalData = null;
-                this.businessData.originalData = copyData;
-                this.saving = false;
-                if (callback && typeof callback === "function") callback();
+                this._partUpdateData(
+                    this.modifedData,
+                    ()=>{
+                        this.businessData.data.isNew = false;
+                        this.businessData.originalData = null;
+                        this.businessData.originalData = copyData;
+                        this.saving = false;
+                        if (callback && typeof callback === "function") callback();
+                    }, sync
+                )
             }.bind(this), null, !sync);
+        },
+        _partUpdateData: function (data, callback, sync){
+            if(Object.keys(data).length === 0){
+                if (callback && typeof callback === "function") callback();
+            }else{
+                o2.Actions.load('x_cms_assemble_control').DataAction.updateWithDocument(
+                    this.businessData.document.id,
+                    data,
+                    ()=>{
+                        if (callback && typeof callback === "function") callback();
+                    }, null, !sync
+                )
+            }
         },
         saveDocument: function (callback, sync, silent) {
             this.fireEvent("beforeSave");
@@ -1185,7 +1207,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             documentData.pictureList = specialData.pictures;
             documentData.summary = specialData.summary;
             documentData.cloudPictures = specialData.cloudPictures;
-            documentData.docData = data;
+            //documentData.docData = data;
             delete documentData.attachmentList;
             this.fireEvent("postSave", [documentData]);
             if (this.officeList) {
@@ -1193,20 +1215,29 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                     module.save();
                 });
             }
+
+            this.modifedData = {};
+            this.setModifedData(data);
+
             var copyData = Object.clone(data);
             this.documentAction.saveDocument(documentData, function () {
                 //this.documentAction.saveData(function(json){
-                if(!silent)this.app.notice(MWF.xApplication.cms.Xform.LP.dataSaved, "success");
-                this.businessData.data.isNew = false;
-                this.businessData.originalData = null;
-                this.businessData.originalData = copyData;
-                this.fireEvent("afterSave", [this, documentData]);
-                if (this.app) if (this.app.fireEvent) this.app.fireEvent("afterSave",[this, documentData]);
-                if (callback && typeof callback === "function") callback();
-                this.saving = false;
-                if( !this.json.notReloadWhenSave ){
-                    this._reloadReadForm();
-                }
+                    this._partUpdateData(
+                        this.modifedData,
+                        ()=>{
+                            if(!silent)this.app.notice(MWF.xApplication.cms.Xform.LP.dataSaved, "success");
+                            this.businessData.data.isNew = false;
+                            this.businessData.originalData = null;
+                            this.businessData.originalData = copyData;
+                            this.fireEvent("afterSave", [this, documentData]);
+                            if (this.app) if (this.app.fireEvent) this.app.fireEvent("afterSave",[this, documentData]);
+                            if (callback && typeof callback === "function") callback();
+                            this.saving = false;
+                            if( !this.json.notReloadWhenSave ){
+                                this._reloadReadForm();
+                            }
+                        }, sync
+                    )
                 //}.bind(this), null, this.businessData.document.id, data, !sync );
             }.bind(this), null, !sync);
         },
