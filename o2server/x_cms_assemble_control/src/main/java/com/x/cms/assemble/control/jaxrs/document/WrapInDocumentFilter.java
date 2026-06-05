@@ -71,6 +71,9 @@ public class WrapInDocumentFilter {
 	@FieldDescribe( "发布日期列表，可以传入1个(开始时间)或者2个(开始和结束时间), 格式：yyyy-MM-dd HH:mm:ss或者yyyy-mm-dd." )
 	private List<String> publishDateList;
 
+	@FieldDescribe( "文档修改时间列表，可以传入1个(开始时间)或者2个(开始和结束时间), 格式：yyyy-MM-dd HH:mm:ss或者yyyy-mm-dd." )
+	private List<String> modifyTimeList;
+
 	@FieldDescribe( "作为过滤条件的发布者所属组织, 可多个, String数组." )
 	private List<String> creatorUnitNameList;
 
@@ -228,6 +231,14 @@ public class WrapInDocumentFilter {
 
 	public void setPublishDateList(List<String> publishDateList) {
 		this.publishDateList = publishDateList;
+	}
+
+	public List<String> getModifyTimeList() {
+		return modifyTimeList;
+	}
+
+	public void setModifyTimeList(List<String> modifyTimeList) {
+		this.modifyTimeList = modifyTimeList;
 	}
 
 	public String getOrderField() {
@@ -556,6 +567,15 @@ public class WrapInDocumentFilter {
 				endDate = DateTools.parse(this.getPublishDateList().get(1));
 			}
 			queryFilter.addDateBetweenTerm( Document.publishTime_FIELDNAME, startDate, endDate );
+		}
+
+		if( ListTools.isNotEmpty( this.getModifyTimeList())) {
+			Date startDate = DateTools.parse(this.getModifyTimeList().get(0));
+			Date endDate = new Date();
+			if(this.getModifyTimeList().size() > 1){
+				endDate = DateTools.parse(this.getModifyTimeList().get(1));
+			}
+			queryFilter.addDateBetweenTerm( Document.modifyTime_FIELDNAME, startDate, endDate );
 		}
 
 		if( this.getMinutes() != null && this.getMinutes() > 0 ) {
