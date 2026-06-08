@@ -98,7 +98,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
     },
     validation: function (routeName, opinion) {
-        if (!this.isReadonly() && this.json.showMode!=="disabled" && !this.node?.isDisplayNone()){
+        //!this.isReadonly() && this.json.showMode!=="disabled" && !this.node?.isDisplayNone()
+        if (!this.isReadonly() && this.json.showMode!=="disabled"){
             if (this.getInputData){
                 this._setBusinessData(this.getInputData("change"));
             }

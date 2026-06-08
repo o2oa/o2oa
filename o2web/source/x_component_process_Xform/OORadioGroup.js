@@ -262,6 +262,7 @@ MWF.xApplication.process.Xform.OORadioGroup = MWF.APPOORadioGroup = new Class({
     notValidationMode: function (text) {
         if(!this.isNotValidationMode){
             this.isNotValidationMode = true;
+            this.showNotValidationMode(this.node);
             this.validationText = text;
             this.node.checkValidity();
         }
