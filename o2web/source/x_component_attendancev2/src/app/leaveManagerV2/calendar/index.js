@@ -59,6 +59,13 @@ export default content({
                 dateString: formatDate(today),
                 offDay: true,
             },
+            holidayImportShow: false,
+            holidayImportForm: {
+                overwrite: false,
+                jsonText: "",
+            },
+            holidayImportExample: "",
+            holidayImportResult: null,
             weekList: ["一", "二", "三", "四", "五", "六", "日"],
             calendarRows: [],
             workdayMap: {},
@@ -68,6 +75,8 @@ export default content({
     beforeRender() {
         this.bind.yearList = this.buildYearList(this.bind.currentYear);
         this.bind.monthList = this.buildMonthList();
+        this.bind.holidayImportExample = this.buildHolidayImportExample(this.bind.currentYear);
+        this.bind.holidayImportForm.jsonText = this.bind.holidayImportExample;
         this.buildCalendarRows();
     },
     afterRender() {
@@ -150,6 +159,66 @@ export default content({
     },
     closeHolidayForm() {
         this.bind.holidayFormShow = false;
+    },
+    clickOpenHolidayImport() {
+        this.closeSelector();
+        this.bind.holidayImportForm = {
+            overwrite: false,
+            jsonText: this.buildHolidayImportExample(this.bind.currentYear),
+        };
+        this.bind.holidayImportExample = this.bind.holidayImportForm.jsonText;
+        this.bind.holidayImportResult = null;
+        this.bind.holidayImportShow = true;
+    },
+    closeHolidayImport() {
+        this.bind.holidayImportShow = false;
+    },
+    clickChangeImportOverwrite() {
+        this.bind.holidayImportForm.overwrite = !this.bind.holidayImportForm.overwrite;
+    },
+    async submitHolidayImport() {
+        if (this.importLoading) {
+            return;
+        }
+        const form = this.bind.holidayImportForm || {};
+        const jsonText = (form.jsonText || "").trim();
+        if (!jsonText) {
+            o2.api.page.notice(lp.leaveManagerV2.calendar.importJsonEmpty, "error");
+            return;
+        }
+        let payload = null;
+        try {
+            payload = JSON.parse(jsonText);
+        } catch (e) {
+            o2.api.page.notice(lp.leaveManagerV2.calendar.importJsonError, "error");
+            return;
+        }
+        if (!this.checkHolidayImportPayload(payload)) {
+            o2.api.page.notice(lp.leaveManagerV2.calendar.importDataEmpty, "error");
+            return;
+        }
+        if (Array.isArray(payload)) {
+            payload = {
+                overwrite: form.overwrite === true,
+                days: payload,
+            };
+        } else {
+            payload.overwrite = form.overwrite === true;
+        }
+        this.importLoading = true;
+        try {
+            await showLoading(this);
+            const result = await leaveManagerAction("holidayImport", payload);
+            this.bind.holidayImportResult = result || {};
+            o2.api.page.notice(this.formatHolidayImportResult(result), "success");
+            await this.refreshByImportPayload(payload);
+        } catch (e) {
+            console.error(e);
+            o2.api.page.notice(lp.leaveManagerV2.calendar.importFail, "error");
+        } finally {
+            this.importLoading = false;
+            await hideLoading(this);
+        }
     },
     clickChangeHolidayType(offDay) {
         this.bind.holidayForm.offDay = offDay;
@@ -292,6 +361,78 @@ export default content({
             });
         }
         return list;
+    },
+    buildHolidayImportExample(year) {
+        return JSON.stringify({
+            year,
+            overwrite: false,
+            days: [
+                {
+                    name: "元旦",
+                    date: `${year}-01-01`,
+                    isOffDay: true
+                },
+                {
+                    name: "春节调休上班",
+                    dateString: `${year}-02-15`,
+                    offDay: false
+                }
+            ]
+        }, null, 2);
+    },
+    checkHolidayImportPayload(payload) {
+        if (Array.isArray(payload)) {
+            return payload.length > 0;
+        }
+        if (!payload || typeof payload !== "object") {
+            return false;
+        }
+        return this.getHolidayImportItems(payload).length > 0 || !!(payload.date || payload.dateString);
+    },
+    getHolidayImportItems(payload) {
+        if (!payload || Array.isArray(payload)) {
+            return Array.isArray(payload) ? payload : [];
+        }
+        if (payload.date || payload.dateString) {
+            return [payload];
+        }
+        return payload.days || payload.holidayList || payload.holidays || [];
+    },
+    formatHolidayImportResult(result) {
+        const data = result || {};
+        const text = lp.leaveManagerV2.calendar.importResult;
+        return text
+            .replace("{total}", data.total || 0)
+            .replace("{inserted}", data.inserted || 0)
+            .replace("{updated}", data.updated || 0)
+            .replace("{skipped}", data.skipped || 0)
+            .replace("{errors}", data.errors || 0);
+    },
+    async refreshByImportPayload(payload) {
+        const year = this.getHolidayImportTargetYear(payload);
+        if (year) {
+            if (year !== this.bind.currentYear) {
+                this.changeDate(year, this.bind.currentMonth);
+                return;
+            }
+            await this.loadHolidayData(year);
+            return;
+        }
+        await this.loadHolidayData(this.bind.currentYear);
+    },
+    getHolidayImportTargetYear(payload) {
+        if (payload && !Array.isArray(payload) && payload.year) {
+            return Number(payload.year);
+        }
+        const items = this.getHolidayImportItems(payload);
+        for (let i = 0; i < items.length; i++) {
+            const dateString = items[i] && (items[i].dateString || items[i].date);
+            const date = this.parseDateString(dateString);
+            if (date) {
+                return date.getFullYear();
+            }
+        }
+        return null;
     },
     defaultHolidayDateString() {
         const today = new Date();

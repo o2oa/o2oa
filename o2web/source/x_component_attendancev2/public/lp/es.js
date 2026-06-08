@@ -373,7 +373,19 @@ MWF.xApplication.attendancev2.LP={
 			"dateString": "Fecha",
 			"dateError": "¡Seleccione una fecha válida!",
 			"offDay": "Tipo",
-			"deleteConfirm": "¿Está seguro de que desea eliminar este registro de festivo?"
+			"deleteConfirm": "¿Está seguro de que desea eliminar este registro de festivo?",
+			"importHoliday": "Importar festivos",
+			"importFormatTitle": "Formato JSON de importación",
+			"importFormatDesc": "Prepare un objeto JSON: year es el año, overwrite indica si se reemplazan fechas existentes y days es la lista de festivos. En cada elemento, name es el nombre, date es una fecha yyyy-MM-dd e isOffDay true indica festivo; false indica día laboral ajustado.",
+			"importFormatCompatible": "La API también acepta dateString/offDay, y el campo de lista puede llamarse holidayList u holidays. También puede importar directamente un array; se tratará como days.",
+			"importJson": "JSON de festivos",
+			"importJsonEmpty": "Introduzca el JSON de festivos.",
+			"importJsonError": "El formato JSON no es válido. Revíselo antes de importar.",
+			"importDataEmpty": "Introduzca al menos un registro de festivo.",
+			"importOverwrite": "Reemplazar datos de fechas existentes",
+			"startImport": "Iniciar importación",
+			"importFail": "No se pudieron importar los festivos.",
+			"importResult": "Importación completada: total {total}, nuevos {inserted}, actualizados {updated}, omitidos {skipped}, errores {errors}"
 		},
 		"type": {
 			"name": "Nombre del tipo de vacaciones",

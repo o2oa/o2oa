@@ -31,6 +31,7 @@
                 </div>
                 <button class="mainColor_bg" @click="clickToday">{{$.lp.leaveManagerV2.calendar.today}}</button>
                 <button class="mainColor_bg leave-calendar-add" @click="clickOpenHolidayForm">{{$.lp.leaveManagerV2.calendar.addHoliday}}</button>
+                <button class="mainColor_bg leave-calendar-add" @click="clickOpenHolidayImport">{{$.lp.leaveManagerV2.calendar.importHoliday}}</button>
             </div>
             <div class="leave-calendar-title">{{$.currentTitle}}</div>
         </div>
@@ -89,6 +90,40 @@
                 <div class="leave-calendar-form-footer">
                     <button class="mainColor_bg" @click="submitHolidayForm">{{$.lp.save}}</button>
                     <button class="lightColor_bg" @click="closeHolidayForm">{{$.lp.cancel}}</button>
+                </div>
+            </div>
+        </div>
+        <div class="leave-calendar-form-mask" oo-if="$.holidayImportShow">
+            <div class="leave-calendar-form leave-calendar-import-form">
+                <div class="leave-calendar-form-header">
+                    <span>{{$.lp.leaveManagerV2.calendar.importHoliday}}</span>
+                    <button class="close" @click="closeHolidayImport"><i class="o2icon-icon_off"></i></button>
+                </div>
+                <div class="leave-calendar-form-content">
+                    <div class="leave-calendar-import-tip">{{$.lp.leaveManagerV2.calendar.importFormatTitle}}</div>
+                    <div class="leave-calendar-import-desc">{{$.lp.leaveManagerV2.calendar.importFormatDesc}}</div>
+                    <pre class="leave-calendar-import-example">{{$.holidayImportExample}}</pre>
+                    <div class="leave-calendar-import-desc">{{$.lp.leaveManagerV2.calendar.importFormatCompatible}}</div>
+                    <div class="leave-calendar-form-line">
+                        <div class="leave-calendar-form-label"><span class="required">*</span>{{$.lp.leaveManagerV2.calendar.importJson}}</div>
+                        <textarea class="leave-calendar-import-textarea" oo-model="holidayImportForm.jsonText"></textarea>
+                    </div>
+                    <div class="leave-calendar-import-option" @click="clickChangeImportOverwrite">
+                        <div class="o2-icon-14"><i class="{{ $.holidayImportForm.overwrite === true ? 'o2icon-icon_xuanzhong primary_color' : 'o2icon-icon_quan'}}"></i></div>
+                        <label>{{$.lp.leaveManagerV2.calendar.importOverwrite}}</label>
+                    </div>
+                    <div class="leave-calendar-import-result" oo-if="$.holidayImportResult">
+                        <div>{{this.formatHolidayImportResult($.holidayImportResult)}}</div>
+                        <div class="leave-calendar-import-error-list" oo-if="$.holidayImportResult.errorItems && $.holidayImportResult.errorItems.length">
+                            <div oo-each="$.holidayImportResult.errorItems" oo-item="item">
+                                #{{item.value.index}} {{item.value.dateString}} {{item.value.message}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="leave-calendar-form-footer">
+                    <button class="mainColor_bg" @click="submitHolidayImport">{{$.lp.leaveManagerV2.calendar.startImport}}</button>
+                    <button class="lightColor_bg" @click="closeHolidayImport">{{$.lp.cancel}}</button>
                 </div>
             </div>
         </div>

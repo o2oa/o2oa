@@ -57,6 +57,7 @@ public class ThisApplication {
             AttendanceV2Config config = null; 
             String cronString = null;
             boolean leaveTypeInitialized = false; // 考勤假勤类型的默认数据是否已经初始化
+            boolean chineseHolidaySyncEnable = true; // 是否开启中国节假日数据同步
             try  {
                 EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
                 List<AttendanceV2Config> configs = emc.listAll(AttendanceV2Config.class);
@@ -66,6 +67,7 @@ public class ThisApplication {
                 if (config != null) {
                     cronString = config.getDetailStatisticCronString();
                     leaveTypeInitialized = config.getProperties() != null && BooleanUtils.isTrue(config.getProperties().getLeaveTypeInitialized());
+                    chineseHolidaySyncEnable = !(config.getProperties() != null && BooleanUtils.isFalse(config.getProperties().getChineseHolidaySyncEnable()));
                 }
             } catch (Exception e) {
                 LOGGER.error(e);
@@ -91,7 +93,9 @@ public class ThisApplication {
             // 每天凌晨 2 点半，处理过期的假期额度批次。
             context.schedule(AttendanceV2LeaveLedgerExpireTask.class, "0 30 2 * * ?");
             // 每天凌晨 1 点，同步中国节假日数据。
-            context.schedule(AttendanceV2HolidaySyncTask.class, "0 0 1 * * ?");
+            if (chineseHolidaySyncEnable) {
+                context.schedule(AttendanceV2HolidaySyncTask.class, "0 0 1 * * ?");
+            }
 
         } catch (Exception e) {
             LOGGER.error(e);

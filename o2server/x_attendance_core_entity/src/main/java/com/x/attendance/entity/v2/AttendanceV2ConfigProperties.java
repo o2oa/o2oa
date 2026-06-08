@@ -14,6 +14,8 @@ public class AttendanceV2ConfigProperties  extends JsonProperties {
     private Integer checkInAlertOffDutyAfterMinutes = 10;
     @FieldDescribe("上班前提醒分钟数.")
     private Integer checkInAlertOnDutyBeforeMinutes = 10;
+    @FieldDescribe("是否开启中国节假日数据同步")
+    private Boolean chineseHolidaySyncEnable = true;
 
 
     public Integer getCheckInAlertOffDutyAfterMinutes() {
@@ -41,5 +43,11 @@ public class AttendanceV2ConfigProperties  extends JsonProperties {
         this.leaveTypeInitialized = leaveTypeInitialized;
     }
 
-    
+    public Boolean getChineseHolidaySyncEnable() {
+        return chineseHolidaySyncEnable;
+    }
+
+    public void setChineseHolidaySyncEnable(Boolean chineseHolidaySyncEnable) {
+        this.chineseHolidaySyncEnable = chineseHolidaySyncEnable;
+    }
 }

@@ -373,7 +373,19 @@ MWF.xApplication.attendancev2.LP={
 			"dateString": "Date",
 			"dateError": "Please select a valid date!",
 			"offDay": "Type",
-			"deleteConfirm": "Are you sure you want to delete this holiday record?"
+			"deleteConfirm": "Are you sure you want to delete this holiday record?",
+			"importHoliday": "Import Holidays",
+			"importFormatTitle": "Import JSON format",
+			"importFormatDesc": "Prepare one JSON object: year is the target year, overwrite controls whether existing dates are replaced, and days is the holiday array. In each item, name is the holiday name, date is a yyyy-MM-dd date, and isOffDay true means holiday while false means adjusted workday.",
+			"importFormatCompatible": "The API also accepts dateString/offDay fields, and the array field may be holidayList or holidays. You can also import an array directly; it is treated as days.",
+			"importJson": "Holiday JSON",
+			"importJsonEmpty": "Enter holiday JSON!",
+			"importJsonError": "The JSON format is invalid. Please check it before importing!",
+			"importDataEmpty": "Enter at least one holiday record!",
+			"importOverwrite": "Overwrite existing date records",
+			"startImport": "Start Import",
+			"importFail": "Holiday import failed!",
+			"importResult": "Import complete: total {total}, inserted {inserted}, updated {updated}, skipped {skipped}, errors {errors}"
 		},
 		"type": {
 			"name": "Leave Type Name",
