@@ -379,7 +379,9 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
         return true;
     },
     validation: function(routeName, opinion){
-        if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
+        //if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
+
+        if (this.isReadonly() || this.json.showMode!=="disabled" || !this.isEditable) return true;
         
         if (!this.validationConfig(routeName, opinion))  return false;
 

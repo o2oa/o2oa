@@ -4016,7 +4016,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
     validation: function(routeName, opinion){
 
-        if (this.isReadonly() || this.node?.isDisplayNone() || !this.isEditable) return true;
+        //if (this.isReadonly() || this.node?.isDisplayNone() || !this.isEditable) return true;
+
+        if (this.isReadonly() || !this.isEditable) return true;
         
         if (!this.validationConfig(routeName, opinion))  return false;
 
