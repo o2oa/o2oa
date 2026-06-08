@@ -1,22 +1,19 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import com.x.base.core.project.tools.DateTools;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.Document;
-import com.x.cms.core.express.tools.DateOperation;
 import com.x.cms.core.express.tools.filter.QueryFilter;
 import com.x.cms.core.express.tools.filter.term.EqualsTerm;
 import com.x.cms.core.express.tools.filter.term.InTerm;
 import com.x.cms.core.express.tools.filter.term.IsFalseTerm;
 import com.x.cms.core.express.tools.filter.term.IsTrueTerm;
 import com.x.cms.core.express.tools.filter.term.LikeTerm;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 public class WrapInDocumentFilter {
 
@@ -70,6 +67,9 @@ public class WrapInDocumentFilter {
 
 	@FieldDescribe( "发布日期列表，可以传入1个(开始时间)或者2个(开始和结束时间), 格式：yyyy-MM-dd HH:mm:ss或者yyyy-mm-dd." )
 	private List<String> publishDateList;
+
+	@FieldDescribe( "文档修改时间列表，可以传入1个(开始时间)或者2个(开始和结束时间), 格式：yyyy-MM-dd HH:mm:ss或者yyyy-mm-dd." )
+	private List<String> modifyTimeList;
 
 	@FieldDescribe( "作为过滤条件的发布者所属组织, 可多个, String数组." )
 	private List<String> creatorUnitNameList;
@@ -228,6 +228,14 @@ public class WrapInDocumentFilter {
 
 	public void setPublishDateList(List<String> publishDateList) {
 		this.publishDateList = publishDateList;
+	}
+
+	public List<String> getModifyTimeList() {
+		return modifyTimeList;
+	}
+
+	public void setModifyTimeList(List<String> modifyTimeList) {
+		this.modifyTimeList = modifyTimeList;
 	}
 
 	public String getOrderField() {
@@ -556,6 +564,15 @@ public class WrapInDocumentFilter {
 				endDate = DateTools.parse(this.getPublishDateList().get(1));
 			}
 			queryFilter.addDateBetweenTerm( Document.publishTime_FIELDNAME, startDate, endDate );
+		}
+
+		if( ListTools.isNotEmpty( this.getModifyTimeList())) {
+			Date startDate = DateTools.parse(this.getModifyTimeList().get(0));
+			Date endDate = new Date();
+			if(this.getModifyTimeList().size() > 1){
+				endDate = DateTools.parse(this.getModifyTimeList().get(1));
+			}
+			queryFilter.addDateBetweenTerm( Document.modifyTime_FIELDNAME, startDate, endDate );
 		}
 
 		if( this.getMinutes() != null && this.getMinutes() > 0 ) {
