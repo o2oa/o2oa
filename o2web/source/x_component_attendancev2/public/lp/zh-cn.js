@@ -18,6 +18,8 @@ MWF.xApplication.attendancev2.LP = {
     groupmanager: "考勤组管理",
     addressmanger: "工作场所管理",
     leavemanager: "外出请假记录",
+    leave1: "外出记录",
+    leave2: "请假记录",
     leavemanagerv2: "外出假期管理",
     configmanager: "配置管理",
   },

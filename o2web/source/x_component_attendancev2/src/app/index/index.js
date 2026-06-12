@@ -218,6 +218,18 @@ export default content({
             "text": lp.menu.myAppealList,
             "action": "appealManager",
             "icon": "ooicon-emoji-prompt"
+          },
+           {
+            "name": "1-3",
+            "text": lp.menu.leave1,
+            "action": "leaveManager",
+            "icon": "ooicon-zaotui"
+          },
+           {
+            "name": "1-4",
+            "text": lp.menu.leave2,
+            "action": "leaveManagerV2/requestList",
+            "icon": "ooicon-working_hours"
           }
         ]
       },

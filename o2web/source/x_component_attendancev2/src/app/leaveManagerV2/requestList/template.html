@@ -1,12 +1,13 @@
 <!-- 请假申请列表 -->
 <div style="display: flex; flex-direction: column;">
     <div class="index_page_header_container">
-        <div class="index_page_header_title"><button style="margin-left: 0;margin-right: 10px;"
-                @click="clickBackTypeList"><i class="ooicon-process-goback"></i></button> {{
-            $.lp.leaveManagerV2.requestList }}</div>
+        <div class="index_page_header_title">
+            <button style="margin-left: 0;margin-right: 10px;" @click="clickBackTypeList"  oo-if="$.self === false"><i class="ooicon-process-goback"></i></button> 
+            {{$.lp.leaveManagerV2.requestList }}
+        </div>
     </div>
     <div class="manager-box-content">
-        <div style="margin: 10px 0;float: left;display: flex; align-items: center;">
+        <div style="margin: 10px 0;float: left;display: flex; align-items: center;"  oo-if="$.self === false">
             <div class="margin-right">
                 <o-org-person-selector
                     oo-prop="{'isRequried': true, 'selectorTitle': $.lp.leaveManagerV2.request.filterSelectTitle,  'placeholder': $.lp.leaveManagerV2.request.filterEmptyPlaceholder, 'value': $.filterList}"
@@ -31,7 +32,7 @@
                     <th style="min-width: 150px;">{{$.lp.leave.startTime}}</th>
                     <th style="min-width: 150px;">{{$.lp.leave.endTime}}</th>
                     <th style="min-width: 80px;">{{$.lp.leave.leaveDays}}</th>
-                    <th style="min-width: 100px;">{{$.lp.appeal.status}}</th>
+                    <!-- <th style="min-width: 100px;">{{$.lp.appeal.status}}</th> -->
                     <th style="min-width: 180px;">{{$.lp.leave.desc}}</th>
                 </thead>
                 <tr oo-each="$.requestList" oo-item="d">
@@ -40,7 +41,7 @@
                     <td>{{ $m.formatDateTime(d.value.startTime) }}</td>
                     <td>{{ $m.formatDateTime(d.value.endTime) }}</td>
                     <td>{{ $m.formatDuration(d.value.duration) }}</td>
-                    <td>{{ $m.formatStatus(d.value.status) }}</td>
+                    <!-- <td>{{ $m.formatStatus(d.value.status) }}</td> -->
                     <td>{{ d.value.description }}</td>
                 </tr>
             </table>

@@ -1,11 +1,12 @@
 <div style="display: flex; flex-direction: column;">
      <div class="index_page_header_container">
-        <div class="index_page_header_title"><button style="margin-left: 0;margin-right: 10px;"
-                @click="clickBackTypeList"><i class="ooicon-process-goback"></i></button> {{
-            $.lp.leaveManagerTitle }}</div>
+        <div class="index_page_header_title">
+            <button style="margin-left: 0;margin-right: 10px;"  @click="clickBackTypeList" oo-if="$.self === false"><i class="ooicon-process-goback"></i></button> 
+            {{ $.lp.leaveManagerTitle }}
+        </div>
     </div>
     <div class="manager-box-content">
-        <div class="form" >
+        <div class="form" oo-if="$.self === false">
             <!--人员组织选择  -->
             <div style="margin-right: 10px;float: left;">
                 <o-org-person-selector

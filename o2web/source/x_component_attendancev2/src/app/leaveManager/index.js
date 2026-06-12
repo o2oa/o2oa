@@ -14,6 +14,7 @@ export default content({
   bind() {
     return {
       lp,
+      self: true,  // 默认显示自己的外出记录
       // 搜索表单
       form: {
         person: "",
@@ -48,11 +49,16 @@ export default content({
   },
   async loadLeaveList() {
     let form = this.bind.form;
-    if (this.bind.filterList && this.bind.filterList.length > 0) {
-      form.person = this.bind.filterList[0];
+    if (this.bind.self) {
+      form.person = layout.session.user.distinguishedName;
     } else {
-      form.person = "";
+      if (this.bind.filterList && this.bind.filterList.length > 0) {
+        form.person = this.bind.filterList[0];
+      } else {
+        form.person = "";
+      }
     }
+    
     const json = await leaveActionListByPaging(
       this.bind.pagerData.page,
       this.bind.pagerData.size,

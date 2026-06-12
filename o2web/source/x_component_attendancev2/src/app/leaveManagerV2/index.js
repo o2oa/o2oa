@@ -264,7 +264,7 @@ export default content({
   },
   // 打开请假申请的搜索视图
   async clickOpenRequestSearchView() {
-    const bindData = {  };
+    const bindData = { bind: {self: false} };
     const c = (await import('./requestList/index.js')).default;
     this.openOtherListViewVm(c, bindData);
   },
@@ -275,7 +275,7 @@ export default content({
     this.openOtherListViewVm(c, bindData);
   },
   async clickOpenLeaveDataView() {
-    const bindData = {  };
+    const bindData = { bind: {self: false} };
     const c = (await import('../leaveManager/index.js')).default;
     this.openOtherListViewVm(c, bindData);
   },

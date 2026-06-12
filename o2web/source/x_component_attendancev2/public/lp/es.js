@@ -16,6 +16,8 @@ MWF.xApplication.attendancev2.LP={
 		"groupmanager": "Gestión de grupos de asistencia",
 		"addressmanger": "Gestión de lugares de trabajo",
 		"leavemanager": "Registros de ausencia",
+		"leave1": "Registros de salidas",
+		"leave2": "Registros de permisos",
 		"leavemanagerv2": "Gestión de vacaciones",
 		"configmanager": "Gestión de configuración"
 	},

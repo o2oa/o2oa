@@ -16,6 +16,8 @@ MWF.xApplication.attendancev2.LP={
 		"groupmanager": "Attendance Group Management",
 		"addressmanger": "Workplace Management",
 		"leavemanager": "Out of Office Leave Records",
+		"leave1": "Out-of-Office Records",
+		"leave2": "Leave Records",
 		"leavemanagerv2": "Leave Management",
 		"configmanager": "Configuration Management"
 	},
