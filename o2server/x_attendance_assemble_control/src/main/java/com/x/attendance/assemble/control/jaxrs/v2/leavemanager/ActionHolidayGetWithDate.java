@@ -1,5 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.v2.leavemanager;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +32,22 @@ public class ActionHolidayGetWithDate extends BaseAction {
                     AttendanceV2Holiday.dateString_FIELDNAME, dateString);
             if (list == null || list.isEmpty()) {
                 wo.setResult(RESULT_NOT_FOUND);
+                // 没有查询到节假日配置数据， 判断是否周末
+                try {
+                    Date d = DateTools.parse(dateString, DateTools.format_yyyyMMdd);
+                    int day = DateTools.dayForWeekAttendanceV2(d);
+                    if (day == 0 || day == 6) {
+                        wo.setWorkDay(false);
+                        wo.setOffDay(true);
+                    } else {
+                        wo.setWorkDay(true);
+                        wo.setOffDay(false);
+                    }
+                } catch (Exception e) {
+                    // 日期格式不正确，无法判断是否周末，默认设置为工作日
+                    wo.setWorkDay(true);
+                    wo.setOffDay(false);
+                }
                 result.setData(wo);
                 result.setCount(0L);
                 return result;
