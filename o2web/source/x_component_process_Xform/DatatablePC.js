@@ -2379,7 +2379,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var line = this.currentEditedLine;
 			if( !line )return true;
 			if( !line.validation() )return false;
-			return true;
+			return line.moduleValidationAG ?? true;
 		},
 		_validation: function(routeName, opinion){
 			// if (this.isEdit){
@@ -2388,12 +2388,28 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			// 	}
 			// }
 			if (!this.isReadable || !this.isEditable) return true;
-			let validationFlag = '';
+
 			if (!this.validationConfig(routeName, opinion))  return false;
 
-			if( !this.validationCurrentEditedLine() )return false;
+			const currentLineFlag = this.validationCurrentEditedLine();
+			if( !currentLineFlag )return false;
 
-			return this.__validation(routeName);
+			const validationFlag = this.__validation(routeName);
+			if( !validationFlag )return false;
+
+			if( currentLineFlag === true && validationFlag === true){
+				return true;
+			}
+
+			const promiseList = [];
+			if (currentLineFlag instanceof Promise) promiseList.push(currentLineFlag);
+			if (validationFlag instanceof Promise) promiseList.push(validationFlag);
+
+
+			this.moduleValidationAG = Promise.all(promiseList).then(resultArr=>{
+				return resultArr.every(res => String(res) === "true");
+			});
+			return this.moduleValidationAG;
 		},
 		__validation: function(routeName){
 			if (!this.json.validation) return true;
@@ -2403,39 +2419,46 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var flag = this.form.Macro.exec(this.json.validation.code, this);
 			this.currentRouteName = "";
 
-			this.moduleValidationAG = flag && o2.typeOf(flag.then) === "function" ? flag : null;
+			const isAsyncCheck = flag && typeof flag.then === "function";
+			const isSyncPass = String(flag) === "true";
 
-			if (!flag) flag = MWF.xApplication.process.Xform.LP.lineNotValidation;
-			if (flag.toString()!=="true"){
-                if( this.moduleValidationAG ){
-                    this.moduleValidationAG.then(f=>{
-                        if (!f) f = MWF.xApplication.process.Xform.LP.lineNotValidation;
-						if (f.toString()!=="true") {
-							this.notValidationMode(f);
-						}
-                    });
-                	return this.moduleValidationAG;
-				}else{
-					this.notValidationMode(flag);
-					return false;
-				}
+			// 同步校验不通过
+			if (!isAsyncCheck && !isSyncPass) {
+				const errMsg = flag || MWF.xApplication.process.Xform.LP.lineNotValidation;
+				this.notValidationMode(errMsg);
+				return false;
 			}
+
+			// 异步校验处理
+			if (isAsyncCheck) {
+				return flag.then(f => {
+					const pass = String(f) === "true";
+					if (!pass) {
+						const errMsg = f || MWF.xApplication.process.Xform.LP.lineNotValidation;
+						this.notValidationMode(errMsg);
+					}
+					return pass;
+				});
+			}
+
+			// 同步校验通过
 			return true;
 		},
 		validation: function(routeName, opinion){
 			this.moduleValidationAG = null;
 			if (this.isReadonly() || this.json.showMode==="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
 
-			const flag = this._validation(routeName, opinion);
-			if( this.moduleValidationAG ){
-				this.moduleValidationAG.then(f=>{
-					this.fireEvent("validation", [flag]);
-				})
-				return this.moduleValidationAG;
-			}else{
-				this.fireEvent("validation", [flag]);
-				return flag;
+			const checkResult = this._validation(routeName, opinion);
+
+			if (checkResult instanceof Promise) {
+				return checkResult.then(pass => {
+					this.fireEvent("validation", [pass]);
+					return pass;
+				});
 			}
+
+			this.fireEvent("validation", [checkResult]);
+			return checkResult;
 		},
 		getAttachmentRandomSite: function(){
 			var i = (new Date()).getTime();
@@ -3524,44 +3547,69 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 	},
 	_validation: function(){
 		if( !this.options.isEdited || !this.options.isEditable )return true;
-		if( !this.validationFields())return false;
-		if( !this.validationCompleteLine())return false;
-		return true;
+
+		const fieldsPass = this.validationFields();
+		if (fieldsPass === false) return false;
+
+		const linePass = this.validationCompleteLine();
+		if (linePass === false) return false;
+
+
+		const promises = [];
+		if( fieldsPass instanceof Promise)promises.push(fieldsPass);
+		if( linePass instanceof Promise)promises.push(linePass);
+		if( promises.length === 0 )return true;
+
+		this.moduleValidationAG = Promise.all(promises).then(arr=>{
+			return arr.every(item => String(item) === 'true');
+		});
+		return this.moduleValidationAG;
 	},
 	validation: function(){
 		// if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
+		this.moduleValidationAG = null;
+		const checkRes = this._validation();
 
-		const flag = this._validation();
-		if( !flag || !this.moduleValidationAG){
-			this.datatable.fireEvent("validationLine", [this, flag]);
-			return flag;
+		if (checkRes instanceof Promise) {
+			return checkRes.then(isPass => {
+				this.datatable.fireEvent("validationLine", [this, isPass]);
+				return isPass;
+			});
 		}
 
-		this.moduleValidationAG.then(f=>{
-			this.datatable.fireEvent("validationLine", [this, f]);
-		})
-		return this.moduleValidationAG;
+		this.datatable.fireEvent("validationLine", [this, checkRes]);
+		return checkRes;
 	},
 	validationFields: function(){
 		if( !this.options.isEdited || !this.options.isEditable )return true;
-		var flag = true;
-		const ags = this.fields.map(function(field, key){
-			if (field.json.type!="sequence" && field.validationMode ){
-				field.validationMode();
-				if (!field.validation()) flag = false;
-				return field.moduleValidationAG;
+
+		let syncFailed = false;
+		const asyncPromiseList = [];
+
+		this.fields.forEach(field => {
+			if (field.json.type === "sequence" || !field.validationMode) return;
+
+			field.validationMode();
+			// 同步校验失败标记
+			if (!field.validation()) {
+				syncFailed = true;
 			}
-			return null;
-		}.bind(this)).filter(ag=>!!ag);
+			// 收集字段异步校验Promise
+			if (field.moduleValidationAG) {
+				asyncPromiseList.push(field.moduleValidationAG);
+			}
+		});
 
-		if (!flag) return false;
-		if (ags.length === 0) return true;
+		// 任意字段同步校验失败，直接阻断
+		if (syncFailed) return false;
+		// 无异步校验，同步全部通过
+		if (asyncPromiseList.length === 0) return true;
 
-		this.moduleValidationAG = Promise.all(ags).then(arr=>{
-			const hasError = arr.some(f=>f.toString()!=="true");
+		// 合并字段异步校验
+		return Promise.all(asyncPromiseList).then(arr => {
+			const hasError = arr.some(item => String(item) !== "true");
 			return !hasError;
 		});
-		return this.moduleValidationAG;
 	},
 	validationCompleteLine: function(){
 		if( !this.options.isEdited || !this.options.isEditable )return true;
@@ -3572,11 +3620,26 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				if (!flag) flag = MWF.xApplication.process.Xform.LP.lineNotValidation;
 			}
 		}
-		if (flag.toString()!=="true"){
-			var isTr = !layout.mobile;
-			this.notValidationMode(flag, isTr);
+
+		const isAsyncCheck = flag && typeof flag.then === "function";
+		const isSyncPass = String(flag) === "true";
+
+		// 同步校验不通过
+		if (!isAsyncCheck && !isSyncPass) {
+			this.notValidationMode(flag, !layout.mobile);
 			return false;
 		}
+
+		if(isAsyncCheck){
+			return flag.then(f => {
+				const pass = String(f) === "true";
+				if (!pass) {
+					this.notValidationMode(f, !layout.mobile);
+				}
+				return pass;
+			});
+		}
+
 		return true;
 	},
 	createErrorNode: function(text, isTr){
