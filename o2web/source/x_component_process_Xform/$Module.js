@@ -99,6 +99,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
     validation: function (routeName, opinion) {
         //!this.isReadonly() && this.json.showMode!=="disabled" && !this.node?.isDisplayNone()
+        this.moduleValidationAG = null;
         if (!this.isReadonly() && this.json.showMode!=="disabled"){
             if (this.getInputData){
                 this._setBusinessData(this.getInputData("change"));
@@ -111,15 +112,31 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             }
             if (!this.validationConfig(routeName, opinion)) return false;
 
-            if (!this.json.validation) return true;
-            if (!this.json.validation.code) return true;
+            return this._validation(routeName, opinion);
+        }
+        return true;
+    },
+    _validation: function(routeName){
+        if (!this.json.validation) return true;
+        if (!this.json.validation.code) return true;
 
-            this.currentRouteName = routeName;
-            var flag = this.form.Macro.exec(this.json.validation.code, this);
-            this.currentRouteName = "";
+        this.currentRouteName = routeName;
+        var flag = this.form.Macro.exec(this.json.validation.code, this);
+        this.currentRouteName = "";
 
-            if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
-            if (flag.toString() !== "true") {
+        this.moduleValidationAG = flag && o2.typeOf(flag.then) === "function" ? flag : null;
+
+        if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
+        if (flag.toString() !== "true") {
+            if( this.moduleValidationAG ){
+                this.moduleValidationAG.then(f=>{
+                    if (!f) f = MWF.xApplication.process.Xform.LP.notValidation;
+                    if (f.toString()!=="true") {
+                        this.notValidationMode(f);
+                    }
+                });
+                return this.moduleValidationAG;
+            }else{
                 this.notValidationMode(flag);
                 return false;
             }

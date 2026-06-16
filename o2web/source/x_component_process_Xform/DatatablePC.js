@@ -2393,6 +2393,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			if( !this.validationCurrentEditedLine() )return false;
 
+			return this.__validation(routeName);
+		},
+		__validation: function(routeName){
 			if (!this.json.validation) return true;
 			if (!this.json.validation.code) return true;
 
@@ -2400,19 +2403,39 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var flag = this.form.Macro.exec(this.json.validation.code, this);
 			this.currentRouteName = "";
 
+			this.moduleValidationAG = flag && o2.typeOf(flag.then) === "function" ? flag : null;
+
 			if (!flag) flag = MWF.xApplication.process.Xform.LP.lineNotValidation;
 			if (flag.toString()!=="true"){
-				this.notValidationMode(flag);
-				return false;
+                if( this.moduleValidationAG ){
+                    this.moduleValidationAG.then(f=>{
+                        if (!f) f = MWF.xApplication.process.Xform.LP.lineNotValidation;
+						if (f.toString()!=="true") {
+							this.notValidationMode(f);
+						}
+                    });
+                	return this.moduleValidationAG;
+				}else{
+					this.notValidationMode(flag);
+					return false;
+				}
 			}
 			return true;
 		},
 		validation: function(routeName, opinion){
+			this.moduleValidationAG = null;
 			if (this.isReadonly() || this.json.showMode==="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
 
 			const flag = this._validation(routeName, opinion);
-			this.fireEvent("validation", [flag]);
-			return flag;
+			if( this.moduleValidationAG ){
+				this.moduleValidationAG.then(f=>{
+					this.fireEvent("validation", [flag]);
+				})
+				return this.moduleValidationAG;
+			}else{
+				this.fireEvent("validation", [flag]);
+				return flag;
+			}
 		},
 		getAttachmentRandomSite: function(){
 			var i = (new Date()).getTime();
@@ -3509,19 +3532,36 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		// if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
 
 		const flag = this._validation();
-		this.datatable.fireEvent("validationLine", [this, flag]);
-		return flag
+		if( !flag || !this.moduleValidationAG){
+			this.datatable.fireEvent("validationLine", [this, flag]);
+			return flag;
+		}
+
+		this.moduleValidationAG.then(f=>{
+			this.datatable.fireEvent("validationLine", [this, f]);
+		})
+		return this.moduleValidationAG;
 	},
 	validationFields: function(){
 		if( !this.options.isEdited || !this.options.isEditable )return true;
 		var flag = true;
-		this.fields.each(function(field, key){
+		const ags = this.fields.map(function(field, key){
 			if (field.json.type!="sequence" && field.validationMode ){
 				field.validationMode();
 				if (!field.validation()) flag = false;
+				return field.moduleValidationAG;
 			}
-		}.bind(this));
-		return flag;
+			return null;
+		}.bind(this)).filter(ag=>!!ag);
+
+		if (!flag) return false;
+		if (ags.length === 0) return true;
+
+		this.moduleValidationAG = Promise.all(ags).then(arr=>{
+			const hasError = arr.some(f=>f.toString()!=="true");
+			return !hasError;
+		});
+		return this.moduleValidationAG;
 	},
 	validationCompleteLine: function(){
 		if( !this.options.isEdited || !this.options.isEditable )return true;
