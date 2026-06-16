@@ -1,21 +1,6 @@
 package com.x.organization.assemble.express.jaxrs.unit;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-
-import java.util.Set;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import com.x.organization.core.entity.*;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
+import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -32,6 +17,13 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.Business;
+import com.x.organization.core.entity.Person;
+import com.x.organization.core.entity.Unit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionListObject extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionListObject.class);
@@ -232,15 +224,25 @@ class ActionListObject extends BaseAction {
 					wo.setSubDirectUnitCount(business.unit().countBySuper(wo.getId()));
 					wo.setSubDirectDutyCount(business.unitDuty().countByUnit(wo.getId()));
 					if(BooleanUtils.isTrue(wi.getCountSubNested())){
-						Set<String> unitIdSet = new HashSet<>(business.unit().listSubNested(o.getId()));
+						List<String> unitIdSet = new ArrayList<>();
+						if(wo.getLevel().equals(1)) {
+							Long topCount = emc.countEqual(Unit.class, Unit.level_FIELDNAME, 1);
+							if(topCount.equals(1L)){
+								unitIdSet.addAll(business.unit().listAll());
+							}
+						}
+						if(unitIdSet.isEmpty()) {
+							unitIdSet.addAll(business.unit().listSubNested(o.getId()));
+						}
+						unitIdSet.remove(wo.getId());
 						wo.setSubNestedUnitCount((long)unitIdSet.size());
 						Long identityCount = wo.getSubDirectIdentityCount();
 						Long majorIdentityCount = wo.getSubDirectMajorIdentityCount();
 						Long dutyCount = wo.getSubDirectDutyCount();
-						for (String unitId : unitIdSet) {
-							identityCount += business.identity().countByUnit(unitId);
-							majorIdentityCount += business.identity().countMajorByUnit(unitId);
-							dutyCount += business.unitDuty().countByUnit(unitId);
+						for (List<String> subIds : Lists.partition(unitIdSet, 500)) {
+							identityCount += business.identity().countByUnitIds(subIds);
+							majorIdentityCount += business.identity().countMajorByUnitIds(subIds);
+							dutyCount += business.unitDuty().countByUnitIds(subIds);
 						}
 						wo.setSubNestedIdentityCount(identityCount);
 						wo.setSubNestedMajorIdentityCount(majorIdentityCount);
