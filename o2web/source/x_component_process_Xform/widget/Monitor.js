@@ -578,13 +578,13 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         }.bind(this));
     },
     writePassCount: function(activity){
-        if (activity.passedCount || activity.recordCount){
+        if (activity.passedCount ){ //|| activity.recordCount
             var x = activity.point.x+activity.width;
             var y = activity.point.y;
             var shap = this.paper.circle(x, y, 9);
             shap.attr(this.css.activityPassedCount);
 
-            text = this.paper.text(x, y, activity.recordCount || activity.passedCount);
+            text = this.paper.text(x, y, activity.passedCount); //activity.recordCount ||
             text.attr(this.css.activityPassedCountText);
 
             activity.countSet = this.paper.set();
@@ -920,7 +920,8 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
     createWorkLogNode: function(worklogs, activity){
         var node = new Element("div", {"styles": this.css.workLogNode});
 
-        if (this.recordList){
+        const useWorklog = true;
+        if (this.recordList && !useWorklog){
             var logs = this.recordList.filter(function(r){
                 return r.fromActivity === activity.data.id;
             });

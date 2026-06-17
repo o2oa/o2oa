@@ -1617,32 +1617,32 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return obj;
     },
     saveWork: function (callback, silent) {
-
         if( this.disallowSaving )return;
-
-        if (this.businessData.control["allowSave"]) {
-
-            if (!this.formSaveValidation()) {
-                if (callback) callback();
-                return false;
-            }
-
-            this.fireEvent("beforeSave");
-            this.fireEvent("beforeSaveWork");
-
-            if (this.app && this.app.fireEvent) this.app.fireEvent("beforeSave");
-            this.saveFormData(function (json) {
-                if (this.app && !silent) this.app.notice(MWF.xApplication.process.Xform.LP.dataSaved, "success");
-                if (callback && typeOf(callback) === "function") callback(json);
-                this.fireEvent("afterSave");
-                this.fireEvent("afterSaveWork");
-                if (this.app && this.app.fireEvent) this.app.fireEvent("afterSave");
-            }.bind(this));
-
-        } else {
+        if (!this.businessData.control["allowSave"]) {
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
-            //if (failure) failure(null, "Permission Denied", "");
+            return;
         }
+        const checkResult = this.formSaveValidation();
+        o2.promiseAll(checkResult).then( result=> {
+            if(result){
+                this._saveWork(callback, silent);
+            }else{
+                if (callback) callback();
+            }
+        })
+    },
+    _saveWork: function (callback, silent) {
+        this.fireEvent("beforeSave");
+        this.fireEvent("beforeSaveWork");
+
+        if (this.app && this.app.fireEvent) this.app.fireEvent("beforeSave");
+        this.saveFormData(function (json) {
+            if (this.app && !silent) this.app.notice(MWF.xApplication.process.Xform.LP.dataSaved, "success");
+            if (callback && typeOf(callback) === "function") callback(json);
+            this.fireEvent("afterSave");
+            this.fireEvent("afterSaveWork");
+            if (this.app && this.app.fireEvent) this.app.fireEvent("afterSave");
+        }.bind(this));
     },
 
     getSectionList: function () {
@@ -2072,11 +2072,25 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
     formSaveValidation: function(){
         var flag = true;
+        const promiseList = [];
         Object.each(this.forms, function (field, key) {
             if( !field.json.id || field.json.id.indexOf("..") > 0 )return;
             field.validationMode();
-            if (!field.saveValidation()) flag = false;
+            const checkResult = field.saveValidation();
+            if(checkResult instanceof Promise){
+                promiseList.push(checkResult);
+            }else if(!checkResult){
+                flag = false;
+            }
         }.bind(this));
+        if( flag === false ){
+            return false;
+        }
+        if(promiseList.length > 0){
+            return Promise.all( promiseList ).then( function( resultArr ){
+                return resultArr.every(res => String(res) === "true");
+            });
+        }
         return flag;
     },
     formValidation: function (routeName, opinion, medias) {
@@ -2088,22 +2102,65 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         var flag = true;
         //flag = this.validation();
+        var promiseList = [];
         Object.each(this.forms, function (field, key) {
             field.validationMode();
-            if (!field.validation(routeName, opinion, medias)) flag = false;
+            const checkResult = field.validation(routeName, opinion, medias);
+            if(checkResult instanceof Promise){
+                promiseList.push(checkResult);
+            }else if(!checkResult){
+                flag = false;
+            }
         }.bind(this));
+        if( flag === false ){
+            return false;
+        }
+        if(promiseList.length > 0){
+            return Promise.all( promiseList ).then( function( resultArr ){
+                return resultArr.every(res => String(res) === "true");
+            })
+        }
         return flag;
     },
+
+    validation: function (routeName, opinion, processor, medias) {
+        this.Macro.environment.form.currentRouteAlias = this.getCurrentRouteAlias();
+        this.Macro.environment.form.currentRouteName = routeName;
+        this.Macro.environment.form.opinion = opinion;
+        this.Macro.environment.form.medias = medias;
+        var routeFlag = this.validationRoute(processor);
+        var opinionFlag = this.validationOpinion(processor);
+
+        return this._checkMultiValidation([routeFlag, opinionFlag]);
+    },
+    _checkMultiValidation: function(results) {
+        for(var i=0; i<results.length; i++){
+            if(results[i] === false){
+                return false;
+            }
+        }
+
+        var promiseList = results.filter(result=>{
+            return result instanceof Promise;
+        })
+
+        if(promiseList.length === 0){
+            return true;
+        }
+
+        return Promise.all(promiseList).then(resultArr => {
+            return resultArr.every(res => String(res) === "true");
+        });
+    },
     validationOtherFlow: function (routeName, opinion, processor, flowData) {
+        if (!this.json.validationOtherFlow) return true;
+
         this.Macro.environment.form.currentRouteAlias = null;
         this.Macro.environment.form.currentRouteName = routeName;
         this.Macro.environment.form.opinion = opinion;
         this.Macro.environment.form.flowData = flowData;
-        if (!this.json.validationOtherFlow) return true;
-        if (!this.json.validationOtherFlow.code) return true;
-        var flag = this.Macro.exec(this.json.validationOtherFlow.code, this);
-        if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
-        if (flag.toString() !== "true") {
+
+        return this._checkCodeValidation(this.json.validationOtherFlow.code, (flag)=>{
             MWF.xDesktop.notice(
                 "error",
                 (processor) ? { "x": "center", "y": "top" } : { "x": "right", "y": "top" },
@@ -2112,51 +2169,51 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 null,  //{"x": 0, "y": 30}
                 { "closeOnBoxClick": true, "closeOnBodyClick": true, "fixed": true, "delayClose": 6000 }
             );
+        })
+    },
+    _checkCodeValidation: function(code, notValidationCallback){
+        if( !code )return true;
+        var checkResult = this.Macro.exec(code, this);
+
+        var defaultMessage = MWF.xApplication.process.Xform.LP.notValidation;
+
+        if( checkResult instanceof Promise ){
+            return checkResult.then(result=>{
+                if ( String(result) !== "true") {
+                    notValidationCallback(result || defaultMessage);
+                    return false;
+                }
+                return true;
+            })
+        }
+
+        if ( String(checkResult) !== "true") {
+            notValidationCallback(checkResult || defaultMessage);
             return false;
         }
+
         return true;
-    },
-    validation: function (routeName, opinion, processor, medias) {
-        this.Macro.environment.form.currentRouteAlias = this.getCurrentRouteAlias();
-        this.Macro.environment.form.currentRouteName = routeName;
-        this.Macro.environment.form.opinion = opinion;
-        this.Macro.environment.form.medias = medias;
-        var routeFlag = this.validationRoute(processor);
-        var opinionFlag = this.validationOpinion(processor);
-        return routeFlag && opinionFlag;
     },
     validationRoute: function (processor) {
         if (!this.json.validationRoute) return true;
-        if (!this.json.validationRoute.code) return true;
-        var flag = this.Macro.exec(this.json.validationRoute.code, this);
-        if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
-        if (flag.toString() != "true") {
-            this.notValidationRouteMode(flag, processor);
-            return false;
-        }
-        return true;
+
+        return this._checkCodeValidation(this.json.validationRoute.code, (message)=>{
+            this.notValidationRouteMode(message, processor);
+        });
     },
     validationOpinion: function (processor) {
         if (!this.json.validationOpinion) return true;
-        if (!this.json.validationOpinion.code) return true;
-        var flag = this.Macro.exec(this.json.validationOpinion.code, this);
-        if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
-        if (flag.toString() != "true") {
-            this.notValidationOpinionMode(flag, processor);
-            return false;
-        }
-        return true;
+
+        return this._checkCodeValidation(this.json.validationOpinion.code, (message)=>{
+            this.notValidationOpinionMode(message, processor);
+        });
     },
     formCustomValidation: function () {
         if (!this.json.validationFormCustom) return true;
-        if (!this.json.validationFormCustom.code) return true;
-        var flag = this.Macro.exec(this.json.validationFormCustom.code, this);
-        if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
-        if (flag.toString() != "true") {
-            this.notValidationOpinionMode(flag);
-            return false;
-        }
-        return true;
+
+        return this._checkCodeValidation(this.json.validationFormCustom.code, (message)=>{
+            this.notValidationOpinionMode(message);
+        });
     },
     notValidationRouteMode: function (flag, processor) {
         if (processor) {
@@ -2262,16 +2319,32 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             return false;
         }
 
-        if (!this.formValidation(routeName, opinion, medias)) {
-            this.app.content.unmask();
-            if (callback) callback();
-            return false;
-        }
-        if (!this.validation(routeName, opinion, processor, medias)) {
-            if (processor && processor.node) processor.node.unmask();
-            if (callback) callback();
-            return false;
-        }
+        const formValidated = this.formValidation(routeName, opinion, medias);
+        const scriptValidated = this.validation(routeName, opinion, processor, medias);
+
+        const checkResult = this._checkMultiValidation([formValidated, scriptValidated]);
+        o2.promiseAll(checkResult).then( (result)=>{
+            if(result){
+                this._submitWork(routeName, opinion, medias, callback, processor, data, appendTaskIdentityList, processorOrgList, callbackBeforeSave)
+            }else{
+                this.app.content.unmask();
+                if (processor && processor.node) processor.node.unmask();
+                if (callback) callback();
+            }
+        });
+    },
+    _submitWork: function (routeName, opinion, medias, callback, processor, data, appendTaskIdentityList, processorOrgList, callbackBeforeSave) {
+
+        // if( !this.formValidation(routeName, opinion, medias) ) {
+        //     this.app.content.unmask();
+        //     if (callback) callback();
+        //     return false;
+        // }
+        // if (!this.validation(routeName, opinion, processor, medias)) {
+        //     if (processor && processor.node) processor.node.unmask();
+        //     if (callback) callback();
+        //     return false;
+        // }
         if (!opinion) {
             var idx = this.businessData.task.routeNameList.indexOf(routeName);
             if (this.businessData.task.routeOpinionList[idx]) {
@@ -2623,17 +2696,35 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         var dlg = o2.DL.open(options);
 
     },
-    startDraftProcess: function ( action ) {
-        if (!this.formCustomValidation("", "")) {
-            this.app.content.unmask();
-            //    if (callback) callback();
-            return false;
-        }
-        if (!this.formValidation("", "")) {
-            this.app.content.unmask();
-            //    if (callback) callback();
-            return false;
-        }
+    checkPopup : function(callback) {
+        const customValidated = this.formCustomValidation("", "");
+        const formValidated = this.formValidation("", "");
+
+        const checkResult = this._checkMultiValidation([customValidated, formValidated]);
+        o2.promiseAll(checkResult).then( (result)=>{
+            if(result){
+                if(callback)callback();
+            }else{
+                this.app.content.unmask();
+            }
+        });
+    },
+    startDraftProcess: function (action){
+        this.checkPopup(()=>{
+            this._startDraftProcess(action)
+        })
+    },
+    _startDraftProcess: function ( action ) {
+        // if (!this.formCustomValidation("", "")) {
+        //     this.app.content.unmask();
+        //     //    if (callback) callback();
+        //     return false;
+        // }
+        // if (!this.formValidation("", "")) {
+        //     this.app.content.unmask();
+        //     //    if (callback) callback();
+        //     return false;
+        // }
         this.saveFormData(function () {
             this.workAction.startDraft(this.businessData.work.id, function (json) {
                 this.app.options.workId = json.data[0].work;
@@ -2738,23 +2829,31 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
         }
     },
-    flowWork_pc: function ( defaultRoute ) {
-        var _self = this;
-        //? 添加事件
+    flowWork_pc: function( defaultRoute ){
         this.fireEvent("beforeProcessWork");
         if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
 
-        if (!this.formCustomValidation("", "")) {
-            this.app.content.unmask();
-            //    if (callback) callback();
-            return false;
-        }
-
-        if (!this.formValidation("", "")) {
-            this.app.content.unmask();
-            //    if (callback) callback();
-            return false;
-        }
+        this.checkPopup(()=>{
+            this._flowWork_pc(defaultRoute);
+        })
+    },
+    _flowWork_pc: function ( defaultRoute ) {
+        var _self = this;
+        //? 添加事件
+        // this.fireEvent("beforeProcessWork");
+        // if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
+        //
+        // if (!this.formCustomValidation("", "")) {
+        //     this.app.content.unmask();
+        //     //    if (callback) callback();
+        //     return false;
+        // }
+        //
+        // if (!this.formValidation("", "")) {
+        //     this.app.content.unmask();
+        //     //    if (callback) callback();
+        //     return false;
+        // }
 
         var flowNode = new Element("div", { "styles": this.app.css.flowNode_Area }).inject(this.node);
         flowNode.setStyle("opacity", 0);
@@ -2842,13 +2941,21 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             if (this.flowDlg) setSize.call(this.flowDlg, true)
         }.bind(this), defaultRoute);
     },
-    flowWork_mobile: function ( defaultRoute ) {
+    flowWork_mobile: function( defaultRoute ){
+        this.fireEvent("beforeProcessWork");
+        if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
+
+        this.checkPopup(()=>{
+            this._flowWork_mobile(defaultRoute);
+        })
+    },
+    _flowWork_mobile: function ( defaultRoute ) {
         // if (this.app.inBrowser) {
         //     this.app.content.setStyle("height", document.body.getSize().y);
         // }
 
-        this.fireEvent("beforeProcessWork");
-        if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
+        // this.fireEvent("beforeProcessWork");
+        // if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
 
         // if (this.json.mode != "Mobile") {
         //     this.app.content.mask({
@@ -2866,16 +2973,16 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         //     });
         // }
 
-        if (!this.formCustomValidation("", "")) {
-            this.app.content.unmask();
-            //    if (callback) callback();
-            return false;
-        }
-
-        if (!this.formValidation("", "")) {
-            this.app.content.unmask();
-            return false;
-        }
+        // if (!this.formCustomValidation("", "")) {
+        //     this.app.content.unmask();
+        //     //    if (callback) callback();
+        //     return false;
+        // }
+        //
+        // if (!this.formValidation("", "")) {
+        //     this.app.content.unmask();
+        //     return false;
+        // }
 
         var processNode = new Element("div.flowNode_mobile", { "styles": this.app.css.flowNode_mobile }).inject(document.body);
         // processNode.position({

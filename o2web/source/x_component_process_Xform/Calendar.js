@@ -188,12 +188,13 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                     "onComplate": function(formatedDate, date){
                         this.tmpDateString = date.format( this.json.valueFormat || this.json.format );
                         this.validationMode();
-                        if(this.validation()){
-                            var v = this.getInputData("change");
-                            this._setBusinessData(v);
-                            this.tmpDateString = null;
-                            //this._setEnvironmentData(v);
-                        }
+                        o2.promiseAll(this.validation()).then(flag=>{
+                            if(String(flag) === "true"){
+                                var v = this.getInputData("change");
+                                this._setBusinessData(v);
+                                this.tmpDateString = null;
+                            }
+                        });
                         this.fireEvent("complete");
                     }.bind(this),
                     "onChange": function(formatedDate, date){
@@ -204,13 +205,14 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                     }.bind(this),
                     "onClear": function(){
                         this.validationMode();
-                        if(this.validation()){
-                            this.tmpDateString = "";
-                            var v = this.getInputData("change");
-                            this._setBusinessData(v);
-                            this.tmpDateString = null;
-                            //this._setEnvironmentData(v);
-                        }
+                        o2.promiseAll(this.validation()).then(flag=>{
+                            if(String(flag) === "true"){
+                                this.tmpDateString = "";
+                                var v = this.getInputData("change");
+                                this._setBusinessData(v);
+                                this.tmpDateString = null;
+                            }
+                        })
                         this.fireEvent("clear");
                         if (!this.node.getFirst().get("value")) if (this.descriptionNode)  this.descriptionNode.setStyle("display", "block");
                     }.bind(this),

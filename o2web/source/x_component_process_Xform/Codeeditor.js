@@ -254,9 +254,6 @@ MWF.xApplication.process.Xform.Codeeditor = MWF.APPCodeeditor =  new Class({
 
         if (!this.validationConfig(routeName, opinion))  return false;
 
-        if (!this.json.validation) return true;
-        if (!this.json.validation.code) return true;
-
         return this._validation(routeName);
     }
 }); 

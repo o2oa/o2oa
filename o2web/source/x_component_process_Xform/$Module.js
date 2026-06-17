@@ -87,7 +87,13 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
      *  if( !this.form.get('fieldId').validate() ){
      *      return false;
      *  }
-     *  @return {Boolean} 是否通过校验
+     *  @example
+     *  //当字段校验为异步的时候，返回promise。
+     *  const result = this.form.get('fieldId').validate();
+     *  result.then(flag=>{
+     *      //flag 表示是否通过校验
+     *  })
+     *  @return {Boolean|Promise} 是否通过校验，当字段校验为异步的时候，返回promise。
      */
     validate: function (routeName, opinion) {
         if( this.validationMode )this.validationMode();
@@ -121,25 +127,30 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         if (!this.json.validation.code) return true;
 
         this.currentRouteName = routeName;
-        var flag = this.form.Macro.exec(this.json.validation.code, this);
+        var checkResult = this.form.Macro.exec(this.json.validation.code, this);
         this.currentRouteName = "";
 
-        this.moduleValidationAG = flag && o2.typeOf(flag.then) === "function" ? flag : null;
+        const isAsync = checkResult instanceof Promise;
+        this.moduleValidationAG = isAsync ? checkResult : null;
 
-        if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
-        if (flag.toString() !== "true") {
-            if( this.moduleValidationAG ){
-                this.moduleValidationAG.then(f=>{
-                    if (!f) f = MWF.xApplication.process.Xform.LP.notValidation;
-                    if (f.toString()!=="true") {
-                        this.notValidationMode(f);
-                    }
-                });
-                return this.moduleValidationAG;
-            }else{
-                this.notValidationMode(flag);
-                return false;
-            }
+        if (!isAsync && !checkResult) {
+            checkResult = MWF.xApplication.process.Xform.LP.notValidation;
+        }
+
+        if (!isAsync && String(checkResult) !== "true") {
+            this.notValidationMode(checkResult);
+            return false;
+        }
+
+        if (isAsync) {
+            return checkResult.then(f => {
+                const result = String(f) === "true";
+                if (!result) {
+                    const msg = f || MWF.xApplication.process.Xform.LP.notValidation;
+                    this.notValidationMode(msg);
+                }
+                return result;
+            });
         }
         return true;
     },

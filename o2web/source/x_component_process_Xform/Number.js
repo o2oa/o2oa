@@ -372,12 +372,14 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class(
 
         this.node.getFirst().addEvent("change", function(){
             this.validationMode();
-            if (this.validation()) {
-                var value = this.getInputData("change");
-                this._setBusinessData(value);
-                this.node.getFirst().set("value", this.formatNumber( value.toString() ));
-                this.fireEvent("change");
-            }
+            o2.promiseAll(this.validation()).then(flag=>{
+                if(String(flag) === "true"){
+                    var value = this.getInputData("change");
+                    this._setBusinessData(value);
+                    this.node.getFirst().set("value", this.formatNumber( value.toString() ));
+                    this.fireEvent("change");
+                }
+            })
         }.bind(this));
 
         this.node.getFirst().addEvent("blur", function(){

@@ -178,18 +178,22 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
     },
     _createEventFunction: function(methods, k){
         methods["$loadElEvent_"+k.camelCase()] = function(){
-            var flag = true;
+            var needFire = true;
             if (k==="change"){
                 if (this.validationMode){
                     this.validationMode();
                     this._setBusinessData(this.getInputData());
-                    if( !this.validation() ) flag = false;
+                    needFire = this.validation();
                 }
             }
             if (this.json.events && this.json.events[k] && this.json.events[k].code){
                 this.form.Macro.fire(this.json.events[k].code, this, arguments);
             }
-            if( flag )this.fireEvent(k, arguments);
+            o2.promiseAll(needFire).then((result)=>{
+                if( String(result) === 'true' ){
+                    this.fireEvent(k, arguments);
+                }
+            });
         }.bind(this);
     },
     _createVueMethods: function(){

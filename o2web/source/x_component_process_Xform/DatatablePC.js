@@ -1214,7 +1214,22 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 		},
 		_addLine: function(ev, edited, d){
-			if( !this._completeLineEdit(ev, true) )return;
+			const checkResult = this._completeLineEdit(ev, true);
+
+			if(checkResult instanceof Promise){
+				return checkResult.then(flag=>{
+					if(!!flag ){
+						return this.__addLine(ev, edited, d);
+					}
+				});
+			}
+
+			if( !!checkResult ){
+				return this.__addLine(ev, edited, d);
+			}
+		},
+		__addLine: function(ev, edited, d){
+			//if( !this._completeLineEdit(ev, true) )return;
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
 				this.form.notice(text,"info");
@@ -1274,8 +1289,23 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			return line;
 		},
 		_insertLine: function(ev, beforeLine){
+			const checkResult = this._completeLineEdit(ev, true);
+
+			if(checkResult instanceof Promise){
+				return checkResult.then(flag=>{
+					if(!!flag ){
+						return this.__insertLine(ev, beforeLine);
+					}
+				});
+			}
+
+			if( !!checkResult ){
+				return this.__insertLine(ev, beforeLine);
+			}
+		},
+		__insertLine: function(ev, beforeLine){
 			debugger;
-			if( !this._completeLineEdit(ev, true) )return;
+			//if( !this._completeLineEdit(ev, true) )return;
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
 				this.form.notice(text,"info");
@@ -1327,7 +1357,22 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			return line;
 		},
 		_insertLineByIndex: function(ev, index, d){
-			if( !this._completeLineEdit(ev, true) )return;
+			const checkResult = this._completeLineEdit(ev, true);
+
+			if(checkResult instanceof Promise){
+				return checkResult.then(flag=>{
+					if(!!flag ){
+						return this.__insertLineByIndex(ev, index, d);
+					}
+				});
+			}
+
+			if( !!checkResult ){
+				return this.__insertLineByIndex(ev, index, d);
+			}
+		},
+		__insertLineByIndex: function(ev, index, d){
+			//if( !this._completeLineEdit(ev, true) )return;
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
 				this.form.notice(text,"info");
@@ -1449,7 +1494,23 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if(saveFlag)this.saveFormData();
 		},
 		_deleteLine: function(ev, line){
-			if( !this._completeLineEdit(ev, true) )return;
+			const checkResult = this._completeLineEdit(ev, true);
+
+			if(checkResult instanceof Promise){
+				checkResult.then(flag=>{
+					if(!!flag ){
+						this.__deleteLine(ev, line);
+					}
+				});
+				return;
+			}
+
+			if( !!checkResult ){
+				this.__deleteLine(ev, line);
+			}
+		},
+		__deleteLine: function(ev, line){
+			//if( !this._completeLineEdit(ev, true) )return;
 			if( this.isMin() ){
 				var text = MWF.xApplication.process.Xform.LP.minItemCountNotice.replace("{n}", this.json.minCount );
 				this.form.notice(text,"info");
@@ -1524,6 +1585,19 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if( !line )return true;
 			if( !line.validation() )return false;
 
+			if( line.moduleValidationAG ){
+				return line.moduleValidationAG.then((flag)=>{
+					return !flag ? false : this.__completeLineEdit(ev, fireChange, ignoerSave);
+				})
+			}else{
+				return this.__completeLineEdit(ev, fireChange, ignoerSave);
+			}
+		},
+		__completeLineEdit: function( ev, fireChange, ignoerSave ){
+			// var line = this.currentEditedLine;
+			// if( !line )return true;
+			// if( !line.validation() )return false;
+
 			var originalData, originalDataStr, dataStr;
 			originalData = line.originalData;
 			if( fireChange ){
@@ -1572,7 +1646,22 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			return true;
 		},
 		_moveUpLine: function(ev, line){
-			if( this.currentEditedLine && !this._completeLineEdit(null, true) )return false;
+			const checkResult = this._completeLineEdit(null, true);
+
+			if(checkResult instanceof Promise){
+				return checkResult.then(flag=>{
+					if(!!flag ){
+						this.__moveUpLine(ev, line);
+					}
+				});
+			}
+
+			if( !!checkResult ){
+				this.__moveUpLine(ev, line);
+			}
+		},
+		__moveUpLine: function(ev, line){
+			//if( this.currentEditedLine && !this._completeLineEdit(null, true) )return false;
 
 			var data, upData, curData;
 			if( this.isShowAllSection ){
@@ -1608,26 +1697,38 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		_changeEditedLine: function(line){
 			if( this.currentEditedLine ){
 				if( line ===  this.currentEditedLine )return;
-				if( !this._completeLineEdit( null,true ) )return;
+				//if( !this._completeLineEdit( null,true ) )return;
 			}
-			line.changeEditMode(true);
+			const checkResult = this._completeLineEdit(ev, true);
+			if(checkResult instanceof Promise){
+				checkResult.then(flag=>{
+					if(!!flag ){
+						this.currentEditedLine = line;
+						line.changeEditMode(true);
+					}
+				});
+				return
+			}
 
-			/**
-			 * 数据表格当前正在编辑的条目，当数据表格为“同时编辑多行”时无此属性。
-			 * @member {MWF.xApplication.process.Xform.DatatablePC.Line | MWF.xApplication.process.Xform.DatatableMobile.Line | Null}
-			 * @example
-			 * //获取数据表格“dt1”的正在编辑的条目。
-			 * var line = this.form.get("dt1").currentEditedLine;
-			 * //获取数据
-			 * var data = line.getData();
-			 * //设置数据
-			 * line.setData({"subject":"111"});
-			 * //获取subject字段的值
-			 * var data = line.get("subject").getData();
-			 * //设置subject字段的值
-			 * line.get("subject").setData("test1");
-			 */
-			this.currentEditedLine = line;
+			if( !!checkResult ){
+				line.changeEditMode(true);
+				/**
+				 * 数据表格当前正在编辑的条目，当数据表格为“同时编辑多行”时无此属性。
+				 * @member {MWF.xApplication.process.Xform.DatatablePC.Line | MWF.xApplication.process.Xform.DatatableMobile.Line | Null}
+				 * @example
+				 * //获取数据表格“dt1”的正在编辑的条目。
+				 * var line = this.form.get("dt1").currentEditedLine;
+				 * //获取数据
+				 * var data = line.getData();
+				 * //设置数据
+				 * line.setData({"subject":"111"});
+				 * //获取subject字段的值
+				 * var data = line.get("subject").getData();
+				 * //设置subject字段的值
+				 * line.get("subject").setData("test1");
+				 */
+				this.currentEditedLine = line;
+			}
 		},
 
 		// editValidation: function(){
