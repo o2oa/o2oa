@@ -176,7 +176,7 @@ export default content({
       return;
     }
     if (isEmpty(form.grantPeriod)) {
-      o2.api.page.notice("请输入发放周期", "error");
+      o2.api.page.notice("请输入发放标识", "error");
       return;
     }
     const file = this.ledgerImportFile;
