@@ -1594,8 +1594,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 		},
 		__completeLineEdit: function( ev, fireChange, ignoerSave ){
-			// var line = this.currentEditedLine;
-			// if( !line )return true;
+			var line = this.currentEditedLine;
+			if( !line )return true;
 			// if( !line.validation() )return false;
 
 			var originalData, originalDataStr, dataStr;
@@ -1696,10 +1696,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		},
 		_changeEditedLine: function(line){
 			if( this.currentEditedLine ){
-				if( line ===  this.currentEditedLine )return;
+				if( line === this.currentEditedLine )return;
 				//if( !this._completeLineEdit( null,true ) )return;
 			}
-			const checkResult = this._completeLineEdit(ev, true);
+			const checkResult = this._completeLineEdit(null, true);
 			if(checkResult instanceof Promise){
 				checkResult.then(flag=>{
 					if(!!flag ){
@@ -2498,18 +2498,18 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			const validationFlag = this.__validation(routeName);
 			if( !validationFlag )return false;
 
-			if( currentLineFlag === true && validationFlag === true){
-				return true;
-			}
-
 			const promiseList = [];
 			if (currentLineFlag instanceof Promise) promiseList.push(currentLineFlag);
 			if (validationFlag instanceof Promise) promiseList.push(validationFlag);
 
+			if( promiseList.length === 0){
+				return true;
+			}
 
-			this.moduleValidationAG = Promise.all(promiseList).then(resultArr=>{
+			this.moduleValidationAG = Promise.all(promiseList).then(resultArr => {
 				return resultArr.every(res => String(res) === "true");
 			});
+
 			return this.moduleValidationAG;
 		},
 		__validation: function(routeName){
@@ -3655,15 +3655,15 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		const linePass = this.validationCompleteLine();
 		if (linePass === false) return false;
 
-
 		const promises = [];
 		if( fieldsPass instanceof Promise)promises.push(fieldsPass);
 		if( linePass instanceof Promise)promises.push(linePass);
 		if( promises.length === 0 )return true;
 
-		this.moduleValidationAG = Promise.all(promises).then(arr=>{
-			return arr.every(item => String(item) === 'true');
+		this.moduleValidationAG = Promise.all(promises).then(resultArr => {
+			return resultArr.every(res => String(res) === "true");
 		});
+
 		return this.moduleValidationAG;
 	},
 	validation: function(){

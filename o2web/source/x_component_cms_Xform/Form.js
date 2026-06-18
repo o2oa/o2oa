@@ -1179,19 +1179,44 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
         },
         saveDocument: function (callback, sync, silent) {
             this.fireEvent("beforeSave");
-            if (this.businessData.document.docStatus == "published") {
-                if (!this.formValidation("publish")) {
+
+            var formValidated, saveValidated;
+            if (this.businessData.document.docStatus === "published") {
+                formValidated = this.formValidation("publish");
+                if (!formValidated) {
                     this.app.content.unmask();
                     //if (callback) callback();
                     return false;
                 }
             }
-            if (!this.formSaveValidation()) {
+
+            saveValidated = this.formSaveValidation();
+            if (!saveValidated) {
                 this.app.content.unmask();
                 if (callback  && typeof callback === "function") callback();
                 return false;
             }
 
+            var promiseList = [formValidated, saveValidated].filter(result=>{
+                return result instanceof Promise;
+            })
+
+            if(promiseList.length > 0){
+                Promise.all(promiseList).then(resultArr => {
+                    return resultArr.every(res => String(res) === "true");
+                }).then(flag=>{
+                    if( !flag ){
+                        this.app.content.unmask();
+                        if (callback  && typeof callback === "function") callback();
+                        return false;
+                    }
+                    this._saveDocument(callback, sync, silent)
+                });
+            }else{
+                this._saveDocument(callback, sync, silent)
+            }
+        },
+        _saveDocument: function (callback, sync, silent) {
             this.saving = true;
             var data = this.getData();
             var specialData = this.getSpecialData();
@@ -1276,43 +1301,41 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             if (this.options.readonly) return true;
             var flag = true;
             //flag = this.validation();
+            var promiseList = [];
             Object.each(this.forms, function (field, key) {
                 if (field.validationMode)field.validationMode();
-                if (field.validation && !field.validation(status)) {
-                    flag = false;
+                if (field.validation) {
+                    const checkResult = field.validation(status);
+                    if(checkResult instanceof Promise){
+                        promiseList.push(checkResult);
+                    }else if(!checkResult){
+                        flag = false;
+                    }
                 }
             }.bind(this));
+            if( flag === false ){
+                return false;
+            }
+            if(promiseList.length > 0){
+                return Promise.all( promiseList ).then( function( resultArr ){
+                    return resultArr.every(res => String(res) === "true");
+                })
+            }
             return flag;
         },
         formSaveValidation: function () {
             if (!this.json.validationSave) return true;
-            if (!this.json.validationSave.code) return true;
-            var flag = this.Macro.exec(this.json.validationSave.code, this);
-            if (!flag) flag = MWF.xApplication.cms.Xform.LP.notValidation;
-            if (typeOf(flag) === "string") {
-                if (flag !== "true") {
-                    this.app.notice(o2.txt(flag), "error");
-                    return false;
-                }
-            } else if (flag.toString() != "true") {
-                return false;
-            }
-            return true;
+
+            return this._checkCodeValidation(this.json.validationSave.code, (message)=>{
+                this.app.notice(o2.txt(message), "error");
+            });
         },
         formPublishValidation: function () {
             if (!this.json.validationPublish) return true;
-            if (!this.json.validationPublish.code) return true;
-            var flag = this.Macro.exec(this.json.validationPublish.code, this);
-            if (!flag) flag = MWF.xApplication.cms.Xform.LP.notValidation;
-            if (typeOf(flag) === "string") {
-                if (flag !== "true") {
-                    this.app.notice(o2.txt(flag), "error");
-                    return false;
-                }
-            } else if (flag.toString() != "true") {
-                return false;
-            }
-            return true;
+
+            return this._checkCodeValidation(this.json.validationPublish.code, (message)=>{
+                this.app.notice(o2.txt(message), "error");
+            });
         },
         publishDocumentDelayed: function( callback ){
             this.fireEvent("beforeWaitPublish");
@@ -1320,30 +1343,52 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             //     "destroyOnHide": true,
             //     "style": this.app.css.maskNode
             // });
-            if (!this.formValidation("publish")) {
+            var showDialog = ()=>{
+                MWF.xDesktop.requireApp("cms.Document", "DelayPublishForm", null, false);
+
+                var form = new MWF.xApplication.cms.Document.DelayPublishForm(this, {}, {
+                    publishTime :  this.businessData.document.publishTime || "",
+                    onPostOk : function( publishTime ){
+
+                        this._publishDocumentDelayed( publishTime );
+
+                    }.bind(this)
+                },{
+                    app : this.app, lp : this.app.lp, css : this.app.css, actions : this.app.action
+                });
+                form.create();
+            }
+
+            var formValidated = this.formValidation("publish");
+            if (!formValidated) {
                 // this.app.content.unmask();
                 //if (callback) callback();
                 return false;
             }
-            if (!this.formPublishValidation()) {
+            var publishValidated = this.formPublishValidation();
+            if (!publishValidated) {
                 // this.app.content.unmask();
                 if (callback) callback();
                 return false;
             }
 
-            MWF.xDesktop.requireApp("cms.Document", "DelayPublishForm", null, false);
-
-            var form = new MWF.xApplication.cms.Document.DelayPublishForm(this, {}, {
-                publishTime :  this.businessData.document.publishTime || "",
-                onPostOk : function( publishTime ){
-
-                    this._publishDocumentDelayed( publishTime );
-
-                }.bind(this)
-            },{
-                app : this.app, lp : this.app.lp, css : this.app.css, actions : this.app.action
+            var promiseList = [formValidated, publishValidated].filter(result=>{
+                return result instanceof Promise;
             });
-            form.create();
+
+            if(promiseList.length > 0){
+                Promise.all(promiseList).then(resultArr => {
+                    return resultArr.every(res => String(res) === "true");
+                }).then(flag=>{
+                    if( !flag ){
+                        if (callback) callback();
+                        return false;
+                    }
+                    showDialog();
+                });
+            }else{
+                showDialog();
+            }
 
         },
         _publishDocumentDelayed: function( publishTime ){
@@ -1430,16 +1475,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 });
             }
 
-            if (!this.formValidation("publish")) {
-                if (layout.mobile) {
-                    document.body.unmask();
-                } else {
-                    this.app.content.unmask();
-                }
-                if (o2.typeOf(callback) === "function") callback();
-                return false;
-            }
-            if (!this.formPublishValidation()) {
+            var notValidation = ()=>{
                 if (layout.mobile) {
                     document.body.unmask();
                 } else {
@@ -1449,6 +1485,35 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 return false;
             }
 
+            var formValidated = this.formValidation("publish");
+            if (!formValidated) {
+                return notValidation();
+            }
+
+            var publishValidated = this.formPublishValidation();
+            if (!publishValidated) {
+                return notValidation();
+            }
+
+            var promiseList = [formValidated, publishValidated].filter(result=>{
+                return result instanceof Promise;
+            })
+
+            if(promiseList.length > 0){
+                Promise.all(promiseList).then(resultArr => {
+                    return resultArr.every(res => String(res) === "true");
+                }).then(flag=>{
+                    if( !flag ){
+                        notValidation();
+                        return false;
+                    }
+                    this._publishDocument(callback, slience)
+                });
+            }else{
+                this._publishDocument(callback, slience)
+            }
+        },
+        _publishDocument: function(callback, slience){
             this.saving = true;
 
             var data = this.getData();
@@ -1517,9 +1582,6 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 }.bind(this));
 
             }.bind(this));
-
-            //}.bind(this))
-            //}.bind(this), null, this.businessData.document.id, data);
         },
 
         getNoticeOptions: function(){

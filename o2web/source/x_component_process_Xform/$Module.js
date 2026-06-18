@@ -111,7 +111,10 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 this._setBusinessData(this.getInputData("change"));
             }
             if (this.node.checkValidity){
-                if (!this.node.checkValidity()) return false;
+                if (!this.node.checkValidity()) {
+                    if ( this.node && !this.node.isIntoView()) this.node.scrollIntoView({ behavior: "smooth", block: "center" });
+                    return false;
+                }
             }
             if (this.validationFormat){
                 if (!this.validationFormat()) return false;
