@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 public class Host {
-	private static final Logger logger = LoggerFactory.getLogger(Host.class);
+	public static final Logger logger = LoggerFactory.getLogger(Host.class);
 	public static String ROLLBACK_IPV4 = "127.0.0.1";
 	public static String ROLLBACK_LOCALHOST = "localhost";
 	public static String ROLLBACK_IPV6 = "[::1]";
@@ -104,7 +104,7 @@ public class Host {
 	/**
 	 * 获取主MAC地址
 	 */
-	public static String getMacAddress() {
+	private static String getMacAddress() {
 		try {
 			Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
 			while (networkInterfaces.hasMoreElements()) {
@@ -116,9 +116,9 @@ public class Host {
 				byte[] mac = networkInterface.getHardwareAddress();
 				if (mac != null) {
 					StringBuilder sb = new StringBuilder();
-					for (byte b : mac) {
-						sb.append(String.format("%02X", b));
-					}
+                    for (byte b : mac) {
+                        sb.append(String.format("%02X", b));
+                    }
 					return sb.toString();
 				}
 			}

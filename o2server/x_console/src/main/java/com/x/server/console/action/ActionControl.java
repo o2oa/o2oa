@@ -3,6 +3,7 @@ package com.x.server.console.action;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.Host;
 import com.x.server.console.ResourceFactory;
 import java.util.List;
 import java.util.Objects;
@@ -41,6 +42,7 @@ public class ActionControl extends ActionBase {
 	private static final String CMD_EN = "en";
 	private static final String CMD_DE = "de";
 	private static final String CMD_GC = "gc";
+	private static final String CMD_HOST = "host";
 	private static final String CMD_INITRESOURCEFACTORY = "initResourceFactory";
 	private static final String CMD_FLUSHCONFIG = "flushConfig";
 	private static final String CMD_REGENERATECONFIG = "regenerateConfig";
@@ -84,6 +86,8 @@ public class ActionControl extends ActionBase {
 				de(cmd);
 			} else if (cmd.hasOption(CMD_GC)) {
 				gc();
+			}else if (cmd.hasOption(CMD_HOST)) {
+				host();
 			} else if (cmd.hasOption(CMD_INITRESOURCEFACTORY)) {
 				initResourceFactory();
 			} else if (cmd.hasOption(CMD_FLUSHCONFIG)) {
@@ -116,6 +120,7 @@ public class ActionControl extends ActionBase {
 		options.addOption(enOption());
 		options.addOption(deOption());
 		options.addOption(gcOption());
+		options.addOption(hostOption());
 		options.addOption(initResourceFactoryOption());
 		options.addOption(flushConfigOption());
 		options.addOption(regenerateConfigOption());
@@ -140,6 +145,7 @@ public class ActionControl extends ActionBase {
 		displayOptions.addOption(enOption());
 		displayOptions.addOption(gcOption());
 		displayOptions.addOption(cdfOption());
+		displayOptions.addOption(hostOption());
 		return displayOptions;
 	}
 
@@ -186,6 +192,10 @@ public class ActionControl extends ActionBase {
 
 	private static Option ufOption() {
 		return Option.builder(CMD_UF).longOpt("updateFile").argName("path").hasArg().desc("升级服务器,升级前请注意备份.").build();
+	}
+
+	private static Option hostOption() {
+		return Option.builder(CMD_HOST).longOpt("host").hasArg(false).desc("生成机器码.").build();
 	}
 
 	private static Option ddlOption() {
@@ -321,6 +331,10 @@ public class ActionControl extends ActionBase {
 		String type = Objects.toString(cmd.getOptionValue(CMD_DDL), "");
 		Ddl ddl = new Ddl();
 		ddl.execute(type);
+	}
+
+	private void host() {
+		logger.print("机器码:{}", Host.generateMachineCode());
 	}
 
 	private void rst(CommandLine cmd) throws Exception {
