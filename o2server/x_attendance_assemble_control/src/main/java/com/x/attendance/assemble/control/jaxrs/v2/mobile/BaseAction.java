@@ -472,11 +472,13 @@ abstract class BaseAction extends StandardJaxrsAction {
             // 删除老的数据
             deleteOldRecordList(recordList, emc, business);
             // 自动处理 已经过来的打卡记录 记录为未打卡
-            dealWithOvertimeRecord(emc, nowDate, today, recordListNew);
+            dealWithOvertimeRecord(emc, business, BooleanUtils.isTrue(group.getFieldWorkMarkError()),
+                    nowDate, recordListNew);
             return recordListNew;
         }
         // 自动处理 已经过来的打卡记录 记录为未打卡
-        dealWithOvertimeRecord(emc, nowDate, today, recordList);
+        dealWithOvertimeRecord(emc, business, BooleanUtils.isTrue(group.getFieldWorkMarkError()),
+                nowDate, recordList);
         return recordList;
     }
 
@@ -581,12 +583,12 @@ abstract class BaseAction extends StandardJaxrsAction {
      *
      * @param emc
      * @param nowDate
-     * @param today
      * @param recordList
      * @throws Exception
      */
-    private void dealWithOvertimeRecord(EntityManagerContainer emc, Date nowDate, String today,
-            List<AttendanceV2CheckInRecord> recordList) throws Exception {
+    private void dealWithOvertimeRecord(EntityManagerContainer emc, Business business,
+            boolean fieldWorkMarkError, Date nowDate, List<AttendanceV2CheckInRecord> recordList)
+            throws Exception {
         for (int i = 0; i < recordList.size(); i++) {
             AttendanceV2CheckInRecord record = recordList.get(i);
             // 不是预打卡数据 跳过
@@ -597,6 +599,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                             record.getPreDutyTimeAfterLimit());
                     if (nowDate.after(onDutyAfterTime)) { // 超过了打卡结束限制时间，直接生成未打卡数据
                         update2NoCheckInRecord(emc, record);
+                        generateAppealInfo(record, fieldWorkMarkError, emc, business);
                     }
                 } else {
                     Date onDutyTime = parseRecordDutyTime(record, record.getPreDutyTime());
@@ -611,6 +614,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                             Date middleTime = DateTools.addMinutes(onDutyTime, (int) minutes);
                             if (nowDate.after(middleTime)) { // 生成未打卡数据
                                 update2NoCheckInRecord(emc, record);
+                                generateAppealInfo(record, fieldWorkMarkError, emc, business);
                             }
                         }
 
