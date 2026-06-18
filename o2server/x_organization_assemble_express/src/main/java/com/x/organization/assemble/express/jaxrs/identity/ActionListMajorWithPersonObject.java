@@ -66,28 +66,11 @@ class ActionListMajorWithPersonObject extends BaseAction {
 
 	private List<Wo> list(Business business, Wi wi) throws Exception {
 		List<Wo> wos = new ArrayList<>();
-		List<String> personMajorIds = new ArrayList<>();
 		List<Person> os = business.person().pick(wi.getPersonList());
 		List<String> personIds = ListTools.extractProperty(os, JpaObject.id_FIELDNAME, String.class, true, true);
 		List<Identity> personMajors = business.identity().listMajorOfPerson(business, personIds);
-		if (ListTools.isNotEmpty(personMajors)) {
-			for (Identity identity : personMajors) {
-				personMajorIds.add(identity.getId());
-			}
-		}
-		EntityManager em = business.entityManagerContainer().get(Identity.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Identity> root = cq.from(Identity.class);
-		Predicate p = root.get(Identity_.person).in(personIds);
-		p = cb.and(p, cb.equal(root.get(Identity_.major), true));
-		List<String> identityIds = em.createQuery(cq.select(root.get(Identity_.id)).where(p))
-				.getResultList().stream().distinct().collect(Collectors.toList());
-		List<Identity> list = business.identity().pick(identityIds);
-		for (Identity o : list) {
-			if (ListTools.contains(personMajorIds, o.getId())) {
-				o.setMajor(true);
-			}
+		for (Identity o : personMajors) {
+			o.setMajor(true);
 			wos.add(this.convert(business, o, Wo.class));
 		}
 		return wos;
