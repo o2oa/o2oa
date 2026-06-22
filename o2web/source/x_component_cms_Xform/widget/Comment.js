@@ -405,7 +405,7 @@ O2CMSComment.Editor = new Class({
     },
     saveComment : function(){
         var data = this.form.getResult(true, ",", true, false, true);
-        if (data) {
+        if (data && data.content!=="") {
             data.documentId = this.comment.options.documentId;
             data.id = this.advanceCommentId;
             delete data.userIcon;
