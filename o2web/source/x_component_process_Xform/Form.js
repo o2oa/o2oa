@@ -2326,20 +2326,20 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         })
 
         if(promiseList.length === 0){
-            return true;
+            this._submitWork(routeName, opinion, medias, callback, processor, data, appendTaskIdentityList, processorOrgList, callbackBeforeSave)
+        }else{
+            Promise.all(promiseList).then(resultArr => {
+                return resultArr.every(res => String(res) === "true");
+            }).then(result => {
+                if(result){
+                    this._submitWork(routeName, opinion, medias, callback, processor, data, appendTaskIdentityList, processorOrgList, callbackBeforeSave)
+                }else{
+                    this.app.content.unmask();
+                    if (processor && processor.node) processor.node.unmask();
+                    if (callback) callback();
+                }
+            });
         }
-
-        Promise.all(promiseList).then(resultArr => {
-            return resultArr.every(res => String(res) === "true");
-        }).then(result => {
-            if(result){
-                this._submitWork(routeName, opinion, medias, callback, processor, data, appendTaskIdentityList, processorOrgList, callbackBeforeSave)
-            }else{
-                this.app.content.unmask();
-                if (processor && processor.node) processor.node.unmask();
-                if (callback) callback();
-            }
-        });
     },
     _submitWork: function (routeName, opinion, medias, callback, processor, data, appendTaskIdentityList, processorOrgList, callbackBeforeSave) {
 
