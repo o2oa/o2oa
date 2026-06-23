@@ -164,12 +164,31 @@ public class IdentityFactory extends AbstractFactory {
 		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
 	}
 
+	public Long countByUnitIds(List<String> unitIds) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Identity.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<Identity> root = cq.from(Identity.class);
+		Predicate p = root.get(Identity_.unit).in(unitIds);
+		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
+	}
+
 	public Long countMajorByUnit(String unitId) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Identity.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = cb.equal(root.get(Identity_.unit), unitId);
+		p = cb.and(p, cb.equal(root.get(Identity_.major), true));
+		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
+	}
+
+	public Long countMajorByUnitIds(List<String> unitIds) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Identity.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<Identity> root = cq.from(Identity.class);
+		Predicate p = root.get(Identity_.unit).in(unitIds);
 		p = cb.and(p, cb.equal(root.get(Identity_.major), true));
 		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
 	}
