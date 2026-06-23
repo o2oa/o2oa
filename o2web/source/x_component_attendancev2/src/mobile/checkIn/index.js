@@ -747,35 +747,46 @@ export default content({
         });
     },
     drawFieldWorkPhotoWatermark(ctx, width, height) {
-        const fontSize = Math.max(22, Math.round(width * 0.032));
-        const lineHeight = Math.round(fontSize * 1.45);
-        const padding = Math.round(fontSize * 0.9);
-        const maxTextWidth = width - padding * 2;
-        ctx.font = `${fontSize}px sans-serif`;
+        const fontSize = Math.max(Math.min(width, height) * 0.06, 28);
+        const lineHeight = fontSize * 1.25;
+        const maxTextWidth = Math.min(width, height) * 1.15;
+        ctx.font = `700 ${fontSize}px sans-serif`;
         const lines = this.getFieldWorkPhotoWatermarkLines().reduce((result, line) => {
             return result.concat(this.wrapWatermarkText(ctx, line, maxTextWidth));
         }, []);
-        const panelHeight = padding * 2 + lineHeight * lines.length;
-        const panelY = Math.max(0, height - panelHeight);
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.52)';
-        ctx.fillRect(0, panelY, width, panelHeight);
-        ctx.fillStyle = '#ffffff';
+        if (!lines.length) {
+            return;
+        }
+        const contentWidth = lines.reduce((maxWidth, line) => Math.max(maxWidth, ctx.measureText(line).width), 0);
+        const contentHeight = lineHeight * lines.length;
+        ctx.save();
+        ctx.translate(width / 2, height / 2);
+        ctx.rotate(-Math.PI / 4);
+        ctx.translate(-contentWidth / 2, -contentHeight / 2);
         ctx.textBaseline = 'top';
+        ctx.textAlign = 'center';
+        ctx.lineJoin = 'round';
+        ctx.lineWidth = Math.max(fontSize * 0.12, 3);
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.45)';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
         lines.forEach((line, index) => {
-            ctx.fillText(line, padding, panelY + padding + lineHeight * index);
+            const x = contentWidth / 2;
+            const y = lineHeight * index;
+            ctx.strokeText(line, x, y);
+            ctx.fillText(line, x, y);
         });
+        ctx.restore();
     },
     getFieldWorkPhotoWatermarkLines() {
         const user = typeof layout !== 'undefined' && layout.session && layout.session.user ? layout.session.user : {};
         return [
-            `姓名：${user.name || ''}`,
-            `工号：${user.employee || ''}`,
-            `打卡时间：${this.formatWatermarkTime(new Date())}`,
-            `打卡地点：${this.bind.location.address || this.bind.location.title || ''}`
-        ];
+            [user.name || '', user.employee || ''].filter((value) => !!value).join(' '),
+            this.formatWatermarkTime(new Date()),
+            this.bind.location.address || this.bind.location.title || ''
+        ].filter((value) => !!value);
     },
     formatWatermarkTime(date) {
-        return `${date.getFullYear()}-${this.pad(date.getMonth() + 1)}-${this.pad(date.getDate())} ${this.pad(date.getHours())}:${this.pad(date.getMinutes())}:${this.pad(date.getSeconds())}`;
+        return `${date.getFullYear()}-${this.pad(date.getMonth() + 1)}-${this.pad(date.getDate())} ${this.pad(date.getHours())}:${this.pad(date.getMinutes())}`;
     },
     wrapWatermarkText(ctx, text, maxWidth) {
         const lines = [];
