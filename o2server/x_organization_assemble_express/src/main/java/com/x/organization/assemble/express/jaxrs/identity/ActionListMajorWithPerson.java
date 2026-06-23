@@ -1,5 +1,6 @@
 package com.x.organization.assemble.express.jaxrs.identity;
 
+import com.x.organization.assemble.express.jaxrs.identity.ActionListMajorWithPersonObject.Wo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -67,19 +68,12 @@ class ActionListMajorWithPerson extends BaseAction {
 	}
 
 	private Wo list(Business business, Wi wi) throws Exception {
+		Wo wo = new Wo();
 		List<Person> os = business.person().pick(wi.getPersonList());
 		List<String> personIds = ListTools.extractProperty(os, JpaObject.id_FIELDNAME, String.class, true, true);
-		EntityManager em = business.entityManagerContainer().get(Identity.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Identity> root = cq.from(Identity.class);
-		Predicate p = root.get(Identity_.person).in(personIds);
-		p = cb.and(p, cb.equal(root.get(Identity_.major), true));
-		List<String> identityIds = em.createQuery(cq.select(root.get(Identity_.id)).where(p))
-				.getResultList().stream().distinct().collect(Collectors.toList());
-		List<String> values = business.identity().listIdentityDistinguishedNameSorted(identityIds);
-		Wo wo = new Wo();
-		wo.getIdentityList().addAll(values);
+		List<Identity> personMajors = business.identity().listMajorOfPerson(business, personIds);
+		personMajors = business.identity().sort(personMajors);
+		wo.setIdentityList(ListTools.extractProperty(personMajors, JpaObject.DISTINGUISHEDNAME, String.class, true, true));
 		return wo;
 	}
 
