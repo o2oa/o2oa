@@ -365,14 +365,13 @@ public class ConnectionAction {
 	}
 
 	public static void writeFilePart(OutputStream output, FilePart filePart, String boundary) throws IOException {
+		String encodedFileName = URLEncoder.encode(filePart.getFileName(), StandardCharsets.UTF_8).replace("+", "%20");
 		IOUtils.write(StringTools.TWO_HYPHENS + boundary, output, StandardCharsets.UTF_8);
 		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
 		IOUtils.write(
-				"Content-Disposition: form-data; name=\"" + filePart.getName() + "\"; filename=\""
-						+ URLEncoder.encode(filePart.getFileName(), StandardCharsets.UTF_8) + "\"",
+				"Content-Disposition: form-data; name=\"" + filePart.getName() + "\"; filename*=UTF-8''"
+						+ encodedFileName,
 				output, StandardCharsets.UTF_8);
-		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
-		IOUtils.write("Content-Length: " + filePart.getBytes().length, output, StandardCharsets.UTF_8);
 		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
 		IOUtils.write("Content-Type: " + filePart.getContentType(), output, StandardCharsets.UTF_8);
 		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
