@@ -449,22 +449,13 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
         },
         validation: function (routeName, opinion) {
             //if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
-
+            this.moduleValidationAG = null;
             if (this.isReadonly() || this.json.showMode!=="disabled" || !this.isEditable) return true;
             
             if( !this.isReadonly() ){
                 if (!this.validationConfig(routeName, opinion)) return false;
 
-                if (!this.json.validation) return true;
-                if (!this.json.validation.code) return true;
-                this.currentRouteName = routeName;
-                var flag = this.form.Macro.exec(this.json.validation.code, this);
-                this.currentRouteName = "";
-                if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
-                if (flag.toString() != "true") {
-                    this.notValidationMode(flag);
-                    return false;
-                }
+                return this._validation(routeName);
             }
             return true;
         },

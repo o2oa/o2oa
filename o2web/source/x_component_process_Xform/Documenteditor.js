@@ -4015,26 +4015,14 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         return true;
     },
     validation: function(routeName, opinion){
-
+        this.moduleValidationAG = null;
         //if (this.isReadonly() || this.node?.isDisplayNone() || !this.isEditable) return true;
 
         if (this.isReadonly() || !this.isEditable) return true;
         
         if (!this.validationConfig(routeName, opinion))  return false;
 
-        if (!this.json.validation) return true;
-        if (!this.json.validation.code) return true;
-
-        this.currentRouteName = routeName;
-        var flag = this.form.Macro.exec(this.json.validation.code, this);
-        this.currentRouteName = "";
-
-        if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
-        if (flag.toString()!="true"){
-            this.notValidationMode(flag);
-            return false;
-        }
-        return true;
+        return this._validation(routeName);
     },
     removeDisplayNone: function(node){
         var n = node.getFirst();

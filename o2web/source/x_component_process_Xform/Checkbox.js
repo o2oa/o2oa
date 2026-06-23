@@ -206,13 +206,13 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
 
                         radio.addEvent("click", function(){
                             this.validationMode();
-                            if (this.validation()) {
-                                var v = this.getInputData("change");
-                                this._setBusinessData(v || []);
-                                //this._setEnvironmentData(v || []);
-                                //this._setBusinessData(this.getInputData("change") || []);
-                                this.fireEvent("change", [radio]);
-                            }
+                            o2.promiseAll(this.validation()).then(flag=>{
+                                if(String(flag) === "true"){
+                                    var v = this.getInputData("change");
+                                    this._setBusinessData(v || []);
+                                    this.fireEvent("change", [radio]);
+                                }
+                            })
                         }.bind(this));
 
                         Object.each(this.json.events, function(e, key){

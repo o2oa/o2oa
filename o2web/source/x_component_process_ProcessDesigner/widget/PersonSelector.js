@@ -263,6 +263,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
             this.identitys.each(function(id){selecteds.push(id.data)});
             var types = ( this.options.types && this.options.types.length ) ? this.options.types : "";
             var type = ( this.options.types && this.options.types.length ) ? "" : this.options.type;
+            if(type.toLowerCase() === 'dutyname')type = 'duty';
             var options = {
                 "types": types,
                 "type": type,

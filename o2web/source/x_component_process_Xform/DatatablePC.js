@@ -1214,7 +1214,22 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 		},
 		_addLine: function(ev, edited, d){
-			if( !this._completeLineEdit(ev, true) )return;
+			const checkResult = this._completeLineEdit(ev, true);
+
+			if(checkResult instanceof Promise){
+				return checkResult.then(flag=>{
+					if(!!flag ){
+						return this.__addLine(ev, edited, d);
+					}
+				});
+			}
+
+			if( !!checkResult ){
+				return this.__addLine(ev, edited, d);
+			}
+		},
+		__addLine: function(ev, edited, d){
+			//if( !this._completeLineEdit(ev, true) )return;
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
 				this.form.notice(text,"info");
@@ -1274,8 +1289,23 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			return line;
 		},
 		_insertLine: function(ev, beforeLine){
+			const checkResult = this._completeLineEdit(ev, true);
+
+			if(checkResult instanceof Promise){
+				return checkResult.then(flag=>{
+					if(!!flag ){
+						return this.__insertLine(ev, beforeLine);
+					}
+				});
+			}
+
+			if( !!checkResult ){
+				return this.__insertLine(ev, beforeLine);
+			}
+		},
+		__insertLine: function(ev, beforeLine){
 			debugger;
-			if( !this._completeLineEdit(ev, true) )return;
+			//if( !this._completeLineEdit(ev, true) )return;
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
 				this.form.notice(text,"info");
@@ -1327,7 +1357,22 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			return line;
 		},
 		_insertLineByIndex: function(ev, index, d){
-			if( !this._completeLineEdit(ev, true) )return;
+			const checkResult = this._completeLineEdit(ev, true);
+
+			if(checkResult instanceof Promise){
+				return checkResult.then(flag=>{
+					if(!!flag ){
+						return this.__insertLineByIndex(ev, index, d);
+					}
+				});
+			}
+
+			if( !!checkResult ){
+				return this.__insertLineByIndex(ev, index, d);
+			}
+		},
+		__insertLineByIndex: function(ev, index, d){
+			//if( !this._completeLineEdit(ev, true) )return;
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
 				this.form.notice(text,"info");
@@ -1449,7 +1494,23 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if(saveFlag)this.saveFormData();
 		},
 		_deleteLine: function(ev, line){
-			if( !this._completeLineEdit(ev, true) )return;
+			const checkResult = this._completeLineEdit(ev, true);
+
+			if(checkResult instanceof Promise){
+				checkResult.then(flag=>{
+					if(!!flag ){
+						this.__deleteLine(ev, line);
+					}
+				});
+				return;
+			}
+
+			if( !!checkResult ){
+				this.__deleteLine(ev, line);
+			}
+		},
+		__deleteLine: function(ev, line){
+			//if( !this._completeLineEdit(ev, true) )return;
 			if( this.isMin() ){
 				var text = MWF.xApplication.process.Xform.LP.minItemCountNotice.replace("{n}", this.json.minCount );
 				this.form.notice(text,"info");
@@ -1524,6 +1585,19 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if( !line )return true;
 			if( !line.validation() )return false;
 
+			if( line.moduleValidationAG ){
+				return line.moduleValidationAG.then((flag)=>{
+					return !flag ? false : this.__completeLineEdit(ev, fireChange, ignoerSave);
+				})
+			}else{
+				return this.__completeLineEdit(ev, fireChange, ignoerSave);
+			}
+		},
+		__completeLineEdit: function( ev, fireChange, ignoerSave ){
+			var line = this.currentEditedLine;
+			if( !line )return true;
+			// if( !line.validation() )return false;
+
 			var originalData, originalDataStr, dataStr;
 			originalData = line.originalData;
 			if( fireChange ){
@@ -1572,7 +1646,22 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			return true;
 		},
 		_moveUpLine: function(ev, line){
-			if( this.currentEditedLine && !this._completeLineEdit(null, true) )return false;
+			const checkResult = this._completeLineEdit(null, true);
+
+			if(checkResult instanceof Promise){
+				return checkResult.then(flag=>{
+					if(!!flag ){
+						this.__moveUpLine(ev, line);
+					}
+				});
+			}
+
+			if( !!checkResult ){
+				this.__moveUpLine(ev, line);
+			}
+		},
+		__moveUpLine: function(ev, line){
+			//if( this.currentEditedLine && !this._completeLineEdit(null, true) )return false;
 
 			var data, upData, curData;
 			if( this.isShowAllSection ){
@@ -1607,27 +1696,39 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		},
 		_changeEditedLine: function(line){
 			if( this.currentEditedLine ){
-				if( line ===  this.currentEditedLine )return;
-				if( !this._completeLineEdit( null,true ) )return;
+				if( line === this.currentEditedLine )return;
+				//if( !this._completeLineEdit( null,true ) )return;
 			}
-			line.changeEditMode(true);
+			const checkResult = this._completeLineEdit(null, true);
+			if(checkResult instanceof Promise){
+				checkResult.then(flag=>{
+					if(!!flag ){
+						this.currentEditedLine = line;
+						line.changeEditMode(true);
+					}
+				});
+				return
+			}
 
-			/**
-			 * 数据表格当前正在编辑的条目，当数据表格为“同时编辑多行”时无此属性。
-			 * @member {MWF.xApplication.process.Xform.DatatablePC.Line | MWF.xApplication.process.Xform.DatatableMobile.Line | Null}
-			 * @example
-			 * //获取数据表格“dt1”的正在编辑的条目。
-			 * var line = this.form.get("dt1").currentEditedLine;
-			 * //获取数据
-			 * var data = line.getData();
-			 * //设置数据
-			 * line.setData({"subject":"111"});
-			 * //获取subject字段的值
-			 * var data = line.get("subject").getData();
-			 * //设置subject字段的值
-			 * line.get("subject").setData("test1");
-			 */
-			this.currentEditedLine = line;
+			if( !!checkResult ){
+				line.changeEditMode(true);
+				/**
+				 * 数据表格当前正在编辑的条目，当数据表格为“同时编辑多行”时无此属性。
+				 * @member {MWF.xApplication.process.Xform.DatatablePC.Line | MWF.xApplication.process.Xform.DatatableMobile.Line | Null}
+				 * @example
+				 * //获取数据表格“dt1”的正在编辑的条目。
+				 * var line = this.form.get("dt1").currentEditedLine;
+				 * //获取数据
+				 * var data = line.getData();
+				 * //设置数据
+				 * line.setData({"subject":"111"});
+				 * //获取subject字段的值
+				 * var data = line.get("subject").getData();
+				 * //设置subject字段的值
+				 * line.get("subject").setData("test1");
+				 */
+				this.currentEditedLine = line;
+			}
 		},
 
 		// editValidation: function(){
@@ -2379,7 +2480,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var line = this.currentEditedLine;
 			if( !line )return true;
 			if( !line.validation() )return false;
-			return true;
+			return line.moduleValidationAG ?? true;
 		},
 		_validation: function(routeName, opinion){
 			// if (this.isEdit){
@@ -2388,11 +2489,30 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			// 	}
 			// }
 			if (!this.isReadable || !this.isEditable) return true;
-			let validationFlag = '';
+
 			if (!this.validationConfig(routeName, opinion))  return false;
 
-			if( !this.validationCurrentEditedLine() )return false;
+			const currentLineFlag = this.validationCurrentEditedLine();
+			if( !currentLineFlag )return false;
 
+			const validationFlag = this.__validation(routeName);
+			if( !validationFlag )return false;
+
+			const promiseList = [];
+			if (currentLineFlag instanceof Promise) promiseList.push(currentLineFlag);
+			if (validationFlag instanceof Promise) promiseList.push(validationFlag);
+
+			if( promiseList.length === 0){
+				return true;
+			}
+
+			this.moduleValidationAG = Promise.all(promiseList).then(resultArr => {
+				return resultArr.every(res => String(res) === "true");
+			});
+
+			return this.moduleValidationAG;
+		},
+		__validation: function(routeName){
 			if (!this.json.validation) return true;
 			if (!this.json.validation.code) return true;
 
@@ -2400,19 +2520,46 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var flag = this.form.Macro.exec(this.json.validation.code, this);
 			this.currentRouteName = "";
 
-			if (!flag) flag = MWF.xApplication.process.Xform.LP.lineNotValidation;
-			if (flag.toString()!=="true"){
-				this.notValidationMode(flag);
+			const isAsyncCheck = flag && typeof flag.then === "function";
+			const isSyncPass = String(flag) === "true";
+
+			// 同步校验不通过
+			if (!isAsyncCheck && !isSyncPass) {
+				const errMsg = flag || MWF.xApplication.process.Xform.LP.lineNotValidation;
+				this.notValidationMode(errMsg);
 				return false;
 			}
+
+			// 异步校验处理
+			if (isAsyncCheck) {
+				return flag.then(f => {
+					const pass = String(f) === "true";
+					if (!pass) {
+						const errMsg = f || MWF.xApplication.process.Xform.LP.lineNotValidation;
+						this.notValidationMode(errMsg);
+					}
+					return pass;
+				});
+			}
+
+			// 同步校验通过
 			return true;
 		},
 		validation: function(routeName, opinion){
+			this.moduleValidationAG = null;
 			if (this.isReadonly() || this.json.showMode==="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
 
-			const flag = this._validation(routeName, opinion);
-			this.fireEvent("validation", [flag]);
-			return flag;
+			const checkResult = this._validation(routeName, opinion);
+
+			if (checkResult instanceof Promise) {
+				return checkResult.then(pass => {
+					this.fireEvent("validation", [pass]);
+					return pass;
+				});
+			}
+
+			this.fireEvent("validation", [checkResult]);
+			return checkResult;
 		},
 		getAttachmentRandomSite: function(){
 			var i = (new Date()).getTime();
@@ -3501,27 +3648,69 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 	},
 	_validation: function(){
 		if( !this.options.isEdited || !this.options.isEditable )return true;
-		if( !this.validationFields())return false;
-		if( !this.validationCompleteLine())return false;
-		return true;
+
+		const fieldsPass = this.validationFields();
+		if (fieldsPass === false) return false;
+
+		const linePass = this.validationCompleteLine();
+		if (linePass === false) return false;
+
+		const promises = [];
+		if( fieldsPass instanceof Promise)promises.push(fieldsPass);
+		if( linePass instanceof Promise)promises.push(linePass);
+		if( promises.length === 0 )return true;
+
+		this.moduleValidationAG = Promise.all(promises).then(resultArr => {
+			return resultArr.every(res => String(res) === "true");
+		});
+
+		return this.moduleValidationAG;
 	},
 	validation: function(){
 		// if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
+		this.moduleValidationAG = null;
+		const checkRes = this._validation();
 
-		const flag = this._validation();
-		this.datatable.fireEvent("validationLine", [this, flag]);
-		return flag
+		if (checkRes instanceof Promise) {
+			return checkRes.then(isPass => {
+				this.datatable.fireEvent("validationLine", [this, isPass]);
+				return isPass;
+			});
+		}
+
+		this.datatable.fireEvent("validationLine", [this, checkRes]);
+		return checkRes;
 	},
 	validationFields: function(){
 		if( !this.options.isEdited || !this.options.isEditable )return true;
-		var flag = true;
-		this.fields.each(function(field, key){
-			if (field.json.type!="sequence" && field.validationMode ){
-				field.validationMode();
-				if (!field.validation()) flag = false;
+
+		let syncFailed = false;
+		const asyncPromiseList = [];
+
+		this.fields.forEach(field => {
+			if (field.json.type === "sequence" || !field.validationMode) return;
+
+			field.validationMode();
+			// 同步校验失败标记
+			if (!field.validation()) {
+				syncFailed = true;
 			}
-		}.bind(this));
-		return flag;
+			// 收集字段异步校验Promise
+			if (field.moduleValidationAG) {
+				asyncPromiseList.push(field.moduleValidationAG);
+			}
+		});
+
+		// 任意字段同步校验失败，直接阻断
+		if (syncFailed) return false;
+		// 无异步校验，同步全部通过
+		if (asyncPromiseList.length === 0) return true;
+
+		// 合并字段异步校验
+		return Promise.all(asyncPromiseList).then(arr => {
+			const hasError = arr.some(item => String(item) !== "true");
+			return !hasError;
+		});
 	},
 	validationCompleteLine: function(){
 		if( !this.options.isEdited || !this.options.isEditable )return true;
@@ -3532,11 +3721,26 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				if (!flag) flag = MWF.xApplication.process.Xform.LP.lineNotValidation;
 			}
 		}
-		if (flag.toString()!=="true"){
-			var isTr = !layout.mobile;
-			this.notValidationMode(flag, isTr);
+
+		const isAsyncCheck = flag && typeof flag.then === "function";
+		const isSyncPass = String(flag) === "true";
+
+		// 同步校验不通过
+		if (!isAsyncCheck && !isSyncPass) {
+			this.notValidationMode(flag, !layout.mobile);
 			return false;
 		}
+
+		if(isAsyncCheck){
+			return flag.then(f => {
+				const pass = String(f) === "true";
+				if (!pass) {
+					this.notValidationMode(f, !layout.mobile);
+				}
+				return pass;
+			});
+		}
+
 		return true;
 	},
 	createErrorNode: function(text, isTr){

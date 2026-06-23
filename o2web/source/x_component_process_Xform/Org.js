@@ -985,10 +985,12 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
 
         this.combox.addEvent("change", function(){
             this.validationMode();
-            if (this.validation()){
-                this.node.store("data", this.getInputData());
-                this._setBusinessData(this.getInputData("change"));
-            }
+            o2.promiseAll(this.validation()).then(flag=>{
+                if(String(flag) === "true"){
+                    this.node.store("data", this.getInputData());
+                    this._setBusinessData(this.getInputData("change"));
+                }
+            })
         }.bind(this));
     },
 
@@ -1046,10 +1048,12 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         this.node.getFirst().setStyle("height", "auto");
         this.node.getFirst().addEvent("change", function(){
             this.validationMode();
-            if (this.validation()){
-                this.node.store("data", this.getInputData());
-                this._setBusinessData(this.getInputData("change"));
-            }
+            o2.promiseAll(this.validation()).then(flag=>{
+                if(String(flag) === "true"){
+                    this.node.store("data", this.getInputData());
+                    this._setBusinessData(this.getInputData("change"));
+                }
+            })
         }.bind(this));
     },
     getDataText: function(data){

@@ -87,7 +87,13 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
      *  if( !this.form.get('fieldId').validate() ){
      *      return false;
      *  }
-     *  @return {Boolean} 是否通过校验
+     *  @example
+     *  //当字段校验为异步的时候，返回promise。
+     *  const result = this.form.get('fieldId').validate();
+     *  result.then(flag=>{
+     *      //flag 表示是否通过校验
+     *  })
+     *  @return {Boolean|Promise} 是否通过校验，当字段校验为异步的时候，返回promise。
      */
     validate: function (routeName, opinion) {
         if( this.validationMode )this.validationMode();
@@ -99,30 +105,55 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
     validation: function (routeName, opinion) {
         //!this.isReadonly() && this.json.showMode!=="disabled" && !this.node?.isDisplayNone()
+        this.moduleValidationAG = null;
         if (!this.isReadonly() && this.json.showMode!=="disabled"){
             if (this.getInputData){
                 this._setBusinessData(this.getInputData("change"));
             }
             if (this.node.checkValidity){
-                if (!this.node.checkValidity()) return false;
+                if (!this.node.checkValidity()) {
+                    if ( this.node && !this.node.isIntoView()) this.node.scrollIntoView({ behavior: "smooth", block: "center" });
+                    return false;
+                }
             }
             if (this.validationFormat){
                 if (!this.validationFormat()) return false;
             }
             if (!this.validationConfig(routeName, opinion)) return false;
 
-            if (!this.json.validation) return true;
-            if (!this.json.validation.code) return true;
+            return this._validation(routeName, opinion);
+        }
+        return true;
+    },
+    _validation: function(routeName){
+        if (!this.json.validation) return true;
+        if (!this.json.validation.code) return true;
 
-            this.currentRouteName = routeName;
-            var flag = this.form.Macro.exec(this.json.validation.code, this);
-            this.currentRouteName = "";
+        this.currentRouteName = routeName;
+        var checkResult = this.form.Macro.exec(this.json.validation.code, this);
+        this.currentRouteName = "";
 
-            if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
-            if (flag.toString() !== "true") {
-                this.notValidationMode(flag);
-                return false;
-            }
+        const isAsync = checkResult instanceof Promise;
+        this.moduleValidationAG = isAsync ? checkResult : null;
+
+        if (!isAsync && !checkResult) {
+            checkResult = MWF.xApplication.process.Xform.LP.notValidation;
+        }
+
+        if (!isAsync && String(checkResult) !== "true") {
+            this.notValidationMode(checkResult);
+            return false;
+        }
+
+        if (isAsync) {
+            return checkResult.then(f => {
+                const result = String(f) === "true";
+                if (!result) {
+                    const msg = f || MWF.xApplication.process.Xform.LP.notValidation;
+                    this.notValidationMode(msg);
+                }
+                return result;
+            });
         }
         return true;
     },

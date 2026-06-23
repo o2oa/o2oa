@@ -306,12 +306,12 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
     // },
         _createEventFunction: function(methods, k){
             methods["$loadElEvent_"+k.camelCase()] = function(){
-                var flag = true;
+                var checkResult = true;
                 if (k==="change"){
                     if (this.validationMode){
                         this.validationMode();
                         this._setBusinessData(this.getInputData());
-                        if( !this.validation() ) flag = false;
+                        checkResult = this.validation();
                     }
                 }else if( this.json.filterable && ['visible-change','focus'].contains(k) ){
                     var input = this.node.getElement('.el-input__inner');
@@ -325,7 +325,11 @@ MWF.xApplication.process.Xform.Elselect = MWF.APPElselect =  new Class(
                 if (this.json.events && this.json.events[k] && this.json.events[k].code){
                     this.form.Macro.fire(this.json.events[k].code, this, arguments);
                 }
-                if( flag )this.fireEvent(k, arguments);
+                o2.promiseAll(checkResult).then(flag=>{
+                    if(String(flag) === "true"){
+                        this.fireEvent(k, arguments);
+                    }
+                });
 
                 if( k === 'change' ){
                     this.isSearching = false;

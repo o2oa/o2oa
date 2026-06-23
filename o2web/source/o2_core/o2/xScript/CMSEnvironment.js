@@ -2125,10 +2125,35 @@ MWF.xScript.CMSEnvironment = function(ev){
          *  if( !this.form.verifyPublish() ){
          *      return false;
          *  }
-         *  @return {Boolean} 是否通过校验
+         *  @example
+         *  this.form.verifyPublish().then(flag=>{
+         *      //如果表单内包含异步校验则，用这种方式获取校验结果
+         *  })
+         *  @return {Boolean|Pormise} 是否通过校验，如果表单内包含异步校验则，返回的是Promise
          */
         "verifyPublish": function(isSave){
-            return !(!_form.formValidation("publish") || !_form[isSave ? 'formSaveValidation' : 'formPublishValidation']());
+            const formValidated = _form.formValidation(isSave ? "" : "publish");
+            if( formValidated === false ){
+                return false;
+            }
+
+            const submitValidated = _form[isSave ? 'formSaveValidation' : 'formPublishValidation']();
+            if( submitValidated === false ){
+                return false;
+            }
+
+            var promiseList = [formValidated, submitValidated].filter(result=>{
+                return result instanceof Promise;
+            })
+
+            if(promiseList.length === 0){
+                return true;
+            }
+
+            return Promise.all(promiseList).then(resultArr => {
+                return resultArr.every(res => String(res) === "true");
+            });
+            //return !(!_form.formValidation(isSave ? "" : "publish") || !_form[isSave ? 'formSaveValidation' : 'formPublishValidation']());
         },
 
         /**发布当前文档。<b>（仅内容管理表单中可用）</b>
