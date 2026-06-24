@@ -451,6 +451,25 @@ public class LeaveManagerAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "根据日期查询假期申请.", action = ActionLeaveRequestSearchWithDate.class)
+    @GET
+    @Path("request/search/date/{date}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void requestSearchWithDate(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request,
+            @JaxrsParameterDescribe("日期，格式 yyyy-MM-dd") @PathParam("date") String date) {
+        ActionResult<List<ActionLeaveRequestSearchWithDate.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLeaveRequestSearchWithDate().execute(date);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "根据人员和假期类型ID查询今年请假次数.", action = ActionLeaveRequestCountYear.class)
     @POST
     @Path("request/count/year")
