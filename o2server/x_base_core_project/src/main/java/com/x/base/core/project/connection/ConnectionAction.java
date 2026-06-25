@@ -1,5 +1,15 @@
 package com.x.base.core.project.connection;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.x.base.core.project.bean.NameValuePair;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.http.ActionResult.Type;
+import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.StringTools;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,20 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.x.base.core.project.bean.NameValuePair;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.http.ActionResult.Type;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.StringTools;
 
 public class ConnectionAction {
 
@@ -365,14 +363,13 @@ public class ConnectionAction {
 	}
 
 	public static void writeFilePart(OutputStream output, FilePart filePart, String boundary) throws IOException {
+		String encodedFileName = URLEncoder.encode(filePart.getFileName(), StandardCharsets.UTF_8).replace("+", "%20");
 		IOUtils.write(StringTools.TWO_HYPHENS + boundary, output, StandardCharsets.UTF_8);
 		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
 		IOUtils.write(
-				"Content-Disposition: form-data; name=\"" + filePart.getName() + "\"; filename=\""
-						+ URLEncoder.encode(filePart.getFileName(), StandardCharsets.UTF_8) + "\"",
+				"Content-Disposition: form-data; name=\"" + filePart.getName() + "\"; filename*=UTF-8''"
+						+ encodedFileName,
 				output, StandardCharsets.UTF_8);
-		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
-		IOUtils.write("Content-Length: " + filePart.getBytes().length, output, StandardCharsets.UTF_8);
 		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
 		IOUtils.write("Content-Type: " + filePart.getContentType(), output, StandardCharsets.UTF_8);
 		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
@@ -382,6 +379,8 @@ public class ConnectionAction {
 		IOUtils.write(filePart.getBytes(), output);
 		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
 	}
+
+
 
 	private static String extractErrorMessageIfExist(String str) {
 		if (StringUtils.isBlank(str)) {
