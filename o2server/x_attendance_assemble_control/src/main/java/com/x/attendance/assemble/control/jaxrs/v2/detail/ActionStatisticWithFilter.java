@@ -28,9 +28,13 @@ public class ActionStatisticWithFilter extends BaseAction {
     private static final Logger LOGGER = LoggerFactory.getLogger(ActionStatisticWithFilter.class);
 
     ActionResult<List<StatisticWo>> execute(JsonElement jsonElement) throws Exception {
+        StatisticWi wi = this.convertToWrapIn(jsonElement, StatisticWi.class);
+        return execute(wi);
+    }
+
+    public ActionResult<List<StatisticWo>> execute(StatisticWi wi) throws Exception {
         ActionResult<List<StatisticWo>> result = new ActionResult<>();
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            StatisticWi wi = this.convertToWrapIn(jsonElement, StatisticWi.class);
             if (StringUtils.isEmpty(wi.getFilter()) && (wi.getFilterList() == null || wi.getFilterList().isEmpty())) {
                 throw new ExceptionEmptyParameter("过滤人员或组织");
             }

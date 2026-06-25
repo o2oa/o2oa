@@ -6,12 +6,11 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
-import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.ExceptionDateEndBeforeStartError;
+import com.x.attendance.assemble.control.jaxrs.v2.detail.ActionStatisticWithFilter;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWi;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWo;
-import com.x.base.core.project.x_attendance_assemble_control;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -44,7 +43,7 @@ public class ActionMyStatistic extends BaseAction {
         }
         ActionResult<StatisticWo> result = new ActionResult<>();
         thisWi.setFilter(person.getDistinguishedName());
-        List<StatisticWo> res = ThisApplication.context().applications().postQuery( x_attendance_assemble_control.class, "v2/detail/statistic/filter", thisWi).getDataAsList(StatisticWo.class);
+        List<StatisticWo> res = new ActionStatisticWithFilter().execute(thisWi).getData();
         if (res != null && !res.isEmpty()) {
             result.setData(res.get(0));
         } else {

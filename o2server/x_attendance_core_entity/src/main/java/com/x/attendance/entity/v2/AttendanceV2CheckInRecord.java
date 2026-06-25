@@ -26,7 +26,16 @@ import java.util.Date;
 @Table(name = PersistenceProperties.AttendanceV2CheckInRecord.table, uniqueConstraints = {
         @UniqueConstraint(name = PersistenceProperties.AttendanceV2CheckInRecord.table + JpaObject.IndexNameMiddle
                 + JpaObject.DefaultUniqueConstraintSuffix, columnNames = {JpaObject.IDCOLUMN,
-                JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN})})
+                JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN})}, indexes = {
+        @javax.persistence.Index(name = PersistenceProperties.AttendanceV2CheckInRecord.table + "_UDS", columnList = JpaObject.ColumnNamePrefix
+                + AttendanceV2CheckInRecord.userId_FIELDNAME + "," + JpaObject.ColumnNamePrefix
+                + AttendanceV2CheckInRecord.recordDateString_FIELDNAME + "," + JpaObject.ColumnNamePrefix
+                + AttendanceV2CheckInRecord.recordDate_FIELDNAME),
+        @javax.persistence.Index(name = PersistenceProperties.AttendanceV2CheckInRecord.table + "_URD", columnList = JpaObject.ColumnNamePrefix
+                + AttendanceV2CheckInRecord.userId_FIELDNAME + "," + JpaObject.ColumnNamePrefix
+                + AttendanceV2CheckInRecord.recordDate_FIELDNAME),
+        @javax.persistence.Index(name = PersistenceProperties.AttendanceV2CheckInRecord.table + "_RD", columnList = JpaObject.ColumnNamePrefix
+                + AttendanceV2CheckInRecord.recordDate_FIELDNAME) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AttendanceV2CheckInRecord extends SliceJpaObject {
 
