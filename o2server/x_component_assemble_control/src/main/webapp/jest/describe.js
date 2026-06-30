@@ -177,7 +177,7 @@ Describe.createSampleMootools = function(m) {
 			}
 		});
 	}
-	
+
 	var strSample="";
 	if (m.contentType.indexOf('application/json') > -1) {
 		        strSample =  "var data = {};" + "\n";
@@ -195,19 +195,19 @@ Describe.createSampleMootools = function(m) {
 									if(i.isCollection){
 										if(i.fieldValue){
 										  if(i.fieldType =='enum'){
-											   strSample += '       data["'+i.name+'"] = ["'+ i.fieldValue +'"];'+"\n";	
+											   strSample += '       data["'+i.name+'"] = ["'+ i.fieldValue +'"];'+"\n";
 										  }else{
-											   strSample += '       data["'+i.name+'"] = ['+ i.fieldValue +'];'+"\n";	
+											   strSample += '       data["'+i.name+'"] = ['+ i.fieldValue +'];'+"\n";
 										  }
-										  
+
 										}else{
 										  strSample += '       data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
 										}
 									}else{
 										  if(i.fieldType =='enum'){
-												   strSample += '       data["'+i.name+'"] = "'+ i.fieldValue +'";'+"\n";	
+												   strSample += '       data["'+i.name+'"] = "'+ i.fieldValue +'";'+"\n";
 											  }else{
-												  
+
 													strSample += '       data["'+i.name+'"] = {"参数1":"value1","参数2":"value2"};'+"\n";
 											  }
 									}
@@ -247,7 +247,7 @@ Describe.createSampleMootools = function(m) {
 					}
 				});
 			}
-			
+
 			strSample += "$.ajax({" + "\n";
 			strSample += "type : '"+ m.type + "',\n";
 			strSample += "url : '"+address + "',\n";
@@ -257,13 +257,13 @@ Describe.createSampleMootools = function(m) {
 			strSample += "xhrFields : {'withCredentials' : true}" + ",\n";
 			strSample += "crossDomain : true"+ ",\n";
 			strSample += "data : formData"+"\n";
-			strSample += "});";	
+			strSample += "});";
 			*/
 	}
 
 	return  strSample;
    }
-   
+
 Describe.createSampleJSO2= function(m) {
 	var address = window.location.href;
 	    address = address.substring(0,address.indexOf("/jest/"));
@@ -291,7 +291,7 @@ Describe.createSampleJSO2= function(m) {
 			}
 		});
 	}
-	
+
 	var strSample="";
 	if (m.contentType.indexOf('application/json') > -1) {
 		  strSample =  "var data = {};" + "\n";
@@ -309,11 +309,11 @@ Describe.createSampleJSO2= function(m) {
 									if(i.isCollection){
 										if(i.fieldValue){
 										  if(i.fieldType =='enum'){
-											   strSample += '       data["'+i.name+'"] = ["'+ i.fieldValue +'"];'+"\n";	
+											   strSample += '       data["'+i.name+'"] = ["'+ i.fieldValue +'"];'+"\n";
 										  }else{
-											   strSample += '       data["'+i.name+'"] = ['+ i.fieldValue +'];'+"\n";	
+											   strSample += '       data["'+i.name+'"] = ['+ i.fieldValue +'];'+"\n";
 										  }
-										  
+
 										}else{
 										  strSample += '       data["'+i.name+'"] = [{"参数1":"value1","参数2":"value2"}];'+"\n";
 										}
@@ -342,27 +342,27 @@ Describe.createSampleJSO2= function(m) {
 			 strSample += "     }" + "\n";
 			 strSample += "var action = new this.Action( root, options);" + "\n\n";
 			 strSample += "action.invoke({" + "\n";
-			 strSample += "        \"name\": \"" + functionName+ "\", //自定义的服务名" + "\n"; 
-			 strSample += "        \"parameter\": {" + parameter+ "},  //uri参数 " + "\n"; 
-             strSample += "        \"data\": data, //请求的正文, JsonObject " +  "\n"; 
-             strSample += "        \"success\": function(json){ //服务调用成功时的回调方法，json 是服务返回的数据" +  "\n"; 
-             strSample += "        //这里进行具体的处理"+ "\n"; 
-             strSample += "        }.bind(this),"+ "\n"; 
+			 strSample += "        \"name\": \"" + functionName+ "\", //自定义的服务名" + "\n";
+			 strSample += "        \"parameter\": {" + parameter+ "},  //uri参数 " + "\n";
+             strSample += "        \"data\": data, //请求的正文, JsonObject " +  "\n";
+             strSample += "        \"success\": function(json){ //服务调用成功时的回调方法，json 是服务返回的数据" +  "\n";
+             strSample += "        //这里进行具体的处理"+ "\n";
+             strSample += "        }.bind(this),"+ "\n";
              strSample += "        \"failure\" : function(xhr){ //服务调用失败时的回调方法，xhr 为 XMLHttpRequest 对象" +  "\n";
-             strSample += "        //这里进行具体的处理"+ "\n"; 
-             strSample += "     },"+ "\n"; 
-             strSample += "        \"async\" : true, //同步还是异步，默认为true" + "\n"; 
-             strSample += "        \"withCredentials\" : true, //是否允许跨域请求，默认为true" + "\n"; 
+             strSample += "        //这里进行具体的处理"+ "\n";
+             strSample += "     },"+ "\n";
+             strSample += "        \"async\" : true, //同步还是异步，默认为true" + "\n";
+             strSample += "        \"withCredentials\" : true, //是否允许跨域请求，默认为true" + "\n";
              strSample += "        \"urlEncode\" : true //uri参数是否需要通过encodeURIComponent函数编码，默认为true" + "\n";
-             strSample += "});"			
+             strSample += "});"
 	} else {
-		
+
 	}
 	return  strSample;
-  }   
-   
-   
-   
+  }
+
+
+
 Describe.createSampleO2= function(m) {
 	var address = window.location.href;
 	    address = address.substring(0,address.indexOf("/jest/"));
@@ -384,7 +384,7 @@ Describe.createSampleO2= function(m) {
 			}
 		});
 	}
-	
+
 	var strSample="";
 	if (m.contentType.indexOf('application/json') > -1) {
 			if (m.ins && m.ins.length > 0) {
@@ -402,11 +402,11 @@ Describe.createSampleO2= function(m) {
 									if(i.isCollection){
 										if(i.fieldValue){
 										  if(i.fieldType =='enum'){
-											   strSample += '       "'+i.name+'" : ["'+ i.fieldValue +'"],'+"\n";	
+											   strSample += '       "'+i.name+'" : ["'+ i.fieldValue +'"],'+"\n";
 										  }else{
-											   strSample += '       "'+i.name+'" : ['+ i.fieldValue +'],'+"\n";	
+											   strSample += '       "'+i.name+'" : ['+ i.fieldValue +'],'+"\n";
 										  }
-										  
+
 										}else{
 										  strSample += '       "'+i.name+'" : [{"参数1":"value1","参数2":"value2"}],'+"\n";
 										}
@@ -416,21 +416,21 @@ Describe.createSampleO2= function(m) {
 										}else{
 											strSample += '       "'+i.name+'" : {"参数1":"value1","参数2":"value2"},'+"\n";
 										}
-									
+
 									}
 							}
 						}
 				});
-				
+
 				 strSample = strSample.substring(0,strSample.lastIndexOf(","));
 			     strSample = strSample +"\n"+ "}"+"\n";
-				 
+
 			} else if (m.useJsonElementParameter) {
 				strSample += 'data = {"参数1":"value1","参数2":"value2"};' +"\n";
 			} else if (m.useStringParameter) {
 				strSample += 'data = "参数";'+"\n";
 			}
-		
+
 			if(m.type=="POST"){
 			   strSample += " \n var string = JSON.stringify(data);" + "\n";
                strSample += " var apps = this.applications;"+ "\n";
@@ -453,17 +453,17 @@ Describe.createSampleO2= function(m) {
 			}
 			if(m.type=="DELETE"){
 			   strSample += " \n var apps = this.applications;"+ "\n";
-               strSample += " var serviceRoot = \" "+ uri + "\";"+ "\n";
+               strSample += " var serviceRoot = \""+ uri + "\";"+ "\n";
                  strSample += " var path = \"" + address + "\";"+ "\n"; ;
                strSample += " var resp = apps.deleteQuery( serviceRoot, path);"+ "\n";
 			}
                strSample += " var json = JSON.parse( resp.toString() );"+ "\n";
-			
-	} 
+
+	}
 	return  strSample;
   }
-  
-  
+
+
 Describe.createSample= function(m) {
 	var address = window.location.href;
 	address = address.substring(0,address.indexOf("/jest/"));
@@ -483,7 +483,7 @@ Describe.createSample= function(m) {
 			}
 		});
 	}
-	
+
 	var strSample="";
 	if (m.contentType.indexOf('application/json') > -1) {
 			if (m.ins && m.ins.length > 0) {
@@ -501,28 +501,28 @@ Describe.createSample= function(m) {
 									if(i.isCollection){
 										if(i.fieldValue){
 										  if(i.fieldType =='enum'){
-											   strSample += '       "'+i.name+'" : ["'+ i.fieldValue +'"],'+"\n";	
+											   strSample += '       "'+i.name+'" : ["'+ i.fieldValue +'"],'+"\n";
 										  }else{
-											   strSample += '       "'+i.name+'" : ['+ i.fieldValue +'],'+"\n";	
+											   strSample += '       "'+i.name+'" : ['+ i.fieldValue +'],'+"\n";
 										  }
-										  
+
 										}else{
 										  strSample += '       "'+i.name+'" : [{"参数1":"value1","参数2":"value2"}],'+"\n";
 										}
 									}else{
 										if(i.fieldType =='enum'){
-											 
+
 											strSample += '       "'+i.name+'" : "'+i.fieldValue+'"\n';
 										}else{
 											strSample += '       "'+i.name+'" : {"参数1":"value1","参数2":"value2"},'+"\n";
 										}
-										
-										
+
+
 									}
 							}
 						}
 				});
-				
+
 				 strSample = strSample.substring(0,strSample.lastIndexOf(","));
 			     strSample = strSample +"\n"+ "}"+"\n";
 			} else if (m.useJsonElementParameter) {
@@ -530,7 +530,7 @@ Describe.createSample= function(m) {
 			} else if (m.useStringParameter) {
 				strSample += '    data = "参数";'+"\n";
 			}
-			
+
 			var dataBlank = true;
 			if(strSample != ""){
 				dataBlank = false;
@@ -543,7 +543,7 @@ Describe.createSample= function(m) {
 			strSample += "        contentType : '"+m.contentType+ "',\n";
 			strSample += "        xhrFields : {'withCredentials' : true}" + ",\n";
 			strSample += "        crossDomain : true"+ ",\n";
-			
+
 			if(dataBlank == false){
 			   if((m.contentType.indexOf('application/json') > -1) && (!m.useStringParameter)){
 				 strSample += "       data : JSON.stringify(data),\n";
@@ -551,14 +551,14 @@ Describe.createSample= function(m) {
 				  strSample += "      data : data,"+"\n";
 				}
 			}
-			
+
 		   strSample = strSample.substring(0,strSample.lastIndexOf(","));
 		   strSample = strSample +"\n";
-					 
+
 			strSample += "}).always(function(resultJson) {"+"\n";
 			strSample += "        alert(JSON.stringify(resultJson, null, 4))" +"\n";
 			strSample += "});";
-			
+
 	} else {
 			strSample = "var formData = new FormData();" + "\n";
 			if (m.formParameters && m.formParameters.length > 0) {
@@ -581,7 +581,7 @@ Describe.createSample= function(m) {
 			strSample += "        xhrFields : {'withCredentials' : true}" + ",\n";
 			strSample += "        crossDomain : true"+ ",\n";
 			strSample += "        data : formData"+"\n";
-			strSample += "});";	
+			strSample += "});";
 	}
 
 	return  strSample;
@@ -630,21 +630,21 @@ Describe.createSampleCommon= function(m,className) {
 									if(i.isCollection){
 										if(i.fieldValue){
 										  if(i.fieldType =='enum'){
-											   body += '       "'+i.name+'" : ["'+ i.fieldValue +'"],'+"\n";	
+											   body += '       "'+i.name+'" : ["'+ i.fieldValue +'"],'+"\n";
 											   body +=(i.fieldSample ? "  "+'<span style="color:red">//注解：'+i.fieldSample +'</span>\n':"");
 										  }else{
-											   body += '       "'+i.name+'" : ['+ i.fieldValue +'],'+"\n";	
+											   body += '       "'+i.name+'" : ['+ i.fieldValue +'],'+"\n";
 											   body +=(i.fieldSample ? "  "+'<span style="color:red">//注解：'+i.fieldSample +'</span>\n':"");
 										  }
-										  
+
 										}else{
 										  body += '       "'+i.name+'" : [{"参数1":"value1","参数2":"value2"}],'+"\n";
 										}
 									}else{
 										 if(i.fieldType =='enum'){
-											 body += '       "'+i.name+'" : "'+ i.fieldValue +'",'+"\n";	
+											 body += '       "'+i.name+'" : "'+ i.fieldValue +'",'+"\n";
 											 body +=(i.fieldSample ? "  "+'<span style="color:red">//注解：'+i.fieldSample +'</span>\n':"");
-								
+
 										 }else{
 										   body += '       "'+i.name+'" : {"参数1":"value1","参数2":"value2"},'+"\n";
 										 }
@@ -652,11 +652,11 @@ Describe.createSampleCommon= function(m,className) {
 							}
 						}
 					});
-					
+
 					debugger;
 					 body = body.substring(0,body.lastIndexOf(","));
 					 body = body +"\n"+ "}"+"\n";
-					 
+
 				} else if (m.useJsonElementParameter) {
 					body += '       data = {"参数1":"value1","参数2":"value2"};' +"\n";
 				} else if (m.useStringParameter) {
@@ -664,9 +664,9 @@ Describe.createSampleCommon= function(m,className) {
 				}
 	 if(m.type != "GET" ){
 		 if( body != ""){
-	        strSample += body;	
-		 }	   
-	 }			
+	        strSample += body;
+		 }
+	 }
 	 strSample += "var action = this.Actions.load(\"" + root + "\");\n";
 	 strSample += "       action."+ className + "."+m.name+ "(//平台封装好的方法\n";
 	 if(parameter!=""){
@@ -674,8 +674,8 @@ Describe.createSampleCommon= function(m,className) {
 	 }
 	 if(m.type != "GET" ){
 		 if( body != ""){
-	        strSample += "      data,//body请求参数\n";	
-		 }	   
+	        strSample += "      data,//body请求参数\n";
+		 }
 	 }
 	 strSample += "      function( json ){ //服务调用成功的回调函数, json为服务传回的数据\n";
 	 strSample += "         data = json.data; //为变量data赋值\n";
@@ -685,7 +685,7 @@ Describe.createSampleCommon= function(m,className) {
 	 strSample +=  "     }.bind(this)\n";
 	 //strSample += "      false //同步执行 \n";
 	 strSample += "    );\n";
-				
+
 	}else{
 			var formData = "var formData = new FormData();" + "\n";
 			var hasFile = false;
@@ -709,7 +709,7 @@ Describe.createSampleCommon= function(m,className) {
 	       }
 		  strSample +=  "      formData"+",//from参数\n";
 		 if(hasFile == true){
-		    strSample +=  '      $("input[type=file]").files[0]'+",//file参数\n";	 
+		    strSample +=  '      $("input[type=file]").files[0]'+",//file参数\n";
 		 }
 		 strSample +=  "function( json ){ //服务调用成功的回调函数, json为服务传回的数据\n";
 		 strSample +=  "      data = json.data; //为变量data赋值\n";
@@ -719,10 +719,10 @@ Describe.createSampleCommon= function(m,className) {
 		 strSample +=  "}.bind(this)\n";
 		 //strSample +=  "false //同步执行 \n";
 		 strSample += ");\n"
-		} 
-   return  strSample ;		
+		}
+   return  strSample ;
    }
-   
+
 Describe.prototype = {
 	"load" : function() {
 		var str = '<ul>';
@@ -781,7 +781,7 @@ Describe.prototype = {
 									txt += '</table>';
 									txt += '</fieldset>';
 								}
-								
+
 								if (m.formParameters && m.formParameters.length > 0) {
 									txt += '<fieldset id="formParameters"><legend>Form Parameter</legend>';
 									txt += '<table >';
@@ -797,7 +797,7 @@ Describe.prototype = {
 									txt += '</table>';
 									txt += '</fieldset>';
 								}
-								
+
 								if (m.queryParameters && m.queryParameters.length > 0) {
 									txt += '<fieldset id="queryParameters"><legend>Query Parameter</legend>';
 									txt += '<table >';
@@ -808,27 +808,27 @@ Describe.prototype = {
 									txt += '</table>';
 									txt += '</fieldset>';
 								}
-								
+
 							  if (m.ins && m.ins.length > 0) {
 									txt += '<fieldset id="ins"><legend>In</legend>';
 									txt += '<table>';
 									$.each(m.ins, function(ii, i) {
 										if (i.isCollection) {
-											
-											txt += '<tr><td><textarea id="' + i.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + i.name + ':' + i.description +(i.fieldValue ? "  "+'。数据格式：<span style="color:red">'+i.fieldValue +'</span>':"") + (i.fieldSample ? "  "+'<span style="color:red">'+i.fieldSample +'</span>':"") 
+
+											txt += '<tr><td><textarea id="' + i.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + i.name + ':' + i.description +(i.fieldValue ? "  "+'。数据格式：<span style="color:red">'+i.fieldValue +'</span>':"") + (i.fieldSample ? "  "+'<span style="color:red">'+i.fieldSample +'</span>':"")
 											+'</td></tr>';
 										} else {
 											txt += '<tr><td><input type="text" id="' + i.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + i.name + ':'
-											
-													+ i.description+ (i.fieldValue ? "  "+'。数据格式：<span style="color:red">'+i.fieldValue +'</span>':"") + (i.fieldSample ? "  "+'<span style="color:red">'+i.fieldSample +'</span>':"") 
+
+													+ i.description+ (i.fieldValue ? "  "+'。数据格式：<span style="color:red">'+i.fieldValue +'</span>':"") + (i.fieldSample ? "  "+'<span style="color:red">'+i.fieldSample +'</span>':"")
 													+'</td></tr>';
-						
+
 										}
 									});
 									txt += '</table>';
 									txt += '</fieldset>';
 								}
-								
+
 								if (m.useJsonElementParameter) {
 									txt += '<fieldset><legend>JsonElement</legend>';
 									txt += '<table><tr><td>';
@@ -837,7 +837,7 @@ Describe.prototype = {
 									txt += '</table>';
 									txt += '</fieldset>';
 								}
-								
+
 								if (m.useStringParameter) {
 									txt += '<fieldset><legend>String</legend>';
 									txt += '<table><tr><td>';
@@ -846,7 +846,7 @@ Describe.prototype = {
 									txt += '</table>';
 									txt += '</fieldset>';
 								}
-								
+
 								if (m.outs && m.outs.length > 0) {
 									txt += '<fieldset id="outs"><legend>Out</legend>';
 									txt += '<table>';
@@ -857,9 +857,9 @@ Describe.prototype = {
 									txt += '</table>';
 									txt += '</fieldset>';
 								}
-								
+
 								$('#content').html(txt);
-								
+
 								$('#' + m.name + '_' + m.type, '#method').click(function() {
 									var address = '../' + m.path;
 									if (m.pathParameters && m.pathParameters.length > 0) {
@@ -967,7 +967,7 @@ Describe.prototype = {
 															       }
 																}
 															}
-														
+
 														}
 													}
 												});
@@ -987,7 +987,7 @@ Describe.prototype = {
 										default:
 											break;
 										}
-										
+
 									} else {
 										switch (m.type) {
 										case 'POST':
@@ -1027,13 +1027,13 @@ Describe.prototype = {
 										}
 									}
 								})
-								
+
 								debugger;
 								$('#Sample').html("<div style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;color: #1E7ACE;\">\n平台推荐脚本样例</span>\n\n"+ Describe.createSampleCommon(m,j.name)+ "</div><div  style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\n后台脚本样例</span>\n\n" + Describe.createSampleO2(m) + "</div><div  style=\"line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\njquery样例</span>\n\n<span style=\"\">"+ Describe.createSample(m)+"</span></div>");
 							});
 				});
 			});
-		 
+
 		  $("[xtype='menu']").click(
 				  function(event) {
 					    if(event.stopPropagation){
@@ -1056,11 +1056,11 @@ Describe.prototype = {
 				     event.cancelBubble = true;
 				  }
 			})
-			$("[xtype='menu']").each(function(i){ 
+			$("[xtype='menu']").each(function(i){
 			if(i!=0){
 			  // $(this).children().toggle();
 			  $(this).children().each(function(i){
-					
+
 							if(this.tagName != "SPAN"){
 							$(this).toggle();
 							}
@@ -1079,7 +1079,7 @@ Describe.prototype = {
 				$.each(j.methods, function(mi, m) {
 					if((m.name.toUpperCase().indexOf(strKey.toUpperCase())>-1) || (m.description.toUpperCase().indexOf(strKey.toUpperCase())>-1) || (m.path.toUpperCase().indexOf(strKey.toUpperCase())>-1)){
 					flag = true;
-					
+
 					var tempKey =  strKey;
 					var tempReplace = "<span style='color: #f31313'>"+ strKey + "</span>";
 					 debugger;
@@ -1101,13 +1101,13 @@ Describe.prototype = {
 						tempReplace = "<span style='color: #f31313'>"+ tempReplace + "</span>";
 						strDescripthion = m.description.replace(tempKey, tempReplace);
 					}
-					
-					
+
+
 					strTemp += '<ul><li xtype="li"  style="margin-top: 10px;margin-left:-24px;font-size:12px; font-weight:normal;line-height:18px" ><a title = "' + strPath+ '"  id ="' + j.name + '_' + m.name + '" href="#"><b>' + strName+'</b><br/><span style="color: #666666;">-'+strDescripthion + '</span>' + '</a></li></ul>';
 					}
 				});
 				strTemp += '</li>';
-				
+
 				if(flag == true){
 				   str += strTemp;
 				}
@@ -1161,7 +1161,7 @@ Describe.prototype = {
 									txt += '</table>';
 									txt += '</fieldset>';
 								}
-								
+
 								if (m.formParameters && m.formParameters.length > 0) {
 									txt += '<fieldset id="formParameters"><legend>Form Parameter</legend>';
 									txt += '<table >';
@@ -1177,7 +1177,7 @@ Describe.prototype = {
 									txt += '</table>';
 									txt += '</fieldset>';
 								}
-								
+
 								if (m.queryParameters && m.queryParameters.length > 0) {
 									txt += '<fieldset id="queryParameters"><legend>Query Parameter</legend>';
 									txt += '<table >';
@@ -1188,14 +1188,14 @@ Describe.prototype = {
 									txt += '</table>';
 									txt += '</fieldset>';
 								}
-								
+
 							  if (m.ins && m.ins.length > 0) {
 									txt += '<fieldset id="ins"><legend>In</legend>';
 									txt += '<table>';
 									$.each(m.ins, function(ii, i) {
 										if (i.isCollection) {
-											
-											txt += '<tr><td><textarea id="' + i.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + i.name + ':' + i.description +(i.fieldValue ? "  "+'。数据格式：<span style="color:red">'+i.fieldValue +'</span>':"") + (i.fieldSample ? "  "+'<span style="color:red">'+i.fieldSample +'</span>':"") 
+
+											txt += '<tr><td><textarea id="' + i.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + i.name + ':' + i.description +(i.fieldValue ? "  "+'。数据格式：<span style="color:red">'+i.fieldValue +'</span>':"") + (i.fieldSample ? "  "+'<span style="color:red">'+i.fieldSample +'</span>':"")
 											'</td></tr>';
 										} else {
 											txt += '<tr><td><input type="text" id="' + i.name + '" style="width:600px; padding:1px; border:1px #000000 solid"/></td><td>' + i.name + ':'
@@ -1206,9 +1206,9 @@ Describe.prototype = {
 									txt += '</table>';
 									txt += '</fieldset>';
 								}
-								
-								
-								
+
+
+
 								if (m.useJsonElementParameter) {
 									txt += '<fieldset><legend>JsonElement</legend>';
 									txt += '<table><tr><td>';
@@ -1217,7 +1217,7 @@ Describe.prototype = {
 									txt += '</table>';
 									txt += '</fieldset>';
 								}
-								
+
 								if (m.useStringParameter) {
 									txt += '<fieldset><legend>String</legend>';
 									txt += '<table><tr><td>';
@@ -1226,7 +1226,7 @@ Describe.prototype = {
 									txt += '</table>';
 									txt += '</fieldset>';
 								}
-								
+
 								if (m.outs && m.outs.length > 0) {
 									txt += '<fieldset id="outs"><legend>Out</legend>';
 									txt += '<table>';
@@ -1237,9 +1237,9 @@ Describe.prototype = {
 									txt += '</table>';
 									txt += '</fieldset>';
 								}
-								
+
 								$('#content').html(txt);
-								
+
 								$('#' + m.name + '_' + m.type, '#method').click(function() {
 									var address = '../' + m.path;
 									if (m.pathParameters && m.pathParameters.length > 0) {
@@ -1333,7 +1333,7 @@ Describe.prototype = {
 																   data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
 																}
 															}
-														
+
 														}
 													}
 												});
@@ -1353,7 +1353,7 @@ Describe.prototype = {
 										default:
 											break;
 										}
-										
+
 									} else {
 										switch (m.type) {
 										case 'POST':
@@ -1393,13 +1393,13 @@ Describe.prototype = {
 										}
 									}
 								})
-								
+
 								debugger;
 								$('#Sample').html("<div style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;color: #1E7ACE;\">\n平台推荐脚本样例</span>\n\n"+ Describe.createSampleCommon(m,j.name)+ "</div><div  style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\n后台脚本样例</span>\n\n" + Describe.createSampleO2(m) + "</div><div  style=\"line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\njquery样例</span>\n\n<span style=\"\">"+ Describe.createSample(m)+"</span></div>");
 							});
 				});
 			});
-		 
+
 		  $("[xtype='menu']").click(
 				  function(event) {
 					    if(event.stopPropagation){
