@@ -344,6 +344,9 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 		}
 	},
     getInputData: function(){
+		if(this.moduleSelectAG || this.moduleValueAG){
+			return this._getBusinessData();
+		}
 		return this.node.value || '';
 	},
     resetData: function(){
