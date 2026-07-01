@@ -1,7 +1,6 @@
 package com.x.attendance.entity.v2;
 
 import com.x.attendance.entity.PersistenceProperties;
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -180,12 +179,12 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
 
     public static final String description_FIELDNAME = "description";
     @FieldDescribe("其他说明备注")
-    @Column(length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
+    @Column(name = ColumnNamePrefix + description_FIELDNAME)
     private String description;
 
     public static final String recordAddress_FIELDNAME = "recordAddress";
     @FieldDescribe("打卡地点描述")
-    @Column(length = JpaObject.length_255B, name = ColumnNamePrefix + recordAddress_FIELDNAME)
+    @Column(name = ColumnNamePrefix + recordAddress_FIELDNAME)
     private String recordAddress;
 
     public static final String longitude_FIELDNAME = "longitude";
@@ -201,7 +200,7 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
 
     public static final String signDescription_FIELDNAME = "signDescription";
     @FieldDescribe("外勤打卡说明")
-    @Column(length = JpaObject.length_255B, name = ColumnNamePrefix + signDescription_FIELDNAME)
+    @Column(name = ColumnNamePrefix + signDescription_FIELDNAME)
     private String signDescription;
 
     public static final String fieldWork_FIELDNAME = "fieldWork";
@@ -229,8 +228,8 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
 
     public static final String groupName_FIELDNAME = "groupName";
     @FieldDescribe("考勤组名称")
-    @Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-                                                                                    + groupName_FIELDNAME)
+    @Column(name = ColumnNamePrefix
+                   + groupName_FIELDNAME)
     private String groupName;
 
 
@@ -247,8 +246,8 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
 
     public static final String shiftName_FIELDNAME = "shiftName";
     @FieldDescribe("班次名称")
-    @Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-                                                                                    + shiftName_FIELDNAME)
+    @Column(name = ColumnNamePrefix
+                   + shiftName_FIELDNAME)
     private String shiftName;
 
     public static final String workPlaceIdd_FIELDNAME = "workPlaceId";
@@ -258,8 +257,8 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
 
     public static final String placeName_FIELDNAME = "placeName";
     @FieldDescribe("场所名称")
-    @Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-                                                                                    + placeName_FIELDNAME)
+    @Column(name = ColumnNamePrefix
+                   + placeName_FIELDNAME)
     private String placeName;
 
 

@@ -3,7 +3,6 @@ package com.x.attendance.entity.v2;
 import com.x.attendance.entity.PersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
-import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -74,12 +73,12 @@ public class AttendanceV2Config extends SliceJpaObject {
 
     public static final String processId_FIELDNAME = "processId";
     @FieldDescribe("自定义流程id")
-    @Column(length = length_255B, name = ColumnNamePrefix + processId_FIELDNAME)
+    @Column(name = ColumnNamePrefix + processId_FIELDNAME)
     private String processId;
 
     public static final String processName_FIELDNAME = "processName";
     @FieldDescribe("自定义流程名称")
-    @Column(length = length_255B, name = ColumnNamePrefix + processName_FIELDNAME)
+    @Column(name = ColumnNamePrefix + processName_FIELDNAME)
     private String processName;
 
     public static final String onDutyFastCheckInEnable_FIELDNAME = "onDutyFastCheckInEnable";

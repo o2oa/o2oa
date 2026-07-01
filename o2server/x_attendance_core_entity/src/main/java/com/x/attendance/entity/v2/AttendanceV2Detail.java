@@ -1,7 +1,6 @@
 package com.x.attendance.entity.v2;
 
 import com.x.attendance.entity.PersistenceProperties;
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -17,8 +16,7 @@ import javax.persistence.*;
 import java.util.List;
 
 /**
- * Created by fancyLou on 2023/2/21.
- * Copyright © 2023 O2. All rights reserved.
+ * Created by fancyLou on 2023/2/21. Copyright © 2023 O2. All rights reserved.
  */
 
 @Schema(name = "AttendanceV2Detail", description = "考勤每日详细信息.")
@@ -26,10 +24,14 @@ import java.util.List;
 @Entity
 @Table(name = PersistenceProperties.AttendanceV2Detail.table, uniqueConstraints = {
         @UniqueConstraint(name = PersistenceProperties.AttendanceV2Detail.table
-                + JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = {JpaObject.IDCOLUMN,
+                                 + JpaObject.IndexNameMiddle
+                                 + JpaObject.DefaultUniqueConstraintSuffix, columnNames = {
+                JpaObject.IDCOLUMN,
                 JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN}),
-        @UniqueConstraint(name = PersistenceProperties.AttendanceV2Detail.table + JpaObject.IndexNameMiddle
-                + "person_date_UNIQUE", columnNames = {JpaObject.ColumnNamePrefix + AttendanceV2Detail.userId_FIELDNAME,
+        @UniqueConstraint(name = PersistenceProperties.AttendanceV2Detail.table
+                                 + JpaObject.IndexNameMiddle
+                                 + "person_date_UNIQUE", columnNames = {
+                JpaObject.ColumnNamePrefix + AttendanceV2Detail.userId_FIELDNAME,
                 JpaObject.ColumnNamePrefix + AttendanceV2Detail.recordDateString_FIELDNAME})})
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AttendanceV2Detail extends SliceJpaObject {
@@ -101,7 +103,6 @@ public class AttendanceV2Detail extends SliceJpaObject {
     @FieldDescribe("是否工作日")
     @Column(name = ColumnNamePrefix + isWorkday_FIELDNAME)
     private Boolean workDay = false;
-
 
 
     //////// 统计相关
@@ -177,7 +178,8 @@ public class AttendanceV2Detail extends SliceJpaObject {
     @PersistentCollection(fetch = FetchType.EAGER)
     @OrderColumn(name = ORDERCOLUMNCOLUMN)
     @ContainerTable(name = TABLE + ContainerTableNameMiddle
-            + recordIdList_FIELDNAME, joinIndex = @org.apache.openjpa.persistence.jdbc.Index(name = TABLE + recordIdList_FIELDNAME + JoinIndexNameSuffix))
+                           + recordIdList_FIELDNAME, joinIndex = @org.apache.openjpa.persistence.jdbc.Index(name =
+            TABLE + recordIdList_FIELDNAME + JoinIndexNameSuffix))
     @ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + recordIdList_FIELDNAME)
     @ElementIndex(name = TABLE + recordIdList_FIELDNAME + ElementIndexNameSuffix)
     private List<String> recordIdList;
@@ -189,9 +191,9 @@ public class AttendanceV2Detail extends SliceJpaObject {
 
     public static final String groupName_FIELDNAME = "groupName";
     @FieldDescribe("考勤组名称")
-    @Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-            + groupName_FIELDNAME)
-    private String groupName ;
+    @Column(name = ColumnNamePrefix
+                   + groupName_FIELDNAME)
+    private String groupName;
 
     public static final String shiftId_FIELDNAME = "shiftId";
     @FieldDescribe("班次id.")
@@ -200,8 +202,8 @@ public class AttendanceV2Detail extends SliceJpaObject {
 
     public static final String shiftName_FIELDNAME = "shiftName";
     @FieldDescribe("班次名称，休息日")
-    @Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-            + shiftName_FIELDNAME)
+    @Column(name = ColumnNamePrefix
+                   + shiftName_FIELDNAME)
     private String shiftName;
 
 
