@@ -18,79 +18,79 @@ MWF.xDesktop.requireApp("Attendance", "lp."+MWF.language, null, false);
 //    }
 //})
 
-MWF.xApplication.Attendance.Calendar = new Class({
-    Implements: [Options, Events],
-    options : {
-        date : null
-    },
-    initialize: function (node, explorer, data, options) {
-        this.setOptions(options);
-        this.app = explorer.app;
-        this.explorer = explorer;
-        this.actions = this.app.actions;
-        this.node = node;
-        this.css = explorer.css;
-        //this.data = data;
-        this.holiday = data.holiday;
-        this.eventData = data.eventData;
-        this.detail = data.detail;
-        this.statusColor = explorer.statusColor;
-    },
-    reload: function () {
-        this.node.empty();
-        this.load();
-    },
-    load : function(){
-        this.loadResource(function(){
-            this.loadCalendar();
-        }.bind(this))
-    },
-    loadResource: function ( callback ) {
-        var baseUrls = [
-            "../x_component_Attendance/$Common/fullcalendar/lib/moment.js",
-            "../x_component_Attendance/$Common/fullcalendar/lib/jquery.js"
-        ];
-        var fullcalendarUrl = "../x_component_Attendance/$Common/fullcalendar/fullcalendar.js";
-        var langUrl =  "../x_component_Attendance/$Common/fullcalendar/lang/"+MWF.language+".js";
-        COMMON.AjaxModule.loadCss("../x_component_Attendance/$Common/fullcalendar/fullcalendar.css",function(){
-            COMMON.AjaxModule.load(baseUrls, function(){
-                jQuery.noConflict();
-                COMMON.AjaxModule.load(fullcalendarUrl, function(){
-                    COMMON.AjaxModule.load(langUrl, function(){
-                        if(callback)callback();
-                    }.bind(this))
-                }.bind(this));
-            }.bind(this))
-        }.bind(this))
-    },
-    loadCalendar : function(){
-        var _self = this;
-        jQuery(this.node).fullCalendar({
-            header: {
-                left: '', //'prev,next today',
-                center: '', //'title',
-                right: '' //'holidayButton'
-            },
-            contentHeight: 350,
-            defaultDate: this.options.date.format( this.app.lp.dateFormatDay ) ,
-            //editable: true,
-            eventColor : "#fff",
-            eventTextColor : "#fff",
-            rendingNumberCellFun : function( date, formatedDate, dateStr ){
-                if( this.holiday && this.holiday.holidays && this.holiday.holidays.contains( formatedDate )){
-                    return "<span style='float:right;padding-right:5px;color:red'>"+this.app.lp.offDutyAbbrev+"</span>"
-                }
-                if( this.holiday && this.holiday.workdays && this.holiday.workdays.contains( formatedDate ) ){
-                    return "<span style='float:right;padding-right:5px;'>"+this.app.lp.onDutyAbbrev+"</span>"
-                }
-            }.bind(this),
-            eventMouseover : function(event, jsEvent, view){
-                jsEvent.target.title = event.text;
-            },
-            events: this.eventData
-        });
-    }
-});
+// MWF.xApplication.Attendance.Calendar = new Class({
+//     Implements: [Options, Events],
+//     options : {
+//         date : null
+//     },
+//     initialize: function (node, explorer, data, options) {
+//         this.setOptions(options);
+//         this.app = explorer.app;
+//         this.explorer = explorer;
+//         this.actions = this.app.actions;
+//         this.node = node;
+//         this.css = explorer.css;
+//         //this.data = data;
+//         this.holiday = data.holiday;
+//         this.eventData = data.eventData;
+//         this.detail = data.detail;
+//         this.statusColor = explorer.statusColor;
+//     },
+//     reload: function () {
+//         this.node.empty();
+//         this.load();
+//     },
+//     load : function(){
+//         this.loadResource(function(){
+//             this.loadCalendar();
+//         }.bind(this))
+//     },
+//     loadResource: function ( callback ) {
+//         var baseUrls = [
+//             "../x_component_Attendance/$Common/fullcalendar/lib/moment.js",
+//             "../x_component_Attendance/$Common/fullcalendar/lib/jquery.js"
+//         ];
+//         var fullcalendarUrl = "../x_component_Attendance/$Common/fullcalendar/fullcalendar.js";
+//         var langUrl =  "../x_component_Attendance/$Common/fullcalendar/lang/"+MWF.language+".js";
+//         COMMON.AjaxModule.loadCss("../x_component_Attendance/$Common/fullcalendar/fullcalendar.css",function(){
+//             COMMON.AjaxModule.load(baseUrls, function(){
+//                 jQuery.noConflict();
+//                 COMMON.AjaxModule.load(fullcalendarUrl, function(){
+//                     COMMON.AjaxModule.load(langUrl, function(){
+//                         if(callback)callback();
+//                     }.bind(this))
+//                 }.bind(this));
+//             }.bind(this))
+//         }.bind(this))
+//     },
+//     loadCalendar : function(){
+//         var _self = this;
+//         jQuery(this.node).fullCalendar({
+//             header: {
+//                 left: '', //'prev,next today',
+//                 center: '', //'title',
+//                 right: '' //'holidayButton'
+//             },
+//             contentHeight: 350,
+//             defaultDate: this.options.date.format( this.app.lp.dateFormatDay ) ,
+//             //editable: true,
+//             eventColor : "#fff",
+//             eventTextColor : "#fff",
+//             rendingNumberCellFun : function( date, formatedDate, dateStr ){
+//                 if( this.holiday && this.holiday.holidays && this.holiday.holidays.contains( formatedDate )){
+//                     return "<span style='float:right;padding-right:5px;color:red'>"+this.app.lp.offDutyAbbrev+"</span>"
+//                 }
+//                 if( this.holiday && this.holiday.workdays && this.holiday.workdays.contains( formatedDate ) ){
+//                     return "<span style='float:right;padding-right:5px;'>"+this.app.lp.onDutyAbbrev+"</span>"
+//                 }
+//             }.bind(this),
+//             eventMouseover : function(event, jsEvent, view){
+//                 jsEvent.target.title = event.text;
+//             },
+//             events: this.eventData
+//         });
+//     }
+// });
 
 
 MWF.xApplication.Attendance.Echarts = new Class({
