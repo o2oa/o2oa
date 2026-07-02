@@ -13,7 +13,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -43,9 +42,9 @@ public class JarTools {
 					continue;
 				}
 				if (entry.isDirectory()) {
-					FileUtils.forceMkdir(new File(dist, entry.getName()));
+					FileUtils.forceMkdir(FileTools.resolve(dist, entry.getName()));
 				} else {
-					File file = new File(dist, entry.getName());
+					File file = FileTools.resolve(dist, entry.getName());
 					if (file.exists() && force) {
 						FileUtils.forceDelete(file);
 					}
@@ -56,7 +55,7 @@ public class JarTools {
 							while ((size = jis.read(buffer, 0, buffer.length)) != -1) {
 								baos.write(buffer, 0, size);
 							}
-							FileUtils.writeByteArrayToFile(new File(dist, entry.getName()), baos.toByteArray());
+							FileUtils.writeByteArrayToFile(FileTools.resolve(dist, entry.getName()), baos.toByteArray());
 						}
 					}
 				}
@@ -65,10 +64,6 @@ public class JarTools {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	public static void unjar(String source, String sub, String dist, boolean force) {
-		unjar(new File(source), sub, new File(dist), force);
 	}
 
 	public static void unjar(Path source, String sub, Path dist, boolean force) {
@@ -90,56 +85,12 @@ public class JarTools {
 					continue;
 				}
 				if (entry.isDirectory()) {
-					File dir = new File(dist, name);
+					File dir = FileTools.resolve(dist, name);
 					FileUtils.forceMkdir(dir);
 				} else {
-					File file = new File(dist, name);
+					File file = FileTools.resolve(dist, name);
 					if (file.exists() && force) {
-						file.delete();
-					}
-					if (!file.exists()) {
-						try (InputStream in = jarFile.getInputStream(entry)) {
-							FileUtils.copyInputStreamToFile(in, file);
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void unjar(File source, List<String> subs, File dist, boolean asNew) {
-		try (JarFile jarFile = new JarFile(source)) {
-			Enumeration<? extends JarEntry> entrys = jarFile.entries();
-			while (entrys.hasMoreElements()) {
-				JarEntry entry = entrys.nextElement();
-				String name = entry.getName();
-				if (name.length() < 2) {
-					continue;
-				}
-				if (subs != null) {
-					boolean flag = false;
-					for (String sub : subs) {
-						if (StringUtils.startsWith(name, sub)) {
-							flag = true;
-							break;
-						}
-					}
-					if (flag) {
-						continue;
-					}
-				}
-				if (entry.isDirectory()) {
-					File dir = new File(dist, name);
-					if (dir.exists() && name.indexOf("/") == name.lastIndexOf("/") && asNew) {
-						FileUtils.cleanDirectory(dir);
-					}
-					FileUtils.forceMkdir(dir);
-				} else {
-					File file = new File(dist, name);
-					if (file.exists()) {
-						file.delete();
+						FileUtils.forceDelete(file);
 					}
 					if (!file.exists()) {
 						try (InputStream in = jarFile.getInputStream(entry)) {
@@ -186,20 +137,6 @@ public class JarTools {
 			e.printStackTrace();
 		}
 	}
-
-//	public static void jar(File source, File dist, String[] excludes) {
-//		try (FileOutputStream fos = new FileOutputStream(dist); JarOutputStream jos = new JarOutputStream(fos)) {
-//			jos.setMethod(JarOutputStream.DEFLATED);
-//			jos.setLevel(5);
-//			for (File o : source.listFiles()) {
-//				System.out.println(FilenameUtils.equals(filename1, filename2));
-//				write(o, "", jos);
-//			}
-//			jos.close();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
 
 	public static void jar(String source, String dist) {
 		jar(new File(source), new File(dist));
@@ -263,15 +200,6 @@ public class JarTools {
 				}
 			}
 		}
-	}
-
-	public static void main(String[] args) throws Exception {
-		System.out.println(StringUtils.startsWith("asdfasdf", ""));
-		System.out.println(StringUtils.startsWith("asdfasdf", null));
-		File file = new File("/Users/chengjian/Desktop/temp/temp/cmcc.zip");
-		File dest = new File("/Users/chengjian/Desktop/temp/temp/update");
-		JarTools.unjar(file, "", dest, true);
-		System.out.println(StringUtils.startsWith("asdfasdf", ""));
 	}
 
 }

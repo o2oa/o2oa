@@ -1,7 +1,5 @@
 package com.x.server.console;
 
-import com.google.common.collect.ImmutableList;
-import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.WebServers;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -12,7 +10,6 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.FileTools;
 import com.x.base.core.project.tools.ZipTools;
-import com.x.base.core.project.x_base_core_project;
 import com.x.server.console.command.Commands;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -25,9 +22,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,11 +32,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -68,7 +59,7 @@ public class NodeAgent extends Thread {
 
 	public static final int LOG_MAX_READ_SIZE = 10 * 1024;
 
-	private static List<String> logLevelList = ImmutableList.of("debug", "info", "warn", "error", "print");
+	private static final List<String> logLevelList = List.of("debug", "info", "warn", "error", "print");
 
 	private LinkedBlockingQueue<String> commandQueue;
 
@@ -119,7 +110,7 @@ public class NodeAgent extends Thread {
 									strCommand = strCommand.substring(strCommand.indexOf(":") + 1, strCommand.length());
 									LOGGER.info("收接到同步命令:" + strCommand);
 									String syncFilePath = dis.readUTF();
-									File file = new File(Config.base(), syncFilePath);
+									File file = FileTools.resolve(new File(Config.base()), syncFilePath);
 									try (FileOutputStream fos = new FileOutputStream(file)) {
 										byte[] bytes = new byte[1024];
 										int length = 0;
@@ -150,7 +141,7 @@ public class NodeAgent extends Thread {
 									LOGGER.info("收接到命令:" + strCommand);
 									String filename = dis.readUTF();
 									FileUtils.forceMkdir(Config.dir_local_temp());
-									File tempFile = new File(Config.dir_local_temp(), filename);
+									File tempFile = FileTools.resolve(Config.dir_local_temp(), filename);
 									try (FileOutputStream bos = new FileOutputStream(tempFile)) {
 										byte[] onceBytes = new byte[1024];
 										int length;
@@ -352,7 +343,7 @@ public class NodeAgent extends Thread {
 					FileTools.forceMkdir(tempFile);
 					FileUtils.cleanDirectory(tempFile);
 
-					File zipFile = new File(tempFile.getAbsolutePath(), fileName);
+					File zipFile = FileTools.resolve(tempFile, fileName);
 					FileUtils.writeByteArrayToFile(zipFile, bytes);
 					File dist = Config.path_webroot(true).toFile();
 					File dist2 = Config.dir_servers_webServer();
@@ -367,9 +358,9 @@ public class NodeAgent extends Thread {
 					if (ZipTools.isMember(filePath, WebServers.WEB_SERVER_FOLDERS)) {
 						dist = Config.dir_servers_webServer();
 					}
-					dist = new File(dist, filePath);
+					dist = FileTools.resolve(dist, filePath);
 					FileTools.forceMkdir(dist);
-					File file = new File(dist, fileName);
+					File file = FileTools.resolve(dist, fileName);
 					Files.deleteIfExists(file.toPath());
 					FileUtils.writeByteArrayToFile(file, bytes);
 					LOGGER.print("upload resource {} success!", fileName);
@@ -419,22 +410,22 @@ public class NodeAgent extends Thread {
 	}
 
 	private void storeWar(String simpleName, File tempFile) throws Exception {
-		File war = new File(Config.dir_store(), simpleName + ".war");
+		File war = FileTools.resolve(Config.dir_store(), simpleName + ".war");
 		FileUtils.copyFile(tempFile, war);
 	}
 
 	private void storeJar(String simpleName, File tempFile) throws Exception {
-		File jar = new File(Config.dir_store_jars(true), simpleName + ".jar");
+		File jar = FileTools.resolve(Config.dir_store_jars(true), simpleName + ".jar");
 		FileUtils.copyFile(tempFile, jar);
 	}
 
 	private void customWar(String simpleName, File tempFile) throws Exception {
-		File war = new File(Config.dir_custom(true), simpleName + ".war");
+		File war = FileTools.resolve(Config.dir_custom(true), simpleName + ".war");
 		FileUtils.copyFile(tempFile, war);
 	}
 
 	private void customJar(String simpleName, File tempFile) throws Exception {
-		File jar = new File(Config.dir_custom_jars(true), simpleName + ".jar");
+		File jar = FileTools.resolve(Config.dir_custom_jars(true), simpleName + ".jar");
 		FileUtils.copyFile(tempFile, jar);
 	}
 
@@ -450,57 +441,9 @@ public class NodeAgent extends Thread {
 		File upFile = new File(Config.base(), "local/temp/deploy");
 		FileTools.forceMkdir(upFile);
 
-		File zipFile = new File(upFile.getAbsolutePath(), simpleName + ".zip");
+		File zipFile = FileTools.resolve(upFile, simpleName + ".zip");
 		FileUtils.copyFile(tempFile, zipFile);
 		Commands.execute("ctl -uf " + zipFile.getAbsolutePath());
-	}
-
-	protected static String calculateExtraClassPath(Class<?> cls, Path... paths) throws Exception {
-		List<String> jars = new ArrayList<>();
-		jars.addAll(calculateExtraClassPathDefault());
-		Module module = cls.getAnnotation(Module.class);
-		for (String str : module.storeJars()) {
-			File file = new File(Config.dir_store_jars(), str + ".jar");
-			if (file.exists()) {
-				jars.add(file.getAbsolutePath());
-			}
-		}
-		for (String str : module.customJars()) {
-			File file = new File(Config.dir_custom_jars(), str + ".jar");
-			if (file.exists()) {
-				jars.add(file.getAbsolutePath());
-			}
-		}
-		for (Path path : paths) {
-			if (Files.exists(path) && Files.isDirectory(path)) {
-				try (Stream<Path> stream = Files.walk(path, FileVisitOption.FOLLOW_LINKS)) {
-					stream.filter(Files::isRegularFile)
-							.filter(p -> p.toAbsolutePath().toString().toLowerCase().endsWith(".jar"))
-							.forEach(p -> jars.add(p.toAbsolutePath().toString()));
-				}
-			}
-		}
-		return StringUtils.join(jars, ";");
-	}
-
-	private static List<String> calculateExtraClassPathDefault() throws Exception {
-		List<String> jars = new ArrayList<>();
-		IOFileFilter filter = new WildcardFileFilter(x_base_core_project.class.getSimpleName() + "*.jar");
-		for (File o : FileUtils.listFiles(Config.dir_store_jars(), filter, null)) {
-			jars.add(o.getAbsolutePath());
-		}
-		filter = new WildcardFileFilter("openjpa-*.jar");
-		/* 如果不单独导入会导致java.lang.NoClassDefFoundError: org/eclipse/jetty/http/MimeTypes */
-		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jetty-all-*.jar"));
-		filter = FileFilterUtils.or(filter, new WildcardFileFilter("quartz-*.jar"));
-		filter = FileFilterUtils.or(filter, new WildcardFileFilter("slf4j-simple-*.jar"));
-		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jul-to-slf4j-*.jar"));
-		filter = FileFilterUtils.or(filter, new WildcardFileFilter("log4j-*.jar"));
-		/* jersey从AppClassLoader加载 */
-		for (File o : FileUtils.listFiles(Config.pathCommonsExt(true).toFile(), filter, null)) {
-			jars.add(o.getAbsolutePath());
-		}
-		return jars;
 	}
 
 	public static class CommandObject {
@@ -546,21 +489,5 @@ public class NodeAgent extends Thread {
 		}
 
 	}
-
-//	private String type(String simpleName) throws Exception {
-//		if ((new File(Config.dir_store(), simpleName + ".war")).exists()) {
-//			return "storeWar";
-//		}
-//		if ((new File(Config.dir_store_jars(), simpleName + ".jar")).exists()) {
-//			return "storeJar";
-//		}
-//		if ((new File(Config.dir_custom(), simpleName + ".war")).exists()) {
-//			return "customWar";
-//		}
-//		if ((new File(Config.dir_custom_jars(), simpleName + ".jar")).exists()) {
-//			return "customJar";
-//		}
-//		return null;
-//	}
 
 }

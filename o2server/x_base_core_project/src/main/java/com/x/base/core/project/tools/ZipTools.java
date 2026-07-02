@@ -23,7 +23,7 @@ import net.lingala.zip4j.model.FileHeader;
 
 /**
  * zip工具类
- * 
+ *
  * @author sword
  */
 public class ZipTools {
@@ -73,7 +73,7 @@ public class ZipTools {
 					continue;
 				}
 				if (fileHeader.isDirectory()) {
-					File dir = new File(dist, name);
+					File dir = FileTools.resolve(dist, name);
 					if (dir.exists() && !dist.getAbsolutePath().startsWith(dir.getAbsolutePath())
 							&& name.indexOf("/") == name.lastIndexOf("/") && asNew) {
 						FileUtils.cleanDirectory(dir);
@@ -117,9 +117,9 @@ public class ZipTools {
 				}
 				if (fileHeader.isDirectory()) {
 					if (name.indexOf("/") == name.lastIndexOf("/") && asNew) {
-						File dir = new File(dist, name);
+						File dir = FileTools.resolve(dist, name);
 						if (isMember(name, dist2List)) {
-							dir = new File(dist2, name);
+							dir = FileTools.resolve(dist2, name);
 						}
 						if (dir.exists()) {
 							FileUtils.cleanDirectory(dir);
@@ -168,7 +168,7 @@ public class ZipTools {
 
 	/**
 	 * 压缩成ZIP 方法1
-	 * 
+	 *
 	 * @param sourceFile 待压缩文件夹
 	 * @param out        压缩包输出流
 	 * @param fileList   压缩的文件列表，可以为null
@@ -186,7 +186,7 @@ public class ZipTools {
 
 	/**
 	 * 压缩成ZIP 方法2
-	 * 
+	 *
 	 * @param srcFiles 需要压缩的文件列表
 	 * @param out      压缩文件输出流
 	 * @throws RuntimeException 压缩失败会抛出运行时异常
@@ -221,7 +221,7 @@ public class ZipTools {
 
 	/**
 	 * 递归压缩方法
-	 * 
+	 *
 	 * @param sourceFile 源文件
 	 * @param zos        zip输出流
 	 * @param name       压缩后的名称

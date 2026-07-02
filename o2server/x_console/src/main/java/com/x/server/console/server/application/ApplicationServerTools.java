@@ -325,6 +325,10 @@ public class ApplicationServerTools extends JettySeverTools {
 
     private static String contextParamProject(Path dir) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setExpandEntityReferences(false);
+        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);
+        factory.setFeature("http://xml.org/sax/features/external-general-entities",false);
+        factory.setFeature("http://xml.org/sax/features/external-parameter-entities",false);
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document doc = builder.parse(
                 new ByteArrayInputStream(

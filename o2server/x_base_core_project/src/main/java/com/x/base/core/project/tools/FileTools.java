@@ -1,6 +1,7 @@
 package com.x.base.core.project.tools;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -203,5 +204,20 @@ public class FileTools {
 			}
 		}
 	}
+
+	public static File resolve(File base, String child) throws IOException {
+
+		File target = new File(base, child);
+
+		String basePath = base.getCanonicalPath();
+		String targetPath = target.getCanonicalPath();
+
+		if (!targetPath.startsWith(basePath + File.separator)) {
+			throw new SecurityException("Illegal path : " + child);
+		}
+
+		return target;
+	}
+
 
 }
