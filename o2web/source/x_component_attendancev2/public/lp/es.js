@@ -431,7 +431,14 @@ MWF.xApplication.attendancev2.LP={
 		},
 		"account": {
 			"filterSelectTitle": "Seleccionar persona u organización",
-			"filterEmptyPlaceholder": "Seleccione una persona u organización para consultar."
+			"filterEmptyPlaceholder": "Seleccione una persona u organización para consultar.",
+			"balanceFormatTip": "Las vacaciones limitadas muestran:",
+			"totalGranted": "Total",
+			"totalGrantedShort": "Total",
+			"totalUsed": "Usado",
+			"totalUsedShort": "Usado",
+			"balance": "Saldo",
+			"balanceShort": "Saldo"
 		},
 		"request": {
 			"filterSelectTitle": "Seleccionar persona u organización",

@@ -180,3 +180,62 @@
     border-color: #4a90e2;
     color: #333333;
 }
+
+.leave-account-legend {
+    clear: both;
+    /* display: inline-flex; */
+    float: left;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 10px;
+    padding: 7px 10px;
+    border: 1px solid #e5edf7;
+    border-radius: 4px;
+    background: #f7fbff;
+    color: #666666;
+    font-size: 12px;
+    line-height: 18px;
+}
+
+.leave-account-legend-item {
+    color: #333333;
+    font-weight: bold;
+}
+
+.leave-account-legend-separator,
+.leave-account-balance-separator {
+    color: #bbbbbb;
+}
+
+.leave-account-balance {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    min-width: 160px;
+    color: #333333;
+}
+
+.leave-account-balance-item {
+    display: inline-flex;
+    align-items: center;
+    min-height: 22px;
+    white-space: nowrap;
+}
+
+.leave-account-balance-label {
+    margin-right: 3px;
+    color: #888888;
+    font-size: 12px;
+}
+
+.leave-account-balance-value {
+    font-weight: bold;
+}
+
+.leave-account-balance-item-primary .leave-account-balance-value {
+    color: #1f7a45;
+}

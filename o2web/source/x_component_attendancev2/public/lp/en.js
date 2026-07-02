@@ -431,7 +431,14 @@ MWF.xApplication.attendancev2.LP={
 		},
 		"account": {
 			"filterSelectTitle": "Select person or organization",
-			"filterEmptyPlaceholder": "Select a person or organization to search!"
+			"filterEmptyPlaceholder": "Select a person or organization to search!",
+			"balanceFormatTip": "Limited leave shows:",
+			"totalGranted": "Total",
+			"totalGrantedShort": "Total",
+			"totalUsed": "Used",
+			"totalUsedShort": "Used",
+			"balance": "Balance",
+			"balanceShort": "Bal."
 		},
 		"request": {
 			"filterSelectTitle": "Select person or organization",

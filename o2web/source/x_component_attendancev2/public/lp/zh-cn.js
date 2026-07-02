@@ -450,6 +450,13 @@ MWF.xApplication.attendancev2.LP = {
     account: {
       filterSelectTitle: "选择人员或组织",
       filterEmptyPlaceholder: "请选择人员或组织进行查询！",
+      balanceFormatTip: "限额假期显示顺序：",
+      totalGranted: "总额",
+      totalGrantedShort: "总",
+      totalUsed: "已使用",
+      totalUsedShort: "用",
+      balance: "余额",
+      balanceShort: "余",
     },
     request: {
       filterSelectTitle: "选择人员或组织",

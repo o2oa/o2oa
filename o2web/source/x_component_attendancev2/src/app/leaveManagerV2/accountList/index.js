@@ -61,9 +61,16 @@ export default content({
             personName: formatPersonName(person),
             balanceList: (leaveTypeList || []).map((leaveType) => {
                 const account = accountMap[`${person}_${leaveType.id}`];
+                const accountValue = account ? this.formatAccountDetail(account) : this.formatEmptyAccountDetail();
                 return {
                     leaveTypeId: leaveType.id,
-                    value: (leaveType.quotaType == 'QUOTA')?  (account ? this.formatAccountValue(account) : "0/0/0") : lp.leaveManagerV2.type.quotaTypeUnlimited,
+                    quotaType: leaveType.quotaType,
+                    limited: leaveType.quotaType == 'QUOTA',
+                    value: (leaveType.quotaType == 'QUOTA') ? accountValue.value : lp.leaveManagerV2.type.quotaTypeUnlimited,
+                    totalGranted: accountValue.totalGranted,
+                    totalUsed: accountValue.totalUsed,
+                    balance: accountValue.balance,
+                    title: this.formatAccountTitle(accountValue),
                 };
             }),
         }));
@@ -74,6 +81,29 @@ export default content({
             this.formatNumber(account.totalUsed),
             this.formatNumber(account.balance),
         ].join("/");
+    },
+    formatAccountDetail(account) {
+        const totalGranted = this.formatNumber(account.totalGranted);
+        const totalUsed = this.formatNumber(account.totalUsed);
+        const balance = this.formatNumber(account.balance);
+        return {
+            totalGranted,
+            totalUsed,
+            balance,
+            value: [totalGranted, totalUsed, balance].join("/"),
+        };
+    },
+    formatEmptyAccountDetail() {
+        return {
+            totalGranted: "0",
+            totalUsed: "0",
+            balance: "0",
+            value: "0/0/0",
+        };
+    },
+    formatAccountTitle(accountValue) {
+        const accountLp = lp.leaveManagerV2.account;
+        return `${accountLp.totalGranted}: ${accountValue.totalGranted} / ${accountLp.totalUsed}: ${accountValue.totalUsed} / ${accountLp.balance}: ${accountValue.balance}`;
     },
     formatNumber(value) {
         if (value === null || value === undefined || value === "") {
