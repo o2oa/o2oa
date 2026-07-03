@@ -292,7 +292,8 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 },
                 "in" : {
                     "invalidValue" : ["@person", "@unitList", "@unitAllList", "@identityList" ]
-                }
+                },
+                "notIn" : {}
             },
             "numberValue": {
                 "equals": {}, //["input"]
@@ -1003,7 +1004,7 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
             this.customFilterValueTypes.each( function (radio) {
                 if( radio.get("checked") )valueType = radio.get("value");
             });
-            
+
             var orgTypes = [];
             this.viewCustomFilterValueOrgTypes.map( function (check) {
                 if( check.get("checked") )orgTypes.push(check.get("value"));
