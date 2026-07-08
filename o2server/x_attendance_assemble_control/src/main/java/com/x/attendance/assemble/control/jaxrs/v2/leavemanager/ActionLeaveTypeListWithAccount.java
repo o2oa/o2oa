@@ -45,7 +45,7 @@ public class ActionLeaveTypeListWithAccount extends BaseAction {
         return result;
     }
 
-    static void attachAccounts(List<Wo> wos, List<AttendanceV2LeaveAccount> accounts) {
+    static void attachAccounts(List<? extends Wo> wos, List<AttendanceV2LeaveAccount> accounts) {
         Map<String, AttendanceV2LeaveAccount> accountMap = accounts == null ? Collections.emptyMap() : accounts.stream()
                 .filter(account -> account.getLeaveTypeId() != null)
                 .collect(Collectors.toMap(AttendanceV2LeaveAccount::getLeaveTypeId, account -> account,

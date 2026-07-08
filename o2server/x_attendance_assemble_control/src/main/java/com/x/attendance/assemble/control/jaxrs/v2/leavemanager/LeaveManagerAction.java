@@ -129,6 +129,24 @@ public class LeaveManagerAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "假期类型列表,带用户账户和当年请假统计.", action = ActionLeaveTypeListWithAccountAndCountYear.class)
+    @GET
+    @Path("type/list/account/{person}/count/year")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void typeListWithAccountAndCountYear(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request, @JaxrsParameterDescribe("查询人员的 DN") @PathParam("person") String person) {
+        ActionResult<List<ActionLeaveTypeListWithAccountAndCountYear.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLeaveTypeListWithAccountAndCountYear().execute(effectivePerson, person);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "假期类型列表,是否有限额.", action = ActionLeaveTypeListWithQuotaType.class)
     @GET
     @Path("type/list/quota/{isLimited}")
