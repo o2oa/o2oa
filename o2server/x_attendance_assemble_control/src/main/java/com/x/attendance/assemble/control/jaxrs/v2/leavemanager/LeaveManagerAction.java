@@ -9,6 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
@@ -116,11 +117,11 @@ public class LeaveManagerAction extends StandardJaxrsAction {
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
     public void typeListWithAccount(@Suspended final AsyncResponse asyncResponse,
-            @Context HttpServletRequest request) {
+            @Context HttpServletRequest request, @JaxrsParameterDescribe("查询人员的 DN") @QueryParam("person") String person) {
         ActionResult<List<ActionLeaveTypeListWithAccount.Wo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionLeaveTypeListWithAccount().execute(effectivePerson);
+            result = new ActionLeaveTypeListWithAccount().execute(effectivePerson, person);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);
