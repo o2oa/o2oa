@@ -6563,21 +6563,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             var url = this.Macro.exec(this.json.afterProcessRedirectScript.code, this);
             (new URI(url)).go();
         } else {
-            // var len = window.history.length;
-            // if (len > 1) {
-            //     history.back();
-            // } else {
-            //     var uri = new URI(window.location.href);
-            //     var redirectlink = uri.getData("redirectlink");
-            //     if (redirectlink) {
-            //         history.replaceState(null, "work", redirectlink);
-            //         redirectlink.toURI().go();
-            //     } else {
-            //         // window.location = o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter");
-            //         history.replaceState(null, "work", o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter"));
-            //         o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter").toURI().go();
-            //     }
-            // }
             var uri = new URI(window.location.href);
             var redirectlink = uri.getData("redirectlink");
             if (redirectlink) {

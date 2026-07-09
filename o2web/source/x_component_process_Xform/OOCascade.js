@@ -227,6 +227,9 @@ MWF.xApplication.process.Xform.OOCascade = MWF.APPOOCascade =  new Class({
 		}
 	},
     getInputData: function(){
+		if(this.moduleSelectAG || this.moduleValueAG){
+			return this._getBusinessData();
+		}
 		return this.node.value || '';
 	}
 });

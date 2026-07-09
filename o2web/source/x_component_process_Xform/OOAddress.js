@@ -228,6 +228,9 @@ MWF.xApplication.process.Xform.OOAddress = MWF.APPOOAddress = new Class({
         return this.node.text;
     },
     getInputData: function () {
+        if(this.moduleSelectAG || this.moduleValueAG){
+            return this._getBusinessData();
+        }
         return this.node.value;
     },
     resetData: function () {
