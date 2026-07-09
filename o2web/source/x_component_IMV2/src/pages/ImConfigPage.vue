@@ -20,6 +20,7 @@ const imConfigRef = ref({
   enableRevokeMsg: false,
   enableOnlyOfficePreview: false,
   enableGroupMemberQuitSelf: false,
+  showAllTopUnit: false,
   revokeOutMinute: 2,
   conversationCheckInvoke: '',
 })
@@ -32,12 +33,14 @@ const loadConfig = async () => {
     enableGroupMemberQuitSelf: imConfigInstance.enableGroupMemberQuitSelf,
     revokeOutMinute: imConfigInstance.revokeOutMinute,
     conversationCheckInvoke: imConfigInstance.conversationCheckInvoke,
+    showAllTopUnit: imConfigInstance.showAllTopUnit,
   }
   console.debug('config==> ', imConfigRef.value)
   enableClearMsg.value = imConfigRef.value.enableClearMsg ?? false
   enableRevokeMsg.value = imConfigRef.value.enableRevokeMsg ?? false
   enableOnlyOfficePreview.value = imConfigRef.value.enableOnlyOfficePreview ?? false
   enableGroupMemberQuitSelf.value = imConfigRef.value.enableGroupMemberQuitSelf ?? false
+  showAllTopUnit.value = imConfigRef.value.showAllTopUnit ?? false
   revokeOutMinute.value = imConfigRef.value.revokeOutMinute ?? 2
   conversationCheckInvoke.value = imConfigRef.value.conversationCheckInvoke ?? ''
 }
@@ -74,6 +77,15 @@ const changeEnableOnlyOfficePreview = (e) => {
   if (e && e.target) {
     enableOnlyOfficePreview.value = e.target.booleanValue
     imConfigRef.value.enableOnlyOfficePreview = enableOnlyOfficePreview.value
+    saveConfig(imConfigRef.value)
+  }
+}
+// 是否显示所有顶级单位
+const showAllTopUnit = ref(false)
+const changeShowAllTopUnit = (e) => {
+  if (e && e.target) {
+    showAllTopUnit.value = e.target.booleanValue
+    imConfigRef.value.showAllTopUnit = showAllTopUnit.value
     saveConfig(imConfigRef.value)
   }
 }
@@ -135,6 +147,10 @@ const styleCalc = () => {
     <div class="im-config-form-line">
       <div class="left">{{ lp.settingsEnableOnlyOfficePreviewMsg }}</div>
       <oo-switch :value="enableOnlyOfficePreview" @change="changeEnableOnlyOfficePreview"></oo-switch>
+    </div>
+    <div class="im-config-form-line">
+      <div class="left">{{ lp.settingsShowAllTopUnitMsg }}</div>
+      <oo-switch :value="showAllTopUnit" @change="changeShowAllTopUnit"></oo-switch>
     </div>
     <div class="im-config-form-label">
       <span>{{ lp.settingsRevokeOutMinuteMsg }}</span>

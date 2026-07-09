@@ -5,7 +5,9 @@ import MyConversation from "./MyConversation.vue";
 import ContactView from "./ContactView.vue";
 import {imAction} from "../utils/actions.js";
 import {EventName} from "../utils/eventBus.js";
-import { useLoadingStore } from '../store.js';
+import { imConfig, useLoadingStore } from '../store.js';
+
+const imConfigInstance = imConfig();
 
 const emit = defineEmits(['clickImConfig', 'clickMyCollectionPage'])
 
@@ -26,7 +28,7 @@ const clickMyCollectionPage = ()=> {
 const isAdmin = ref(o2.AC.isAdministrator())
 
 const clickChoosePersonCreateChat = () => {
-
+  const topUnitList = imConfigInstance.showAllTopUnit ? [] : layout.session.user.topUnitList || []
   o2.requireApp("Selector","package", () => {
     const container = document.querySelector('.im-container')
     new o2.O2Selector(container,  {
@@ -34,6 +36,7 @@ const clickChoosePersonCreateChat = () => {
       "count": 0,
       "style": "v10",
       "title": '通讯录',
+      "units":topUnitList,
       "firstLevelSelectable": true,
       "resultType": "person",
       "onPostLoadContent": function () {
