@@ -1219,7 +1219,6 @@ MWF.xApplication.systemconfig.LP={
 			"name": "Name",
 			"key": "Node Key",
 			"protocolData": {
-				"webdav": "webdav",
 				"sftp": "sftp",
 				"ftps": "ftps",
 				"ftp": "ftp",
