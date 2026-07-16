@@ -1493,7 +1493,6 @@ o2.xApplication.systemconfig.LP = {
             "name": "名称",
             "key": "节点标识",
             "protocolData": {
-                "webdav": "webdav",
                 "sftp": "sftp",
                 "ftps": "ftps",
                 "ftp": "ftp",
