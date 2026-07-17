@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -98,10 +99,10 @@ class V2Reroute extends BaseAction {
 			param.distinguishedNameList = business.organization().distinguishedName().list(Stream
 					.concat(Stream.<List<String>>of(wi.getDistinguishedNameList()),
 							Stream.<List<String>>of(wi.getManualForceTaskIdentityList()))
-					.filter(Objects::nonNull).flatMap(o -> o.stream()).distinct().filter(StringUtils::isNotBlank)
+					.filter(Objects::nonNull).flatMap(Collection::stream).distinct().filter(StringUtils::isNotBlank)
 					.collect(Collectors.toList()));
-			param.identity = business.organization().identity()
-					.getMajorWithPerson(effectivePerson.getDistinguishedName());
+			String person = StringUtils.isNotBlank(wi.getOperator()) ? wi.getOperator() : effectivePerson.getDistinguishedName();
+			param.identity = business.organization().identity().getMajorWithPerson(person);
 		}
 		return param;
 	}
