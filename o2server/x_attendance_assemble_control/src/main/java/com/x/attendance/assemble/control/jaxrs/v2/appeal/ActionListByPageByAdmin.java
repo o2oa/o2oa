@@ -2,6 +2,7 @@ package com.x.attendance.assemble.control.jaxrs.v2.appeal;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
 import com.x.attendance.entity.v2.AttendanceV2AppealInfo;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.base.core.container.EntityManagerContainer;
@@ -16,7 +17,10 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class ActionListByPageByAdmin extends BaseAction {
@@ -37,6 +41,17 @@ public class ActionListByPageByAdmin extends BaseAction {
                 LOGGER.debug("person {}, page: {}, size: {}", person.getDistinguishedName(), adjustPage, adjustPageSize);
             }
             AppealInfoWi wi = this.convertToWrapIn(jsonElement, AppealInfoWi.class);
+            if (wi.getFilterList() != null && !wi.getFilterList().isEmpty()) {
+                List<String> userList = new ArrayList<>();
+                for (String f : wi.getFilterList()) {
+                    analysisPerson(userList, f, business);
+                }
+                userList = new ArrayList<>(new LinkedHashSet<>(userList));
+                if (userList.isEmpty()) {
+                    throw new ExceptionWithMessage("当前查询条件没有找到人员信息！");
+                }
+                wi.setUsers(userList);
+            }
             List<AttendanceV2AppealInfo> list = business.getAttendanceV2ManagerFactory().listAppealInfoByPage(adjustPage, adjustPageSize, wi);
             List< Wo> wos =   Wo.copier.copy(list);
             if (wos != null && !wos.isEmpty()) {
@@ -50,6 +65,20 @@ public class ActionListByPageByAdmin extends BaseAction {
             result.setData(wos);
             result.setCount(business.getAttendanceV2ManagerFactory().appealCount(wi.getUsers(), wi.getStartDate(), wi.getEndDate()));
             return result;
+        }
+    }
+
+    private void analysisPerson(List<String> userList, String filter, Business business) throws Exception {
+        if (StringUtils.isEmpty(filter)) {
+            return;
+        }
+        if (filter.endsWith("@U")) { // 组织转化成人员列表 不递归
+            List<String> users = business.organization().person().listWithUnitSubDirect(filter);
+            if (users != null && !users.isEmpty()) {
+                userList.addAll(users);
+            }
+        } else if (filter.endsWith("@P")) {
+            userList.add(filter);
         }
     }
 

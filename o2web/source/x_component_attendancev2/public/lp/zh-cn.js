@@ -276,8 +276,8 @@ MWF.xApplication.attendancev2.LP = {
   // 考勤信息
   detailManagerTitle: "考勤统计",
   detailTable: {
-    filterSelectTitle: "查询的人员",
-    filterEmptyPlaceholder: "请选择需要查询人员!",
+    filterSelectTitle: "查询的人员或组织",
+    filterEmptyPlaceholder: "请选择需要查询人员或组织!",
     person: "姓名",
     groupName: "考勤组",
     shiftName: "班次",

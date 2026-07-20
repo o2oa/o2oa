@@ -61,15 +61,21 @@ export default content({
   },
   async loadRecordlList() {
     const form = this.bind.form;
-    if (this.bind.filterList.length > 0) {
-      form.userId = this.bind.filterList[0];
-    } else {
-      if (this.bind.units.length > 0) {
-        o2.api.page.notice(lp.detailStatisticList.filterEmptyPlaceholder, 'error');
-        return;
-      }
-      form.userId = "";
+    // if (this.bind.filterList.length > 0) {
+    //   form.userId = this.bind.filterList[0];
+    // } else {
+    //   if (this.bind.units.length > 0) {
+    //     o2.api.page.notice(lp.detailStatisticList.filterEmptyPlaceholder, 'error');
+    //     return;
+    //   }
+    //   form.userId = "";
+    // }
+    form.filterList = this.bind.filterList;
+    if (form.filterList.length < 1) {
+      o2.api.page.notice(lp.detailStatisticList.filterEmptyPlaceholder, 'error');
+      return;
     }
+
     if ((isEmpty(form.startDate) && !isEmpty(form.endDate)) || (!isEmpty(form.startDate) && isEmpty(form.endDate))) {
       o2.api.page.notice(lp.record.searchDateError, 'error');
       return;

@@ -12,6 +12,8 @@ public class AppealInfoWi extends GsonPropertyObject {
     private String recordId;
     @FieldDescribe("用户标识")
     private List<String> users;
+    @FieldDescribe("过滤人员或组织，组织只支持单层: 用户或组织的DN，如xxx@xxx@P、xxx@xxx@U")
+    private List<String> filterList;
     @FieldDescribe("开始日期")
     private String startDate;
     @FieldDescribe("结束日期")
@@ -37,6 +39,14 @@ public class AppealInfoWi extends GsonPropertyObject {
 
     public void setUsers(List<String> users) {
         this.users = users;
+    }
+
+    public List<String> getFilterList() {
+        return filterList;
+    }
+
+    public void setFilterList(List<String> filterList) {
+        this.filterList = filterList;
     }
 
     public String getStartDate() {

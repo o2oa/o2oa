@@ -62,14 +62,19 @@ export default content({
   },
   async loadAppealList() {
     let form = this.bind.form;
-    if (this.bind.filterList && this.bind.filterList.length>0) {
-      form.users = this.bind.filterList;
-    } else {
-      if (this.bind.units.length > 0) {
-        o2.api.page.notice(lp.detailStatisticList.filterEmptyPlaceholder, 'error');
-        return;
-      }
-      form.users = [];
+    // if (this.bind.filterList && this.bind.filterList.length>0) {
+    //   form.users = this.bind.filterList;
+    // } else {
+    //   if (this.bind.units.length > 0) {
+    //     o2.api.page.notice(lp.detailStatisticList.filterEmptyPlaceholder, 'error');
+    //     return;
+    //   }
+    //   form.users = [];
+    // }
+    form.filterList = this.bind.filterList;
+    if (form.filterList.length < 1) {
+      o2.api.page.notice(lp.detailStatisticList.filterEmptyPlaceholder, 'error');
+      return;
     }
     const json = await appealInfoActionManagerListByPaging(
       this.bind.pagerData.page,
