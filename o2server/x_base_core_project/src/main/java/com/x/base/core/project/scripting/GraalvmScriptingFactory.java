@@ -48,7 +48,8 @@ public class GraalvmScriptingFactory {
 	private static final List<String> denyClassList = List.of(GraalvmScriptingFactory.class.getName(),
 			CipherConnectionAction.class.getName(),
 			"com.x.base.core.project.config.Config","java.lang.Runtime","java.lang.ProcessBuilder","java.lang.System",
-			"java.net.ServerSocket","java.net.Socket","javax.script.ScriptEngine","javax.script.ScriptEngineManager");
+			"java.net.ServerSocket","java.net.Socket","javax.script.ScriptEngine","javax.script.ScriptEngineManager",
+            "java.lang.reflect.Method","java.lang.reflect.Field","java.lang.ProcessHandle","java.io.File");
 	private static final Gson gson = XGsonBuilder.instance();
 
 	private GraalvmScriptingFactory() {
@@ -149,9 +150,7 @@ public class GraalvmScriptingFactory {
 		if(denyClassList.contains(className)){
 			return false;
 		}
-		return className.startsWith("com.x.base.core.project.connection")
-				|| className.startsWith("com.x.organization.core")
-				|| getScriptingAllowedClasses().contains(className);
+		return getScriptingAllowedClasses().contains(className);
 	}
 
 	public static Optional<Boolean> evalAsBoolean(Source source, Bindings bindings) throws ExceptionEvalPromiseScript {
