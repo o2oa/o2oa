@@ -99,7 +99,7 @@
                             <td>{{history.value.grantPeriod}}</td>
                             <td>{{this.formatImportHistoryTime(history.value.time)}}</td>
                             <td>
-                                <span class="operator_link" @click="this.removeLedgerImportHistory(history.value.grantPeriod, $.currentLeaveType.id)">删除</span>
+                                <span class="operator_link" @click="this.clickRemoveLedgerImportHistory(history.value.grantPeriod, $.currentLeaveType.id)">删除</span>
                             </td>
                         </tr>
                     </table>

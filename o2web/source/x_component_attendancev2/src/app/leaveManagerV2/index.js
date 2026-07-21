@@ -25,6 +25,7 @@ export default content({
       currentLeaveType: null, // 当前选中的假期类型
       importFormShow: false,
       importSubmitting: false,
+      importHistoryDeleting: false,
       importForm: {
         grantPeriod: "",
         fileName: "",
@@ -105,7 +106,7 @@ export default content({
     this.bind.importFormShow = true;
   },
   closeLedgerImport(force) {
-    if (this.bind.importSubmitting && force !== true) {
+    if ((this.bind.importSubmitting || this.bind.importHistoryDeleting) && force !== true) {
       return;
     }
     this.bind.importFormShow = false;
@@ -151,7 +152,7 @@ export default content({
     setTimeout(() => window.URL.revokeObjectURL(objectUrl), 0);
   },
   selectLedgerImportFile() {
-    if (this.bind.importSubmitting) {
+    if (this.bind.importSubmitting || this.bind.importHistoryDeleting) {
       return;
     }
     chooseSingleFile((file) => {
@@ -291,8 +292,8 @@ export default content({
       return error;
     }
   },
-  getLedgerImportErrorMessage(error) {
-    return error && error.message ? error.message : "导入失败";
+  getLedgerImportErrorMessage(error, defaultMessage) {
+    return error && error.message ? error.message : (defaultMessage || "导入失败");
   },
   async loadTypeList() {
     const list = await leaveManagerAction("typeListAll");
@@ -391,14 +392,16 @@ export default content({
     try {
       const historyString = await definitionAction("get", definitionHistoryKey);
       console.debug("导入历史记录", historyString);
+      debugger;
       let historyList = [];
       if (historyString) {
-        historyList = typeof historyString === "string" ? JSON.parse(historyString) : historyString;
+        historyList = JSON.parse(historyString) || [];
       }
       this.bind.importHistoryList = Array.isArray(historyList) ? historyList : [];
       if (this.bind.currentLeaveType && this.bind.currentLeaveType.id) {
         this.bind.currentImportHistoryList = this.getLedgerImportHistoryList(this.bind.currentLeaveType.id);
       }
+      console.debug(this.bind.importHistoryList);
     } catch (e) {
       console.error("获取导入历史记录失败", e);
       this.bind.importHistoryList = [];
@@ -425,11 +428,55 @@ export default content({
       };
       this.bind.importHistoryList.push(newHistoryItem);
     }
-    await definitionAction("updateMockPutToPost", definitionHistoryKey, JSON.stringify(this.bind.importHistoryList));
+    await definitionAction("updateMockPutToPost", definitionHistoryKey,  this.bind.importHistoryList);
     this.bind.currentImportHistoryList = this.getLedgerImportHistoryList(leaveTypeId);
+  },
+  clickRemoveLedgerImportHistory(grantPeriod, leaveTypeId) {
+    if (this.bind.importHistoryDeleting) {
+      return;
+    }
+    const _self = this;
+    o2.api.page.confirm(
+      "warn",
+      lp.alert,
+      `确定删除发放标识“${grantPeriod}”的导入数据和历史记录吗？`,
+      360,
+      100,
+      function () {
+        _self.removeLedgerImportHistory(grantPeriod, leaveTypeId);
+        this.close();
+      },
+      function () {
+        this.close();
+      }
+    );
   },
   // 删除导入历史记录
   async removeLedgerImportHistory(grantPeriod, leaveTypeId) {
+    if (this.bind.importHistoryDeleting) {
+      return;
+    }
+    if (isEmpty(grantPeriod) || isEmpty(leaveTypeId)) {
+      o2.api.page.notice("导入历史记录参数为空", "error");
+      return;
+    }
+    this.bind.importHistoryDeleting = true;
+    try {
+      await showLoading(this);
+      await leaveManagerAction("ledgerBatchDelete", { leaveTypeId, grantPeriod });
+      this.removeLedgerImportHistoryItem(grantPeriod, leaveTypeId);
+      await definitionAction("updateMockPutToPost", definitionHistoryKey, this.bind.importHistoryList);
+      this.bind.currentImportHistoryList = this.getLedgerImportHistoryList(leaveTypeId);
+      o2.api.page.notice("删除成功", "success");
+    } catch (e) {
+      console.error("删除导入数据失败", e);
+      o2.api.page.notice(this.getLedgerImportErrorMessage(e, "删除失败"), "error");
+    } finally {
+      this.bind.importHistoryDeleting = false;
+      await hideLoading(this);
+    }
+  },
+  removeLedgerImportHistoryItem(grantPeriod, leaveTypeId) {
     const historyItem = this.bind.importHistoryList.find((item) => item.leaveTypeId === leaveTypeId);
     if (historyItem) {
       historyItem.list = historyItem.list.filter((item) => item.grantPeriod !== grantPeriod);
@@ -437,8 +484,6 @@ export default content({
         this.bind.importHistoryList = this.bind.importHistoryList.filter((item) => item !== historyItem);
       }
     }
-    await definitionAction("updateMockPutToPost", definitionHistoryKey, JSON.stringify(this.bind.importHistoryList));
-    this.bind.currentImportHistoryList = this.getLedgerImportHistoryList(leaveTypeId);
   },
   formatImportHistoryTime(time) {
     if (!time) {
