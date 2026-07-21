@@ -185,7 +185,7 @@ export default content({
       return;
     }
     if (isEmpty(form.grantPeriod)) {
-      o2.api.page.notice("请输入发放标识", "error");
+      o2.api.page.notice("请输入发放批次", "error");
       return;
     }
     const file = this.ledgerImportFile;
@@ -439,7 +439,7 @@ export default content({
     o2.api.page.confirm(
       "warn",
       lp.alert,
-      `确定删除发放标识“${grantPeriod}”的导入数据和历史记录吗？`,
+      `确定删除发放批次“${grantPeriod}”的导入数据和历史记录吗？`,
       360,
       100,
       function () {
