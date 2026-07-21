@@ -14,7 +14,7 @@ export default content({
     bind() {
         return {
             lp,
-            filterList: [], // 账号列表的筛选条件列表
+            filterList: [], // Filter criteria for account list.
             accountList: [],
             leaveTypeList: [],
             personList: [],

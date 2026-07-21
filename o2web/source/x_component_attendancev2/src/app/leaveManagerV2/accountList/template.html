@@ -1,4 +1,4 @@
-<!-- 假期类型规则 -->
+<!-- Leave type policy -->
 <div style="display: flex; flex-direction: column;" >
     <div class="index_page_header_container">
         <div class="index_page_header_title"><button style="margin-left: 0;margin-right: 10px;"
@@ -7,7 +7,7 @@
     </div>
     <div class="manager-box-content">
         <div style="margin: 10px 0;float: left;display: flex; align-items: center;">
-            <!--人员组织选择  -->
+            <!-- Person and organization selector -->
             <div class="margin-right">
                 <o-org-person-selector
                     oo-prop="{'isRequried': true, 'selectorTitle': $.lp.leaveManagerV2.account.filterSelectTitle,  'placeholder': $.lp.leaveManagerV2.account.filterEmptyPlaceholder, 'value': $.filterList}"
@@ -26,11 +26,11 @@
             <span class="leave-account-legend-separator">/</span>
             <span class="leave-account-legend-item">{{$.lp.leaveManagerV2.account.balance}}</span>
         </div>
-        <!-- 表格数据展现 -->
+        <!-- Table data -->
         <div style="clear: both; overflow-x: auto;">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table" oo-if="$.personList.length > 0">
                 <thead>
-                    <th style="min-width: 160px;">人员</th>
+                    <th style="min-width: 160px;">{{$.lp.leaveManagerV2.account.person}}</th>
                     <th oo-each="$.leaveTypeList" oo-item="leaveType" style="min-width: 120px;">{{leaveType.value.name}}</th>
                 </thead>
                 <tr oo-each="$.accountTableList" oo-item="row">

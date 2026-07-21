@@ -15,7 +15,7 @@ export default content({
         return {
             lp,
             filterList: [],
-            self: true,  // 默认显示自己的请假记录
+            self: true, // Show current user's leave requests by default.
             form: {
                 startDate: "",
                 endDate: "",

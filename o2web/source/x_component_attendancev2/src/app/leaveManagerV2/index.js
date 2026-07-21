@@ -21,8 +21,8 @@ export default content({
     return {
       lp,
       leaveTypeList: [],
-      leaveTypePolicyShow: false, // 是否显示某一个假期类型的规则列表
-      currentLeaveType: null, // 当前选中的假期类型
+      leaveTypePolicyShow: false, // Whether to show the policy list for a leave type.
+      currentLeaveType: null, // Currently selected leave type.
       importFormShow: false,
       importSubmitting: false,
       importHistoryDeleting: false,
@@ -30,8 +30,8 @@ export default content({
         grantPeriod: "",
         fileName: "",
       },
-      importHistoryList: [], // 导入历史记录
-      currentImportHistoryList: [], // 当前假期类型的导入历史记录
+      importHistoryList: [], // Import history.
+      currentImportHistoryList: [], // Import history for the current leave type.
     };
   },
   afterRender() {
@@ -41,7 +41,7 @@ export default content({
   },
   listenEventBus() {
     this.$topParent.listenEventBus("leaveType", (data) => {
-      console.log("接收到了leaveType消息", data);
+      console.log("received leaveType event", data);
       this.loadTypeList();
     });
   },
@@ -52,20 +52,20 @@ export default content({
     this.$parent.openLeaveTypeForm();
   },
   clickEditLeaveType(id) {
-    console.log("点击编辑假期类型", id);
+    console.log("click edit leave type", id);
     this.$parent.openLeaveTypeForm({ bind: { updateId: id } });
   },
   async clickCopyLeaveTypeId(id) {
     if (isEmpty(id)) {
-      o2.api.page.notice("假期类型 ID 为空", "error");
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportTypeIdEmpty, "error");
       return;
     }
     try {
       await this.copyText(id);
-      o2.api.page.notice("复制成功", "success");
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportCopySuccess, "success");
     } catch (e) {
-      console.error("复制假期类型 ID 失败", e);
-      o2.api.page.notice("复制失败", "error");
+      console.error("copy leave type ID failed", e);
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportCopyFail, "error");
     }
   },
   copyText(text) {
@@ -97,8 +97,9 @@ export default content({
       return;
     }
     this.bind.currentLeaveType = type;
+    // grantPeriod default yyyyMMdd 
     this.bind.importForm = {
-      grantPeriod: "",
+      grantPeriod: new Date().toISOString().split("T")[0].replace(/-/g, ""),
       fileName: "",
     };
     this.ledgerImportFile = null;
@@ -122,7 +123,11 @@ export default content({
     const leaveType = this.bind.currentLeaveType || {};
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("sheet1");
-    worksheet.addRow(["人员", `${leaveType.name || ""}发放额度`, "过期日期"]);
+    worksheet.addRow([
+      lp.leaveManagerV2.ledgerImportTemplatePerson,
+      `${leaveType.name || ""}${lp.leaveManagerV2.ledgerImportTemplateAmountSuffix}`,
+      lp.leaveManagerV2.ledgerImportTemplateExpireDate,
+    ]);
     worksheet.columns = [
       { width: 28 },
       { width: 18 },
@@ -147,7 +152,9 @@ export default content({
     const excelLink = document.createElement("a");
     const objectUrl = window.URL.createObjectURL(new Blob([buffer]));
     excelLink.href = objectUrl;
-    excelLink.download = `${leaveType.name || "假期"}额度导入模板.xlsx`;
+    excelLink.download = lpFormat(lp, "leaveManagerV2.ledgerImportTemplateFileName", {
+      name: leaveType.name || lp.leaveManagerV2.ledgerImportTemplateDefaultLeaveType,
+    });
     excelLink.click();
     setTimeout(() => window.URL.revokeObjectURL(objectUrl), 0);
   },
@@ -169,7 +176,7 @@ export default content({
     }
     const fileExt = file.name.substring(file.name.lastIndexOf("."));
     if (fileExt.toLowerCase() !== ".xlsx") {
-      o2.api.page.notice("请选择 .xlsx 格式的 Excel 文件", "error");
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportExcelFileError, "error");
       return false;
     }
     return true;
@@ -181,16 +188,16 @@ export default content({
     const leaveType = this.bind.currentLeaveType || {};
     const form = this.bind.importForm || {};
     if (!leaveType.id) {
-      o2.api.page.notice("请选择假期类型", "error");
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportTypeEmpty, "error");
       return;
     }
     if (isEmpty(form.grantPeriod)) {
-      o2.api.page.notice("请输入发放批次", "error");
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportGrantPeriodPlaceholder, "error");
       return;
     }
     const file = this.ledgerImportFile;
     if (!file) {
-      o2.api.page.notice("请选择 Excel 文件", "error");
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportFileEmpty, "error");
       return;
     }
     if (!this.checkExcelFile(file)) {
@@ -206,21 +213,21 @@ export default content({
       await showLoading(this);
       const result = await this.uploadLedgerImport(formData);
       if (!this.isLedgerImportSuccess(result)) {
-        o2.api.page.notice(this.getLedgerImportResultMessage(result, "导入失败"), "error");
+        o2.api.page.notice(this.getLedgerImportResultMessage(result, lp.leaveManagerV2.ledgerImportFail), "error");
         return;
       }
       try {
         await this.addLedgerImportHistory(form.grantPeriod, leaveType.id);
       } catch (e) {
-        console.error("保存导入历史记录失败", e);
-        o2.api.page.notice("导入成功，导入历史记录保存失败", "info");
+        console.error("save import history failed", e);
+        o2.api.page.notice(lp.leaveManagerV2.ledgerImportHistorySaveFail, "info");
         this.closeLedgerImport(true);
         return;
       }
-      o2.api.page.notice("导入成功", "success");
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportSuccess, "success");
       this.closeLedgerImport(true);
     } catch (e) {
-      console.error("导入失败", e);
+      console.error("ledger import failed", e);
       o2.api.page.notice(this.getLedgerImportErrorMessage(e), "error");
     } finally {
       this.bind.importSubmitting = false;
@@ -235,11 +242,11 @@ export default content({
           formData,
           "",
           (json) => {
-            console.debug("导入结果", json);
+            console.debug("ledger import result", json);
             resolve(json);
           },
           (error) => {
-            console.error("导入失败", error);
+            console.error("ledger import failed", error);
             reject(this.normalizeLedgerImportError(error));
           }
         );
@@ -287,13 +294,13 @@ export default content({
     }
     try {
       const json = JSON.parse(error.responseText);
-      return new Error(this.getLedgerImportResultMessage(json, "导入失败"));
+      return new Error(this.getLedgerImportResultMessage(json, lp.leaveManagerV2.ledgerImportFail));
     } catch (e) {
       return error;
     }
   },
   getLedgerImportErrorMessage(error, defaultMessage) {
-    return error && error.message ? error.message : (defaultMessage || "导入失败");
+    return error && error.message ? error.message : (defaultMessage || lp.leaveManagerV2.ledgerImportFail);
   },
   async loadTypeList() {
     const list = await leaveManagerAction("typeListAll");
@@ -324,19 +331,19 @@ export default content({
     console.debug(result);
     this.loadTypeList();
   },
-  // 打开账号列表的搜索视图
+  // Open account search view.
   async clickOpenAccountSearchView() {
     const bindData = {  };
     const c = (await import('./accountList/index.js')).default;
     this.openOtherListViewVm(c, bindData);
   },
-  // 打开请假申请的搜索视图
+  // Open request search view.
   async clickOpenRequestSearchView() {
     const bindData = { bind: {self: false} };
     const c = (await import('./requestList/index.js')).default;
     this.openOtherListViewVm(c, bindData);
   },
-  // 打开节假日日历视图
+  // Open holiday calendar view.
   async clickOpenHolidayCalendarView() {
     const bindData = {  };
     const c = (await import('./calendar/index.js')).default;
@@ -347,11 +354,11 @@ export default content({
     const c = (await import('../leaveManager/index.js')).default;
     this.openOtherListViewVm(c, bindData);
   },
-  // 打开某一个假期类型的规则列表
+  // Open policy list for a leave type.
   clickOpenPolicyList(typeId) {
-    console.log("点击打开配置规则列表", typeId);
+    console.log("click open policy list", typeId);
     if (this.clickOpenPolicyLoading === true) {
-      console.log("正在加载中，避免重复点击");
+      console.log("policy list is loading, skip duplicate click");
       return;
     }
     this.clickOpenPolicyLoading = true;
@@ -387,11 +394,11 @@ export default content({
     this.dom.querySelector("#otherListView").classList.add("l-display-block");
 
   },
-  // 获取导入历史记录
+  // Load import history.
   async loadLedgerImportHistory() {
     try {
       const historyString = await definitionAction("get", definitionHistoryKey);
-      console.debug("导入历史记录", historyString);
+      console.debug("import history", historyString);
       debugger;
       let historyList = [];
       if (historyString) {
@@ -403,7 +410,7 @@ export default content({
       }
       console.debug(this.bind.importHistoryList);
     } catch (e) {
-      console.error("获取导入历史记录失败", e);
+      console.error("load import history failed", e);
       this.bind.importHistoryList = [];
       this.bind.currentImportHistoryList = [];
     }
@@ -413,7 +420,7 @@ export default content({
     const list = historyItem && Array.isArray(historyItem.list) ? historyItem.list : [];
     return list.slice().sort((a, b) => (b.time || 0) - (a.time || 0));
   },
-  // 添加导入历史记录 根据leaveTypeId分类
+  // Add import history by leaveTypeId.
   async addLedgerImportHistory(grantPeriod, leaveTypeId) {
     const historyItem = this.bind.importHistoryList.find((item) => item.leaveTypeId === leaveTypeId);
     if (historyItem) {
@@ -439,7 +446,7 @@ export default content({
     o2.api.page.confirm(
       "warn",
       lp.alert,
-      `确定删除发放批次“${grantPeriod}”的导入数据和历史记录吗？`,
+      lpFormat(lp, "leaveManagerV2.ledgerImportHistoryDeleteConfirm", { grantPeriod }),
       360,
       100,
       function () {
@@ -451,13 +458,13 @@ export default content({
       }
     );
   },
-  // 删除导入历史记录
+  // Delete import history.
   async removeLedgerImportHistory(grantPeriod, leaveTypeId) {
     if (this.bind.importHistoryDeleting) {
       return;
     }
     if (isEmpty(grantPeriod) || isEmpty(leaveTypeId)) {
-      o2.api.page.notice("导入历史记录参数为空", "error");
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportHistoryParamEmpty, "error");
       return;
     }
     this.bind.importHistoryDeleting = true;
@@ -467,10 +474,10 @@ export default content({
       this.removeLedgerImportHistoryItem(grantPeriod, leaveTypeId);
       await definitionAction("updateMockPutToPost", definitionHistoryKey, this.bind.importHistoryList);
       this.bind.currentImportHistoryList = this.getLedgerImportHistoryList(leaveTypeId);
-      o2.api.page.notice("删除成功", "success");
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportHistoryDeleteSuccess, "success");
     } catch (e) {
-      console.error("删除导入数据失败", e);
-      o2.api.page.notice(this.getLedgerImportErrorMessage(e, "删除失败"), "error");
+      console.error("delete import data failed", e);
+      o2.api.page.notice(this.getLedgerImportErrorMessage(e, lp.leaveManagerV2.ledgerImportHistoryDeleteFail), "error");
     } finally {
       this.bind.importHistoryDeleting = false;
       await hideLoading(this);

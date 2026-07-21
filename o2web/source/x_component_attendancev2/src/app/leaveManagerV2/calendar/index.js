@@ -6,32 +6,14 @@ import oDatePicker from "../../../components/o-date-picker";
 import template from "./template.html";
 import style from "./style.scope.css";
 
-const SOLAR_TERM_NAMES = [
-    "小寒", "大寒", "立春", "雨水", "惊蛰", "春分",
-    "清明", "谷雨", "立夏", "小满", "芒种", "夏至",
-    "小暑", "大暑", "立秋", "处暑", "白露", "秋分",
-    "寒露", "霜降", "立冬", "小雪", "大雪", "冬至"
-];
+const SOLAR_TERM_NAMES = lp.leaveManagerV2.calendar.solarTermNames || [];
 const SOLAR_TERM_INFO = [
     0, 21208, 42467, 63836, 85337, 107014,
     128867, 150921, 173149, 195551, 218072, 240693,
     263343, 285989, 308563, 331033, 353350, 375494,
     397447, 419210, 440795, 462224, 483532, 504758
 ];
-const FIXED_FESTIVAL_MAP = {
-    "01-01": "元旦",
-    "02-14": "情人节",
-    "03-08": "妇女节",
-    "03-12": "植树节",
-    "05-01": "劳动节",
-    "05-04": "青年节",
-    "05-17": "电信日",
-    "05-20": "520",
-    "06-01": "儿童节",
-    "09-10": "教师节",
-    "10-01": "国庆节",
-    "12-25": "圣诞节"
-};
+const FIXED_FESTIVAL_MAP = lp.leaveManagerV2.calendar.fixedFestivalMap || {};
 
 let lunarFormatter = null;
 
@@ -66,7 +48,7 @@ export default content({
             },
             holidayImportExample: "",
             holidayImportResult: null,
-            weekList: ["一", "二", "三", "四", "五", "六", "日"],
+            weekList: lp.leaveManagerV2.calendar.weekList || [],
             calendarRows: [],
             workdayMap: {},
             offdayMap: {},
@@ -128,7 +110,7 @@ export default content({
         this.changeDate(year, month);
     },
     toggleMonthSelector() {
-         // 不会更新月份选择列表样式
+         // Keep month selector styles in sync.
         if (!this.bind.monthSelectorOpen) {
             this.bind.monthList = this.buildMonthList();
         }
@@ -368,12 +350,12 @@ export default content({
             overwrite: false,
             days: [
                 {
-                    name: "元旦",
+                    name: lp.leaveManagerV2.calendar.importExampleNewYear,
                     date: `${year}-01-01`,
                     isOffDay: true
                 },
                 {
-                    name: "春节调休上班",
+                    name: lp.leaveManagerV2.calendar.importExampleSpringFestivalWorkday,
                     dateString: `${year}-02-15`,
                     offDay: false
                 }
@@ -472,7 +454,8 @@ export default content({
         return date;
     },
     formatMonthText(month) {
-        return `${month > 9 ? month : `0${month}`}月`;
+        const text = lp.leaveManagerV2.calendar.monthText || "{month}";
+        return text.replace("{month}", month > 9 ? month : `0${month}`);
     },
     buildCalendarRows() {
         const year = this.bind.currentYear;
@@ -491,7 +474,9 @@ export default content({
             dates.push({ empty: true });
         }
         this.bind.calendarRows = convertTo2DArray(dates, 7);
-        this.bind.currentTitle = `${year}年${month > 9 ? month : `0${month}`}月`;
+        this.bind.currentTitle = (lp.leaveManagerV2.calendar.titleText || "{year}-{month}")
+            .replace("{year}", year)
+            .replace("{month}", month > 9 ? month : `0${month}`);
         this.bind.currentMonthText = this.formatMonthText(month);
     },
     buildCalendarDay(year, month, day) {
@@ -504,13 +489,13 @@ export default content({
         let tagText = "";
         if (workday) {
             type = "workday";
-            tagText = "班";
+            tagText = lp.leaveManagerV2.calendar.tagWorkday;
         } else if (offday) {
             type = "offday";
-            tagText = "休";
+            tagText = lp.leaveManagerV2.calendar.tagOffday;
         } else if (isWeekend) {
             type = "weekend";
-            tagText = "末";
+            tagText = lp.leaveManagerV2.calendar.tagWeekend;
         }
         const label = this.buildDayLabel(date, workday, offday);
         return {
@@ -555,10 +540,10 @@ export default content({
             return FIXED_FESTIVAL_MAP[md];
         }
         if (month === 5 && date.getDay() === 0 && day > 7 && day <= 14) {
-            return "母亲节";
+            return lp.leaveManagerV2.calendar.motherDay;
         }
         if (month === 6 && date.getDay() === 0 && day > 14 && day <= 21) {
-            return "父亲节";
+            return lp.leaveManagerV2.calendar.fatherDay;
         }
         return "";
     },
@@ -585,7 +570,7 @@ export default content({
                 lunarFormatter = new Intl.DateTimeFormat("zh-CN-u-ca-chinese", { month: "long", day: "numeric" });
             }
             const text = lunarFormatter.format(date);
-            const matched = text.match(/^(.+?月)(\d+)日$/);
+            const matched = text.match(new RegExp(lp.leaveManagerV2.calendar.lunarMonthPattern));
             if (matched) {
                 const day = Number(matched[2]);
                 return day === 1 ? matched[1] : this.formatLunarDay(day);
@@ -596,20 +581,20 @@ export default content({
         }
     },
     formatLunarDay(day) {
-        const names = ["", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
+        const names = lp.leaveManagerV2.calendar.lunarNumberNames || [];
         if (day <= 10) {
-            return `初${names[day]}`;
+            return `${lp.leaveManagerV2.calendar.lunarDayPrefix}${names[day]}`;
         }
         if (day < 20) {
-            return `十${names[day - 10]}`;
+            return `${names[10]}${names[day - 10]}`;
         }
         if (day === 20) {
-            return "二十";
+            return lp.leaveManagerV2.calendar.lunarTwenty;
         }
         if (day < 30) {
-            return `廿${names[day - 20]}`;
+            return `${lp.leaveManagerV2.calendar.lunarTwentyPrefix}${names[day - 20]}`;
         }
-        return day === 30 ? "三十" : "";
+        return day === 30 ? lp.leaveManagerV2.calendar.lunarThirty : "";
     },
     calendarCellClass(day) {
         if (!day || day.empty) {

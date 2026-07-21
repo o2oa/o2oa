@@ -46,32 +46,32 @@ export default content({
                 policyName: "",
                 leaveTypeId: "",
                 grantScopeType: "ALL", // ALL | DEPARTMENT
-                grantScopeList: [], // 发放范围的具体列表
-                grantExcludeList: [], // 发放范围排除人员列表
+                grantScopeList: [], // Concrete grant scope list.
+                grantExcludeList: [], // Excluded identities for the grant scope.
                 grantType: "YEARLY", // YEARLY | MONTHLY | ONE_TIME
-                grantTypeValue: "Y:01-01", // 发放方式日期规则配置： Y:01-01/MS:1,ME:1/ONE_TIME
-                grantAmount: 0, // 发放数量
-                grantAmountType: { // 额度类型配置
-                    type: "FIXED", // FIXED | SERVICELEN  固定额度｜工龄额度
-                    grantAmount: 5, // 发放额度
-                    tenureLeaveRules: [ // 工龄额度规则，按照工龄年限递增的规则列表，示例：[{maxYears: 2, amount: 5}, {minYears: 2, maxYears: 5, amount: 7}, {minYears: 5, amount: 10}]
+                grantTypeValue: "Y:01-01", // Grant date rule: Y:01-01/MS:1,ME:1/ONE_TIME
+                grantAmount: 0, // Grant amount.
+                grantAmountType: { // Quota type settings.
+                    type: "FIXED", // FIXED | SERVICELEN
+                    grantAmount: 5, // Grant quota.
+                    tenureLeaveRules: [ // Tenure quota rules, such as [{maxYears: 2, amount: 5}, {minYears: 2, maxYears: 5, amount: 7}, {minYears: 5, amount: 10}]
                         {maxYears: 2, amount: 5}, 
                         {minYears: 2, maxYears: 5, amount: 7},
                         {minYears: 5, amount: 10}]
                 }, 
-                expireType: "RELATIVE", // 过期类型 NEVER / RELATIVE
-                expireValue: 1, // 过期值 
-                expireValueExtendDay: 0, // 过期值延长天数
-                carryForward: false, // 是否允许结转
-                maxCarryForward: 0, // 最大结转数量
+                expireType: "RELATIVE", // NEVER / RELATIVE
+                expireValue: 1, // Expiration value.
+                expireValueExtendDay: 0, // Extra expiration days.
+                carryForward: false, // Whether carry-forward is allowed.
+                maxCarryForward: 0, // Maximum carry-forward amount.
                 policyVersion: "1"
             },
             grantTypeValueForYear: '',
-            grantTypeValueForMonth: 1, // 默认每月1号发放, 1-28之间
+            grantTypeValueForMonth: 1, // Default monthly grant date, from 1 to 28.
             leaveType: null
         }
     },
-    // 先查询数据
+    // Load data first.
     async beforeRender() {
         if (this.bind.updateId) {
             const policy = await leaveManagerAction("policyGet", this.bind.updateId);
@@ -109,7 +109,7 @@ export default content({
             this.normalizeTenureLeaveRules();
         }
     },
-    // o month day selector 控件返回结果使用
+    // Used by the o-month-day-selector return value.
     setSelectorValue(key, value) {
         setJSONValue(key, value, this.bind);
     },
@@ -150,7 +150,7 @@ export default content({
             return;
         }
         if (form.expireType === "RELATIVE" && !this.isValidExtendDay(form.expireValueExtendDay)) {
-            o2.api.page.notice("过期值延长天数必须是大于等于0的整数！", 'error');
+            o2.api.page.notice(lp.leaveManagerV2.policy.expireValueExtendDayPlaceholder, 'error');
             return;
         }
         const postForm = Object.assign({}, form);
@@ -159,7 +159,7 @@ export default content({
         } else if (form.grantType === "MONTHLY") {
             postForm.expireValue = Number(form.expireValue) * 30 + Number(form.expireValueExtendDay || 0);
         }
-        if (!form.id) { // 新增默认立即发放
+        if (!form.id) { // Grant immediately by default for new policies.
             postForm.isGrantImmediately = true; 
         }
         if (this.submitLoading) {
@@ -179,19 +179,19 @@ export default content({
         }
     },
     isValidGrantTypeMonthValue(input) {
-        // 先判断是不是纯数字（避免 "1e2" 这种）
+        // Ensure this is a plain integer and avoid values like "1e2".
         if (!/^\d+$/.test(input)) return false;
         const num = Number(input);
         return num >= 1 && num <= 28;
     },
     isValidGrantAmount(input) {
-        // 先判断是不是纯数字（避免 "1e2" 这种）
+        // Ensure this is a plain integer and avoid values like "1e2".
         if (!/^\d+$/.test(input)) return false;
         const num = Number(input);
         return num >= 1;
     },
     isValidExtendDay(input) {
-        // 过期延长天数允许为 0
+        // Extra expiration days can be 0.
         if (!/^\d+$/.test(input)) return false;
         const num = Number(input);
         return num >= 0;
@@ -317,7 +317,7 @@ export default content({
         return true;
     },
 
-    // 关闭当前窗口
+    // Close current window.
     close() {
         this.$parent.publishEvent('leaveTypePolicy', {});
         this.$parent.closeFormVm();

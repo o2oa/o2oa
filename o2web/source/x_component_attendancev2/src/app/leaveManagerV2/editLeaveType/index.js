@@ -23,7 +23,7 @@ export default content({
       }
     }
     },
-    // 先查询数据
+    // Load data first.
   async beforeRender() {
     if (this.bind.updateId) {
       const leaveType = await leaveManagerAction("typeGet", this.bind.updateId);
@@ -50,7 +50,7 @@ export default content({
     o2.api.page.notice(lp.saveSuccess, 'success');
     this.close();
   },
-  // 关闭当前窗口
+  // Close current window.
   close() {
     this.$parent.publishEvent('leaveType', {});
     this.$parent.closeFormVm();

@@ -1,4 +1,4 @@
-<!-- 表单 -->
+<!-- Form -->
 <div style="height: 100%;">
     <div class="o2-form">
         <div class="o2-form-header">
@@ -15,7 +15,7 @@
                 oo-prop="{'isRequried': true, 'label':$.lp.leaveManagerV2.policy.policyName, 'placeholder':$.lp.leaveManagerV2.policy.policyNamePlaceholder, 'value': $.form.policyName}"
                 oo-model="form.policyName"></o-input>
 
-            <!-- 发放范围选择 -->
+            <!-- Grant scope -->
             <div class="margin-top">
                 <div class="form-item-line-label">
                     <span class="required">*</span>
@@ -47,7 +47,7 @@
                     oo-model="form.grantExcludeList"></o-org-person-selector>
             </div>
 
-            <!-- 发放方式 -->
+            <!-- Grant type -->
             <div class="margin-top">
                 <div class="form-item-line-label">
                     <span class="required">*</span>
@@ -88,31 +88,31 @@
                 <div class="form-item-line margin-top" oo-if="$.form.grantType == 'MONTHLY'">
                     <div class="form-item-line-content" style="width: 302px;">
                         {{$.lp.leaveManagerV2.policy.grantTypeMonthLabel}}  <input oo-model="grantTypeValueForMonth" placeholder="$.lp.leaveManagerV2.policy.grantTypeMonthPlaceholder"  
-                        style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" /> 日
+                        style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" /> {{$.lp.leaveManagerV2.policy.day}}
                     </div>
                 </div>
                 <!-- <o-input oo-if="$.form.grantType == 'MONTHLY'" 
                     oo-prop="{'label':$.lp.leaveManagerV2.policy.grantTypeMonthLabel, 'placeholder': $.lp.leaveManagerV2.policy.grantTypeMonthPlaceholder, 'value': $.grantTypeValueForMonth}" 
                     oo-model="grantTypeValueForMonth"></o-input> -->
             </div>
-            <!-- 发放数量 -->
+            <!-- Grant amount -->
             <div class="margin-top" oo-if="$.form.grantType == 'MONTHLY'">
-                每人每月发放
+                {{$.lp.leaveManagerV2.policy.grantMonthlyPrefix}}
                 <input oo-model="form.grantAmount" placeholder="$.lp.leaveManagerV2.policy.grantAmount"  
                     style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
-                天
+                {{$.lp.leaveManagerV2.policy.days}}
             </div>
             <div class="margin-top" oo-if="$.form.grantType == 'ONE_TIME'">
-                一次性发放
+                {{$.lp.leaveManagerV2.policy.grantOneTimePrefix}}
                 <input oo-model="form.grantAmount" placeholder="$.lp.leaveManagerV2.policy.grantAmount"  
                     style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
-                天
+                {{$.lp.leaveManagerV2.policy.days}}
             </div>
              <!-- <o-input oo-if="$.form.grantType == 'ONE_TIME' || $.form.grantType == 'MONTHLY'"
                 oo-prop="{'isRequried': true, 'label': $.lp.leaveManagerV2.policy.grantAmount, 'placeholder':$.lp.leaveManagerV2.policy.grantAmountPlaceholder, 'value': $.form.grantAmount}"
                 oo-model="form.grantAmount"></o-input> -->
 
-            <!-- 额度类型配置 -->
+            <!-- Quota type settings -->
             <div class="margin-top" oo-if="$.form.grantType == 'YEARLY'">
                 <div class="form-item-line-label">
                     <span class="required">*</span>
@@ -139,10 +139,10 @@
                     oo-model="form.grantAmountType.grantAmount"></o-input> -->
 
                 <div class="margin-top" oo-if="$.form.grantAmountType.type == 'FIXED'">
-                    每人每年发放
+                    {{$.lp.leaveManagerV2.policy.grantYearlyPrefix}}
                     <input oo-model="form.grantAmountType.grantAmount" placeholder="$.lp.leaveManagerV2.policy.grantAmountPlaceholder"  
                         style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
-                    天
+                    {{$.lp.leaveManagerV2.policy.days}}
                 </div>
 
                 <div class="margin-top" oo-if="$.form.grantAmountType.type == 'SERVICELEN'">
@@ -157,52 +157,52 @@
                         <thead>
                             <th style="width: 45%;">{{$.lp.leaveManagerV2.policy.grantTypeServiceLenRuleScope}}</th>
                             <th style="width: 30%;">{{$.lp.leaveManagerV2.policy.grantAmount}}</th>
-                            <th>操作</th>
+                            <th>{{$.lp.operate}}</th>
                         </thead>
                         <tr oo-each="$.form.grantAmountType.tenureLeaveRules" oo-item="rule" style="background-color: transparent;">
                             <td>
                                 <span oo-if="!rule.value.minYears && rule.value.maxYears">{{$.lp.leaveManagerV2.policy.grantTypeServiceLen}} &lt;</span>
-                                <span oo-if="rule.value.minYears && rule.value.maxYears">{{rule.value.minYears}} 年 ≤ {{$.lp.leaveManagerV2.policy.grantTypeServiceLen}} &lt;</span>
-                                <span oo-if="rule.value.minYears && !rule.value.maxYears">{{$.lp.leaveManagerV2.policy.grantTypeServiceLen}} ≥ {{rule.value.minYears}} 年</span>
+                                <span oo-if="rule.value.minYears && rule.value.maxYears">{{rule.value.minYears}} {{$.lp.leaveManagerV2.policy.year}} ≤ {{$.lp.leaveManagerV2.policy.grantTypeServiceLen}} &lt;</span>
+                                <span oo-if="rule.value.minYears && !rule.value.maxYears">{{$.lp.leaveManagerV2.policy.grantTypeServiceLen}} ≥ {{rule.value.minYears}} {{$.lp.leaveManagerV2.policy.year}}</span>
                                 <input oo-if="rule.value.maxYears" value="{{rule.value.maxYears}}" @input="this.changeTenureRuleMaxYears(rule.value, $event)"
                                     style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
-                                <span oo-if="rule.value.maxYears">年</span>
+                                <span oo-if="rule.value.maxYears">{{$.lp.leaveManagerV2.policy.year}}</span>
                             </td>
                             <td>
                                 <input value="{{rule.value.amount}}" @input="this.changeTenureRuleAmount(rule.value, $event)"
                                     style="width: 88px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;" />
                             </td>
                             <td>
-                                <span class="operator_link primary_color" @click="this.deleteTenureLeaveRule(rule.value)">删除</span>
+                                <span class="operator_link primary_color" @click="this.deleteTenureLeaveRule(rule.value)">{{$.lp.delete}}</span>
                             </td>
                         </tr>
                     </table>
                 </div>
             </div>
 
-            <!-- 过期 -->
+            <!-- Expiration -->
             <div class="margin-top" oo-if="$.form.grantType == 'YEARLY' || $.form.grantType == 'MONTHLY'">
                 <div class="form-item-line-label">
                     <span class="required">*</span>
                      {{$.lp.leaveManagerV2.policy.expireTime}}
                 </div>
                 <div class="margin-top" oo-if="$.form.grantType == 'YEARLY'">
-                    自发放日起
+                    {{$.lp.leaveManagerV2.policy.expireFromGrantDate}}
                     <input oo-model="form.expireValue" 
                         style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
-                    年后过期，延长
+                    {{$.lp.leaveManagerV2.policy.expireAfterYearExtend}}
                     <input oo-model="form.expireValueExtendDay"
                         style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
-                    天后过期
+                    {{$.lp.leaveManagerV2.policy.expireAfterDay}}
                 </div>
                 <div class="margin-top" oo-if="$.form.grantType == 'MONTHLY'">
-                    自发放日起
+                    {{$.lp.leaveManagerV2.policy.expireFromGrantDate}}
                     <input oo-model="form.expireValue"  
                         style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
-                    月后过期， 延长
+                    {{$.lp.leaveManagerV2.policy.expireAfterMonthExtend}}
                     <input oo-model="form.expireValueExtendDay"
                         style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
-                    天后过期
+                    {{$.lp.leaveManagerV2.policy.expireAfterDay}}
                 </div>
             </div>
 
