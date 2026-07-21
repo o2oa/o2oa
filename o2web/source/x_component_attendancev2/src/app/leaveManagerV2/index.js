@@ -2,12 +2,15 @@ import { component as content } from "@o2oa/oovm";
 import { lp, o2, layout } from "@o2oa/component";
 import ExcelJS from "exceljs";
 import { lpFormat, formatPersonName, chooseSingleFile, hideLoading, isEmpty, showLoading } from "../../utils/common";
-import { leaveManagerAction } from "../../utils/actions";
+import { leaveManagerAction, definitionAction } from "../../utils/actions";
 import oPager from "../../components/o-pager";
 import oOrgPersonSelector from "../../components/o-org-person-selector";
 import oDatePicker from "../../components/o-date-picker";
 import template from "./template.html";
 import style from "./style.scope.css";
+
+
+const definitionHistoryKey = "leaveManagerV2LedgerImportHistory";
 
 export default content({
   template,
@@ -26,10 +29,13 @@ export default content({
         grantPeriod: "",
         fileName: "",
       },
+      importHistoryList: [], // 导入历史记录
+      currentImportHistoryList: [], // 当前假期类型的导入历史记录
     };
   },
   afterRender() {
     this.loadTypeList();
+    this.loadLedgerImportHistory();
     this.listenEventBus();
   },
   listenEventBus() {
@@ -95,6 +101,7 @@ export default content({
       fileName: "",
     };
     this.ledgerImportFile = null;
+    this.bind.currentImportHistoryList = this.getLedgerImportHistoryList(type.id);
     this.bind.importFormShow = true;
   },
   closeLedgerImport(force) {
@@ -107,6 +114,7 @@ export default content({
       grantPeriod: "",
       fileName: "",
     };
+    this.bind.currentImportHistoryList = [];
     this.ledgerImportFile = null;
   },
   async downloadLedgerImportTemplate() {
@@ -195,9 +203,24 @@ export default content({
     this.bind.importSubmitting = true;
     try {
       await showLoading(this);
-      await this.uploadLedgerImport(formData);
+      const result = await this.uploadLedgerImport(formData);
+      if (!this.isLedgerImportSuccess(result)) {
+        o2.api.page.notice(this.getLedgerImportResultMessage(result, "导入失败"), "error");
+        return;
+      }
+      try {
+        await this.addLedgerImportHistory(form.grantPeriod, leaveType.id);
+      } catch (e) {
+        console.error("保存导入历史记录失败", e);
+        o2.api.page.notice("导入成功，导入历史记录保存失败", "info");
+        this.closeLedgerImport(true);
+        return;
+      }
       o2.api.page.notice("导入成功", "success");
       this.closeLedgerImport(true);
+    } catch (e) {
+      console.error("导入失败", e);
+      o2.api.page.notice(this.getLedgerImportErrorMessage(e), "error");
     } finally {
       this.bind.importSubmitting = false;
       await hideLoading(this);
@@ -212,11 +235,11 @@ export default content({
           "",
           (json) => {
             console.debug("导入结果", json);
-            resolve(json && json.data ? json.data : json)
+            resolve(json);
           },
           (error) => {
             console.error("导入失败", error);
-            reject(error)
+            reject(this.normalizeLedgerImportError(error));
           }
         );
         // if (result && typeof result.then === "function") {
@@ -226,6 +249,50 @@ export default content({
         reject(e);
       }
     });
+  },
+  isLedgerImportSuccess(result) {
+    const response = result || {};
+    const data = response && response.data && typeof response.data === "object" ? response.data : {};
+    const type = `${response.type || data.type || ""}`.toLowerCase();
+    if (type && type !== "success" && type !== "warn") {
+      return false;
+    }
+    if (response.error || data.error || response.success === false || data.success === false || response.result === false || data.result === false) {
+      return false;
+    }
+    const status = `${response.status || data.status || ""}`.toLowerCase();
+    if (status && (status.indexOf("error") > -1 || status.indexOf("fail") > -1)) {
+      return false;
+    }
+    const code = response.code !== undefined ? response.code : data.code;
+    if (!type && code !== undefined && code !== null && code !== "" && !["0", "200", "success"].includes(`${code}`.toLowerCase())) {
+      return false;
+    }
+    const errorCount = data.errorCount !== undefined ? data.errorCount : data.failCount;
+    if (Number(errorCount) > 0) {
+      return false;
+    }
+    return true;
+  },
+  getLedgerImportResultMessage(result, defaultMessage) {
+    const response = result || {};
+    const data = response && response.data && typeof response.data === "object" ? response.data : {};
+    const message = response.message || response.errorMessage || data.message || data.errorMessage;
+    return Array.isArray(message) ? message.join("\n") : (message || defaultMessage);
+  },
+  normalizeLedgerImportError(error) {
+    if (!error || !error.responseText) {
+      return error;
+    }
+    try {
+      const json = JSON.parse(error.responseText);
+      return new Error(this.getLedgerImportResultMessage(json, "导入失败"));
+    } catch (e) {
+      return error;
+    }
+  },
+  getLedgerImportErrorMessage(error) {
+    return error && error.message ? error.message : "导入失败";
   },
   async loadTypeList() {
     const list = await leaveManagerAction("typeListAll");
@@ -319,5 +386,69 @@ export default content({
     this.dom.querySelector("#otherListView").classList.add("l-display-block");
 
   },
-
+  // 获取导入历史记录
+  async loadLedgerImportHistory() {
+    try {
+      const historyString = await definitionAction("get", definitionHistoryKey);
+      console.debug("导入历史记录", historyString);
+      let historyList = [];
+      if (historyString) {
+        historyList = typeof historyString === "string" ? JSON.parse(historyString) : historyString;
+      }
+      this.bind.importHistoryList = Array.isArray(historyList) ? historyList : [];
+      if (this.bind.currentLeaveType && this.bind.currentLeaveType.id) {
+        this.bind.currentImportHistoryList = this.getLedgerImportHistoryList(this.bind.currentLeaveType.id);
+      }
+    } catch (e) {
+      console.error("获取导入历史记录失败", e);
+      this.bind.importHistoryList = [];
+      this.bind.currentImportHistoryList = [];
+    }
+  },
+  getLedgerImportHistoryList(leaveTypeId) {
+    const historyItem = this.bind.importHistoryList.find((item) => item.leaveTypeId === leaveTypeId);
+    const list = historyItem && Array.isArray(historyItem.list) ? historyItem.list : [];
+    return list.slice().sort((a, b) => (b.time || 0) - (a.time || 0));
+  },
+  // 添加导入历史记录 根据leaveTypeId分类
+  async addLedgerImportHistory(grantPeriod, leaveTypeId) {
+    const historyItem = this.bind.importHistoryList.find((item) => item.leaveTypeId === leaveTypeId);
+    if (historyItem) {
+      let list = historyItem.list || [];
+      list = list.filter((item) => item.grantPeriod !== grantPeriod);
+      list.unshift({ grantPeriod, time: new Date().getTime() });
+      historyItem.list = list;
+    } else {
+      const newHistoryItem = {
+        leaveTypeId,
+        list: [{ grantPeriod, time: new Date().getTime() }],
+      };
+      this.bind.importHistoryList.push(newHistoryItem);
+    }
+    await definitionAction("updateMockPutToPost", definitionHistoryKey, JSON.stringify(this.bind.importHistoryList));
+    this.bind.currentImportHistoryList = this.getLedgerImportHistoryList(leaveTypeId);
+  },
+  // 删除导入历史记录
+  async removeLedgerImportHistory(grantPeriod, leaveTypeId) {
+    const historyItem = this.bind.importHistoryList.find((item) => item.leaveTypeId === leaveTypeId);
+    if (historyItem) {
+      historyItem.list = historyItem.list.filter((item) => item.grantPeriod !== grantPeriod);
+      if (historyItem.list.length === 0) {
+        this.bind.importHistoryList = this.bind.importHistoryList.filter((item) => item !== historyItem);
+      }
+    }
+    await definitionAction("updateMockPutToPost", definitionHistoryKey, JSON.stringify(this.bind.importHistoryList));
+    this.bind.currentImportHistoryList = this.getLedgerImportHistoryList(leaveTypeId);
+  },
+  formatImportHistoryTime(time) {
+    if (!time) {
+      return "";
+    }
+    const date = new Date(time);
+    if (Number.isNaN(date.getTime())) {
+      return "";
+    }
+    const pad = (value) => value > 9 ? `${value}` : `0${value}`;
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  }
 });

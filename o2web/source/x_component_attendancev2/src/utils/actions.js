@@ -314,6 +314,16 @@ function personAction(method, ...args) {
 function personalAction(method, ...args) {
   return doAction("x_organization_assemble_personal", "PersonAction", method, args);
 }
+/**
+ * DefinitionAction
+ * x_organization_assemble_personal
+ * @param {*} method 
+ * @param  {...any} args 
+ * @returns 
+ */
+function definitionAction(method, ...args) {
+  return doAction("x_organization_assemble_personal", "DefinitionAction", method, args);
+}
 
 /**
  * 中心服务 脚本执行
@@ -369,5 +379,6 @@ export {
   leaveManagerActionListByPaging,
   invokeAction,
   qywxAuthAction,
-  getFileDownloadUrl
+  getFileDownloadUrl,
+  definitionAction
 };

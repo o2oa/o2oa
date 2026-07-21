@@ -47,7 +47,8 @@ export default content({
   _initOONav() {
     const ooNav = document.querySelector('#app-attendance-v2-menu')
     ooNav.addEventListener('select', (e) => {
-      this.bind.menu.currentMenu = e.detail.data
+      this.bind.menu.currentMenu = e.detail.data;
+      this.closeFormVm(); // 关闭 form 窗口
     })
     ooNav.setMenu(this.bind.menu.menuData)
   },

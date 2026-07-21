@@ -119,7 +119,8 @@
     min-height: 0;
     margin: 0 !important;
     padding: 24px 28px 8px;
-    overflow: visible;
+    overflow: auto;
+    max-height: calc(100vh - 180px);
 }
 
 .leave-import-row {
@@ -179,6 +180,32 @@
 .leave-import-upload:hover {
     border-color: #4a90e2;
     color: #333333;
+}
+
+.leave-import-history {
+    margin-top: 4px;
+}
+
+.leave-import-history-title {
+    margin-bottom: 8px;
+    color: #333333;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.leave-import-history-empty {
+    padding: 12px;
+    border: 1px solid #eeeeee;
+    color: #888888;
+    text-align: center;
+}
+
+.leave-import-history-table {
+    margin-bottom: 0;
+}
+
+.leave-import-history-table td {
+    word-break: break-all;
 }
 
 .leave-account-legend {
