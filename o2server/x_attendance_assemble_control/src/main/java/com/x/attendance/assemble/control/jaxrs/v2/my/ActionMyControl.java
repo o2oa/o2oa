@@ -1,5 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.v2.my;
 
+import com.x.attendance.entity.v2.AttendanceV2Config;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ import com.x.base.core.project.organization.Identity;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.DefaultCharset;
+import org.apache.commons.lang3.StringUtils;
 
 public class ActionMyControl extends BaseAction {
 
@@ -32,6 +34,11 @@ public class ActionMyControl extends BaseAction {
         result.setData(wo);
         return result;
       }
+      AttendanceV2Config config = this.getConfig(emc);
+      String dutyName = config.getProperties().getStatisticUnitDutyName();
+      if (StringUtils.isEmpty(dutyName)) {
+        dutyName = "考勤管理员";
+      }
       // 查询个人信息 判断是否有[考勤管理员]职务
       String encodePerson = URLEncoder.encode(person.getDistinguishedName(), DefaultCharset.name);
       WoPerson p = ThisApplication.context().applications().getQuery(x_organization_assemble_control.class, "person/" + encodePerson).getData(WoPerson.class);
@@ -39,8 +46,9 @@ public class ActionMyControl extends BaseAction {
         List<WoUnitDuty> woUnitDutyList = new ArrayList<>();
         for (WoIdentity identity : p.getWoIdentityList()) {
           if (identity.getWoUnitDutyList() != null && !identity.getWoUnitDutyList().isEmpty() ) {
-            //todo 考勤管理员 可配置
-            woUnitDutyList.addAll(identity.getWoUnitDutyList().stream().filter((d) -> d.getName().equals("考勤管理员")).collect(Collectors.toList()));
+            String finalDutyName = dutyName;
+            woUnitDutyList.addAll(identity.getWoUnitDutyList().stream().filter((d) -> d.getName().equals(
+                    finalDutyName)).collect(Collectors.toList()));
           }
         }
         if (!woUnitDutyList.isEmpty()) {
@@ -53,6 +61,17 @@ public class ActionMyControl extends BaseAction {
       result.setData(wo);
       return result;
     }
+  }
+
+  private AttendanceV2Config getConfig(EntityManagerContainer emc) throws Exception {
+    List<AttendanceV2Config> list = emc.listAll(AttendanceV2Config.class);
+    AttendanceV2Config config;
+    if (list != null && !list.isEmpty()) {
+      config = list.get(0);
+    } else {
+      config = new AttendanceV2Config();
+    }
+    return config;
   }
 
   public static class Wo extends GsonPropertyObject {

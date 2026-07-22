@@ -17,6 +17,17 @@ public class AttendanceV2ConfigProperties  extends JsonProperties {
     @FieldDescribe("是否开启中国节假日数据同步")
     private Boolean chineseHolidaySyncEnable = true;
 
+    @FieldDescribe("考勤管理员职务名称")
+    private String statisticUnitDutyName = "考勤管理员";
+
+
+    public String getStatisticUnitDutyName() {
+        return statisticUnitDutyName;
+    }
+
+    public void setStatisticUnitDutyName(String statisticUnitDutyName) {
+        this.statisticUnitDutyName = statisticUnitDutyName;
+    }
 
     public Integer getCheckInAlertOffDutyAfterMinutes() {
         return checkInAlertOffDutyAfterMinutes;

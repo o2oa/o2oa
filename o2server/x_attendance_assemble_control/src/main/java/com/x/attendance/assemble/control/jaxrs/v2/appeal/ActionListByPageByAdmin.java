@@ -32,9 +32,9 @@ public class ActionListByPageByAdmin extends BaseAction {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             ActionResult<List<Wo>> result = new ActionResult<>();
             Business business = new Business(emc);
-            if (!business.isManager(person)) {
-                throw new ExceptionAccessDenied(person);
-            }
+//            if (!business.isManager(person)) {
+//                throw new ExceptionAccessDenied(person);
+//            }
             Integer adjustPage = this.adjustPage(page);
             Integer adjustPageSize = this.adjustSize(size);
             if (LOGGER.isDebugEnabled()) {
