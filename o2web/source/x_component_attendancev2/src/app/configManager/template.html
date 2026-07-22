@@ -61,6 +61,16 @@
                 </div>
             </div>
         </div>
+        <!-- 统计管理员 职务配置 -->
+        <div class="margin-top">
+            <div class="form-item-label">
+                {{$.lp.config.statisticUnitDutyName}}
+            </div>
+            <div class="form-item-content margin-top padding-bottom">
+                    <o-input oo-prop="{'value': $.form.properties.statisticUnitDutyName}" oo-model="form.properties.statisticUnitDutyName"></o-input>
+            </div>
+        </div>
+
         <!-- 定时器配置 -->
         <div class="margin-top">
             <div class="form-item-label">
@@ -72,6 +82,7 @@
                 </div>
             </div>
         </div>
+
 
         <!-- 人脸比对功能 -->
         <div class="margin-top" oo-if="$.form.aliFaceControlEnable">

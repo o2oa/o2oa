@@ -31,6 +31,7 @@ export default content({
         properties: {
           checkInAlertOnDutyBeforeMinutes: 10, // 默认上班前 10 分钟
           checkInAlertOffDutyAfterMinutes: 10, // 默认下班后 10 分钟 
+          statisticUnitDutyName:"", // 考勤统计管理员的职务名称
         }
       },
       holidayList: [],
@@ -66,6 +67,9 @@ export default content({
       }
       if (!json.properties.checkInAlertOffDutyAfterMinutes) {
         this.bind.form.properties.checkInAlertOffDutyAfterMinutes = 10;
+      }
+      if (!json.properties.statisticUnitDutyName) {
+        this.bind.form.properties.statisticUnitDutyName = "考勤管理员";
       }
       if (json.holidayList) {
         this.bind.holidayList = json.holidayList;
