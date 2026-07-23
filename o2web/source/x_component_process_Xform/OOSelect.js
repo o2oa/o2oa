@@ -214,12 +214,14 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 			this._setBusinessData(v);
 		}.bind(this));
 
-		this.node.addEvent('blur', function () {
-			this.validation();
-		}.bind(this));
-		this.node.addEvent('keyup', function () {
-			this.validationMode();
-		}.bind(this));
+		if(this.json.allowInput){
+			this.node.addEvent('blur', function () {
+				this.validation();
+			}.bind(this));
+			this.node.addEvent('keyup', function () {
+				this.validationMode();
+			}.bind(this));
+		}
 
 		this.node.addEventListener('validity', (e) => {
 			if (this.validationText) {
