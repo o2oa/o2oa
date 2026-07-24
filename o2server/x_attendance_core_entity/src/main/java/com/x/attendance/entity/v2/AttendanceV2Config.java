@@ -106,12 +106,17 @@ public class AttendanceV2Config extends SliceJpaObject {
     @Column(length = length_8B, name = ColumnNamePrefix + exceptionAlertTime_FIELDNAME)
     private String exceptionAlertTime = "09:30";
 
+    // 0 表示当天，1表示次日
+    public static final String exceptionAlertDateNumber_FIELDNAME = "exceptionAlertDateNumber";
+    @FieldDescribe("异常打卡提醒日期计算值")
+    @Column(  name = ColumnNamePrefix + exceptionAlertDateNumber_FIELDNAME)
+    private Integer exceptionAlertDateNumber = 1;
+
     // 记录任务执行的日期，用于判断当天是否已经执行过提醒任务了
     public static final String exceptionAlertDate_FIELDNAME = "exceptionAlertDate";
     @FieldDescribe("异常打卡定时执行日期：yyyy-MM-dd .")
     @Column(length = length_32B, name = ColumnNamePrefix + exceptionAlertDate_FIELDNAME)
     private String exceptionAlertDate;
-
 
     // 统计定时任务表达式
     public static final String detailStatisticCronString_FIELDNAME = "detailStatisticCronString";
@@ -138,6 +143,14 @@ public class AttendanceV2Config extends SliceJpaObject {
 	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + PROPERTIES_FIELDNAME)
 	private AttendanceV2ConfigProperties properties;
 
+
+    public Integer getExceptionAlertDateNumber() {
+        return exceptionAlertDateNumber;
+    }
+
+    public void setExceptionAlertDateNumber(Integer exceptionAlertDateNumber) {
+        this.exceptionAlertDateNumber = exceptionAlertDateNumber;
+    }
 
     public Boolean getFaceDetectionEnable() {
         return faceDetectionEnable;

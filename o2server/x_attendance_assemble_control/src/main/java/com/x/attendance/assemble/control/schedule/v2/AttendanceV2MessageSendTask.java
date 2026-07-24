@@ -135,7 +135,7 @@ public class AttendanceV2MessageSendTask extends AbstractJob {
                 return;
             }
             logger.info("开始发送异常数据提醒，当前时间：{} , 异常数据提醒时间：{}", now.toString(), alertTime.toString());
-            sendExceptionMsgAlert(emc);
+            sendExceptionMsgAlert(emc, config);
             // 更新配置 today 表示已经发送过提醒
             config.setExceptionAlertDate(today);
             emc.beginTransaction(AttendanceV2Config.class);
@@ -150,11 +150,20 @@ public class AttendanceV2MessageSendTask extends AbstractJob {
     /**
      * 发送异常数据提醒
      */
-    private void sendExceptionMsgAlert(EntityManagerContainer emc) {
+    private void sendExceptionMsgAlert(EntityManagerContainer emc, AttendanceV2Config config) {
         try {
             Business business = new Business(emc);
-            // 昨天产生的数据 今天发送消息
-            Date yesterday = DateTools.addDay(new Date(), -1);
+            //
+            Integer dateNumber = config.getExceptionAlertDateNumber();
+            if (dateNumber == null || dateNumber < 0 ) {
+                dateNumber = 1; // 默认提醒前一天的异常数据
+            }
+            Date yesterday;
+            if (dateNumber == 0) {
+                yesterday = new Date();
+            } else {
+                yesterday = DateTools.addDay(new Date(), -(dateNumber));
+            }
             String yesterdayString = DateTools.format(yesterday, DateTools.format_yyyyMMdd);
             List<AttendanceV2AppealInfo> list = business.getAttendanceV2ManagerFactory().listAppealInfoWithRecordDateString(yesterdayString);
             if (list == null || list.isEmpty()) {
