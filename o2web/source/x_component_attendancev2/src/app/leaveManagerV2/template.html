@@ -27,6 +27,9 @@
             <div class="leave-section-toolbar">
                 <div class="leave-section-title">{{ $.lp.leaveManagerV2.leaveTypeTitle }}</div>
             </div>
+            <div style="margin: 10px 0;float: left;">
+                <button class="mainColor_bg" @click="clickAddType">{{$.lp.leaveManagerV2.addType}}</button>
+            </div>
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table">
                 <thead>
                     <th>{{$.lp.leaveManagerV2.type.name}}</th>

@@ -72,7 +72,7 @@ export default content({
   },
   // 默认打开地图 一个固定值
   initDefaultNumberMapView() {
-    const point = new AMap.LngLat(120.135431, 30.27412);
+    const point = new AMap.LngLat(109.173571, 18.328807);
     this.createMap(point);
   },
   // 加载百度地图
