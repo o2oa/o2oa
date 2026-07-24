@@ -22,8 +22,9 @@ export default content({
         offDutyFastCheckInEnable: false,
         checkInAlertEnable: false,
         exceptionAlertEnable: false,
+        exceptionAlertDateNumber: 1,
         exceptionAlertTime: "09:30",
-        appealMaxTimes: 0,
+        appealMaxTimes: '0',
         detailStatisticCronString: "0 0 3 * * ?", //默认凌晨 3 点
         closeOldAttendance: true, // 是否关闭旧考勤
         aliFaceControlEnable: false, // 阿里云人脸扩展是否启用
@@ -57,8 +58,13 @@ export default content({
   // 获取配置对象
   async loadConfig() {
     const json = await configAction("get");
+    console.debug('snapshot', JSON.parse(JSON.stringify(json)));
+console.debug('fields', json.appealMaxTimes, json.properties && json.properties.statisticUnitDutyName);
     if (json) {
       this.bind.form = json || {};
+      if (!this.bind.form.appealMaxTimes) {
+        this.bind.form.appealMaxTimes = '0';
+      }
       if (!json.properties) {
         this.bind.form.properties = {};
       }
@@ -83,7 +89,9 @@ export default content({
       if (typeof json.appealEnable == "undefined") {
         this.bind.form.appealEnable = false;
       }
-      debugger;
+      if (typeof json.exceptionAlertDateNumber == "undefined" || json.exceptionAlertDateNumber === null) {
+        this.bind.form.exceptionAlertDateNumber = 1;
+      }
       if (json.processId && json.processName) {
         this.bind.processSelector.value = [
           {
@@ -94,6 +102,7 @@ export default content({
         this.showProcessSelectorValueFun();
       }
     }
+    console.debug('load', this.bind.form);
   },
   // 保存
   async submit() {
@@ -107,6 +116,7 @@ export default content({
       );
       return;
     }
+    console.debug('submit', form);
     if (!isInt(form.appealMaxTimes)) {
       o2.api.page.notice(lp.config.appealMaxTimesError, "error");
       return;
@@ -133,9 +143,17 @@ export default content({
         return;
       }
     }
+    form.exceptionAlertDateNumber = Number(form.exceptionAlertDateNumber) === 0 ? 0 : 1;
+    if (form.exceptionAlertEnable === true && form.exceptionAlertDateNumber === 0) {
+      const alertTimeMinutes = this.getTimeMinutes(form.exceptionAlertTime);
+      if (alertTimeMinutes < 18 * 60) {
+        o2.api.page.notice("异常打卡提醒选择当天时，提醒时间必须为18:00或之后", "error");
+        return;
+      }
+    }
     form.closeOldAttendance = true
     const result = await configAction("post", form);
-    console.log(result);
+    console.debug('submit result', result);
     o2.api.page.notice(lp.saveSuccess, "success");
     this.loadConfig();
   },
@@ -262,6 +280,16 @@ export default content({
   },
   clickExceptionAlertEnable() {
     this.bind.form.exceptionAlertEnable = !this.bind.form.exceptionAlertEnable;
+  },
+  changeExceptionAlertDateNumber(e) {
+    this.bind.form.exceptionAlertDateNumber = Number(e.target.value) === 0 ? 0 : 1;
+  },
+  getTimeMinutes(time) {
+    if (!time || !time.includes(":")) {
+      return 0;
+    }
+    const values = time.split(":");
+    return (Number(values[0]) || 0) * 60 + (Number(values[1]) || 0);
   },
   showProcessSelectorValueFun() {
     if (this.bind.processSelector.value.length > 0) {

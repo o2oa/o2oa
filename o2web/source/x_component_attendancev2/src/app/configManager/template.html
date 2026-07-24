@@ -24,7 +24,7 @@
             </div>
             <div class="margin-left" oo-if="$.form.appealEnable">
                 <div>{{$.lp.config.appealMaxTimesLabel}}</div>
-                <o-input oo-prop="{'value': $.form.appealMaxTimes}" oo-model="form.appealMaxTimes"></o-input>
+                <input class="config-text-input margin-top" oo-model="form.appealMaxTimes" name="appealMaxTimes" type="text">
             </div>
             
         </div>
@@ -54,7 +54,10 @@
                     </div>
                     <label style="margin: 5px;" >
                         {{$.lp.config.exceptionAlertEnable}} 
-                        {{$.lp.config.exceptionAlertEnableTime1}} 
+                        <select class="config-form-select" name="exceptionAlertDateNumber" @change="changeExceptionAlertDateNumber">
+                            <option value="0" .selected="($.form.exceptionAlertDateNumber == 0)">当天</option>
+                            <option value="1" .selected="($.form.exceptionAlertDateNumber == 1)">次日</option>
+                        </select>
                         <o-time-picker oo-prop="{'value': $.form.exceptionAlertTime, 'key': 'form.exceptionAlertTime'}"></o-time-picker>
                         {{$.lp.config.exceptionAlertEnableTime2}} 
                     </label>
@@ -67,7 +70,7 @@
                 {{$.lp.config.statisticUnitDutyName}}
             </div>
             <div class="form-item-content margin-top padding-bottom">
-                    <o-input oo-prop="{'value': $.form.properties.statisticUnitDutyName}" oo-model="form.properties.statisticUnitDutyName"></o-input>
+                    <input class="config-text-input" oo-model="form.properties.statisticUnitDutyName" name="statisticUnitDutyName" type="text">
             </div>
         </div>
 

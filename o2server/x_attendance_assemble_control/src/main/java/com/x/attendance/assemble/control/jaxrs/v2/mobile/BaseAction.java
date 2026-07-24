@@ -1,8 +1,10 @@
 package com.x.attendance.assemble.control.jaxrs.v2.mobile;
 
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
+import com.x.attendance.assemble.control.schedule.v2.QueueAttendanceV2DetailModel;
 import com.x.attendance.entity.v2.AttendanceV2AppealInfo;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2Group;
@@ -24,6 +26,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReentrantLock;
@@ -47,6 +50,31 @@ abstract class BaseAction extends StandardJaxrsAction {
                 CHECK_LOCKS.remove(lockKey, lock);
             }
         }
+    }
+
+    protected void checkAndSendV2DetailIfAllCheckInCompletedAsync(String peopleDn, String date) {
+        if (StringUtils.isEmpty(peopleDn) || StringUtils.isEmpty(date)) {
+            return;
+        }
+        CompletableFuture.runAsync(() -> {
+            try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+                Business business = new Business(emc);
+                List<AttendanceV2CheckInRecord> recordList = business.getAttendanceV2ManagerFactory()
+                        .listRecordWithPersonAndDate(peopleDn, date);
+                boolean allCompleted = recordList != null && !recordList.isEmpty()
+                        && recordList.stream().noneMatch(record -> AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn
+                                .equals(record.getCheckInResult()));
+                if (allCompleted) {
+                    LOGGER.info("当天打卡已全部完成，发起考勤数据生成，Date：{} person: {}", date, peopleDn);
+                    ThisApplication.queueV2Detail
+                            .send(new QueueAttendanceV2DetailModel(peopleDn, date, true));
+                } else if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("当天打卡未全部完成，不发起考勤数据生成，Date：{} person: {}", date, peopleDn);
+                }
+            } catch (Exception e) {
+                LOGGER.error(e);
+            }
+        });
     }
 
 
