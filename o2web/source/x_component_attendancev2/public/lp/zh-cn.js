@@ -342,7 +342,7 @@ MWF.xApplication.attendancev2.LP = {
       "是否启用打卡提醒 (上班前10分钟、下班时会收到提醒消息，不要忘记打卡)",
     exceptionAlertEnable: "是否启用异常打卡提醒 ",
     exceptionAlertEnableTime1: " (次日 ",
-    exceptionAlertEnableTime2: " 将收到异常打卡消息) ",
+    exceptionAlertEnableTime2: " 将收到异常打卡消息 ",
     statisticUnitDutyName: "考勤统计管理员职务名称",
     detailStatisticCron: "统计定时器",
     closeOldAttendance: "旧考勤",

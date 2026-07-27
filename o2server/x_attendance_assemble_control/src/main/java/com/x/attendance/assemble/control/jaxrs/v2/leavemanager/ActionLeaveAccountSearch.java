@@ -43,7 +43,7 @@ public class ActionLeaveAccountSearch extends BaseAction {
                 }
             }
             if (userList.isEmpty()) {
-                logger.warn("没有找到人员信息，查询条件：{0}", wi.getFilterList());
+                logger.warn("没有找到人员信息，查询条件：{0}", "userList=[]");
                 return result;
             }
             // userList 去重

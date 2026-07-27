@@ -42,10 +42,17 @@ export default content({
         try {
             await showLoading(this);
             const json = await leaveManagerAction("accountSearch", { filterList: this.bind.filterList });
-            this.bind.accountList = json.accountList || [];
-            this.bind.leaveTypeList = json.leaveTypeList || [];
-            this.bind.personList = json.personList || [];
-            this.bind.accountTableList = this.buildAccountTableList(this.bind.personList, this.bind.leaveTypeList, this.bind.accountList);
+            if (json) {
+                this.bind.accountList = json.accountList || [];
+                this.bind.leaveTypeList = json.leaveTypeList || [];
+                this.bind.personList = json.personList || [];
+                this.bind.accountTableList = this.buildAccountTableList(this.bind.personList, this.bind.leaveTypeList, this.bind.accountList);
+            } else {
+                 this.bind.accountList =  [];
+                this.bind.leaveTypeList =  [];
+                this.bind.personList =  [];
+                this.bind.accountTableList = [];
+            }
         } finally {
             this.queryLoading = false;
             await hideLoading(this);
