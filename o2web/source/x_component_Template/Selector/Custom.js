@@ -76,10 +76,26 @@ MWF.xApplication.Template.Selector.Custom = new Class({
         this.availableStatusTypes = ["identity","custom"];
 
         this._init();
+        this._checkVersion();
     },
     _init : function(){
         this.selectType = "custom";
-        this.className = "Custom"
+        this.className = "Custom";
+    },
+    _checkVersion: function(){
+        if(layout.mobile && o2.version.dev === 10 && this.options.style === 'v10_mobile'){
+            this.options = Object.assign(this.options || {}, {
+                style: "v10_mobile",
+                tabStyle: "v10_mobile",
+                useBreadcrumbs: true,
+                contentUrl: "../x_component_Selector/$Selector/v10_mobile/selector.html",
+                categoryUrl: "../x_component_Selector/$Selector/v10_mobile/category.html",
+                categoryItemUrl: "../x_component_Selector/$Selector/v10_mobile/category_item.html",
+                itemUrl: "../x_component_Selector/$Selector/v10_mobile/item.html",
+                useO2Load: true,
+                injectToBody: true
+            });
+        }
     },
     loadSelectItems: function (addToNext) {
         this.loadingCount = "done";
