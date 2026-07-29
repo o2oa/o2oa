@@ -525,6 +525,24 @@ public class LeaveManagerAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "根据开始结束时间计算实际加班时长.", action = ActionOvertimeDurationCalculate.class)
+    @POST
+    @Path("request/overtime/duration/calculate")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void requestOvertimeDurationCalculate(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request, JsonElement jsonElement) {
+        ActionResult<ActionOvertimeDurationCalculate.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionOvertimeDurationCalculate().execute(jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "假期申请.", action = ActionLeaveRequestApply.class)
     @POST
     @Path("request/apply")

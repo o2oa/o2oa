@@ -38,12 +38,6 @@ public class ActionLeaveDurationCalculate extends BaseAction {
             }
             Date startTime = wi.getStartTime();
             Date endTime = wi.getEndTime();
-            if (startTime == null && StringUtils.isNotEmpty(wi.getStartDate())) {
-                startTime = DateTools.parse(wi.getStartDate(), DateTools.format_yyyyMMdd);
-            }
-            if (endTime == null && StringUtils.isNotEmpty(wi.getEndDate())) {
-                endTime = DateTools.addDay(DateTools.parse(wi.getEndDate(), DateTools.format_yyyyMMdd), 1);
-            }
             if (startTime == null) {
                 throw new ExceptionEmptyParameter("开始时间");
             }
@@ -65,12 +59,11 @@ public class ActionLeaveDurationCalculate extends BaseAction {
                     0);
             List<String> dateList = AttendanceV2RestDayHelper.listDateRange(startDate, endDate);
             List<String> restDateList = AttendanceV2RestDayHelper.listRestDate(business, person.getDistinguishedName(), dateList);
-            List<String> workDateList = dateList.stream().filter(date -> !restDateList.contains(date))
-                    .collect(Collectors.toList());
+            List<String> calculateDateList = listCalculateDate(dateList, restDateList, wi.getExcludeRestDay());
             List<String> leaveDateList = new ArrayList<>();
             long durationMinutes = 0;
             double duration = 0.0;
-            for (String date : workDateList) {
+            for (String date : calculateDateList) {
                 DayDuration dayDuration = calculateDayDuration(business, person.getDistinguishedName(), date, startTime, endTime);
                 if (dayDuration.getDurationMinutes() > 0) {
                     leaveDateList.add(date);
@@ -88,6 +81,13 @@ public class ActionLeaveDurationCalculate extends BaseAction {
             result.setData(wo);
             return result;
         }
+    }
+
+    static List<String> listCalculateDate(List<String> dateList, List<String> restDateList, Boolean excludeRestDay) {
+        if (BooleanUtils.isFalse(excludeRestDay)) {
+            return dateList;
+        }
+        return dateList.stream().filter(date -> !restDateList.contains(date)).collect(Collectors.toList());
     }
 
     private DayDuration calculateDayDuration(Business business, String personDn, String date, Date startTime,
@@ -168,11 +168,9 @@ public class ActionLeaveDurationCalculate extends BaseAction {
         @FieldDescribe("结束时间，yyyy-MM-dd HH:mm:ss")
         private Date endTime;
 
-        @FieldDescribe("开始日期，yyyy-MM-dd，兼容旧参数")
-        private String startDate;
 
-        @FieldDescribe("结束日期，yyyy-MM-dd，兼容旧参数")
-        private String endDate;
+        @FieldDescribe("是否排除节假休息日，默认true；传false时不排除节假休息日")
+        private Boolean excludeRestDay;
 
         public String getPerson() {
             return person;
@@ -198,20 +196,12 @@ public class ActionLeaveDurationCalculate extends BaseAction {
             this.endTime = endTime;
         }
 
-        public String getStartDate() {
-            return startDate;
+        public Boolean getExcludeRestDay() {
+            return excludeRestDay;
         }
 
-        public void setStartDate(String startDate) {
-            this.startDate = startDate;
-        }
-
-        public String getEndDate() {
-            return endDate;
-        }
-
-        public void setEndDate(String endDate) {
-            this.endDate = endDate;
+        public void setExcludeRestDay(Boolean excludeRestDay) {
+            this.excludeRestDay = excludeRestDay;
         }
     }
 
