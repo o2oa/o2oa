@@ -5,14 +5,16 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2RestDayHelper;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2ShiftWorkTimeHelper;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.assemble.control.jaxrs.v2.WoGroupShift;
@@ -63,11 +65,15 @@ public class ActionOvertimeDurationCalculate extends BaseAction {
             List<TimeRange> normalWorkRangeList = listNormalWorkRange(business, personDn, DateTools.addDay(startDate, -1),
                     endDate);
             long durationMinutes = calculateOvertimeMinutes(startTime, endTime, normalWorkRangeList);
+            Map<String, Long> standardWorkMinutesMap = mapStandardWorkMinutes(business, personDn, dateList,
+                    restDateList);
+            double duration = calculateOvertimeDays(dateList, startTime, endTime, normalWorkRangeList,
+                    standardWorkMinutesMap);
             List<String> overtimeDateList = listOvertimeDate(dateList, startTime, endTime, normalWorkRangeList);
 
             Wo wo = new Wo();
             wo.setTotalDays(dateList.size());
-            wo.setDuration(new BigDecimal(durationMinutes / 60.0).setScale(1, RoundingMode.HALF_UP).doubleValue());
+            wo.setDuration(new BigDecimal(duration).setScale(1, RoundingMode.HALF_UP).doubleValue());
             wo.setDurationMinutes(durationMinutes);
             wo.setOvertimeDateList(overtimeDateList);
             wo.setRestDateList(restDateList);
@@ -93,16 +99,9 @@ public class ActionOvertimeDurationCalculate extends BaseAction {
                 continue;
             }
             for (AttendanceV2ShiftCheckTime checkTime : shift.getProperties().getTimeList()) {
-                if (StringUtils.isBlank(checkTime.getOnDutyTime()) || StringUtils.isBlank(checkTime.getOffDutyTime())) {
-                    continue;
-                }
-                Date onDuty = DateTools.parse(date + " " + checkTime.getOnDutyTime(), DateTools.format_yyyyMMddHHmm);
-                Date offDuty = DateTools.parse(date + " " + checkTime.getOffDutyTime(), DateTools.format_yyyyMMddHHmm);
-                if (BooleanUtils.isTrue(checkTime.getOffDutyNextDay())) {
-                    offDuty = DateTools.addDay(offDuty, 1);
-                }
-                if (offDuty.after(onDuty)) {
-                    rangeList.add(new TimeRange(onDuty, offDuty));
+                for (AttendanceV2ShiftWorkTimeHelper.TimeRange range : AttendanceV2ShiftWorkTimeHelper
+                        .listWorkRange(date, checkTime)) {
+                    rangeList.add(new TimeRange(range.getStart(), range.getEnd()));
                 }
             }
         }
@@ -118,23 +117,86 @@ public class ActionOvertimeDurationCalculate extends BaseAction {
         return Math.max(0, totalMinutes - normalMinutes);
     }
 
+    static double calculateOvertimeDays(List<String> dateList, Date startTime, Date endTime,
+            List<TimeRange> normalWorkRangeList, Map<String, Long> standardWorkMinutesMap) throws Exception {
+        double duration = 0.0;
+        List<TimeRange> mergedRangeList = mergeRange(normalWorkRangeList);
+        for (String date : dateList) {
+            long standardMinutes = standardWorkMinutesMap == null ? 0L
+                    : standardWorkMinutesMap.getOrDefault(date, 0L);
+            if (standardMinutes <= 0) {
+                continue;
+            }
+            long overtimeMinutes = overtimeMinutesInDate(date, startTime, endTime, mergedRangeList);
+            duration += overtimeMinutes * 1.0 / standardMinutes;
+        }
+        return duration;
+    }
+
     static List<String> listOvertimeDate(List<String> dateList, Date startTime, Date endTime,
             List<TimeRange> normalWorkRangeList) throws Exception {
         List<String> overtimeDateList = new ArrayList<>();
         List<TimeRange> mergedRangeList = mergeRange(normalWorkRangeList);
         for (String date : dateList) {
-            TimeRange dayRange = buildDayRange(date);
-            long dayMinutes = overlapMinutes(startTime, endTime, dayRange.getStart(), dayRange.getEnd());
-            long normalMinutes = 0;
-            for (TimeRange range : mergedRangeList) {
-                normalMinutes += overlapMinutes(startTime, endTime, maxDate(dayRange.getStart(), range.getStart()),
-                        minDate(dayRange.getEnd(), range.getEnd()));
-            }
-            if (Math.max(0, dayMinutes - normalMinutes) > 0) {
+            if (overtimeMinutesInDate(date, startTime, endTime, mergedRangeList) > 0) {
                 overtimeDateList.add(date);
             }
         }
         return overtimeDateList;
+    }
+
+    private Map<String, Long> mapStandardWorkMinutes(Business business, String personDn, List<String> dateList,
+            List<String> restDateList) throws Exception {
+        Map<String, Long> map = new HashMap<>();
+        for (String date : dateList) {
+            long minutes = standardWorkMinutes(business, personDn, date);
+            if (minutes <= 0 || restDateList.contains(date)) {
+                minutes = nearestPastWorkdayStandardMinutes(business, personDn, date);
+            }
+            map.put(date, minutes);
+        }
+        return map;
+    }
+
+    private long nearestPastWorkdayStandardMinutes(Business business, String personDn, String date) throws Exception {
+        Date cursor = DateTools.addDay(DateTools.parse(date, DateTools.format_yyyyMMdd), -1);
+        for (int i = 0; i < 366; i++) {
+            String cursorDate = DateTools.format(cursor, DateTools.format_yyyyMMdd);
+            if (!AttendanceV2RestDayHelper.isRestDay(business, personDn, cursorDate)) {
+                long minutes = standardWorkMinutes(business, personDn, cursorDate);
+                if (minutes > 0) {
+                    return minutes;
+                }
+            }
+            cursor = DateTools.addDay(cursor, -1);
+        }
+        return 0;
+    }
+
+    private long standardWorkMinutes(Business business, String personDn, String date) throws Exception {
+        WoGroupShift woGroupShift = business.getAttendanceV2ManagerFactory().getGroupShiftByPersonDate(personDn,
+                date);
+        if (woGroupShift == null) {
+            return 0;
+        }
+        AttendanceV2Shift shift = woGroupShift.getShift();
+        if (shift == null || shift.getProperties() == null || shift.getProperties().getTimeList().isEmpty()) {
+            return 0;
+        }
+        long calculatedMinutes = AttendanceV2ShiftWorkTimeHelper.shiftWorkMinutes(shift.getProperties());
+        return calculatedMinutes > 0 ? calculatedMinutes : shift.getWorkTime();
+    }
+
+    private static long overtimeMinutesInDate(String date, Date startTime, Date endTime,
+            List<TimeRange> mergedRangeList) throws Exception {
+        TimeRange dayRange = buildDayRange(date);
+        long dayMinutes = overlapMinutes(startTime, endTime, dayRange.getStart(), dayRange.getEnd());
+        long normalMinutes = 0;
+        for (TimeRange range : mergedRangeList) {
+            normalMinutes += overlapMinutes(startTime, endTime, maxDate(dayRange.getStart(), range.getStart()),
+                    minDate(dayRange.getEnd(), range.getEnd()));
+        }
+        return Math.max(0, dayMinutes - normalMinutes);
     }
 
     private static TimeRange buildDayRange(String date) throws Exception {
@@ -259,7 +321,7 @@ public class ActionOvertimeDurationCalculate extends BaseAction {
         @FieldDescribe("自然日天数")
         private Integer totalDays = 0;
 
-        @FieldDescribe("实际加班小时数")
+        @FieldDescribe("实际加班天数")
         private Double duration = 0.0;
 
         @FieldDescribe("实际加班分钟数")

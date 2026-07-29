@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2RestDayHelper;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2ShiftWorkTimeHelper;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.assemble.control.jaxrs.v2.WoGroupShift;
@@ -101,15 +102,10 @@ public class ActionLeaveDurationCalculate extends BaseAction {
         long calculatedWorkMinutes = 0;
         long durationMinutes = 0;
         for (AttendanceV2ShiftCheckTime checkTime : shift.getProperties().getTimeList()) {
-            Date onDuty = DateTools.parse(date + " " + checkTime.getOnDutyTime(), DateTools.format_yyyyMMddHHmm);
-            Date offDuty = DateTools.parse(date + " " + checkTime.getOffDutyTime(), DateTools.format_yyyyMMddHHmm);
-            if (BooleanUtils.isTrue(checkTime.getOffDutyNextDay())) {
-                offDuty = DateTools.addDay(offDuty, 1);
-            }
-            calculatedWorkMinutes += standardMinutes(onDuty, offDuty);
-            durationMinutes += overlapMinutes(startTime, endTime, onDuty, offDuty);
+            calculatedWorkMinutes += AttendanceV2ShiftWorkTimeHelper.standardWorkMinutes(date, checkTime);
+            durationMinutes += AttendanceV2ShiftWorkTimeHelper.overlapWorkMinutes(startTime, endTime, date, checkTime);
         }
-        long standardMinutes = shiftWorkMinutes > 0 ? shiftWorkMinutes : calculatedWorkMinutes;
+        long standardMinutes = calculatedWorkMinutes > 0 ? calculatedWorkMinutes : shiftWorkMinutes;
         double duration = standardMinutes > 0 ? durationMinutes * 1.0 / standardMinutes : 0.0;
         return new DayDuration(durationMinutes, duration);
     }
@@ -120,10 +116,6 @@ public class ActionLeaveDurationCalculate extends BaseAction {
         long durationMinutes = overlapMinutes(startTime, endTime, dayStart, dayEnd);
         double duration = durationMinutes > 0 ? durationMinutes * 1.0 / (24 * 60) : 0.0;
         return new DayDuration(durationMinutes, duration);
-    }
-
-    private long standardMinutes(Date onDuty, Date offDuty) {
-        return Math.max(0, (offDuty.getTime() - onDuty.getTime()) / (60 * 1000));
     }
 
     private long overlapMinutes(Date startTime, Date endTime, Date rangeStart, Date rangeEnd) {
