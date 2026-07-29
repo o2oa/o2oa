@@ -366,6 +366,7 @@ MWF.xApplication.attendancev2.LP={
 		"requestList": "Leave Data",
 		"leaveData": "Out-of-Office Data",
 		"holidayCalendar": "Holiday Calendar",
+		"ledgerImportHistoryDeleteUnlocked": "Import history delete actions are now visible. Please proceed carefully.",
 		"calendar": {
 			"today": "Back to Today",
 			"offday": "Holiday",

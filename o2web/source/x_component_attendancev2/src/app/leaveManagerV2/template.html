@@ -89,19 +89,22 @@
                     </div>
                 </div>
                 <div class="leave-import-history">
-                    <div class="leave-import-history-title">{{$.lp.leaveManagerV2.ledgerImportHistory}}</div>
+                    <div class="leave-import-history-title" @mousedown="startUnlockLedgerImportHistoryDelete"
+                        @mouseup="stopUnlockLedgerImportHistoryDelete" @mouseleave="stopUnlockLedgerImportHistoryDelete"
+                        @touchstart="startUnlockLedgerImportHistoryDelete" @touchend="stopUnlockLedgerImportHistoryDelete"
+                        @touchcancel="stopUnlockLedgerImportHistoryDelete">{{$.lp.leaveManagerV2.ledgerImportHistory}}</div>
                     <div class="leave-import-history-empty" oo-if="!$.currentImportHistoryList || $.currentImportHistoryList.length == 0">{{$.lp.leaveManagerV2.ledgerImportHistoryEmpty}}</div>
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table leave-import-history-table"
                         oo-if="$.currentImportHistoryList && $.currentImportHistoryList.length > 0">
                         <thead>
                             <th style="width: 150px;">{{$.lp.leaveManagerV2.ledgerImportGrantPeriod}}</th>
                             <th >{{$.lp.leaveManagerV2.ledgerImportTime}}</th>
-                            <th style="width: 70px;">{{$.lp.operate}}</th>
+                            <th style="width: 70px;" oo-if="$.importHistoryDeleteUnlocked">{{$.lp.operate}}</th>
                         </thead>
                         <tr oo-each="$.currentImportHistoryList" oo-item="history">
                             <td>{{history.value.grantPeriod}}</td>
                             <td>{{this.formatImportHistoryTime(history.value.time)}}</td>
-                            <td>
+                            <td oo-if="$.importHistoryDeleteUnlocked">
                                 <span class="operator_link" @click="this.clickRemoveLedgerImportHistory(history.value.grantPeriod, $.currentLeaveType.id)">{{$.lp.delete}}</span>
                             </td>
                         </tr>

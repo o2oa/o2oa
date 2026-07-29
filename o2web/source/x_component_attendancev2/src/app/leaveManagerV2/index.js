@@ -36,6 +36,7 @@ export default content({
       importFormShow: false,
       importSubmitting: false,
       importHistoryDeleting: false,
+      importHistoryDeleteUnlocked: false,
       importForm: {
         grantPeriod: "",
         fileName: "",
@@ -113,6 +114,7 @@ export default content({
       fileName: "",
     };
     this.ledgerImportFile = null;
+    this.lockLedgerImportHistoryDelete();
     this.bind.currentImportHistoryList = this.getLedgerImportHistoryList(type.id);
     this.bind.importFormShow = true;
   },
@@ -122,6 +124,7 @@ export default content({
     }
     this.bind.importFormShow = false;
     this.bind.currentLeaveType = null;
+    this.lockLedgerImportHistoryDelete();
     this.bind.importForm = {
       grantPeriod: "",
       fileName: "",
@@ -433,6 +436,30 @@ export default content({
     const list = historyItem && Array.isArray(historyItem.list) ? historyItem.list : [];
     return list.slice().sort((a, b) => (b.time || 0) - (a.time || 0));
   },
+  startUnlockLedgerImportHistoryDelete() {
+    if (this.bind.importHistoryDeleteUnlocked || this.bind.importHistoryDeleting) {
+      return;
+    }
+    this.clearLedgerImportHistoryDeleteUnlockTimer();
+    this.ledgerImportHistoryUnlockTimer = setTimeout(() => {
+      this.bind.importHistoryDeleteUnlocked = true;
+      this.ledgerImportHistoryUnlockTimer = null;
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportHistoryDeleteUnlocked, "info");
+    }, 2000);
+  },
+  stopUnlockLedgerImportHistoryDelete() {
+    this.clearLedgerImportHistoryDeleteUnlockTimer();
+  },
+  clearLedgerImportHistoryDeleteUnlockTimer() {
+    if (this.ledgerImportHistoryUnlockTimer) {
+      clearTimeout(this.ledgerImportHistoryUnlockTimer);
+      this.ledgerImportHistoryUnlockTimer = null;
+    }
+  },
+  lockLedgerImportHistoryDelete() {
+    this.clearLedgerImportHistoryDeleteUnlockTimer();
+    this.bind.importHistoryDeleteUnlocked = false;
+  },
   // Add import history by leaveTypeId.
   async addLedgerImportHistory(grantPeriod, leaveTypeId) {
     const historyItem = this.bind.importHistoryList.find((item) => item.leaveTypeId === leaveTypeId);
@@ -452,7 +479,7 @@ export default content({
     this.bind.currentImportHistoryList = this.getLedgerImportHistoryList(leaveTypeId);
   },
   clickRemoveLedgerImportHistory(grantPeriod, leaveTypeId) {
-    if (this.bind.importHistoryDeleting) {
+    if (this.bind.importHistoryDeleting || !this.bind.importHistoryDeleteUnlocked) {
       return;
     }
     const _self = this;
@@ -473,7 +500,7 @@ export default content({
   },
   // Delete import history.
   async removeLedgerImportHistory(grantPeriod, leaveTypeId) {
-    if (this.bind.importHistoryDeleting) {
+    if (this.bind.importHistoryDeleting || !this.bind.importHistoryDeleteUnlocked) {
       return;
     }
     if (isEmpty(grantPeriod) || isEmpty(leaveTypeId)) {
@@ -487,6 +514,7 @@ export default content({
       this.removeLedgerImportHistoryItem(grantPeriod, leaveTypeId);
       await definitionAction("updateMockPutToPost", definitionHistoryKey, this.bind.importHistoryList);
       this.bind.currentImportHistoryList = this.getLedgerImportHistoryList(leaveTypeId);
+      this.lockLedgerImportHistoryDelete();
       o2.api.page.notice(lp.leaveManagerV2.ledgerImportHistoryDeleteSuccess, "success");
     } catch (e) {
       console.error("delete import data failed", e);

@@ -366,6 +366,7 @@ MWF.xApplication.attendancev2.LP={
 		"requestList": "Datos de permisos",
 		"leaveData": "Datos de salidas",
 		"holidayCalendar": "Calendario de festivos",
+		"ledgerImportHistoryDeleteUnlocked": "Las acciones de eliminación del historial de importación ahora están visibles. Proceda con cuidado.",
 		"calendar": {
 			"today": "Volver a hoy",
 			"offday": "Festivo",

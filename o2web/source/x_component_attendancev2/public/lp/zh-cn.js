@@ -406,6 +406,7 @@ MWF.xApplication.attendancev2.LP = {
     ledgerImportHistorySaveFail: "导入成功，导入历史记录保存失败",
     ledgerImportSuccess: "导入成功",
     ledgerImportHistoryDeleteConfirm: "确定删除发放批次“{grantPeriod}”的导入数据和历史记录吗？",
+    ledgerImportHistoryDeleteUnlocked: "导入历史删除操作已显示，请谨慎操作",
     ledgerImportHistoryParamEmpty: "导入历史记录参数为空",
     ledgerImportHistoryDeleteSuccess: "删除成功",
     ledgerImportHistoryDeleteFail: "删除失败",

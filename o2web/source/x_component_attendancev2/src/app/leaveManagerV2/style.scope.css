@@ -191,6 +191,7 @@
     color: #333333;
     font-size: 14px;
     font-weight: bold;
+    user-select: none;
 }
 
 .leave-import-history-empty {
