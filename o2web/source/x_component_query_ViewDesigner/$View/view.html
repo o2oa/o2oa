@@ -792,17 +792,20 @@
                                 if (this.checked){
                                     $('text{$.id}viewCustomFilterValueScriptDiv').setStyle('display', 'none');
                                     $('text{$.id}viewCustomFilterValueOrgArea').setStyle('display', 'none');
+                                    $('text{$.id}viewCustomFilterOrgOptionScriptDiv').setStyle('display', 'none');
                                 }" name="viewCustomFilterValueType" checked type="radio" value="input"/>{{$.lp.input}}
                                 <input class="editTableRadio" onclick="
                                 if (this.checked){
                                     $('text{$.id}viewCustomFilterValueScriptDiv').setStyle('display', 'block');
                                     $('text{$.id}viewCustomFilterValueOrgArea').setStyle('display', 'none');
+                                    $('text{$.id}viewCustomFilterOrgOptionScriptDiv').setStyle('display', 'none');
                                 }" name="viewCustomFilterValueType" type="radio" value="script"/>{{$.lp.selectable}}
 
                                 <input class="editTableRadio" onclick="
                                 if (this.checked){
                                     $('text{$.id}viewCustomFilterValueScriptDiv').setStyle('display', 'none');
                                     $('text{$.id}viewCustomFilterValueOrgArea').setStyle('display', 'block');
+                                    $('text{$.id}viewCustomFilterOrgOptionScriptDiv').setStyle('display', 'block');
                                 }" name="viewCustomFilterValueType" type="radio" value="org"/>{{$.lp.org}} 
                             </td>
                         </tr>
@@ -823,6 +826,29 @@
                     <div style="display:none" id="text{$.id}viewCustomFilterValueScriptDiv">
                         <div style="padding: 5px">{{$.lp.selectOptionScriptNotice}}</div>
                         <div name="text{$.id}viewCustomFilterValueScript" title="{{$.lp.selectOptionScript}}"></div>
+                    </div>
+
+                    <div style="display:none" id="text{$.id}viewCustomFilterOrgOptionScriptDiv">
+                        <div style="padding: 5px;color:dodgerblue;cursor: pointer;" onclick="this.nextElementSibling.showModal()">人员组织选项，说明样例。</div>
+                        <dialog style="border: 1px solid #ccc;border-radius: 8px;box-shadow: 0 2px 10px rgba(0,0,0,0.1);margin: auto;">
+                            <h3>人员组织选项</h3>
+                            <pre>return {
+     "count": 0, //选择数量，0表示不限制
+     "title": "", //选择界面的title
+     "groups": [], //选择的群组范围，选择群组时有效。
+     "units": [], //选择的组织范围，选择身份和组织时有效。
+     "dutys": [], //选择的职务范围，选择身份时有效。
+     "roles": [], //选择的角色范围，选择角色时有效。
+     "noUnit" : false, //在选择身份的时候，是否只使用include选项。
+     "include" : [], //增加的可选项。选择身份的时候，没有传units表示选中全员，include不生效，可以使用onUnit选项表示只使用include选项。
+     "exclude" : [], //排除的可选项
+     "expandSubEnable" : true, //是否允许展开下一层，选择身份和组织时有效
+     "selectAllEnable" : true,  //分类是否允许全选下一层，选择身份和组织时有效
+     "zIndex": 1000 //选择界面的zIndex
+}</pre>
+                            <button onclick="this.parentElement.close()">关闭</button>
+                        </dialog>
+                        <div name="text{$.id}viewCustomFilterOrgOptionScript" title="{{$.lp.selectOrgOptionScript}}"></div>
                     </div>
                 </div>
             </div>

@@ -115,6 +115,30 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
             this.customFilterValueScriptArea.load(v);
         }.bind(this));
     },
+
+    createCustomFilterOrgOptionScriptArea : function(node){
+        var title = node.get("title");
+
+        MWF.require("MWF.widget.ScriptArea", function(){
+            this.customFilterOrgOptionScriptArea = new MWF.widget.ScriptArea(node, {
+                "title": title,
+                //"isload" : true,
+                "isbind" : false,
+                //"forceType": "ace",
+                "maxObj": this.app.formContentNode || this.app.pageContentNode,
+                "onChange": function(){
+                    this.customFilterOrgOptionScriptData = this.customFilterOrgOptionScriptArea.toJson();
+                }.bind(this),
+                "onSave": function(){
+                    //this.app.saveForm();
+                }.bind(this),
+                "style": "formula"
+            });
+            var v = (this.customFilterOrgOptionScriptData) ? this.customFilterOrgOptionScriptData.code : "";
+            this.customFilterOrgOptionScriptArea.load(v);
+        }.bind(this));
+    },
+
     setHtml: function(){},
     getInputNodes: function(){
         debugger;
@@ -165,6 +189,12 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
             this.customFilterValueScript = this.inputAreaNode.getElement("[name='"+dataId+"viewCustomFilterValueScript']");
             if( this.customFilterValueScript ){
                 this.createCustomFilterValueScriptArea(this.customFilterValueScript);
+            }
+
+            this.customFilterOrgOptionScriptDiv = this.inputAreaNode.getElement("#"+dataId+"viewCustomFilterOrgOptionScriptDiv");
+            this.customFilterOrgOptionScript = this.inputAreaNode.getElement("[name='"+dataId+"viewCustomFilterOrgOptionScript']");
+            if( this.customFilterOrgOptionScript ){
+                this.createCustomFilterOrgOptionScriptArea(this.customFilterOrgOptionScript);
             }
         }
 
@@ -1021,6 +1051,7 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 "code": this.scriptData,
                 "valueType" : valueType,
                 "valueScript" : this.customFilterValueScriptData,
+                "orgOptionScript" : this.customFilterOrgOptionScriptData,
                 "orgTypes": orgTypes
             };
         }
@@ -1131,23 +1162,36 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 }
             });
 
-            if ( this.customFilterValueScriptArea ){
-                if( !data.valueType || data.valueType === "input" ){
-                    this.customFilterValueScriptDiv.hide();
-                    this.customFilterValueScriptData = "";
-                    this.customFilterValueOrgArea.hide();
-                    //this.customFilterValueScriptArea.editor.setValue( "" );
-                    this.customFilterValueScriptArea.setData( "" , true);
-                }else if( data.valueType === "script" ){
-                    this.customFilterValueScriptDiv.show();
-                    this.customFilterValueOrgArea.hide();
-                    this.customFilterValueScriptData = data.valueScript;
-                    this.customFilterValueScriptArea.setData( data.valueScript ? data.valueScript.code : "", true );
-                }else if( data.valueType === "org" ){
-                    this.customFilterValueScriptDiv.hide();
-                    this.customFilterValueScriptData = "";
-                    this.customFilterValueOrgArea.show();
-                }
+            if( !data.valueType || data.valueType === "input" ){
+                this.customFilterValueScriptDiv?.hide();
+                this.customFilterValueScriptData = "";
+                this.customFilterValueScriptArea?.setData( "" , true);
+
+                this.customFilterValueOrgArea?.hide();
+
+                this.customFilterOrgOptionScriptDiv.hide();
+                this.customFilterOrgOptionScriptData = "";
+                this.customFilterOrgOptionScriptArea?.setData( "" , true);
+            }else if( data.valueType === "script" ){
+                this.customFilterValueScriptDiv.show();
+                this.customFilterValueScriptData = data.valueScript;
+                this.customFilterValueScriptArea?.setData( data.valueScript ? data.valueScript.code : "", true );
+
+                this.customFilterValueOrgArea?.hide();
+
+                this.customFilterOrgOptionScriptDiv?.hide();
+                this.customFilterOrgOptionScriptData = "";
+                this.customFilterOrgOptionScriptArea?.setData( "" , true);
+            }else if( data.valueType === "org" ){
+                this.customFilterValueScriptDiv?.hide();
+                this.customFilterValueScriptData = "";
+                this.customFilterValueScriptArea?.setData( "" , true);
+
+                this.customFilterValueOrgArea?.show();
+
+                this.customFilterOrgOptionScriptDiv?.show();
+                this.customFilterOrgOptionScriptData = data.orgOptionScript;
+                this.customFilterOrgOptionScriptArea?.setData( data.orgOptionScript ? data.orgOptionScript.code : "", true);
             }
         }
         // if(this.datatypeInput.onchange){

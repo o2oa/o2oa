@@ -1594,6 +1594,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         }
         if (filter.valueType==='org'){
             const node = new Element("oo-selector");
+            node.store('filter', filter);
             node.setAttribute('right-icon', "person");
             node.setAttribute('data-select-types', filter.orgTypes.join(','));
             if (!o2.isMediaMobile()){
@@ -1824,6 +1825,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
 
         this.viewSearchFieldArea.querySelectorAll("oo-selector").forEach( (node)=>{
             node.addEventListener("click", (ev)=>{
+                const filter = node.retrieve('filter');
+                let opt = {};
+                if(filter?.orgOptionScript?.code){
+                    opt = this.Macro.exec(entry.orgOptionScript.code, this) || {};
+                }
                 const types = ev.target.dataset.selectTypes.split(",");
                 const options = {
                     "title": "",
@@ -1846,6 +1852,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                     options.type = types[0];
                     options.types = null;
                 }
+                Object.assign(options, opt);
                 MWF.xDesktop.requireApp("Selector", "package", ()=>{
                     new o2.O2Selector(this.app.content, options);
                 });
