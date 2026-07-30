@@ -100,7 +100,7 @@ MWF.xApplication.AI.Model = new Class({
                             "apiKey" : apiKey.get("value"),
                             "desc" : desc.get("value"),
                             "asDefault" :asDefault.get("value"),
-                            "enable" :enable.get("value"),
+                            "enable" :true,
 
                             "proxyEnable" :proxyEnable.get("value"),
                             "proxyHost" :proxyHost.get("value"),
