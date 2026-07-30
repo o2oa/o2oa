@@ -581,7 +581,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
                 //this.fireEvent("started", [json.data, title, this.categoryData.name]);
 
                 //this.app.refreshAll();
-                this.app.notice(this.lp.Started, "success");
+                //this.app.notice(this.lp.Started, "success");
                 //    this.app.processConfig();
             }.bind(this), function(xhr, text, error){
                 if( xhr && xhr.response && typeOf(xhr.response)==="string" ){
@@ -698,7 +698,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
                 //this.fireEvent("started", [json.data, title, this.categoryData.name]);
 
                 //this.app.refreshAll();
-                this.app.notice(this.lp.Started, "success");
+                //this.app.notice(this.lp.Started, "success");
             }.bind(this), null, processId, data)
         }
     },

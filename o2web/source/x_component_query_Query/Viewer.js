@@ -1828,7 +1828,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 const filter = node.retrieve('filter');
                 let opt = {};
                 if(filter?.orgOptionScript?.code){
-                    opt = this.Macro.exec(entry.orgOptionScript.code, this) || {};
+                    opt = this.Macro.exec(filter.orgOptionScript.code, this) || {};
                 }
                 const types = ev.target.dataset.selectTypes.split(",");
                 const options = {
