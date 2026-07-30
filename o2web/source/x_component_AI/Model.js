@@ -82,7 +82,7 @@ MWF.xApplication.AI.Model = new Class({
                         const completionUrl = node.querySelector("[name='completionUrl']");
                         const apiKey = node.querySelector("[name='apiKey']");
                         const asDefault = node.querySelector("[name='asDefault']");
-                        const enable = node.querySelector("[name='enable']");
+                        const enable = true;//node.querySelector("[name='enable']");
 
                         const proxyEnable = node.querySelector("[name='proxyEnable']");
                         const proxyHost = node.querySelector("[name='proxyHost']");
