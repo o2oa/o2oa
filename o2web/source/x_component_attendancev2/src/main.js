@@ -38,7 +38,9 @@ loadComponent('attendancev2', (d, cb) => {
                 });
         }
     } else {
-        index.render(d).then(() => {
+        const defaultOpenMenu = (component.status && component.status.navAction) ? component.status.navAction : "";
+        index.render(d).then((a) => {
+            a.module.startOpenMenu(defaultOpenMenu);
             cb();
         });
     }
