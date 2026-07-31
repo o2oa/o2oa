@@ -166,13 +166,14 @@ export default content({
     }
     return result;
   },
+
   _formatRecordResult(record) {
     let span = "";
     if (record.fieldWork) {
       span = lp.appeal.fieldWork;
-    } else if(record.leaveData) {
-      span = record.leaveData.leaveType;
-    } else {
+    } else if(record.leaveData || record.leaveRequest) {
+      span = lp.appeal.leave;
+    }  else {
       const result = record.checkInResult;
       if (result === "PreCheckIn") {
         span = "";

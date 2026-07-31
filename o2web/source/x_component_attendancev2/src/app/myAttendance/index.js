@@ -297,7 +297,7 @@ export default content({
       }
       if (record.fieldWork == true) {
         statusClassName =  "item-record-status-tag record-status-fieldwork";
-      } else if (record.leaveData) {
+      } else if (record.leaveData || record.leaveRequest) {
         statusClassName =  "item-record-status-tag record-status-leave";
       }  else if (record.appealId && statusClassName === "") {
         // 管理员处理 算正常
@@ -329,7 +329,7 @@ export default content({
       }
       if (record.fieldWork == true) {
         tagName =  lp.appeal.fieldWork;
-      } else if (record.leaveData) {
+      } else if (record.leaveData || record.leaveRequest) {
         tagName =  lp.appeal.leave;
       } else if (record.appealId && tagName === "") {
         // 管理员处理 算正常

@@ -32,7 +32,8 @@ export default content({
         properties: {
           checkInAlertOnDutyBeforeMinutes: 10, // 默认上班前 10 分钟
           checkInAlertOffDutyAfterMinutes: 10, // 默认下班后 10 分钟 
-          statisticUnitDutyName:"", // 考勤统计管理员的职务名称
+          statisticUnitDutyNameList:[], // 考勤统计管理员的职务名称
+          statisticUnitDutyNameListInput: "", // 考勤统计管理员的职务名称输入框
         }
       },
       holidayList: [],
@@ -58,8 +59,6 @@ export default content({
   // 获取配置对象
   async loadConfig() {
     const json = await configAction("get");
-    console.debug('snapshot', JSON.parse(JSON.stringify(json)));
-console.debug('fields', json.appealMaxTimes, json.properties && json.properties.statisticUnitDutyName);
     if (json) {
       this.bind.form = json || {};
       if (!this.bind.form.appealMaxTimes) {
@@ -74,9 +73,10 @@ console.debug('fields', json.appealMaxTimes, json.properties && json.properties.
       if (!json.properties.checkInAlertOffDutyAfterMinutes) {
         this.bind.form.properties.checkInAlertOffDutyAfterMinutes = 10;
       }
-      if (!json.properties.statisticUnitDutyName) {
-        this.bind.form.properties.statisticUnitDutyName = "考勤管理员";
-      }
+      if (!json.properties.statisticUnitDutyNameList) {
+        this.bind.form.properties.statisticUnitDutyNameList = ["考勤管理员"];
+      } 
+      this.bind.form.properties.statisticUnitDutyNameListInput = this.bind.form.properties.statisticUnitDutyNameList.join(", ");
       if (json.holidayList) {
         this.bind.holidayList = json.holidayList;
       }
@@ -150,6 +150,11 @@ console.debug('fields', json.appealMaxTimes, json.properties && json.properties.
         o2.api.page.notice("异常打卡提醒选择当天时，提醒时间必须为18:00或之后", "error");
         return;
       }
+    }
+    if (form.properties.statisticUnitDutyNameListInput) {
+      // 这里拆分代码 兼容下中英文的逗号
+      form.properties.statisticUnitDutyNameListInput = form.properties.statisticUnitDutyNameListInput.replace(/，/g, ",");
+      form.properties.statisticUnitDutyNameList = form.properties.statisticUnitDutyNameListInput.split(",").map(item => item.trim()).filter(item => item.length > 0);
     }
     form.closeOldAttendance = true
     const result = await configAction("post", form);

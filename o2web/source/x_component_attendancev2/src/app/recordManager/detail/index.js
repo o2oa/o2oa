@@ -43,6 +43,9 @@ export default content({
     }
     return this.bind.record.recordDate;
   },
+  hasLeave(record) {
+    return record && (record.requestDataId || record.leaveDataId)
+  },
   formatRecordResultClass(record) {
     let span = "";
     if (record.fieldWork) {
@@ -51,6 +54,8 @@ export default content({
       const result = record.checkInResult;
       if (result === "PreCheckIn") {
         span = "";
+      } else if (this.hasLeave(record)) {
+        span = "color-leave";
       } else if (result === "NotSigned") {
         span = "color-nosign";
       } else if (result === "Normal") {
@@ -75,6 +80,8 @@ export default content({
       const result = record.checkInResult;
       if (result === "PreCheckIn") {
         span = "";
+      } else if (this.hasLeave(record)) {
+        span =lp.appeal.leave;
       } else if (result === "NotSigned") {
         span = lp.appeal.notSigned;
       } else if (result === "Normal") {
