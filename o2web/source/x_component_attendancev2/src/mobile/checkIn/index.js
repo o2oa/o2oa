@@ -23,6 +23,7 @@ export default content({
                 tip: '',
                 submitting: false,
             },
+            showAMap: false, //  ture 显示高德地图
             location: {
                 status: false,
                 locating: true,
@@ -47,7 +48,92 @@ export default content({
     afterRender() {
         this.startTickTime();
         this.getPreCheckData();
+        this.loadAMap();
         this.loadQywxSdk();
+
+    },
+    // 加载高德地图api等资源
+    async loadAMap() {
+        if (!window.AMapApiLoaded) {
+            const config = await getPublicData("attendanceMapConfig"); // 地图配置
+            if (config && config.aMapAccountKey) {
+                this.bind.showAMap = true;
+                 let apiPath = "http://webapi.amap.com/maps?v=1.4.15&key=" + config.aMapAccountKey;
+                if (window.location.protocol.toLowerCase() === "https:") {
+                    window.HOST_TYPE = "2";
+                    apiPath = "//webapi.amap.com/maps?v=1.4.15&key=" + config.aMapAccountKey;
+                }
+                o2.load(apiPath, () => {
+                    console.debug("高德地图加载API加载完成，开始载入地图！");
+                    window.AMapApiLoaded = true;
+                    this.showAMap();
+                });
+            } else {
+                console.error("没有配置地图 Key ！！！");
+                this.bind.showAMap = false; // 不显示地图，显示定位信息
+            }
+        } else {
+            this.bind.showAMap = true;
+            this.showAMap();
+        }
+    },
+    // 添加高德地图
+    async showAMap() {
+        const point = new AMap.LngLat(109.173571, 18.328807);
+        this.createAMap(point);
+    },
+    // 创建高德地图
+    createAMap(point) {
+        console.debug("开始创建高德地图！", point);
+        if (!this.amap) {
+            this.amap = new AMap.Map("amap-container", {
+                zoom: 17, //级别
+                center: point, //中心点坐标
+                viewMode: "3D", //使用3D视图
+            }); // 创建Map实例
+        }
+    },
+    // 添加高德地图圆形范围
+    addAMapCircle(point, radius) {
+        // 先清除
+        if (this.amapCircle) {
+            this.amap.remove(this.amapCircle);
+            this.amapCircle = null;
+        }
+        //创建圆形 Circle 实例
+        this.amapCircle = new AMap.Circle({
+            center: point, //圆心
+            radius: radius, //半径
+            bubble: true, //允许覆盖物点击事件冒泡到地图，避免拦截地图 click
+            // borderWeight: 3, //描边的宽度
+            strokeColor: "#1791fc", //轮廓线颜色
+            strokeOpacity: 1, //轮廓线透明度
+            strokeWeight: 1, //轮廓线宽度
+            fillOpacity: 0.4, //圆形填充透明度
+            // strokeStyle: "dashed", //轮廓线样式
+            fillColor: "#1791fc", //圆形填充颜色
+            zIndex: 50, //圆形的叠加顺序
+        });
+        this.amap.add(this.amapCircle); //在地图上添加圆形
+    },
+    // 添加高德地图标记点
+    addAMapMarkPoint(point, placeName) {
+        // 先清除
+        if (this.aMapMarker) {
+            this.amap.remove(this.aMapMarker);
+            this.aMapMarker = null;
+        }
+        this.aMapMarker = new AMap.Marker({
+            icon: new AMap.Icon(),
+            position: point,
+            label: {
+                content: placeName || "",
+                offset: new AMap.Pixel(0, -20),
+            },
+        });
+        this.amap.add(this.aMapMarker);
+        // 地图移动到当前点的位置
+        this.amap.setCenter(point);
     },
     async loadCheckInAlertConfigEnable() {
         try {
@@ -302,6 +388,9 @@ export default content({
                 continue;
             }
             const gcj02Point = WGS84_TO_GCJ02.transform(latitude, longitude);
+            // 下面地图模式要使用
+            place.longitude = gcj02Point.longitude;
+            place.latitude = gcj02Point.latitude;
             const distance = getDistance(gcj02Point.latitude, gcj02Point.longitude, this.bind.location.lnglat.latitude, this.bind.location.lnglat.longitude);
             if (distance <= range) {
                 matchedPlace = place;
@@ -311,6 +400,14 @@ export default content({
         this.bind.location.inRange = !!matchedPlace;
         this.bind.location.workPlace = matchedPlace;
         this.bind.location.title = matchedPlace ? (matchedPlace.placeAlias || matchedPlace.placeName) : this.bind.location.address;
+        // 地图模式
+        if (this.bind.showAMap && this.amap && matchedPlace) {
+            const point = new AMap.LngLat( parseFloat(matchedPlace.longitude), parseFloat(matchedPlace.latitude));
+            const range = matchedPlace.errorRange || 200;
+            this.addAMapCircle(point, range);
+            const locationPoint = new AMap.LngLat(this.bind.location.lnglat.longitude, this.bind.location.lnglat.latitude);
+            this.addAMapMarkPoint(locationPoint);
+        }
 
     },
     setLocationError() {
