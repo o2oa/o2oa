@@ -4,11 +4,19 @@ import mobile from './mobile/main';
 import checkIn from './mobile/checkIn';
 import myRecord from './mobile/myRecord';
 import appealManager from './mobile/appealManager';
+import publicStatistic from './mobile/publicStatistic';
 
 
 loadComponent('attendancev2', (d, cb) => {
-    // 移动端页面
-    if ((layout.mobile || o2.session.isMobile)) {
+
+    const status = component.status || {};
+    const navAction = status.navAction || "";
+    if (navAction === "detailStatisticManager") { // 统计页面
+        document.title = "统计";
+        publicStatistic.render(d, { bind: { person: status.person || "" } }).then(() => {
+            cb();
+        });
+    } else if ((layout.mobile || o2.session.isMobile)) {
         const url = window.location.href;
         const uri = url.toURI();
         const page = uri.getData("page");
@@ -38,9 +46,8 @@ loadComponent('attendancev2', (d, cb) => {
                 });
         }
     } else {
-        const defaultOpenMenu = (component.status && component.status.navAction) ? component.status.navAction : "";
         index.render(d).then((a) => {
-            a.module.startOpenMenu(defaultOpenMenu);
+            a.module.startOpenMenu(navAction);
             cb();
         });
     }
