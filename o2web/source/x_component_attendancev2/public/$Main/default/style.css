@@ -454,6 +454,7 @@
 .manager-box-content {
   padding: 20px;
   height: inherit;
+  overflow: auto;
 }
 
 /* mask */
