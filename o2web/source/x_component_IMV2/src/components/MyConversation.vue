@@ -66,7 +66,13 @@ const searchConversationResultList = ref([])
 const loadMyConversation = async (isCheckNull) => {
   const list = await imAction('myConversationList')
   if (list) {
-    myConversationList.value = list
+    // 特殊处理，新建并且打开的会话，刷新列表后不见了
+    if (myConversationList.value.length === 1 && myConversationList.value[0].newConvStatus) {
+      // 后面添加 list
+      myConversationList.value = [...myConversationList.value, ...list]
+    } else {
+      myConversationList.value = list
+    }
     if (!chooseMode) {
       // 被踢出群之类的特殊情况
       if (isCheckNull && currentConversation.value && list.findIndex(item => item.id === currentConversation.value.id) < 0) {

@@ -1,5 +1,5 @@
 <script setup>
-import {ref, inject } from 'vue'
+import {ref, inject, nextTick } from 'vue'
 import { lp,o2 } from '@o2oa/component'
 import MyConversation from "./MyConversation.vue";
 import ContactView from "./ContactView.vue";
@@ -69,6 +69,7 @@ const newConversation = async (personList, type) => {
   })
   loadingStore.hideLoading()
   if (res) {
+    res.newConvStatus = true;
     // 打开添加到会话列表
     eventBus.publish(EventName.addConversationToList, res)
     // 打开会话
@@ -91,7 +92,9 @@ const chatWithPerson =  (personDn) => {
     return
   }
   toggleTab(0) // 切换到聊天列表
-  newConversation([personDn],"single")
+  nextTick(() => {
+    newConversation([personDn],"single")
+  })
 }
 
 const showContact = () => {
