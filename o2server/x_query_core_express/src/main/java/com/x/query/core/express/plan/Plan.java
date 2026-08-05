@@ -57,6 +57,14 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -676,9 +684,13 @@ public abstract class Plan extends GsonPropertyObject {
 						.filter(o -> BooleanUtils.isNotTrue(o.hideColumn)).collect(Collectors.toList());
 				if (ListTools.isNotEmpty(selectEntries)) {
 					XSSFRow r = sheet.createRow(0);
+					CellStyle headerStyle = createHeaderStyle(workbook);
 					int i = 0;
 					for (SelectEntry o : selectEntries) {
-						r.createCell(i++).setCellValue(o.getDisplayName());
+						sheet.setColumnWidth(i, 20 * 256);
+						Cell cell = r.createCell(i++);
+						cell.setCellValue(o.getDisplayName());
+						cell.setCellStyle(headerStyle);
 					}
 					Row row = null;
 					for (int j = 0; j < this.grid.size(); j++) {
@@ -708,6 +720,9 @@ public abstract class Plan extends GsonPropertyObject {
 			str = String.valueOf(object);
 		} else if (object instanceof Date) {
 			str = DateTools.format((Date) object);
+			if(str.contains("00:00:00")){
+				str = DateTools.formatDate((Date) object);
+			}
 		} else if (object instanceof List) {
 			str = XGsonBuilder.toJson(object);
 			str = StringUtils.replaceChars(str.substring(1, str.length() - 1), "\"", "");
@@ -715,5 +730,21 @@ public abstract class Plan extends GsonPropertyObject {
 			str = object.toString();
 		}
 		return str;
+	}
+
+	private CellStyle createHeaderStyle(Workbook workbook) {
+		CellStyle style = workbook.createCellStyle();
+		Font font = workbook.createFont();
+		font.setBold(true);
+		font.setFontHeightInPoints((short) 12);
+		style.setFont(font);
+		style.setFillForegroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex());
+		style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		style.setBorderBottom(BorderStyle.THIN);
+		style.setBorderTop(BorderStyle.THIN);
+		style.setBorderLeft(BorderStyle.THIN);
+		style.setBorderRight(BorderStyle.THIN);
+		style.setAlignment(HorizontalAlignment.CENTER);
+		return style;
 	}
 }
