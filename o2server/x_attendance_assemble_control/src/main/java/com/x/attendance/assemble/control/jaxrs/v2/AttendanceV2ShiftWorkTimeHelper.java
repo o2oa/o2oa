@@ -46,6 +46,33 @@ public class AttendanceV2ShiftWorkTimeHelper {
         return minutes;
     }
 
+    public static List<TimeRange> listRestRange(String date, AttendanceV2ShiftCheckTime checkTime) throws Exception {
+        List<TimeRange> rangeList = new ArrayList<>();
+        if (checkTime == null || StringUtils.isBlank(checkTime.getOnDutyTime())
+                || StringUtils.isBlank(checkTime.getOffDutyTime())) {
+            return rangeList;
+        }
+        Date onDuty = parseDateTime(date, checkTime.getOnDutyTime());
+        Date offDuty = parseDateTime(date, checkTime.getOffDutyTime());
+        if (BooleanUtils.isTrue(checkTime.getOffDutyNextDay())) {
+            offDuty = DateTools.addDay(offDuty, 1);
+        }
+        if (!offDuty.after(onDuty)) {
+            return rangeList;
+        }
+        TimeRange dutyRange = new TimeRange(onDuty, offDuty);
+        TimeRange restRange = parseRestRange(date, checkTime, dutyRange);
+        if (restRange == null) {
+            return rangeList;
+        }
+        Date restStart = maxDate(restRange.getStart(), dutyRange.getStart());
+        Date restEnd = minDate(restRange.getEnd(), dutyRange.getEnd());
+        if (restEnd.after(restStart)) {
+            rangeList.add(new TimeRange(restStart, restEnd));
+        }
+        return rangeList;
+    }
+
     public static List<TimeRange> listWorkRange(String date, AttendanceV2ShiftCheckTime checkTime) throws Exception {
         List<TimeRange> rangeList = new ArrayList<>();
         if (checkTime == null || StringUtils.isBlank(checkTime.getOnDutyTime())
