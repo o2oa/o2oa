@@ -4933,7 +4933,8 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		this.checkLineData(0, function () {
 			var arg = {
 				validted : this.isImportSuccess,
-				data : this.importedData
+				data : this.importedData,
+				parsedData : this.parsedData
 			};
 			this.datatable.fireEvent( "validImport", [arg] );
 			callback( arg.validted )

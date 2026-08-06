@@ -311,7 +311,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 */
 		reload: function( isReloadTemplate ){
 			this._loadReadEditAbeld();
-			
+
 			this.reloading = true;
 
 			// this.editModules = [];
@@ -1835,7 +1835,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		validation: function(routeName, opinion){
 			//if (this.isReadonly() || this.json.showMode==="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
 			if (this.isReadonly() || this.json.showMode==="disabled" || !this.isEditable) return true;
-			
+
 			// if (this.isEdit){
 			// 	if (!this.editValidation()){
 			// 		return false;
@@ -3490,7 +3490,8 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		this.checkLineData(0, function () {
 			var arg = {
 				validted : this.isImportSuccess,
-				data : this.importedData
+				data : this.importedData,
+				parsedData: this.parsedData
 			};
 			this.template.fireEvent( "validImport", [arg] );
 			callback( arg.validted )

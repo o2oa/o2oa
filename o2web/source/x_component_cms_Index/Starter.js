@@ -348,7 +348,7 @@ MWF.xApplication.cms.Index.Starter = new Class({
                     //this.fireEvent("started", [json.data, title, this.categoryData.name]);
 
                     //this.app.refreshAll();
-                    this.app.notice(this.lp.Started, "success");
+                    //this.app.notice(this.lp.Started, "success");
                     //    this.app.processConfig();
                 }.bind(this), null);
             }.bind(this));
@@ -416,7 +416,7 @@ MWF.xApplication.cms.Index.Starter = new Class({
                     //this.fireEvent("started", [json.data, title, this.categoryData.name]);
 
                     //this.app.refreshAll();
-                    this.app.notice(this.lp.Started, "success");
+                    //this.app.notice(this.lp.Started, "success");
                 }.bind(this), null, processId, data)
             }.bind(this));
         }

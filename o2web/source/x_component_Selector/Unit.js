@@ -78,6 +78,9 @@ MWF.xApplication.Selector.Unit = new Class({
             o2.Actions.load("x_organization_assemble_express").UnitAction.listObject( {"unitList" : unitList} , function (json) {
                 if (json.data.length){
                     json.data.each( function(data){
+                        if( this.isExcluded( data ) ) {
+                            return;
+                        }
                         var item;
                         if( this.options.expandSubEnable ) {
                             if( this.options.firstLevelSelectable ){

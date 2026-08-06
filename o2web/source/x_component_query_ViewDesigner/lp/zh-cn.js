@@ -355,6 +355,7 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "org_group":"群组",
         "selectOptionScriptNotice":"return [\"选项文本|选项值\"]",
         "selectOptionScript":"选项脚本",
+        "selectOrgOptionScript":"选项脚本",
         "defaultFilterCondition":"默认过滤条件",
         "customFilterCondition":"自定义过滤数据",
         "byScript": "根据脚本",

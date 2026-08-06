@@ -128,6 +128,22 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
         }.bind(this));
 
         Object.each(this.moduleList || {}, function (module, formKey) {
+            if(!module)return;
+
+            if(["Datatable", "Datatemplate"].includes(module.type) ){
+                var id = module.id + '..';
+                var modules = this.form.all;
+                for(var key in modules){
+                    if(key.startsWith(id)){
+                        var m = modules[key];
+                        delete modules[key];
+                        delete this.form.json.moduleList[key];
+                        delete this.form.forms[key];
+                        this.form.modules.erase(m);
+                    }
+                }
+            }
+
             if (this.form.all[module.id]) delete this.form.all[module.id];
             if (this.form.forms[module.id])delete this.form.forms[module.id];
             this.form.modules.erase(module);
