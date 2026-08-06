@@ -53,7 +53,7 @@
                             <o-time-picker style="margin-left: 10px;"
                                 oo-prop="{'placeholder': $.lp.shiftForm.afterOffDutyTimePlaceholder, 'value': $.time1.offDutyTimeAfterLimit, 'key': 'time1.offDutyTimeAfterLimit'}" ></o-time-picker>
                         </div>
-                        <div class="form-item-content" style="margin-top: 10px;margin-bottom: 10px;">
+                        <div class="form-item-content" style="margin-top: 10px;margin-bottom: 10px;" oo-if="$.timeType === 1">
                             <span style="margin-right: 10px;">{{$.lp.shiftForm.restPeriodLabel}}</span>
                             <o-time-picker style="margin-left: 10px;margin-right: 10px;"
                                 oo-prop="{'placeholder': $.lp.shiftForm.restPeriodStartPlaceholder, 'value': $.time1.restPeriodStart, 'key': 'time1.restPeriodStart'}"  ></o-time-picker>
@@ -102,14 +102,14 @@
                             <o-time-picker style="margin-left: 10px;"
                                 oo-prop="{'placeholder': $.lp.shiftForm.afterOffDutyTimePlaceholder, 'value': $.time2.offDutyTimeAfterLimit,'key': 'time2.offDutyTimeAfterLimit'}"  ></o-time-picker>
                         </div>
-                        <div class="form-item-content" style="margin-top: 10px;margin-bottom: 10px;">
+                        <!-- <div class="form-item-content" style="margin-top: 10px;margin-bottom: 10px;">
                             <span style="margin-right: 10px;">{{$.lp.shiftForm.restPeriodLabel}}</span>
                             <o-time-picker style="margin-left: 10px;margin-right: 10px;"
                                 oo-prop="{'placeholder': $.lp.shiftForm.restPeriodStartPlaceholder, 'value': $.time2.restPeriodStart,'key': 'time2.restPeriodStart'}"  ></o-time-picker>
                                 <span style="margin:0 10px;">{{$.lp.until}}</span>
                             <o-time-picker style="margin-left: 10px;"
                                 oo-prop="{'placeholder': $.lp.shiftForm.restPeriodEndPlaceholder, 'value': $.time2.restPeriodEnd,'key': 'time2.restPeriodEnd'}"  ></o-time-picker>
-                        </div>
+                        </div> -->
                         <div class="margin-top margin-bottom form-item-content" @click="this.clickChangeOffDutyNextDay(2)"  oo-if="$.timeType == 2">
                             <span style="margin-right: 10px;">{{$.lp.shiftForm.offDutyNextDayLabel}}</span>
                             <div class="o2-icon-14">
@@ -151,14 +151,14 @@
                             <o-time-picker style="margin-left: 10px;"
                                 oo-prop="{'placeholder': $.lp.shiftForm.afterOffDutyTimePlaceholder, 'value': $.time3.offDutyTimeAfterLimit, 'key': 'time3.offDutyTimeAfterLimit'}"  ></o-time-picker>
                         </div>
-                        <div class="form-item-content" style="margin-top: 10px;margin-bottom: 10px;">
+                        <!-- <div class="form-item-content" style="margin-top: 10px;margin-bottom: 10px;">
                             <span style="margin-right: 10px;">{{$.lp.shiftForm.restPeriodLabel}}</span>
                             <o-time-picker style="margin-left: 10px;margin-right: 10px;"
                                 oo-prop="{'placeholder': $.lp.shiftForm.restPeriodStartPlaceholder, 'value': $.time3.restPeriodStart, 'key': 'time3.restPeriodStart'}"  ></o-time-picker>
                                 <span style="margin:0 10px;">{{$.lp.until}}</span>
                             <o-time-picker style="margin-left: 10px;"
                                 oo-prop="{'placeholder': $.lp.shiftForm.restPeriodEndPlaceholder, 'value': $.time3.restPeriodEnd, 'key': 'time3.restPeriodEnd'}"  ></o-time-picker>
-                        </div>
+                        </div> -->
                         <div class="margin-top margin-bottom form-item-content" @click="this.clickChangeOffDutyNextDay(3)"  oo-if="$.timeType == 3">
                             <span style="margin-right: 10px;">{{$.lp.shiftForm.offDutyNextDayLabel}}</span>
                             <div class="o2-icon-14">
