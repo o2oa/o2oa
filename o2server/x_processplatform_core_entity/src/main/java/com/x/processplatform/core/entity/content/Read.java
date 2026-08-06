@@ -104,6 +104,9 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
 
 	public void setTitle(String title) {
 		this.title = title;
+		if (StringTools.utf8Length(title) > length_255B) {
+			this.title = StringTools.utf8SubString(title, length_255B - 3) + "...";
+		}
 		this.getProperties().setTitle(title);
 	}
 
