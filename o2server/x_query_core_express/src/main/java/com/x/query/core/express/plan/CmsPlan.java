@@ -251,7 +251,7 @@ public class CmsPlan extends Plan {
                 os.addAll(future.get(300, TimeUnit.SECONDS));
             }
             // 不等于在这里单独通过等于处理
-            if (Comparison.isNotEquals(f.comparison)) {
+            if (Comparison.isNotEquals(f.comparison) || Comparison.isNotIn(f.comparison)) {
                 os = ListUtils.subtract(docIds, os);
             }
             if (i == 0) {
@@ -383,7 +383,7 @@ public class CmsPlan extends Plan {
                 subPredicate = f.toPredicate(cb, itemRoot, runtime, subPredicate);
                 subquery.select(cb.literal(1L)).where(subPredicate);
                 Predicate existsP = cb.exists(subquery);
-                if (Comparison.isNotEquals(f.comparison)) {
+                if (Comparison.isNotEquals(f.comparison) || Comparison.isNotIn(f.comparison)) {
                     existsP = cb.not(existsP);
                 }
                 if(p == null){

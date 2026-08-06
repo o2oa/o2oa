@@ -13,6 +13,7 @@ public abstract class Comparison {
 	private static String[] notLike = new String[] { "notLike", "not like" };
 	private static String[] between = new String[] { "range", "between" };
 	private static String[] isMember = new String[] { "isMember", "in" };
+	private static String[] notIn = new String[] { "notIn", "not in" };
 	private static String[] listLike = new String[] { "listLike" };
 
 	public static boolean isEquals(String comparison) throws Exception {
@@ -105,6 +106,15 @@ public abstract class Comparison {
 		return false;
 	}
 
+	public static boolean isNotIn(String comparison) {
+		for (String str : notIn) {
+			if (StringUtils.equalsIgnoreCase(str, StringUtils.trim(comparison))) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static boolean isListLike(String comparison) throws Exception {
 		for (String str : listLike) {
 			if (StringUtils.equalsIgnoreCase(str, StringUtils.trim(comparison))) {
@@ -138,7 +148,8 @@ public abstract class Comparison {
 
 		}else if(isIsMember(comparison)){
 			return isMember[isMember.length-1];
-
+		}else if(isNotIn(comparison)){
+			return notIn[notIn.length-1];
 		}else{
 			return equals[equals.length-1];
 		}
