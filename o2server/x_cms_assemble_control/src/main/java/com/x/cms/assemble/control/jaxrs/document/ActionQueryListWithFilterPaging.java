@@ -50,10 +50,6 @@ public class ActionQueryListWithFilterPaging extends BaseAction {
             wi = new Wi();
         }
 
-        if (StringUtils.isEmpty(wi.getDocumentType())) {
-            wi.setDocumentType("信息");
-        }
-
         if (StringUtils.isEmpty(wi.getOrderField())) {
             wi.setOrderField("publishTime");
         }

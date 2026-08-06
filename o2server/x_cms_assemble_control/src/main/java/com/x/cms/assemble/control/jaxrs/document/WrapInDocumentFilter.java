@@ -74,8 +74,8 @@ public class WrapInDocumentFilter {
 	@FieldDescribe( "作为过滤条件的发布者所属组织, 可多个, String数组." )
 	private List<String> creatorUnitNameList;
 
-	@FieldDescribe( "文档类型：全部 | 信息(默认值) | 数据" )
-	private String documentType = "信息";
+	@FieldDescribe( "文档类型：全部(默认值) | 信息 | 数据" )
+	private String documentType = "全部";
 
 	@FieldDescribe( "作为过滤条件的CMS文档关键字, 通常是标题, String, 模糊查询." )
 	private String title;
