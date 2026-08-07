@@ -362,46 +362,49 @@ if (!layout.isReady) {
         o2.load('../o2_lib/ooui/ooui.iife.js', {}, ()=>{
             $OOUI.defineComponent();
         });
-        o2.getJSON("../x_desktop/res/config/config.json", function (config) {
-            var supportedLanguages = Object.keys(config.supportedLanguages);
+        
+        o2.load('../o2_lib/sjcl.min.js', {}, () => {
+            o2.getJSON("../x_desktop/res/config/config.json", function (config) {
+                var supportedLanguages = Object.keys(config.supportedLanguages);
 
-            if (supportedLanguages.indexOf(o2.language) === -1){
-                o2.language = o2.language.substring(0, o2.language.indexOf('-'));
-            }
-            if (supportedLanguages.indexOf(o2.language) === -1) o2.language = "zh-cn";
-
-            if (!o2.LP) {
-                var lp = "../x_desktop/js/base_lp_" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js?v="+o2.version.v;
-                o2.load(lp, function(m){
-                    if (!m.length){
-                        var lp = "../o2_core/o2/lp/" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js?v="+o2.version.v;
-                        o2.load(lp,loadModuls);
-                    }else{
-                        loadModuls();
-                    }
-                });
-            } else {
-                loadModuls();
-            }
-
-            _loadProgressBar();
-            if (config.proxyCenterEnable){
-                if (o2.typeOf(config.center)==="array"){
-                    config.center.forEach(function(c){
-                        c.port = window.location.port || 80;
-                    });
-                }else{
-                    config.port = window.location.port || 80;
+                if (supportedLanguages.indexOf(o2.language) === -1){
+                    o2.language = o2.language.substring(0, o2.language.indexOf('-'));
                 }
-            }
-            layout.config = config;
-            o2.tokenName = config.tokenName || "x-token";
+                if (supportedLanguages.indexOf(o2.language) === -1) o2.language = "zh-cn";
 
-            if( !layout.mobile )document.title = layout.config.systemTitle || layout.config.title;
+                if (!o2.LP) {
+                    var lp = "../x_desktop/js/base_lp_" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js?v="+o2.version.v;
+                    o2.load(lp, function(m){
+                        if (!m.length){
+                            var lp = "../o2_core/o2/lp/" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js?v="+o2.version.v;
+                            o2.load(lp,loadModuls);
+                        }else{
+                            loadModuls();
+                        }
+                    });
+                } else {
+                    loadModuls();
+                }
 
-            configLoaded = true;
-            if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () {
-                _load();
+                _loadProgressBar();
+                if (config.proxyCenterEnable){
+                    if (o2.typeOf(config.center)==="array"){
+                        config.center.forEach(function(c){
+                            c.port = window.location.port || 80;
+                        });
+                    }else{
+                        config.port = window.location.port || 80;
+                    }
+                }
+                layout.config = config;
+                o2.tokenName = config.tokenName || "x-token";
+
+                if( !layout.mobile )document.title = layout.config.systemTitle || layout.config.title;
+
+                configLoaded = true;
+                if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () {
+                    _load();
+                });
             });
         });
 

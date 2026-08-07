@@ -1,6 +1,47 @@
 MWF.xAction = MWF.xAction || {};
 //MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
 
+/**
+ * 使用 CryptoJS 进行同步 AES-GCM 解密
+ * @param {string} base64Payload - Java 端发来的 [12字节IV] + [密文+Tag] Base64 字符串
+ * @param {string} keyString - 密钥字符串 (例如 16 字节)
+ * @returns {string} 解密后的UTF-8字符串
+ */
+var keyString = '98b25ee736a4db745e9b66fe46274fd8';
+function decryptAesGcmSync(base64Payload, keyString) {
+  try {
+    // 1. 将 Base64 字符串解析为 SJCL 的 bitArray
+    const payloadBitArray = sjcl.codec.base64.toBits(base64Payload);
+
+    // 2. 截取前 12 字节（96 位）作为 IV
+    const ivBitArray = sjcl.bitArray.bitSlice(payloadBitArray, 0, 96);
+
+    // 3. 截取 12 字节之后的所有数据（密文 + 16字节Tag）
+    const ciphertextBitArray = sjcl.bitArray.bitSlice(payloadBitArray, 96);
+
+    // 4. 将密钥字符串转为 bitArray
+    const keyBitArray = sjcl.codec.utf8String.toBits(keyString);
+
+    // 5. 创建 SJCL AES-GCM 解密器
+    const cipher = new sjcl.cipher.aes(keyBitArray);
+
+    // 6.【同步解密】执行 GCM 模式解密 (默认校验 128 位 Tag)
+    const decryptedBitArray = sjcl.mode.gcm.decrypt(
+      cipher,
+      ciphertextBitArray,
+      ivBitArray,
+      [], // adata (附加验证数据，无则传空数组)
+      128 // tlen (Tag 长度，对应 Java 的 128 位)
+    );
+
+    // 7. 将解密出来的 bitArray 还原为 UTF-8 文本
+    return sjcl.codec.utf8String.fromBits(decryptedBitArray);
+  } catch (error) {
+    throw new Error("同步解密失败：密文损坏或密钥不匹配。错误详情: " + error.message);
+  }
+}
+
+
 MWF.xAction.RestActions = MWF.Actions = {
     "actions": {},
     "loadedActions": {},
@@ -21,10 +62,17 @@ MWF.xAction.RestActions = MWF.Actions = {
         if (this.loadedActions[root]) return this.loadedActions[root];
         var jaxrs = null;
         //var url = this.getHost(root)+"/"+root+"/describe/describe.json";
-        var url = this.getHost(root)+"/"+root+"/describe/api.json";
+        // var url = this.getHost(root)+"/"+root+"/describe/api.json";
         //var url = "../o2_core/o2/xAction/temp.json";
+
+        var url = this.getHost(root)+"/"+root+"/jaxrs/describe";
         try{
-            MWF.getJSON(url, function(json){jaxrs = json.jaxrs;}.bind(this), false, false, false);
+            MWF.getJSON(url, function(json){
+                var dataText = json.data.data;
+                // 解密 dataText
+                dataText = decryptAesGcmSync(dataText, keyString);
+                jaxrs = JSON.parse(dataText).jaxrs;
+            }.bind(this), false, false, false);
             if (jaxrs){
                 var actionObj = {};
                 jaxrs.each(function(o){
