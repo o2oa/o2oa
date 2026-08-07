@@ -29,7 +29,7 @@ MWF.xApplication.attendancev2.LP={
 	"delete": "Eliminar",
 	"update": "Modificar",
 	"search": "Buscar",
-	"statisticExport": "Exportar (recursivo)",
+	"statisticExport": "Exportar",
 	"positive": "Aceptar",
 	"cancel": "Cancelar",
 	"add": "Agregar",
@@ -300,7 +300,8 @@ MWF.xApplication.attendancev2.LP={
 		"startDateEmptyPlaceholder": "¡Seleccione la fecha de inicio!",
 		"endDateEmptyPlaceholder": "¡Seleccione la fecha de finalización!",
 		"endDateCannotSmaller": "La fecha de finalización no puede ser inferior a la fecha de inicio!",
-		"startDateAndEndDateMoreThan": "El intervalo de fechas no puede exceder los 31 días!"
+		"startDateAndEndDateMoreThan": "El intervalo de fechas no puede exceder los 31 días!",
+		"exportDataEmptyPlaceholder": "¡Consulte datos antes de exportar!"
 	},
 	"detailRecordList": {
 		"title": "Registro de asistencia",

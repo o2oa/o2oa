@@ -29,7 +29,7 @@ MWF.xApplication.attendancev2.LP={
 	"delete": "Delete",
 	"update": "Update",
 	"search": "Search",
-	"statisticExport": "Export (Recursive)",
+	"statisticExport": "Export",
 	"positive": "OK",
 	"cancel": "Cancel",
 	"add": "Add",
@@ -300,7 +300,8 @@ MWF.xApplication.attendancev2.LP={
 		"startDateEmptyPlaceholder": "Select start date!",
 		"endDateEmptyPlaceholder": "Select end date!",
 		"endDateCannotSmaller": "The end date cannot be earlier than the start date!",
-		"startDateAndEndDateMoreThan": "The date interval cannot exceed 31 days!"
+		"startDateAndEndDateMoreThan": "The date interval cannot exceed 31 days!",
+		"exportDataEmptyPlaceholder": "Please query data before exporting!"
 	},
 	"detailRecordList": {
 		"title": "Clock-In Records",

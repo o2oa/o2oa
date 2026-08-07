@@ -32,7 +32,7 @@ MWF.xApplication.attendancev2.LP = {
   delete: "删除",
   update: "编辑",
   search: "搜索",
-  statisticExport: "导出(递归)",
+  statisticExport: "导出",
   positive: "确定",
   cancel: "取消",
   add: "添加",
@@ -313,6 +313,7 @@ MWF.xApplication.attendancev2.LP = {
     endDateEmptyPlaceholder: "请选择结束日期!",
     endDateCannotSmaller: "结束日期不能小于开始日期!",
     startDateAndEndDateMoreThan: "日期间隔不可超过31天!",
+    exportDataEmptyPlaceholder: "请先查询到数据后再导出!",
   },
   detailRecordList: {
     title: "打卡记录",
