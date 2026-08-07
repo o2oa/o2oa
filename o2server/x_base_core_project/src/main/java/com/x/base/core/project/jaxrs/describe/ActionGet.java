@@ -17,9 +17,6 @@ public class ActionGet extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGet.class);
 
 	private static Wo wo;
-
-	private static final String KEY = "xplatfor";
-
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, ServletContext context) throws Exception {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
@@ -35,7 +32,7 @@ public class ActionGet extends BaseAction {
 				if (file.exists()) {
 					String json = FileUtils.readFileToString(file, DefaultCharset.charset);
 					wo = new Wo();
-					wo.setData(Crypto.encrypt(json, KEY, "DES"));
+					wo.setData(Crypto.encodeAES(json, Crypto.DESCRIBE_AES_KEY));
 				}
 			}
 			return wo == null ? new Wo() : wo;
