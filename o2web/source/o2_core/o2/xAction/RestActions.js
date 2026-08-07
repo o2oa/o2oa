@@ -67,7 +67,6 @@ MWF.xAction.RestActions = MWF.Actions = {
   
         try{
             MWF.getJSON(url, function(json){
-                debugger;
                 var dataText = json.data.data;
                 // 解密 dataText
                 dataText = decryptAesGcmSync(dataText, keyString);
