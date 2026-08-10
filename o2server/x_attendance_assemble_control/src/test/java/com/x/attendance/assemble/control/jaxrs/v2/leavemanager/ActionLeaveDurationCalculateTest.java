@@ -44,6 +44,20 @@ class ActionLeaveDurationCalculateTest {
     }
 
     @Test
+    void listCalculateDateIncludesOrdinaryWeekendButExcludesLegalHoliday() {
+        List<String> dateList = Arrays.asList("2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04",
+                "2026-10-05");
+        List<String> restDateList = Arrays.asList("2026-10-01", "2026-10-03", "2026-10-04");
+        List<String> weekendDateList = Arrays.asList("2026-10-03", "2026-10-04");
+        List<String> legalHolidayDateList = Arrays.asList("2026-10-01", "2026-10-04", "2026-10-05");
+
+        List<String> result = ActionLeaveDurationCalculate.listCalculateDate(dateList, restDateList,
+                weekendDateList, legalHolidayDateList, true, true);
+
+        assertEquals(Arrays.asList("2026-10-02", "2026-10-03"), result);
+    }
+
+    @Test
     void shiftWorkMinutesDeductsRestPeriod() throws Exception {
         AttendanceV2ShiftCheckTime checkTime = checkTime("09:00", "18:00", false, "12:00-13:00");
 
