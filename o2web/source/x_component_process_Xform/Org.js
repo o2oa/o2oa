@@ -1101,7 +1101,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         if (oldValues.length && (values && values.length)){
             if (oldValues.length === values.length){
                 for (var i=0; i<oldValues.length; i++){
-                    if ((oldValues[i].distinguishedName!==values[i].distinguishedName) || (oldValues[i].name!==values[i].name) || (oldValues[i].unique!==values[i].unique)){
+                    if ((typeOf(oldValues[i])==='string' && typeOf(values[i])==='string' && oldValues[i]!==values[i]) || (oldValues[i].distinguishedName!==values[i].distinguishedName) || (oldValues[i].name!==values[i].name) || (oldValues[i].unique!==values[i].unique)){
                         change = true;
                         break;
                     }
