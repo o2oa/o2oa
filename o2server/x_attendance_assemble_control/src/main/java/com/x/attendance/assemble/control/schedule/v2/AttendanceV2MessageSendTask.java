@@ -76,6 +76,12 @@ public class AttendanceV2MessageSendTask extends AbstractJob {
                 emc.beginTransaction(AttendanceV2AlertMessage.class);
                 emc.persist(old, CheckPersistType.all);
                 emc.commit();
+                // 不是今天的消息，不发送
+                String today = DateTools.format(now, DateTools.format_yyyyMMdd);
+                String sendDate = DateTools.format(message.getSendDateTime(), DateTools.format_yyyyMMdd);
+                if (!today.equals(sendDate)) {
+                    continue;
+                }
                 // 判断个人配置 是否需要真实的发送消息
                 List<AttendanceV2PersonConfig> list = business.getAttendanceV2ManagerFactory()
                         .personConfigWithPerson(message.getUserId());
@@ -98,6 +104,19 @@ public class AttendanceV2MessageSendTask extends AbstractJob {
                 if (message.getCheckInType().equals(AttendanceV2CheckInRecord.OffDuty) && !isOffDutySendPerson) {
                     continue;
                 }
+                // 判断是否已经打过卡了
+                List<AttendanceV2CheckInRecord> records = business.getAttendanceV2ManagerFactory().listRecordWithPersonAndDate(message.getUserId(), today);
+                if (records != null && !records.isEmpty()) {
+                    boolean isOnDutyCheckIn = records.stream().anyMatch(r -> AttendanceV2CheckInRecord.OnDuty.equals(r.getCheckInType()) && !AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn.equals(r.getCheckInResult()));
+                    boolean isOffDutyCheckIn = records.stream().anyMatch(r -> AttendanceV2CheckInRecord.OffDuty.equals(r.getCheckInType()) && !AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn.equals(r.getCheckInResult()));
+                    if (AttendanceV2CheckInRecord.OnDuty.equals(message.getCheckInType()) && isOnDutyCheckIn) {
+                        continue;
+                    }
+                    if (AttendanceV2CheckInRecord.OffDuty.equals(message.getCheckInType()) && isOffDutyCheckIn) {
+                        continue;
+                    }
+                }
+
                 String title;
                 if (AttendanceV2CheckInRecord.OnDuty.equals(message.getCheckInType())) {
                     title = "即将开始上班，请别忘记打卡哦！";
