@@ -74,19 +74,14 @@ public class ActionSetPasswordAnonymous extends BaseAction {
                     throw new ExceptionTwicePasswordNotMatch();
                 }
 
-                if (BooleanUtils.isTrue(Config.person().getSuperPermission())
-                        && StringUtils.equals(Config.token().getPassword(), oldPassword)) {
-                    LOGGER.info("user{name:" + person.getName() + "} use superPermission.");
-                } else {
-                    if (!StringUtils.equals(
-                            Crypto.encrypt(oldPassword, Config.token().getKey(),
-                                    Config.person().getEncryptType()),
-                            person.getPassword())) {
-                        throw new ExceptionPersonNotExistOrInvalidPassword();
-                    }
-                    if (!newPassword.matches(Config.person().getPasswordRegex())) {
-                        throw new ExceptionInvalidPassword(Config.person().getPasswordRegexHint());
-                    }
+                if (!StringUtils.equals(
+                        Crypto.encrypt(oldPassword, Config.token().getKey(),
+                                Config.person().getEncryptType()),
+                        person.getPassword())) {
+                    throw new ExceptionPersonNotExistOrInvalidPassword();
+                }
+                if (!newPassword.matches(Config.person().getPasswordRegex())) {
+                    throw new ExceptionInvalidPassword(Config.person().getPasswordRegexHint());
                 }
 
                 emc.beginTransaction(Person.class);

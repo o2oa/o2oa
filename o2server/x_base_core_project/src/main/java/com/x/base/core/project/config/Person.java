@@ -24,7 +24,7 @@ public class Person extends ConfigObject {
 	public static final Boolean DEFAULT_CODELOGIN = true;
 	public static final Boolean DEFAULT_BINDLOGIN = true;
 	public static final Boolean DEFAULT_FACELOGIN = false;
-	public static final Boolean DEFAULT_SUPERPERMISSION = true;
+	public static final Boolean DEFAULT_SUPERPERMISSION = false;
 	public static final Boolean DEFAULT_PERSONUNITORDERBYASC = true;
 
 	public static final String REGISTER_TYPE_DISABLE = "disable";
