@@ -1,8 +1,15 @@
 package com.x.base.core.project.connection;
 
+import com.x.base.core.project.config.General;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
+import java.util.Optional;
+import java.util.Set;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,6 +22,8 @@ import com.x.base.core.project.http.HttpToken;
 import com.x.base.core.project.tools.ListTools;
 
 public class CipherConnectionAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(CipherConnectionAction.class);
 
 	private CipherConnectionAction() {
 	}
@@ -48,7 +57,7 @@ public class CipherConnectionAction {
 	}
 
 	public static byte[] getBinary(Boolean xdebugger, String address) throws Exception {
-		List<NameValuePair> headers = cipher();
+		List<NameValuePair> headers = cipher(address);
 		if (BooleanUtils.isTrue(xdebugger)) {
 			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
@@ -57,7 +66,7 @@ public class CipherConnectionAction {
 
 	public static byte[] getBinary(Boolean xdebugger, int connectTimeout, int readTimeout, String address)
 			throws Exception {
-		List<NameValuePair> headers = cipher();
+		List<NameValuePair> headers = cipher(address);
 		if (BooleanUtils.isTrue(xdebugger)) {
 			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
@@ -311,10 +320,26 @@ public class CipherConnectionAction {
 		return putMultiPartBinary(xdebugger, connectTimeout, readTimeout, addr, formFields, fileParts);
 	}
 
-	public static List<NameValuePair> cipher() throws Exception {
+	private static List<NameValuePair> cipher() throws Exception {
 		EffectivePerson effectivePerson = EffectivePerson.cipher(Config.token().getCipher(),
 				Config.person().getEncryptType());
 		return ListTools.toList(new NameValuePair(Config.person().getTokenName(), effectivePerson.getToken()));
+	}
+
+	private static List<NameValuePair> cipher(String address) throws Exception {
+		final Set<String> httpWhiteSet = new HashSet<>();
+		httpWhiteSet.add(General.DEFAULT_HTTP_WHITE);
+		try {
+			Config.nodes().forEach((key, value) -> httpWhiteSet.add(key));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		final String addressLower = StringUtils.substringAfter(address.toLowerCase(), "://");
+		Optional<String> optional = httpWhiteSet.stream()
+				.filter(addressLower::startsWith).findFirst();
+		EffectivePerson effectivePerson = EffectivePerson.cipher(Config.token().getCipher(),
+				Config.person().getEncryptType());
+		return optional.isPresent() ? ListTools.toList(new NameValuePair(Config.person().getTokenName(), effectivePerson.getToken())) : new ArrayList<>();
 	}
 
 	public static String trim(String uri) {
