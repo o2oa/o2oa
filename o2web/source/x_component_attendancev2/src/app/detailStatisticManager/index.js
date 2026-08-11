@@ -1,7 +1,7 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
 import ExcelJS from "exceljs";
-import { formatDate, isEmpty , convertMinutesToHoursAndMinutes, showLoading, hideLoading} from "../../utils/common";
+import { formatDate, isEmpty , convertMinutesToHoursAndMinutes, showLoading, hideLoading, fieldWorkFormat} from "../../utils/common";
 import { detailAction } from "../../utils/actions";
 import oOrgPersonSelector from "../../components/o-org-person-selector";
 import oDatePicker from "../../components/o-date-picker";
@@ -171,7 +171,7 @@ export default content({
   _formatRecordResult(record) {
     let span = "";
     if (record.fieldWork) {
-      span = lp.appeal.fieldWork;
+      span = fieldWorkFormat(record);
     } else if(record.leaveData || record.leaveRequest) {
       span = lp.appeal.leave;
     }  else {

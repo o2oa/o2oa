@@ -1,6 +1,7 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, component as app } from "@o2oa/component";
 import { appealInfoActionManagerListByPaging, appealInfoAction } from "../../utils/actions";
+import { fieldWorkFormat } from "../../utils/common";
 import oOrgPersonSelector from "../../components/o-org-person-selector";
 import oDatePicker from "../../components/o-date-picker";
 import oPager from "../../components/o-pager";
@@ -120,7 +121,7 @@ export default content({
   formatRecordResult(record) {
     let span = "";
     if (record.fieldWork) {
-      span = lp.appeal.fieldWork;
+      span = fieldWorkFormat(record);
     } else {
       const result = record.checkInResult;
       if (result === 'PreCheckIn') {

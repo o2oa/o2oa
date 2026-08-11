@@ -1,6 +1,27 @@
 import { exec } from "@o2oa/util";
 import { lp } from "@o2oa/component";
 
+
+/**
+ * 根据打卡对象，如果是外勤打卡，输出外勤打卡的格式化信息
+ * @param {*} record 打卡对象 
+ */
+function fieldWorkFormat(record) {
+  if (record && record.fieldWork) {
+    let out = lp.appeal.fieldWork;
+    if (record.properties && record.properties.fieldWorkJobId) {
+      if (record.properties.fieldWorkJobStatus === 1) {
+        out = lp.appeal.fieldWorkApprovaling;
+      } else if (record.properties.fieldWorkJobStatus === 2) {
+        out = lp.appeal.fieldWorkApprovaled;
+      }
+    }
+    return out;
+  }
+
+  return "";
+}
+
 /**
  * 是否为空
  * 数字0也是不为空
@@ -392,6 +413,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
 }
 
 export {
+  fieldWorkFormat,
   getAllDatesInMonth,
   formatPersonName,
   setJSONValue,

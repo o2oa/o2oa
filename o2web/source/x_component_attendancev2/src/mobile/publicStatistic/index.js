@@ -1,7 +1,7 @@
 import { component as content } from '@o2oa/oovm';
 import { lp } from '@o2oa/component';
 import { detailAction } from '../../utils/actions';
-import { convertTo2DArray, formatDate, formatPersonName } from '../../utils/common';
+import { fieldWorkFormat, convertTo2DArray, formatDate, formatPersonName } from '../../utils/common';
 import template from './template.html';
 import style from './style.scope.css';
 
@@ -267,13 +267,13 @@ export default content({
     },
     formatRecordResult(record) {
         if (record.fieldWork) {
-            return lp.appeal && lp.appeal.fieldWork ? lp.appeal.fieldWork : '外勤';
+            return lp.appeal && lp.appeal.fieldWork ? fieldWorkFormat(record) : '外勤';
         }
         return RESULT_TEXT[record.checkInResult] || '';
     },
     formatSource(record) {
         if (record.fieldWork) {
-            return lp.appeal && lp.appeal.fieldWork ? lp.appeal.fieldWork : '外勤';
+            return lp.appeal && lp.appeal.fieldWork ? fieldWorkFormat(record) : '外勤';
         }
         switch (record.sourceType) {
             case 'USER_CHECK':

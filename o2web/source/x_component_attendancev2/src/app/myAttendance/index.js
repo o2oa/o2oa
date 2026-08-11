@@ -1,7 +1,7 @@
 import { component as content } from "@o2oa/oovm";
 import { lp } from "@o2oa/component";
 import { myAction } from "../../utils/actions";
-import { convertTo2DArray } from "../../utils/common";
+import { convertTo2DArray, fieldWorkFormat } from "../../utils/common";
 import template from "./temp.html";
 import style from "./style.scope.css";
 
@@ -328,7 +328,7 @@ export default content({
           tagName =  "";
       }
       if (record.fieldWork == true) {
-        tagName =  lp.appeal.fieldWork;
+        tagName =  fieldWorkFormat(record);
       } else if (record.leaveData || record.leaveRequest) {
         tagName =  lp.appeal.leave;
       } else if (record.appealId && tagName === "") {

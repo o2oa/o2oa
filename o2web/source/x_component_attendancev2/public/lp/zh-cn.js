@@ -576,6 +576,8 @@ MWF.xApplication.attendancev2.LP = {
     notSigned: "缺卡",
     appeal: "申诉成功",
     fieldWork: "外勤打卡",
+    fieldWorkApprovaling: "外勤审批中",
+    fieldWorkApprovaled: "外勤审批通过",
     leave: "请假",
 
     status0: "待处理",

@@ -1,6 +1,7 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
 import { getFileDownloadUrl } from "../../../utils/actions";
+import { fieldWorkFormat } from "../../../utils/common";
 import template from "./template.html";
 
 
@@ -75,7 +76,7 @@ export default content({
   formatRecordResult(record) {
     let span = "";
     if (record.fieldWork) {
-      span = lp.appeal.fieldWork;
+      span = fieldWorkFormat(record);
     } else {
       const result = record.checkInResult;
       if (result === "PreCheckIn") {

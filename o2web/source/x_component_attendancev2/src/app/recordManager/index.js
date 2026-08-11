@@ -5,7 +5,7 @@ import oPager from "../../components/o-pager";
 import oOrgPersonSelector from "../../components/o-org-person-selector";
 import oDatePicker from "../../components/o-date-picker";
 import template from "./template.html";
-import {lpFormat, isEmpty, chooseSingleFile} from "../../utils/common";
+import {lpFormat, isEmpty, chooseSingleFile, fieldWorkFormat} from "../../utils/common";
 
 export default content({
   template,
@@ -152,7 +152,7 @@ export default content({
   formatRecordResult(record) {
     let span = "";
     if (record.fieldWork) {
-      span = lp.appeal.fieldWork;
+      span = fieldWorkFormat(record);
     } else {
       const result = record.checkInResult;
       if (result === "PreCheckIn") {

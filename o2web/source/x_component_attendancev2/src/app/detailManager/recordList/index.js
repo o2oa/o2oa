@@ -1,6 +1,7 @@
 import { component as content } from "@o2oa/oovm";
 import { lp } from "@o2oa/component";
 import { getFileDownloadUrl } from "../../../utils/actions";
+import { fieldWorkFormat } from "../../../utils/common";
 import template from "./temp.html";
 
 export default content({
@@ -77,7 +78,9 @@ export default content({
     }
     return span;
   },
-
+  fieldWorkFormatOut(record) {
+    return fieldWorkFormat(record);
+  },
   // 关闭当前窗口
   close() {
     this.$parent.closeFormVm();
