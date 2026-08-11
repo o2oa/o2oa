@@ -349,6 +349,7 @@ MWF.xApplication.attendancev2.LP = {
     exceptionAlertEnableTime1: " (次日 ",
     exceptionAlertEnableTime2: " 将收到异常打卡消息 ",
     statisticUnitDutyName: "考勤统计管理员职务名称",
+    fieldWorkAutoScript: "外勤自动发起脚本配置",
     detailStatisticCron: "统计定时器",
     closeOldAttendance: "旧考勤",
     closeOldAttendanceLabel: "是否关闭旧版考勤打卡功能（防止app端点错）",
