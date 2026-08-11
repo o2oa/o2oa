@@ -9,6 +9,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
@@ -17,6 +18,7 @@ import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 /**
  * 打卡考勤记录 Created by fancyLou on 2023/2/20. Copyright © 2023 O2. All rights reserved.
@@ -284,6 +286,13 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
     @Column(length = JpaObject.length_id, name = ColumnNamePrefix + requestDataId_FIELDNAME)
     private String requestDataId;
 
+    public static final String properties_FIELDNAME = "properties";
+    @FieldDescribe("打卡记录属性，存储一些扩展信息.")
+    @Persistent
+    @Strategy(JsonPropertiesValueHandler)
+    @Column(length = JpaObject.length_1M, name = ColumnNamePrefix + properties_FIELDNAME)
+    private AttendanceV2CheckInRecordProperties properties;
+
 
     /**
      * 判断当前打卡记录是否为异常数据
@@ -317,6 +326,14 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
                 getRequestDataId());
     }
 
+
+    public AttendanceV2CheckInRecordProperties getProperties() {
+        return properties;
+    }
+
+    public void setProperties(AttendanceV2CheckInRecordProperties properties) {
+        this.properties = properties;
+    }
 
     public Boolean getOffDutyNextDay() {
         return offDutyNextDay;

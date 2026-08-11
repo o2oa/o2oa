@@ -7,6 +7,8 @@ import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.assemble.control.schedule.v2.QueueAttendanceV2DetailModel;
 import com.x.attendance.entity.v2.AttendanceV2AppealInfo;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
+import com.x.attendance.entity.v2.AttendanceV2CheckInRecordProperties;
+import com.x.attendance.entity.v2.AttendanceV2Config;
 import com.x.attendance.entity.v2.AttendanceV2Group;
 import com.x.attendance.entity.v2.AttendanceV2Shift;
 import com.x.attendance.entity.v2.AttendanceV2ShiftCheckTime;
@@ -15,6 +17,9 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.connection.ActionResponse;
+import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
@@ -390,6 +395,9 @@ abstract class BaseAction extends StandardJaxrsAction {
             EntityManagerContainer emc, Business business) {
         try {
             if (record != null) {
+                if (BooleanUtils.isTrue(record.getFieldWork())) {
+                    fieldWorkScriptInvokeAsync(record.getId());
+                }
                 List<AttendanceV2AppealInfo> appealList = business.getAttendanceV2ManagerFactory()
                         .listAppealInfoWithRecordId(record.getId());
                 if (record.checkResultException(fieldWorkMarkError)) { // 异常数据
@@ -741,6 +749,99 @@ abstract class BaseAction extends StandardJaxrsAction {
         emc.commit();
     }
 
+
+    private void fieldWorkScriptInvokeAsync(String recordId) {
+        if (StringUtils.isEmpty(recordId)) {
+            return;
+        }
+        CompletableFuture.runAsync(() -> {
+            try {
+                executeWithCheckLock("fieldWorkScriptInvoke:" + recordId, () -> {
+                    fieldWorkScriptInvoke(recordId);
+                    return null;
+                });
+            } catch (Exception e) {
+                LOGGER.error(e);
+            }
+        });
+    }
+    // 外勤打卡如果有配置脚本，就执行脚本
+    private void fieldWorkScriptInvoke(String recordId) throws Exception {
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            AttendanceV2CheckInRecord record = emc.find(recordId, AttendanceV2CheckInRecord.class);
+            if (record == null) {
+                throw new ExceptionNotExistObject("打卡记录");
+            }
+            if (BooleanUtils.isNotTrue(record.getFieldWork())) {
+                LOGGER.debug("不是外勤打卡记录，不执行外勤打卡脚本，recordId: {}", recordId);
+                return;
+            }
+            String invokeScriptName = null;
+            List<AttendanceV2Config> list = emc.listAll(AttendanceV2Config.class);
+            if (list != null && !list.isEmpty()) {
+                AttendanceV2Config config = list.get(0);
+                if (config.getProperties() != null && StringUtils.isNotEmpty(config.getProperties().getFieldWorkExecuteScript())) {
+                     invokeScriptName = config.getProperties().getFieldWorkExecuteScript();
+                }
+            }
+            if (StringUtils.isEmpty(invokeScriptName)) {
+                LOGGER.debug("没有配置外勤打卡执行脚本，不执行外勤打卡脚本");
+                return;
+            }
+            AttendanceV2CheckInRecordProperties properties = record.getProperties();
+            if (properties != null && StringUtils.isNotEmpty(properties.getFieldWorkJobId())) {
+                LOGGER.debug("外勤打卡脚本已执行过，不重复执行，recordId: {}", recordId);
+                return;
+            }
+            FieldWorkScriptInvokeBody body = new FieldWorkScriptInvokeBody();
+            body.setRecord(record);
+            ActionResponse response = CipherConnectionAction.post(false, 4000, 8000,
+                    Config.url_x_program_center_jaxrs("invoke", invokeScriptName, "execute"), body);
+            FieldWorkScriptInvokeResponse wo = response.getData(FieldWorkScriptInvokeResponse.class);
+            if (wo != null && StringUtils.isNotEmpty(wo.getJobid())) {
+                LOGGER.debug("外勤打卡执行脚本完成，jobid: {}", wo.getJobid());
+                emc.beginTransaction(AttendanceV2CheckInRecord.class);
+                if (properties == null) {
+                    properties = new AttendanceV2CheckInRecordProperties();
+                }
+                properties.startFieldWorkJob(wo.getJobid());
+                record.setProperties(properties);
+                emc.persist(record, CheckPersistType.all);
+                emc.commit();
+            } else {
+                LOGGER.debug("外勤打卡执行脚本完成，response: {}", response);
+            }
+            LOGGER.info("外勤打卡执行脚本完成，recordId: {}, invokeScriptName: {}", recordId, invokeScriptName);
+        }
+    }
+
+
+    public static class FieldWorkScriptInvokeBody extends GsonPropertyObject {
+
+        @FieldDescribe("外勤 invoke 脚本执行的 post 对象")
+        private AttendanceV2CheckInRecord record;
+
+        public AttendanceV2CheckInRecord getRecord() {
+            return record;
+        }
+
+        public void setRecord(AttendanceV2CheckInRecord record) {
+            this.record = record;
+        }
+    }
+    public static class FieldWorkScriptInvokeResponse extends GsonPropertyObject {
+
+        @FieldDescribe("外勤 invoke 脚本执行后的返回结果")
+        private String jobid;
+
+        public String getJobid() {
+            return jobid;
+        }
+
+        public void setJobid(String jobid) {
+            this.jobid = jobid;
+        }
+    }
 
     public static class CheckInWi extends GsonPropertyObject {
 

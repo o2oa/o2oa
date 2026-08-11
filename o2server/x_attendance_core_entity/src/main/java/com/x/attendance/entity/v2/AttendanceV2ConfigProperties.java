@@ -21,7 +21,17 @@ public class AttendanceV2ConfigProperties  extends JsonProperties {
     private Boolean chineseHolidaySyncEnable = true;
     @FieldDescribe("考勤管理员职务名称")
     private List<String> statisticUnitDutyNameList =  defaultList;
+    @FieldDescribe("外勤打卡执行脚本")
+    private String fieldWorkExecuteScript;
 
+
+    public String getFieldWorkExecuteScript() {
+        return fieldWorkExecuteScript;
+    }
+
+    public void setFieldWorkExecuteScript(String fieldWorkExecuteScript) {
+        this.fieldWorkExecuteScript = fieldWorkExecuteScript;
+    }
 
     public List<String> getStatisticUnitDutyNameList() {
         return statisticUnitDutyNameList;
