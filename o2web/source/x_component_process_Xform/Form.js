@@ -4801,7 +4801,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         //     this._downloadAllEditMode();
         // }
     //},
-    downloadAll: function (){
+    downloadAll: function (e, form){
+        if (!form || form === "none") {
+            if (this.json.printForm && this.json.printForm!=="none" ){
+                form = this.json.printForm;
+            }
+        }
         var iframe, iframeDoc;
         var _loadCss = (urls, callback) => {
             const ps = urls.map(async (url) => {
@@ -4893,9 +4898,16 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
             this.mask.loadNode(this.app.content);
 
+            let formPar = '';
+            if(form){
+                formPar = this.app.options.name === 'cms.Document' ?
+                    `&forceFormId=${form}` :
+                    `&formid=${form}`
+            }
+
             let src = this.app.options.name === 'cms.Document' ?
-                `../x_desktop/cmsdoc.html?documentId=${this.businessData.document.id}&readonly=true&downloading=true` :
-                `../x_desktop/work.html?workid=${this.businessData.work.id}&readonly=true&downloading=true`;
+                `../x_desktop/cmsdoc.html?documentId=${this.businessData.document.id}&readonly=true&downloading=true${formPar}` :
+                `../x_desktop/work.html?workid=${this.businessData.work.id}&readonly=true&downloading=true${formPar}`;
 
             iframe = new Element('iframe', {
                 src: src,
