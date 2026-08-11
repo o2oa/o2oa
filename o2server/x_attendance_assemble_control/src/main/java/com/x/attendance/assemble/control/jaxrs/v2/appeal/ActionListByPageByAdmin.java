@@ -2,6 +2,7 @@ package com.x.attendance.assemble.control.jaxrs.v2.appeal;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
 import com.x.attendance.entity.v2.AttendanceV2AppealInfo;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
@@ -11,13 +12,10 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -44,7 +42,7 @@ public class ActionListByPageByAdmin extends BaseAction {
             if (wi.getFilterList() != null && !wi.getFilterList().isEmpty()) {
                 List<String> userList = new ArrayList<>();
                 for (String f : wi.getFilterList()) {
-                    analysisPerson(userList, f, business);
+                    AttendanceV2Helper.analysisFilterToPersonList(userList, f, business, wi.getRecursive());
                 }
                 userList = new ArrayList<>(new LinkedHashSet<>(userList));
                 if (userList.isEmpty()) {
@@ -67,21 +65,6 @@ public class ActionListByPageByAdmin extends BaseAction {
             return result;
         }
     }
-
-    private void analysisPerson(List<String> userList, String filter, Business business) throws Exception {
-        if (StringUtils.isEmpty(filter)) {
-            return;
-        }
-        if (filter.endsWith("@U")) { // 组织转化成人员列表 不递归
-            List<String> users = business.organization().person().listWithUnitSubDirect(filter);
-            if (users != null && !users.isEmpty()) {
-                userList.addAll(users);
-            }
-        } else if (filter.endsWith("@P")) {
-            userList.add(filter);
-        }
-    }
-
 
     public static class Wo extends AttendanceV2AppealInfo {
         private static final long serialVersionUID = 6142658857959870785L;

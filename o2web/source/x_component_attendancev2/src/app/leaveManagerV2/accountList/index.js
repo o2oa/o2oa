@@ -15,6 +15,9 @@ export default content({
         return {
             lp,
             filterList: [], // Filter criteria for account list.
+            form: {
+                recursive: true,
+            },
             accountList: [],
             leaveTypeList: [],
             personList: [],
@@ -34,6 +37,9 @@ export default content({
         }
         this.queryData();
     },
+    toggleRecursive() {
+        this.bind.form.recursive = !this.bind.form.recursive;
+    },
     async queryData() {
         if (this.queryLoading) {
             return;
@@ -41,7 +47,10 @@ export default content({
         this.queryLoading = true;
         try {
             await showLoading(this);
-            const json = await leaveManagerAction("accountSearch", { filterList: this.bind.filterList });
+            const json = await leaveManagerAction("accountSearch", {
+                filterList: this.bind.filterList,
+                recursive: this.bind.form.recursive,
+            });
             if (json) {
                 this.bind.accountList = json.accountList || [];
                 this.bind.leaveTypeList = json.leaveTypeList || [];

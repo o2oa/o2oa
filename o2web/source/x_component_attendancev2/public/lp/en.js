@@ -29,6 +29,7 @@ MWF.xApplication.attendancev2.LP={
 	"delete": "Delete",
 	"update": "Update",
 	"search": "Search",
+	"recursive": "Recursive",
 	"statisticExport": "Export",
 	"positive": "OK",
 	"cancel": "Cancel",

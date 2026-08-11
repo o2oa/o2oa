@@ -23,6 +23,10 @@
             <div style="margin: 10px 0;float: left;">
                 <button class="mainColor_bg" @click="search">{{$.lp.search}}</button>
             </div>
+            <div class="margin-top margin-left" style="display: flex; align-items: center; cursor: pointer;" @click="toggleRecursive">
+                <i class="{{ $.form.recursive ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                <span style="margin-left: 6px;">{{$.lp.recursive}}</span>
+            </div>
 
             <!-- <div style="float: right;margin: 10px 10px 10px 0;">
                 <button class="light-border-button "  @click="excelTemplateDownload">{{$.lp.leave.excelTemplate}}</button>

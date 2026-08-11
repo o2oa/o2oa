@@ -204,6 +204,26 @@ public class AttendanceV2Helper {
     }
 
     /**
+     * 解析人员/组织过滤条件，把组织转换为人员DN。
+     */
+    public static void analysisFilterToPersonList(List<String> userList, String filter, Business business,
+            Boolean recursive) throws Exception {
+        if (StringUtils.isEmpty(filter)) {
+            return;
+        }
+        if (filter.endsWith("@U")) {
+            List<String> users = BooleanUtils.isNotFalse(recursive)
+                    ? business.organization().person().listWithUnitSubNested(filter)
+                    : business.organization().person().listWithUnitSubDirect(filter);
+            if (users != null && !users.isEmpty()) {
+                userList.addAll(users);
+            }
+        } else if (filter.endsWith("@P")) {
+            userList.add(filter);
+        }
+    }
+
+    /**
      * 是否是中国节假日
      *
      * @param date yyyy-MM-dd

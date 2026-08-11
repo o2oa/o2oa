@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
@@ -51,7 +52,7 @@ public class ActionListByPage extends BaseAction {
             if (wi.getFilterList() != null && !wi.getFilterList().isEmpty()) {
                 userList = new ArrayList<>();
                 for (String f : wi.getFilterList()) {
-                    analysisPerson(userList, f, business);
+                    AttendanceV2Helper.analysisFilterToPersonList(userList, f, business, wi.getRecursive());
                 }
                 userList = new ArrayList<>(new LinkedHashSet<>(userList));
                 if (userList.isEmpty()) {
@@ -99,21 +100,6 @@ public class ActionListByPage extends BaseAction {
 
     }
 
-    private void analysisPerson(List<String> userList, String filter, Business business) throws Exception {
-        if (StringUtils.isEmpty(filter)) {
-            return;
-        }
-        if (filter.endsWith("@U")) { // 组织转化成人员列表 不递归
-            List<String> users = business.organization().person().listWithUnitSubDirect(filter);
-            if (users != null && !users.isEmpty()) {
-                userList.addAll(users);
-            }
-        } else if (filter.endsWith("@P")) {
-            userList.add(filter);
-        }
-    }
-
-
     public static class Wi extends GsonPropertyObject {
 
 
@@ -123,8 +109,11 @@ public class ActionListByPage extends BaseAction {
         @FieldDescribe("用户标识")
         private String userId;
 
-        @FieldDescribe("过滤人员或组织，组织只支持单层: 用户或组织的DN，如xxx@xxx@P、xxx@xxx@U")
+        @FieldDescribe("过滤人员或组织，组织默认递归: 用户或组织的DN，如xxx@xxx@P、xxx@xxx@U")
         private List<String> filterList;
+
+        @FieldDescribe("过滤组织是否递归查询下级组织人员，默认true，false时仅查询当前组织直属人员")
+        private Boolean recursive;
 
         @FieldDescribe("开始日期")
         private String startDate;
@@ -146,6 +135,14 @@ public class ActionListByPage extends BaseAction {
 
         public void setFilterList(List<String> filterList) {
             this.filterList = filterList;
+        }
+
+        public Boolean getRecursive() {
+            return recursive;
+        }
+
+        public void setRecursive(Boolean recursive) {
+            this.recursive = recursive;
         }
 
         public String getStartDate() {

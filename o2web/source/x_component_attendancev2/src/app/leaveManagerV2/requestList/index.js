@@ -19,6 +19,7 @@ export default content({
             form: {
                 startDate: "",
                 endDate: "",
+                recursive: true,
             },
             requestList: [],
             pagerData: {
@@ -53,6 +54,9 @@ export default content({
 
         this.queryData();
     },
+    toggleRecursive() {
+        this.bind.form.recursive = !this.bind.form.recursive;
+    },
     loadData(e) {
         if (e && e.detail && e.detail.module && e.detail.module.bind) {
             this.bind.pagerData.page = e.detail.module.bind.page || 1;
@@ -86,6 +90,7 @@ export default content({
                     filterList: this.bind.filterList,
                     startDate: this.bind.form.startDate,
                     endDate: this.bind.form.endDate,
+                    recursive: this.bind.form.recursive,
                 }
             );
             if (json) {

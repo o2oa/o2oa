@@ -198,6 +198,7 @@ const showLoading = async (component, newText) => {
     bind = { text: newText }
   }
   component.loadingVm = await loading.generate(document.body, {bind: bind}, component);
+  await new Promise((resolve) => window.requestAnimationFrame(resolve));
 }
 /**
  * 关闭 loading 
@@ -207,6 +208,7 @@ const showLoading = async (component, newText) => {
 const hideLoading = async (component) => {
   if (component.loadingVm) {
     component.loadingVm.destroy();
+    component.loadingVm = null;
   }
 }
 

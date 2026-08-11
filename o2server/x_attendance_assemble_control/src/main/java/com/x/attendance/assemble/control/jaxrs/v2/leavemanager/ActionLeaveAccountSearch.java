@@ -11,6 +11,7 @@ import javax.persistence.criteria.Root;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.attendance.entity.v2.AttendanceV2LeaveAccount;
 import com.x.attendance.entity.v2.AttendanceV2LeaveAccount_;
 import com.x.attendance.entity.v2.AttendanceV2LeaveType;
@@ -39,7 +40,7 @@ public class ActionLeaveAccountSearch extends BaseAction {
             Business business = new Business(emc);
             if (wi.getFilterList() != null && !wi.getFilterList().isEmpty()) {
                 for (String f : wi.getFilterList()) {
-                    analysisPerson(userList, f, business);
+                    AttendanceV2Helper.analysisFilterToPersonList(userList, f, business, wi.getRecursive());
                 }
             }
             if (userList.isEmpty()) {
@@ -106,8 +107,11 @@ public class ActionLeaveAccountSearch extends BaseAction {
 
         private static final long serialVersionUID = 5802792521103850683L;
 
-        @FieldDescribe("过滤人员或组织，组织只支持单层: 用户或组织的DN，如xxx@xxx@P、xxx@xxx@U")
+        @FieldDescribe("过滤人员或组织，组织默认递归: 用户或组织的DN，如xxx@xxx@P、xxx@xxx@U")
         private List<String> filterList;
+
+        @FieldDescribe("过滤组织是否递归查询下级组织人员，默认true，false时仅查询当前组织直属人员")
+        private Boolean recursive;
 
 //        @FieldDescribe("过滤的假期类型ID列表")
 //        private List<String> leaveTypeList;
@@ -118,6 +122,14 @@ public class ActionLeaveAccountSearch extends BaseAction {
 
         public void setFilterList(List<String> filterList) {
             this.filterList = filterList;
+        }
+
+        public Boolean getRecursive() {
+            return recursive;
+        }
+
+        public void setRecursive(Boolean recursive) {
+            this.recursive = recursive;
         }
 //
 //        public List<String> getLeaveTypeList() {

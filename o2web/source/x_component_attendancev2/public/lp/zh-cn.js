@@ -9,7 +9,7 @@ MWF.xApplication.attendancev2.LP = {
     // 统计考勤
     statistic: "考勤统计",
     detailStatisticFilter: "汇总统计",
-    detailFilter: "每日统计",
+    detailFilter: "考勤数据",
     recordList: "原始记录",
     appealList: "异常数据",
     // 管理配置
@@ -32,6 +32,7 @@ MWF.xApplication.attendancev2.LP = {
   delete: "删除",
   update: "编辑",
   search: "搜索",
+  recursive: "是否递归",
   statisticExport: "导出",
   positive: "确定",
   cancel: "取消",

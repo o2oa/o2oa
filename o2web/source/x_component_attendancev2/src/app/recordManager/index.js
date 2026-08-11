@@ -19,6 +19,7 @@ export default content({
         userId: "",
         startDate: "",
         endDate: "",
+        recursive: true,
       },
       units: [], // 控制组织选择的范围
       filterList:[],
@@ -58,6 +59,9 @@ export default content({
   search() {
     this.bind.pagerData.page = 1;
     this.loadRecordlList();
+  },
+  toggleRecursive() {
+    this.bind.form.recursive = !this.bind.form.recursive;
   },
   async loadRecordlList() {
     const form = this.bind.form;
