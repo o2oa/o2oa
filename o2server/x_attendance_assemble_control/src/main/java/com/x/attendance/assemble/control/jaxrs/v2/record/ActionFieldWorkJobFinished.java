@@ -4,7 +4,6 @@ import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
-import com.x.attendance.entity.v2.AttendanceV2CheckInRecordProperties;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -47,29 +46,25 @@ public class ActionFieldWorkJobFinished extends BaseAction {
                 throw new ExceptionEmptyParameter("optType");
             }
 
-            AttendanceV2CheckInRecordProperties properties = record.getProperties();
-            if (properties != null) {
-                emc.beginTransaction(AttendanceV2CheckInRecord.class);
-                if (type_field_work_job_finished.equals(type)) {
-                    properties.finishFieldWorkJob();
-                } else {
-                    properties.cancelFieldWorkJob();
-                }
-                if (StringUtils.isNotEmpty(wi.getJobId())) {
-                    properties.setFieldWorkJobId(wi.getJobId());
-                }
-                try {
-                    if (BooleanUtils.isTrue(wi.getNeedResetTime())) {
-                        Date onDutyTime = DateTools.parse(record.getRecordDateString() + " " + record.getPreDutyTime(), DateTools.format_yyyyMMddHHmm);
-                        record.setRecordDate(onDutyTime);
-                    }
-                } catch (Exception e) {
-                    LOGGER.error(e);
-                }
-                record.setProperties(properties);
-                emc.persist(record, CheckPersistType.all);
-                emc.commit();
+            emc.beginTransaction(AttendanceV2CheckInRecord.class);
+            if (type_field_work_job_finished.equals(type)) {
+                record.finishFieldWorkJob();
+            } else {
+                record.cancelFieldWorkJob();
             }
+            if (StringUtils.isNotEmpty(wi.getJobId())) {
+                record.setFieldWorkJobId(wi.getJobId());
+            }
+            try {
+                if (BooleanUtils.isTrue(wi.getNeedResetTime())) {
+                    Date onDutyTime = DateTools.parse(record.getRecordDateString() + " " + record.getPreDutyTime(), DateTools.format_yyyyMMddHHmm);
+                    record.setRecordDate(onDutyTime);
+                }
+            } catch (Exception e) {
+                LOGGER.error(e);
+            }
+            emc.persist(record, CheckPersistType.all);
+            emc.commit();
             Wo wo = new Wo();
             wo.setValue(true);
             result.setData(wo);

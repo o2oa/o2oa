@@ -82,6 +82,7 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
 
     public void onPersist() throws Exception {
     }
+
     /*
      * =============================================================================
      * ===== 以上为 JpaObject 默认字段
@@ -286,13 +287,44 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
     @Column(length = JpaObject.length_id, name = ColumnNamePrefix + requestDataId_FIELDNAME)
     private String requestDataId;
 
-    public static final String properties_FIELDNAME = "properties";
-    @FieldDescribe("打卡记录属性，存储一些扩展信息.")
-    @Persistent
-    @Strategy(JsonPropertiesValueHandler)
-    @Column(length = JpaObject.length_1M, name = ColumnNamePrefix + properties_FIELDNAME)
-    private AttendanceV2CheckInRecordProperties properties;
 
+    public static final String fieldWorkJobId_FIELDNAME = "fieldWorkJobId";
+    @FieldDescribe("外勤打卡关联工作id.")
+    @Column(length = JpaObject.length_id, name = ColumnNamePrefix + fieldWorkJobId_FIELDNAME)
+    private String fieldWorkJobId;
+
+    public static final String fieldWorkJobStatus_FIELDNAME = "fieldWorkJobStatus";
+    @FieldDescribe("外勤打卡关联工作状态，1:审批中，2:已审核.)")
+    @Column( name = ColumnNamePrefix + fieldWorkJobStatus_FIELDNAME)
+    private Integer fieldWorkJobStatus;
+
+    public String getFieldWorkJobId() {
+        return fieldWorkJobId;
+    }
+
+    public void setFieldWorkJobId(String fieldWorkJobId) {
+        this.fieldWorkJobId = fieldWorkJobId;
+    }
+
+    public Integer getFieldWorkJobStatus() {
+        return fieldWorkJobStatus;
+    }
+
+    public void setFieldWorkJobStatus(Integer fieldWorkJobStatus) {
+        this.fieldWorkJobStatus = fieldWorkJobStatus;
+    }
+
+    public void startFieldWorkJob(String jobId) {
+        this.setFieldWorkJobId(jobId);
+        this.setFieldWorkJobStatus(1);
+    }
+    public void finishFieldWorkJob() {
+        this.setFieldWorkJobStatus(2);
+    }
+    public void cancelFieldWorkJob() {
+        this.setFieldWorkJobId(null);
+        this.setFieldWorkJobStatus(null);
+    }
 
     /**
      * 判断当前打卡记录是否为异常数据
@@ -324,15 +356,6 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
     public boolean hasLeaveOrRequest() {
         return StringUtils.isNotEmpty(getLeaveDataId()) || StringUtils.isNotEmpty(
                 getRequestDataId());
-    }
-
-
-    public AttendanceV2CheckInRecordProperties getProperties() {
-        return properties;
-    }
-
-    public void setProperties(AttendanceV2CheckInRecordProperties properties) {
-        this.properties = properties;
     }
 
     public Boolean getOffDutyNextDay() {

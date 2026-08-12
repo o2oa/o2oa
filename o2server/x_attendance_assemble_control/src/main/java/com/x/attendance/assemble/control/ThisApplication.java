@@ -1,8 +1,10 @@
 package com.x.attendance.assemble.control;
 
+import com.x.base.core.project.ApplicationForkJoinWorkerThreadFactory;
 import com.x.base.core.project.message.MessageConnector;
 import java.util.List;
 
+import java.util.concurrent.ForkJoinPool;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,6 +34,14 @@ public class ThisApplication {
     private ThisApplication() {
         // nothing
     }
+
+    private static final ForkJoinPool FORKJOINPOOL = new ForkJoinPool(Runtime.getRuntime().availableProcessors(),
+            new ApplicationForkJoinWorkerThreadFactory(ThisApplication.class.getPackage()), null, false);
+
+    public static ForkJoinPool forkJoinPool() {
+        return FORKJOINPOOL;
+    }
+
 
     protected static Context context;
 
@@ -104,6 +114,7 @@ public class ThisApplication {
 
     public static void destroy() {
         try {
+            FORKJOINPOOL.shutdown();
             CacheManager.shutdown();
         } catch (Exception e) {
             LOGGER.error(e);

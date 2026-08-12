@@ -9,10 +9,10 @@ import { lp } from "@o2oa/component";
 function fieldWorkFormat(record) {
   if (record && record.fieldWork) {
     let out = lp.appeal.fieldWork;
-    if (record.properties && record.properties.fieldWorkJobId) {
-      if (record.properties.fieldWorkJobStatus === 1) {
+    if ( record.fieldWorkJobId) {
+      if (record.fieldWorkJobStatus === 1) {
         out = lp.appeal.fieldWorkApprovaling;
-      } else if (record.properties.fieldWorkJobStatus === 2) {
+      } else if (record.fieldWorkJobStatus === 2) {
         out = lp.appeal.fieldWorkApprovaled;
       }
     }

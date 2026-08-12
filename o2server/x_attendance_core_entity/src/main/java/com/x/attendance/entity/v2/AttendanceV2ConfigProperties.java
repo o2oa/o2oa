@@ -5,10 +5,10 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import java.util.Collections;
 import java.util.List;
 
-public class AttendanceV2ConfigProperties  extends JsonProperties {
+public class AttendanceV2ConfigProperties extends JsonProperties {
 
-    private static final long serialVersionUID = -8203944978565083706L;
-    
+    private static final long serialVersionUID = 2401225663110698389L;
+
     final List<String> defaultList = Collections.singletonList("考勤管理员");
 
     @FieldDescribe("假期管理默认数据是否已经初始化.")

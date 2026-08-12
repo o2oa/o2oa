@@ -7,8 +7,8 @@ import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.assemble.control.schedule.v2.QueueAttendanceV2DetailModel;
 import com.x.attendance.entity.v2.AttendanceV2AppealInfo;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
-import com.x.attendance.entity.v2.AttendanceV2CheckInRecordProperties;
 import com.x.attendance.entity.v2.AttendanceV2Config;
+import com.x.attendance.entity.v2.AttendanceV2ConfigProperties;
 import com.x.attendance.entity.v2.AttendanceV2Group;
 import com.x.attendance.entity.v2.AttendanceV2Shift;
 import com.x.attendance.entity.v2.AttendanceV2ShiftCheckTime;
@@ -67,14 +67,17 @@ abstract class BaseAction extends StandardJaxrsAction {
                 List<AttendanceV2CheckInRecord> recordList = business.getAttendanceV2ManagerFactory()
                         .listRecordWithPersonAndDate(peopleDn, date);
                 boolean allCompleted = recordList != null && !recordList.isEmpty()
-                        && recordList.stream().noneMatch(record -> AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn
+                                       && recordList.stream().noneMatch(
+                        record -> AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn
                                 .equals(record.getCheckInResult()));
                 if (allCompleted) {
-                    LOGGER.info("当天打卡已全部完成，发起考勤数据生成，Date：{} person: {}", date, peopleDn);
+                    LOGGER.info("当天打卡已全部完成，发起考勤数据生成，Date：{} person: {}", date,
+                            peopleDn);
                     ThisApplication.queueV2Detail
                             .send(new QueueAttendanceV2DetailModel(peopleDn, date, true));
                 } else if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("当天打卡未全部完成，不发起考勤数据生成，Date：{} person: {}", date, peopleDn);
+                    LOGGER.debug("当天打卡未全部完成，不发起考勤数据生成，Date：{} person: {}", date,
+                            peopleDn);
                 }
             } catch (Exception e) {
                 LOGGER.error(e);
@@ -387,9 +390,9 @@ abstract class BaseAction extends StandardJaxrsAction {
     /**
      * 检查打卡结果是否异常，生成对应的申诉数据 这个方法是给打卡的时候用的，所以也有可能是原来异常的打卡，现在正常了。 比如提前打卡了早退了，但是下班后又更新了打卡，这个时候要删除申诉数据
      *
-     * @param record           打卡记录
-     * @param emc              数据库操作对象
-     * @param business         业务对象
+     * @param record   打卡记录
+     * @param emc      数据库操作对象
+     * @param business 业务对象
      */
     protected void generateAppealInfo(AttendanceV2CheckInRecord record, boolean fieldWorkMarkError,
             EntityManagerContainer emc, Business business) {
@@ -508,7 +511,8 @@ abstract class BaseAction extends StandardJaxrsAction {
             // 删除老的数据
             deleteOldRecordList(recordList, emc, business);
             // 自动处理 已经过来的打卡记录 记录为未打卡
-            dealWithOvertimeRecord(emc, business, BooleanUtils.isTrue(group.getFieldWorkMarkError()),
+            dealWithOvertimeRecord(emc, business,
+                    BooleanUtils.isTrue(group.getFieldWorkMarkError()),
                     nowDate, recordListNew);
             return recordListNew;
         }
@@ -754,16 +758,23 @@ abstract class BaseAction extends StandardJaxrsAction {
         if (StringUtils.isEmpty(recordId)) {
             return;
         }
+        ClassLoader classLoader = AttendanceV2ConfigProperties.class.getClassLoader();
+
         CompletableFuture.runAsync(() -> {
+            Thread thread = Thread.currentThread();
+            ClassLoader oldClassLoader = thread.getContextClassLoader();
             try {
+                thread.setContextClassLoader(classLoader);
                 executeWithCheckLock("fieldWorkScriptInvoke:" + recordId, () -> {
                     fieldWorkScriptInvoke(recordId);
                     return null;
                 });
             } catch (Exception e) {
                 LOGGER.error(e);
+            } finally {
+                thread.setContextClassLoader(oldClassLoader);
             }
-        });
+        }, ThisApplication.forkJoinPool());
     }
     // 外勤打卡如果有配置脚本，就执行脚本
     private void fieldWorkScriptInvoke(String recordId) throws Exception {
@@ -780,16 +791,15 @@ abstract class BaseAction extends StandardJaxrsAction {
             List<AttendanceV2Config> list = emc.listAll(AttendanceV2Config.class);
             if (list != null && !list.isEmpty()) {
                 AttendanceV2Config config = list.get(0);
-                if (config.getProperties() != null && StringUtils.isNotEmpty(config.getProperties().getFieldWorkExecuteScript())) {
-                     invokeScriptName = config.getProperties().getFieldWorkExecuteScript();
+                if (StringUtils.isNotEmpty(config.getFieldWorkExecuteScript())) {
+                    invokeScriptName = config.getFieldWorkExecuteScript();
                 }
             }
             if (StringUtils.isEmpty(invokeScriptName)) {
                 LOGGER.debug("没有配置外勤打卡执行脚本，不执行外勤打卡脚本");
                 return;
             }
-            AttendanceV2CheckInRecordProperties properties = record.getProperties();
-            if (properties != null && StringUtils.isNotEmpty(properties.getFieldWorkJobId())) {
+            if (  StringUtils.isNotEmpty(record.getFieldWorkJobId())) {
                 LOGGER.debug("外勤打卡脚本已执行过，不重复执行，recordId: {}", recordId);
                 return;
             }
@@ -797,21 +807,19 @@ abstract class BaseAction extends StandardJaxrsAction {
             body.setRecord(record);
             ActionResponse response = CipherConnectionAction.post(false, 4000, 8000,
                     Config.url_x_program_center_jaxrs("invoke", invokeScriptName, "execute"), body);
-            FieldWorkScriptInvokeResponse wo = response.getData(FieldWorkScriptInvokeResponse.class);
+            FieldWorkScriptInvokeResponse wo = response.getData(
+                    FieldWorkScriptInvokeResponse.class);
             if (wo != null && StringUtils.isNotEmpty(wo.getJobid())) {
                 LOGGER.debug("外勤打卡执行脚本完成，jobid: {}", wo.getJobid());
                 emc.beginTransaction(AttendanceV2CheckInRecord.class);
-                if (properties == null) {
-                    properties = new AttendanceV2CheckInRecordProperties();
-                }
-                properties.startFieldWorkJob(wo.getJobid());
-                record.setProperties(properties);
+                record.startFieldWorkJob(wo.getJobid());
                 emc.persist(record, CheckPersistType.all);
                 emc.commit();
             } else {
                 LOGGER.debug("外勤打卡执行脚本完成，response: {}", response);
             }
-            LOGGER.info("外勤打卡执行脚本完成，recordId: {}, invokeScriptName: {}", recordId, invokeScriptName);
+            LOGGER.info("外勤打卡执行脚本完成，recordId: {}, invokeScriptName: {}", recordId,
+                    invokeScriptName);
         }
     }
 
@@ -829,6 +837,7 @@ abstract class BaseAction extends StandardJaxrsAction {
             this.record = record;
         }
     }
+
     public static class FieldWorkScriptInvokeResponse extends GsonPropertyObject {
 
         @FieldDescribe("外勤 invoke 脚本执行后的返回结果")
