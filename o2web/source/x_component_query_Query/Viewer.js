@@ -2961,80 +2961,80 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
         // getExportMaxCount: function(){
         //     return 2000;
         // },
-        exportView: function(){
-            var _self = this;
-            var total = this.getExportTotalCount();
-            var max = this.getExportMaxCount();
-
-            var lp = this.lp.viewExport;
-            var node = this.exportExcelDlgNode = new Element("div");
-            var html = "<div style=\"color: #333333; overflow: hidden;margin-top:20px;\">"+
-                `   <oo-input label='${lp.fileName}' class='filename' value='' style='margin-left: 14px;width: ${layout.mobile?"340px":"435px"};'></oo-input><span>`+
-                "</div>";
-            html += `<div style="color: #333333; overflow: hidden;margin-top:20px;">`+
-                `   <oo-input style="width:${layout.mobile?'200px':'auto'}" label='${lp.exportRange}' class='start' value='${this.exportExcelStart || 1}'></oo-input>` +
-                `   <oo-input style="width:${layout.mobile?'150px':'auto'}" label='${lp.to}' class='end' value='${this.exportExcelEnd || Math.min( total, max )}'></oo-input><span>${lp.item}</span>` +
-                "</div>";
-            html += "<div style=\"clear:both; max-height: 300px; margin-bottom:10px; margin-top:10px; overflow-y:auto;\">"+( lp.description.replace("{count}", total ))+"</div>";
-            node.set("html", html);
-            var check = function () {
-                if(this.value.length == 1){
-                    this.value = this.value.replace(/[^1-9]/g,'')
-                }else{
-                    this.value = this.value.replace(/\D/g,'')
-                }
-                if( this.value.toInt() > total ){
-                    this.value = total;
-                }
-            }
-            node.getElement(".start").addEvent( "keyup", function(){ check.call(this) } );
-            node.getElement(".end").addEvent( "keyup", function(){ check.call(this) } );
-
-            var dlg = o2.DL.open({
-                "title": this.lp.exportExcel,
-                "style": layout.mobile ? 'v10_mobile' : "user",
-                "isResize": false,
-                "content": node,
-                "width": layout.mobile ? '100%' : 600,
-                "height" : layout.mobile ? '100%' : 260,
-                "buttonList": [
-                    {
-                        "type": "ok",
-                        "text": lp.exportAll,
-                        "action": function (d, e) {
-                            var filename = node.getElement(".filename").get("value");
-                            this._exportViewAll(filename, dlg);
-                        }.bind(this)
-                    },{
-                        "type": "ok",
-                        "text": lp.exportByPaging,
-                        "action": function (d, e) {
-                            var start = node.getElement(".start").get("value");
-                            var end = node.getElement(".end").get("value");
-                            var filename = node.getElement(".filename").get("value");
-                            if( !start || !end ){
-                                MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.inputIntegerNotice, node, {"x": 0, "y": 85});
-                                return false;
-                            }
-                            start = start.toInt();
-                            end = end.toInt();
-                            if( end < start ){
-                                MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.startLargetThanEndNotice, node, {"x": 0, "y": 85});
-                                return false;
-                            }
-                            this.exportExcelStart = start;
-                            this.exportExcelEnd = end;
-                            this._exportView(start, end, filename);
-                            dlg.close();
-                        }.bind(this)
-                    },{
-                        "type": "cancel",
-                        "text": MWF.LP.process.button.cancel,
-                        "action": function () { dlg.close(); }
-                    }
-                ]
-            });
-        },
+        // exportView: function(){
+        //     var _self = this;
+        //     var total = this.getExportTotalCount();
+        //     var max = this.getExportMaxCount();
+        //
+        //     var lp = this.lp.viewExport;
+        //     var node = this.exportExcelDlgNode = new Element("div");
+        //     var html = "<div style=\"color: #333333; overflow: hidden;margin-top:20px;\">"+
+        //         `   <oo-input label='${lp.fileName}' class='filename' value='' style='margin-left: 14px;width: ${layout.mobile?"340px":"435px"};'></oo-input><span>`+
+        //         "</div>";
+        //     html += `<div style="color: #333333; overflow: hidden;margin-top:20px;">`+
+        //         `   <oo-input style="width:${layout.mobile?'200px':'auto'}" label='${lp.exportRange}' class='start' value='${this.exportExcelStart || 1}'></oo-input>` +
+        //         `   <oo-input style="width:${layout.mobile?'150px':'auto'}" label='${lp.to}' class='end' value='${this.exportExcelEnd || Math.min( total, max )}'></oo-input><span>${lp.item}</span>` +
+        //         "</div>";
+        //     html += "<div style=\"clear:both; max-height: 300px; margin-bottom:10px; margin-top:10px; overflow-y:auto;\">"+( lp.description.replace("{count}", total ))+"</div>";
+        //     node.set("html", html);
+        //     var check = function () {
+        //         if(this.value.length == 1){
+        //             this.value = this.value.replace(/[^1-9]/g,'')
+        //         }else{
+        //             this.value = this.value.replace(/\D/g,'')
+        //         }
+        //         if( this.value.toInt() > total ){
+        //             this.value = total;
+        //         }
+        //     }
+        //     node.getElement(".start").addEvent( "keyup", function(){ check.call(this) } );
+        //     node.getElement(".end").addEvent( "keyup", function(){ check.call(this) } );
+        //
+        //     var dlg = o2.DL.open({
+        //         "title": this.lp.exportExcel,
+        //         "style": layout.mobile ? 'v10_mobile' : "user",
+        //         "isResize": false,
+        //         "content": node,
+        //         "width": layout.mobile ? '100%' : 600,
+        //         "height" : layout.mobile ? '100%' : 260,
+        //         "buttonList": [
+        //             {
+        //                 "type": "ok",
+        //                 "text": lp.exportAll,
+        //                 "action": function (d, e) {
+        //                     var filename = node.getElement(".filename").get("value");
+        //                     this._exportViewAll(filename, dlg);
+        //                 }.bind(this)
+        //             },{
+        //                 "type": "ok",
+        //                 "text": lp.exportByPaging,
+        //                 "action": function (d, e) {
+        //                     var start = node.getElement(".start").get("value");
+        //                     var end = node.getElement(".end").get("value");
+        //                     var filename = node.getElement(".filename").get("value");
+        //                     if( !start || !end ){
+        //                         MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.inputIntegerNotice, node, {"x": 0, "y": 85});
+        //                         return false;
+        //                     }
+        //                     start = start.toInt();
+        //                     end = end.toInt();
+        //                     if( end < start ){
+        //                         MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.startLargetThanEndNotice, node, {"x": 0, "y": 85});
+        //                         return false;
+        //                     }
+        //                     this.exportExcelStart = start;
+        //                     this.exportExcelEnd = end;
+        //                     this._exportView(start, end, filename);
+        //                     dlg.close();
+        //                 }.bind(this)
+        //             },{
+        //                 "type": "cancel",
+        //                 "text": MWF.LP.process.button.cancel,
+        //                 "action": function () { dlg.close(); }
+        //             }
+        //         ]
+        //     });
+        // },
         _exportViewAll: function (filename, dlg){
             MWF.require("MWF.widget.Mask", null, false);
             var mask = new MWF.widget.Mask({"style": "desktop", "loading": true});
@@ -5157,15 +5157,25 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
         var lp = this.lp.viewExport;
 
         var node = this.exportExcelDlgNode = new Element("div");
-        var html = "<div style=\"color: #333333; overflow: hidden;margin-top:20px;\">"+
-            `   <oo-input label='${lp.fileName}' class='filename' value='' style='margin-left: 14px;width: ${layout.mobile?"340px":"435px"};'></oo-input><span>`+
-            "</div>";
-        html += `<div style="color: #333333; overflow: hidden;margin-top:20px;">`+
-            `   <oo-input style="width:${layout.mobile?'200px':'auto'}" label='${lp.exportRange}' class='start' value='${this.exportExcelStart || 1}'></oo-input>` +
-            `   <oo-input style="width:${layout.mobile?'150px':'auto'}" label='${lp.to}' class='end' value='${this.exportExcelEnd || Math.min( total, max )}'></oo-input><span>${lp.item}</span>` +
-            "</div>";
-        html += "<div style=\"clear:both; max-height: 300px; margin-bottom:10px; margin-top:10px; overflow-y:auto;\">"+( lp.description.replace("{count}", total ))+"</div>";
+        var html = `
+        <div style="display: flex; flex-direction: column; gap: 10px;padding: 20px">
+            <div>
+                <oo-input label='${lp.fileName}' class='filename' value='' style='100%'></oo-input><span>
+            </div>
+            <div>
+                <oo-input type="number" label='${lp.exportRange}' class='start' value='${this.exportExcelStart || 1}'></oo-input>
+                <oo-input type="number" label='${lp.to}' class='end' value='${this.exportExcelEnd || Math.min( total, max )}'></oo-input>
+                <span>${lp.item}</span>
+            </div>
+            <div>${ lp.description.replace("{count}", total )}</div>
+            <div>
+                <div class="selector"></div>
+            </div>
+        </div>
+       `;
         node.set("html", html);
+        this.loadSelector(node.querySelector('.selector'));
+
         var check = function () {
             if(this.value.length == 1){
                 this.value = this.value.replace(/[^1-9]/g,'')
@@ -5227,7 +5237,19 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
             ]
         });
     },
-
+    loadSelector: function (node) {
+        o2.xDesktop.requireApp('Template', 'Selector.Custom', null, false);
+        var selector = new MWF.xApplication.Template.Selector.Custom(node, {
+            "style": layout.mobile ? "v10_mobile" : "v10",
+            "embedded" : true,
+            "selectableItems": this.viewJson.selectList.map(d=>{
+                name: d.displayName, id: d.id,
+                isItem: true, column: d
+            })
+        });
+        selector.load();
+        this.selector = selector;
+    },
     _exportViewAll: function (filename, dlg){
         MWF.require("MWF.widget.Mask", null, false);
         var mask = new MWF.widget.Mask({"style": "desktop", "loading": true});
