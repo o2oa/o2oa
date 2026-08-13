@@ -49,6 +49,9 @@ public class Runtime extends GsonPropertyObject {
 	@FieldDescribe("限定结果集")
 	public List<String> bundleList = new TreeList<>();
 
+	@FieldDescribe("指定字段列表")
+	public SelectEntries selectList;
+
 	public boolean hasBundle = false;
 
 	public boolean isManager = false;

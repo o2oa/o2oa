@@ -20,6 +20,7 @@ import com.x.query.core.entity.View;
 import com.x.query.core.express.plan.FilterEntry;
 import com.x.query.core.express.plan.Plan;
 import com.x.query.core.express.plan.Runtime;
+import com.x.query.core.express.plan.SelectEntries;
 import com.x.query.core.express.plan.SelectEntry;
 import java.util.HashMap;
 import java.util.List;
@@ -52,10 +53,11 @@ class ActionExecuteV2 extends BaseAction {
 			if (!business.readable(effectivePerson, view)) {
 				throw new ExceptionAccessDenied(effectivePerson, view);
 			}
-			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getOrderList(), wi.getParameter(),
-					size, false);
+			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getOrderList(),
+					wi.getParameter(), size, false);
 			runtime.page = page;
 			runtime.hasBundle = true;
+			runtime.selectList = wi.getSelectList();
 		}
 		Pair<List<String>, Long> pair;
 		if(StringUtils.isBlank(wi.getSearchKey())) {
@@ -81,6 +83,10 @@ class ActionExecuteV2 extends BaseAction {
 		@FieldDescribe("过滤")
 		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "FilterEntry", fieldValue = "{value='',otherValue='',path='',formatType='',logic='',comparison=''}", fieldSample = "{'logic':'逻辑运算:and|or','path':'data数据的路径:$work.title','comparison':'比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo|range','value':'7月','formatType':'textValue|numberValue|dateTimeValue|booleanValue'}")
 		private List<FilterEntry> filterList;
+
+		@FieldDescribe("指定字段列表")
+		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "SelectEntry", fieldValue = "{\"orderType\": \"\",\"column\": \"\",\"displayName\": \"\",\"path\": \"\"}")
+		private SelectEntries selectList;
 
 		@FieldDescribe("参数")
 		private Map<String, String> parameter = new HashMap<>();
@@ -120,6 +126,13 @@ class ActionExecuteV2 extends BaseAction {
 			this.orderList = orderList;
 		}
 
+		public SelectEntries getSelectList() {
+			return selectList;
+		}
+
+		public void setSelectList(SelectEntries selectList) {
+			this.selectList = selectList;
+		}
 	}
 
 }
