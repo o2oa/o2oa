@@ -247,6 +247,15 @@
     color: #333333;
 }
 
+.leave-account-balance-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 8px;
+    min-width: 220px;
+}
+
 .leave-account-balance-item {
     display: inline-flex;
     align-items: center;
@@ -265,5 +274,45 @@
 }
 
 .leave-account-balance-item-primary .leave-account-balance-value {
+    color: #1f7a45;
+}
+
+.leave-account-adjust-button {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    min-width: 46px;
+    height: 26px;
+    margin: 0 !important;
+    padding: 0 10px !important;
+    border: 1px solid #d7e6f8 !important;
+    border-radius: 3px !important;
+    background: #f7fbff !important;
+    color: #2f80ed;
+    font-size: 12px;
+    line-height: 24px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.leave-account-adjust-button:hover {
+    border-color: #2f80ed !important;
+    background: #eef6ff !important;
+}
+
+.leave-adjust-form {
+    width: 480px;
+}
+
+.leave-adjust-static {
+    min-height: 34px;
+    line-height: 34px;
+    color: #333333;
+    word-break: break-all;
+}
+
+.leave-adjust-static.leave-account-balance-item-primary {
+    font-weight: bold;
     color: #1f7a45;
 }

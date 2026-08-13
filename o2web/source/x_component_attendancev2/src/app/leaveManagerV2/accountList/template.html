@@ -40,26 +40,68 @@
                 <tr oo-each="$.accountTableList" oo-item="row">
                     <td>{{row.value.personName}}</td>
                     <td oo-each="row.value.balanceList" oo-item="balance">
-                        <div oo-if="balance.value.limited" class="leave-account-balance" title="{{balance.value.title}}">
-                            <span class="leave-account-balance-item">
-                                <span class="leave-account-balance-label">{{$.lp.leaveManagerV2.account.totalGrantedShort}}</span>
-                                <span class="leave-account-balance-value">{{balance.value.totalGranted}}</span>
-                            </span>
-                            <span class="leave-account-balance-separator">/</span>
-                            <span class="leave-account-balance-item">
-                                <span class="leave-account-balance-label">{{$.lp.leaveManagerV2.account.totalUsedShort}}</span>
-                                <span class="leave-account-balance-value">{{balance.value.totalUsed}}</span>
-                            </span>
-                            <span class="leave-account-balance-separator">/</span>
-                            <span class="leave-account-balance-item leave-account-balance-item-primary">
-                                <span class="leave-account-balance-label">{{$.lp.leaveManagerV2.account.balanceShort}}</span>
-                                <span class="leave-account-balance-value">{{balance.value.balance}}</span>
-                            </span>
+                        <div oo-if="balance.value.limited" class="leave-account-balance-wrap">
+                            <div class="leave-account-balance" title="{{balance.value.title}}">
+                                <span class="leave-account-balance-item">
+                                    <span class="leave-account-balance-label">{{$.lp.leaveManagerV2.account.totalGrantedShort}}</span>
+                                    <span class="leave-account-balance-value">{{balance.value.totalGranted}}</span>
+                                </span>
+                                <span class="leave-account-balance-separator">/</span>
+                                <span class="leave-account-balance-item">
+                                    <span class="leave-account-balance-label">{{$.lp.leaveManagerV2.account.totalUsedShort}}</span>
+                                    <span class="leave-account-balance-value">{{balance.value.totalUsed}}</span>
+                                </span>
+                                <span class="leave-account-balance-separator">/</span>
+                                <span class="leave-account-balance-item leave-account-balance-item-primary">
+                                    <span class="leave-account-balance-label">{{$.lp.leaveManagerV2.account.balanceShort}}</span>
+                                    <span class="leave-account-balance-value">{{balance.value.balance}}</span>
+                                </span>
+                            </div>
+                            <button class="leave-account-adjust-button" @click="this.clickOpenLedgerAdjust(row.value, balance.value)">{{this.getAdjustLabel('adjust')}}</button>
                         </div>
                         <span oo-if="!balance.value.limited">{{balance.value.value}}</span>
                     </td>
                 </tr>
             </table>
+        </div>
+    </div>
+
+    <div class="leave-import-mask" oo-if="$.adjustFormShow">
+        <div class="o2-form leave-import-form leave-adjust-form">
+            <div class="o2-form-header">
+                <span class="title">{{this.getAdjustLabel('title')}}</span>
+                <button class="close" @click="closeLedgerAdjust"><i class="o2icon-icon_off"></i></button>
+            </div>
+            <div class="o2-form-content leave-import-content">
+                <div class="leave-import-row">
+                    <div class="leave-import-label">{{this.getAdjustLabel('person')}}</div>
+                    <div class="leave-import-field leave-adjust-static">{{$.currentAdjustData ? $.currentAdjustData.personName : ''}}</div>
+                </div>
+                <div class="leave-import-row">
+                    <div class="leave-import-label">{{this.getAdjustLabel('leaveType')}}</div>
+                    <div class="leave-import-field leave-adjust-static">{{$.currentAdjustData ? $.currentAdjustData.leaveTypeName : ''}}</div>
+                </div>
+                <div class="leave-import-row">
+                    <div class="leave-import-label">{{this.getAdjustLabel('currentBalance')}}</div>
+                    <div class="leave-import-field leave-adjust-static leave-account-balance-item-primary">{{$.currentAdjustData ? $.currentAdjustData.balance : ''}}</div>
+                </div>
+                <div class="leave-import-row">
+                    <div class="leave-import-label"><span class="required">*</span>{{this.getAdjustLabel('adjustedAmount')}}</div>
+                    <div class="leave-import-field">
+                        <input class="leave-import-input" type="text" oo-model="adjustForm.adjustedAmount" placeholder="{{this.getAdjustLabel('adjustedAmountPlaceholder')}}" />
+                    </div>
+                </div>
+                <div class="leave-import-row">
+                    <div class="leave-import-label">{{this.getAdjustLabel('expireTime')}}</div>
+                    <div class="leave-import-field">
+                        <o-date-picker oo-prop="{'value': $.adjustForm.expireTime}" oo-model="adjustForm.expireTime"></o-date-picker>
+                    </div>
+                </div>
+            </div>
+            <div class="o2-form-footer leave-import-footer">
+                <button style="width: 120px;" class="mainColor_bg" @click="submitLedgerAdjust">{{$.adjustSubmitting ? this.getAdjustLabel('submitting') : this.getAdjustLabel('submit')}}</button>
+                <button class="lightColor_bg" @click="closeLedgerAdjust">{{$.lp.cancel}}</button>
+            </div>
         </div>
     </div>
 </div>
