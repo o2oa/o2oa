@@ -365,6 +365,9 @@ MWF.xApplication.query.ViewDesigner.LP = {
 
         "export": "导出",
         "exportNotice": "一次性最多导出2000条",
+        "exportView": "导出视图",
+        "exportViewNotice": "如果不选择，使用本视图",
+        "allowSelectColumn": "允许选择列",
         "exportWidth": "宽度",
         "exportEnable": "允许导出",
         "isTime": "时间类型",

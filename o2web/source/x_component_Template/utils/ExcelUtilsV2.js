@@ -346,7 +346,7 @@ MWF.ExcelExporter = new Class({
 
         this.setOptions(options);
     },
-    execute: function(data, callback){
+    execute: function(data, callback, mergeConfig){
         // var array = [["姓名","性别","学历","专业","出生日期","毕业日期"]];
         // array.push([ "张三","男","大学本科","计算机","2001-1-2","2019-9-2" ]);
         // array.push([ "李四","男","大学专科","数学","1998-1-2","2018-9-2" ]);
@@ -370,7 +370,7 @@ MWF.ExcelExporter = new Class({
 
                     var exporter = new MWF.ExcelExporter.Sheet(worksheet, config);
                     this.sheetExporters.push(exporter);
-                    return exporter.execute(data[i]);
+                    return exporter.execute(data[i], ()=>{}, mergeConfig[i]);
                 });
                 Promise.all(ps).then(()=>{
                     this.fireEvent('beforeDownload', [this]);
@@ -402,10 +402,12 @@ MWF.ExcelExporter.Sheet = new Class({
         },
         'columnTitleStyle': {
             font: { name: '宋体', family: 4, size: 12, bold: true },
+            border: { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} },
             alignment: { vertical: 'middle', horizontal: 'center', wrapText: true }
         },
         'columnContentStyle': {
             font: { name: '宋体', family: 4, size: 12, bold: false },
+            border: { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} },
             alignment: { vertical: 'middle', horizontal: 'center', wrapText: true }
         },
         sheetName: "Sheet1",
@@ -439,11 +441,26 @@ MWF.ExcelExporter.Sheet = new Class({
         this.options.offsetColumnIndex = parseInt(MWF.ExcelUtilsV2.colName2Index(obj.letters)) - 1;
         this.options.offsetRowIndex = parseInt(obj.numbers) - 1;
     },
-    execute: function(data, callback){
+    execute: function(data, callback, mergeConfig){
         // var array = [["姓名","性别","学历","专业","出生日期","毕业日期"]];
         // array.push([ "张三","男","大学本科","计算机","2001-1-2","2019-9-2" ]);
         // array.push([ "李四","男","大学专科","数学","1998-1-2","2018-9-2" ]);
         // this.exportToExcel(array, "导出数据"+(new Date).format("db"));
+        //第三个参数
+        // [
+        //     {
+        //         row: 0,           // 相对表头起始行
+        //         col: 2,           // 相对表头起始列
+        //         rowSpan: 2,       // 向下合并几行
+        //         colSpan: 3        // 向右合并几列
+        //     },
+        //     { row: 0, col: 2, rowSpan: 2 },          // 纵向合并
+        //     { row: 0, col: 3, colSpan: 2 },          // 横向合并
+        //     { start: 'C3', end: 'E5' },              // 区域合并（最直观）
+        //     { type: 'title', level: 0 }              // 语义化合并（高级）
+        // ]
+
+        this.mergeConfig = mergeConfig || [];
 
         this.fireEvent('beforeAppendData', [this]);
 
@@ -701,6 +718,66 @@ MWF.ExcelExporter.Sheet = new Class({
             this._setTemplateContent();
         }
 
+        this._applyMergeRules();
+    },
+    _applyMergeRules: function(){
+        debugger;
+        var cfg = this.mergeConfig || [];
+
+        cfg.each(function(rule){
+            if(rule.start && rule.end){
+                this._mergeByRange(rule.start, rule.end);
+            }
+            else if(rule.row != null && rule.col != null){
+                this._mergeBySpan(rule);
+            }
+            else if(rule.type === 'title'){
+                this._mergeTitleByRule(rule);
+            }
+        }.bind(this));
+    },
+    _mergeByRange: function(start, end){
+        var s = MWF.ExcelUtilsV2.extractLettersAndNumbers(start);
+        var e = MWF.ExcelUtilsV2.extractLettersAndNumbers(end);
+
+        var startCol = MWF.ExcelUtilsV2.colName2Index(s.letters) - 1 + this.options.offsetColumnIndex;
+        var startRow = parseInt(s.numbers) - 1 + this.options.offsetRowIndex;
+        var endCol = MWF.ExcelUtilsV2.colName2Index(e.letters) - 1 + this.options.offsetColumnIndex;
+        var endRow = parseInt(e.numbers) - 1 + this.options.offsetRowIndex;
+
+        this.worksheet.mergeCells(
+            MWF.ExcelUtilsV2.index2ColName(startCol) + (startRow + 1) +
+            ':' +
+            MWF.ExcelUtilsV2.index2ColName(endCol) + (endRow + 1)
+        );
+    },
+    _mergeBySpan: function(rule){
+        var r = rule.row + this.options.offsetRowIndex;
+        var c = rule.col + this.options.offsetColumnIndex;
+
+        var endR = r + (rule.rowSpan || 1) - 1;
+        var endC = c + (rule.colSpan || 1) - 1;
+
+        this.worksheet.mergeCells(
+            MWF.ExcelUtilsV2.index2ColName(c) + (r + 1) +
+            ':' +
+            MWF.ExcelUtilsV2.index2ColName(endC) + (endR + 1)
+        );
+    },
+    _mergeTitleByRule: function(rule){
+        var level = rule.level || 0;
+        var col = rule.colIndex;
+        var span = rule.colSpan || 1;
+
+        var r = level + this.options.offsetRowIndex;
+        var c = col + this.options.offsetColumnIndex;
+        var endC = c + span - 1;
+
+        this.worksheet.mergeCells(
+            MWF.ExcelUtilsV2.index2ColName(c) + (r + 1) +
+            ':' +
+            MWF.ExcelUtilsV2.index2ColName(endC) + (r + 1)
+        );
     },
     setDataValidation: function (){
         var validationSheetName = this.options.sheetName.replaceAll('-', '_')+'O2Validation';

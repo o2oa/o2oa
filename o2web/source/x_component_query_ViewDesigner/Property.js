@@ -535,6 +535,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
         var identityNodes = this.propertyContent.getElements(".MWFPersonIdentity");
         var personNodes = this.propertyContent.getElements(".MWFPersonPerson");
         var personUnitNodes = this.propertyContent.getElements(".MWFPersonUnit");
+        var queryviewNodes = this.propertyContent.getElements(".MWFQueryViewSelect");
 
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function () {
             identityNodes.each(function (node) {
@@ -566,7 +567,51 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     }.bind(this)
                 });
             }.bind(this));
+
+            queryviewNodes.each(function(node){
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
+                    "type": "QueryView",
+                    "count": node.dataset["count"] || 1,
+                    "names": typeOf(this.data[node.get("name")]) === "array" ? this.data[node.get("name")] : [this.data[node.get("name")]],
+                    "onChange": function(ids){this.saveViewItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
         }.bind(this));
+    },
+    saveViewItem: function(node, ids){
+        var name = node.get("name");
+        var oldValue = this.data[name];
+        var count = (node.dataset["count"] || 1).toInt();
+        if( !ids )ids = [];
+        if( count === 1 ){
+            if (ids[0]){
+                var view = ids[0].data;
+                this.data[node.get("name")] = {
+                    "name": view.name,
+                    "alias": view.alias,
+                    "id": view.id,
+                    "appName" : view.appName || view.applicationName || view.query,
+                    "appId": view.appId,
+                    "application": view.application || view.query
+                };
+            }else{
+                this.data[node.get("name")] = null;
+            }
+        }else{
+            this.data[node.get("name")] = ids.map(function (id) {
+                var view = id.data;
+                return {
+                    "name": view.name,
+                    "alias": view.alias,
+                    "id": view.id,
+                    "appName" : view.appName || view.applicationName || view.query,
+                    "appId": view.appId,
+                    "application": view.application || view.query
+                };
+            })
+        }
+
+        if (this.module._checkView) this.module._checkView(null, name, oldValue, this.data[name]);
     },
     savePersonItem: function (node, ids) {
         var values = [];
