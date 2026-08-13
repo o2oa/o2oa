@@ -26,7 +26,6 @@ import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpToken;
-import com.x.base.core.project.http.TokenType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
@@ -37,7 +36,7 @@ import com.x.message.core.entity.Message_;
 
 /**
  * websocket连接
- * 
+ *
  * @author sword
  */
 @ServerEndpoint(value = "/ws/collaboration", configurator = WsConfigurator.class)
@@ -51,27 +50,34 @@ public class ActionCollaboration {
 	public void open(Session session) {
 		EffectivePerson effectivePerson = (EffectivePerson) session.getUserProperties().get(HttpToken.X_PERSON);
 
-		LOGGER.debug("webSocket OnOpen: tokenType:{}, distinguishedName:{}.", effectivePerson::getTokenType,
-				effectivePerson::getDistinguishedName);
-
-		if (!TokenType.anonymous.equals(effectivePerson.getTokenType())) {
-			ThisApplication.wsClients().put(session, effectivePerson.getDistinguishedName());
+		if ((null == effectivePerson) || effectivePerson.isAnonymous()) {
+			LOGGER.warn("webSocket OnOpen rejected, Authentication required.");
 			try {
-				List<Message> messages = this.load(effectivePerson);
-				WsMessage ws = null;
-				for (Message o : messages) {
-					ws = new WsMessage();
-					ws.setType(o.getType());
-					ws.setPerson(o.getPerson());
-					ws.setTitle(o.getTitle());
-					JsonElement jsonElement = XGsonBuilder.instance().fromJson(o.getBody(), JsonElement.class);
-					ws.setBody(jsonElement);
-						session.getBasicRemote().sendText(XGsonBuilder.toJson(ws));
-						// session.getAsyncRemote().sendText(XGsonBuilder.toJson(ws));
-				}
+				session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Authentication required"));
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
+			return;
+		}
+
+		LOGGER.debug("webSocket OnOpen: tokenType:{}, distinguishedName:{}.", effectivePerson::getTokenType,
+				effectivePerson::getDistinguishedName);
+
+		ThisApplication.wsClients().put(session, effectivePerson.getDistinguishedName());
+		try {
+			List<Message> messages = this.load(effectivePerson);
+			WsMessage ws = null;
+			for (Message o : messages) {
+				ws = new WsMessage();
+				ws.setType(o.getType());
+				ws.setPerson(o.getPerson());
+				ws.setTitle(o.getTitle());
+				JsonElement jsonElement = XGsonBuilder.instance().fromJson(o.getBody(), JsonElement.class);
+				ws.setBody(jsonElement);
+				session.getBasicRemote().sendText(XGsonBuilder.toJson(ws));
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
 		}
 	}
 
