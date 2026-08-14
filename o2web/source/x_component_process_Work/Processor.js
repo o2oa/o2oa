@@ -778,6 +778,17 @@ MWF.xApplication.process.Work.Processor = new Class({
             var h = this.handwritingActionNode.getSize().y + this.handwritingActionNode.getStyle("margin-top").toInt() + this.handwritingActionNode.getStyle("margin-bottom").toInt();
             h = y - h;
             this.handwritingAreaNode.setStyle("height", "" + h + "px");
+
+            this.isCollectNode = new Element('oo-checkbox-group', {styles:{
+                    position: "absolute",
+                    bottom: "3px",
+                    right: "5px"
+                }}).inject(this.handwritingAreaNode);
+            new Element('oo-checkbox', {
+                text: MWF.xApplication.process.Work.LP.collect,
+                value: "yes"
+            }).inject(this.isCollectNode);
+
         }else{
             this.handwritingAreaNode.setStyle("height", "" + y + "px");
         }
@@ -788,10 +799,33 @@ MWF.xApplication.process.Work.Processor = new Class({
                 "toolHidden": this.options.tabletToolHidden || [],
                 "contentWidth": this.options.tabletWidth || 0,
                 "contentHeight": this.options.tabletHeight || 0,
+                tools: [
+                    "save", "|",
+                    "undo",
+                    "redo", "|",
+                    "eraser", //橡皮
+                    "input", //输入法
+                    "pen", "|", //笔画
+                    "eraserRadius",
+                    "size",
+                    "color",
+                    "fontSize", "|",
+                    // "fontFamily",
+                    "image",
+                    "imageClipper", "|",
+                    "collect", "|",
+                    "reset",
+                    "cancel"
+                ],
                 "onSave": function (base64code, base64Image, imageFile) {
                     if( !this.tablet.isBlank() ){
                         this.handwritingFile = imageFile;
                         this.handwritingAction.setStyles( this.css.inputOpinionHandwritingOkAction )
+
+                        if( !!this.isCollectNode?.value?.length ){
+                            this.tablet.saveToCollection();
+                            this.isCollectNode.value = [];
+                        }
                     }else{
                         this.handwritingFile = null
                         this.handwritingAction.setStyles( this.css.inputOpinionHandwritingAction );
