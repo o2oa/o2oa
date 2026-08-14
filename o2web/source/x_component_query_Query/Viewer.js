@@ -2955,85 +2955,14 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 //this.exportNode = new Element("button", {"text": this.lp.exportExcel}).inject(this.exportAreaNode);
             }
         },
-        // getExportTotalCount: function(){
-        //         return this.count;
-        // },
-        // getExportMaxCount: function(){
-        //     return 2000;
-        // },
         exportView: function(){
-            var _self = this;
-            var total = this.getExportTotalCount();
-            var max = this.getExportMaxCount();
-
-            var lp = this.lp.viewExport;
-            var node = this.exportExcelDlgNode = new Element("div");
-            var html = "<div style=\"color: #333333; overflow: hidden;margin-top:20px;\">"+
-                `   <oo-input label='${lp.fileName}' class='filename' value='' style='margin-left: 14px;width: ${layout.mobile?"340px":"435px"};'></oo-input><span>`+
-                "</div>";
-            html += `<div style="color: #333333; overflow: hidden;margin-top:20px;">`+
-                `   <oo-input style="width:${layout.mobile?'200px':'auto'}" label='${lp.exportRange}' class='start' value='${this.exportExcelStart || 1}'></oo-input>` +
-                `   <oo-input style="width:${layout.mobile?'150px':'auto'}" label='${lp.to}' class='end' value='${this.exportExcelEnd || Math.min( total, max )}'></oo-input><span>${lp.item}</span>` +
-                "</div>";
-            html += "<div style=\"clear:both; max-height: 300px; margin-bottom:10px; margin-top:10px; overflow-y:auto;\">"+( lp.description.replace("{count}", total ))+"</div>";
-            node.set("html", html);
-            var check = function () {
-                if(this.value.length == 1){
-                    this.value = this.value.replace(/[^1-9]/g,'')
-                }else{
-                    this.value = this.value.replace(/\D/g,'')
-                }
-                if( this.value.toInt() > total ){
-                    this.value = total;
-                }
-            }
-            node.getElement(".start").addEvent( "keyup", function(){ check.call(this) } );
-            node.getElement(".end").addEvent( "keyup", function(){ check.call(this) } );
-
-            var dlg = o2.DL.open({
-                "title": this.lp.exportExcel,
-                "style": layout.mobile ? 'v10_mobile' : "user",
-                "isResize": false,
-                "content": node,
-                "width": layout.mobile ? '100%' : 600,
-                "height" : layout.mobile ? '100%' : 260,
-                "buttonList": [
-                    {
-                        "type": "ok",
-                        "text": lp.exportAll,
-                        "action": function (d, e) {
-                            var filename = node.getElement(".filename").get("value");
-                            this._exportViewAll(filename, dlg);
-                        }.bind(this)
-                    },{
-                        "type": "ok",
-                        "text": lp.exportByPaging,
-                        "action": function (d, e) {
-                            var start = node.getElement(".start").get("value");
-                            var end = node.getElement(".end").get("value");
-                            var filename = node.getElement(".filename").get("value");
-                            if( !start || !end ){
-                                MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.inputIntegerNotice, node, {"x": 0, "y": 85});
-                                return false;
-                            }
-                            start = start.toInt();
-                            end = end.toInt();
-                            if( end < start ){
-                                MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.startLargetThanEndNotice, node, {"x": 0, "y": 85});
-                                return false;
-                            }
-                            this.exportExcelStart = start;
-                            this.exportExcelEnd = end;
-                            this._exportView(start, end, filename);
-                            dlg.close();
-                        }.bind(this)
-                    },{
-                        "type": "cancel",
-                        "text": MWF.LP.process.button.cancel,
-                        "action": function () { dlg.close(); }
-                    }
-                ]
-            });
+            const exporter = new MWF.xApplication.query.Query.Viewer.Exporter({
+                viewId: this.viewJson.exportView?.id || this.json.id,
+                filterList: this.currentFilterData?.filterList || [],
+                searchKey: this.currentFilterData?.searchKey || '',
+                allowSelectColumn: this.viewJson.allowSelectColumn
+            }, this)
+            exporter.exportView();
         },
         _exportViewAll: function (filename, dlg){
             MWF.require("MWF.widget.Mask", null, false);
@@ -3093,198 +3022,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 a.click();
                 a.destroy();
             }.bind(this));
-        },
-        // _exportView: function(start, end, filename){
-        //     var excelName = filename || (this.json.name + "(" + start + "-" + end + ").xlsx");
-        //
-        //     this.createLoadding();
-        //
-        //     var exportArray = [];
-        //
-        //     var titleArray = [];
-        //     var colWidthArr = [];
-        //     var dateIndexArray = [];
-        //     var numberIndexArray = [];
-        //     var totalArray = [];
-        //     var idx = 0;
-        //
-        //     if (this.viewJson.isSequence === "yes") {
-        //         titleArray.push( this.lp.sequence );
-        //         colWidthArr.push(100);
-        //         totalArray.push('');
-        //         idx = idx + 1;
-        //     }
-        //
-        //     Object.each(this.entries, function (c, k) {
-        //         if (this.hideColumns.indexOf(k) === -1 && c.exportEnable !== false) {
-        //             titleArray.push(c.displayName);
-        //             colWidthArr.push(c.exportWidth || 200);
-        //             if( c.isTime )dateIndexArray.push(idx);
-        //             if( c.isNumber )numberIndexArray.push(idx);
-        //             totalArray.push( ['number', 'count'].contains(c.total) ? new Decimal(0) : '' );
-        //             idx++;
-        //         }
-        //     }.bind(this));
-        //     exportArray.push(titleArray);
-        //
-        //     this.loadExportData(start, end, function (dataList) {
-        //         var rowIndex = 0;
-        //             debugger;
-        //             dataList.each(function (data, i) {
-        //             // data.each(function (d, i) {
-        //             var d = data.data;
-        //
-        //                 rowIndex = rowIndex + 1;
-        //
-        //                 var columnIndex = 0;
-        //
-        //                 var dataArray = [];
-        //                 if (this.viewJson.isSequence === "yes") {
-        //                     dataArray.push( (start-1)+rowIndex );
-        //                     columnIndex++;
-        //                 }
-        //                 Object.each(this.entries, function (c, k) {
-        //                     if (this.hideColumns.indexOf(k) === -1 && c.exportEnable !== false) {
-        //                         var text = this.getExportText(c, k, d);
-        //                         dataArray.push( text );
-        //                         switch (c.total){
-        //                             case 'number':
-        //                                 if( parseFloat(text).toString() !== "NaN" ) { //可以转成数字
-        //                                     totalArray[columnIndex] = totalArray[columnIndex].plus(text);
-        //                                 }
-        //                                 break;
-        //                             case 'count':
-        //                                 totalArray[columnIndex] = totalArray[columnIndex].plus(1);
-        //                                 break;
-        //                         }
-        //
-        //                         columnIndex++;
-        //                     }
-        //                 }.bind(this));
-        //                 //exportRow事件
-        //                 var argu = {"index":rowIndex, "source": d, "data":dataArray};
-        //                 this.fireEvent("exportRow", [argu]);
-        //                 exportArray.push( argu.data || dataArray );
-        //             // }.bind(this));
-        //         }.bind(this));
-        //
-        //         var hasTotal = false;
-        //         totalArray = totalArray.map(function (d){
-        //             if( d ){
-        //                 hasTotal = true;
-        //                 return d.toString();
-        //             }else{
-        //                 return '';
-        //             }
-        //         });
-        //
-        //         if( hasTotal ){
-        //             totalArray[0] = MWF.xApplication.query.Query.LP.total + " " + totalArray[0];
-        //             exportArray.push( totalArray );
-        //         }
-        //
-        //
-        //         var headTextScript = this.viewJson.exportHeadText;
-        //         var headText = headTextScript ? this.Macro.exec(headTextScript, this) : '';
-        //
-        //         var headStyleScript = this.viewJson.exportHeadStyle;
-        //         var headStyle = headStyleScript ? this.Macro.exec(headStyleScript, this) : null;
-        //
-        //         var titleStyleScript = this.viewJson.exportColumnTitleStyle;
-        //         var titleStyle = titleStyleScript ? this.Macro.exec(titleStyleScript, this) : null;
-        //
-        //         var contentStyleScript = this.viewJson.exportColumnContentStyle;
-        //         var contentStyle = contentStyleScript ? this.Macro.exec(contentStyleScript, this) : null;
-        //
-        //         //export事件
-        //         var arg = {
-        //             headText: headText,
-        //             headStyle: headStyle,
-        //             titleStyle: titleStyle,
-        //             contentStyle: contentStyle,
-        //             data : exportArray,
-        //             colWidthArray : colWidthArr,
-        //             title : excelName
-        //         };
-        //         this.fireEvent("export", [arg]);
-        //
-        //         if (this.loadingAreaNode) {
-        //             this.loadingAreaNode.destroy();
-        //             this.loadingAreaNode = null;
-        //         }
-        //
-        //         var options = {};
-        //         if( arg.headText )options.headText = arg.headText;
-        //         if( arg.headStyle )options.headStyle = arg.headStyle;
-        //         if( arg.titleStyle )options.columnTitleStyle = arg.titleStyle;
-        //         if( arg.contentStyle )options.columnContentStyle = arg.contentStyle;
-        //
-        //         new MWF.xApplication.query.Query.Viewer.ExcelUtils(
-        //             options
-        //         ).exportToExcel(
-        //             arg.data || exportArray,
-        //             arg.title || excelName,
-        //             arg.colWidthArray || colWidthArr,
-        //             dateIndexArray,  //日期格式列下标
-        //             numberIndexArray  //数字格式列下标
-        //         );
-        //
-        //     }.bind(this))
-        // },
-        // loadExportData: function(start, end, callback){
-        //     var body = this.currentFilterData || {};
-        //     start = start - 1;
-        //     var differ = end - start;
-        //     var count;
-        //     if( differ < 10000 ){
-        //         count = differ;
-        //     }else{
-        //         count = 10000;
-        //     }
-        //     var page = Math.floor( start / count ) + 1;
-        //     var startIndex = start % count;
-        //     var endIndex = end % count;
-        //     var loaded = (page - 1)*count;
-        //     var list = [];
-        //     do{
-        //         var promise = o2.Actions.load('x_query_assemble_surface').ViewAction.executeV2(this.json.id, page, count, body)
-        //         list.push(promise);
-        //         loaded = loaded + count;
-        //         page = page + 1;
-        //     }while( end > loaded );
-        //     var result = [];
-        //     Promise.all( list ).then(function (arr) {
-        //         arr.each(function (json, i) {
-        //             var data = json.data.grid;
-        //             var length = json.count;
-        //             if( i === 0 && i === list.length - 1 ){
-        //                 data.splice( 0, startIndex );
-        //                 if( length > endIndex && endIndex > 0 ){
-        //                     data.splice( endIndex - startIndex , length - endIndex );
-        //                 }
-        //             }else if( i === 0 ){
-        //                 data.splice( 0, startIndex );
-        //             }else if( i=== list.length - 1 ){
-        //                 if( length > endIndex && endIndex > 0 )data.splice( endIndex, length - endIndex );
-        //             }
-        //             result.push(...data);
-        //         });
-        //         if( callback )callback(result);
-        //     });
-        //
-        // },
-        // getExportText: function(column, key, data){
-        //     var text = data[key];
-        //     switch (typeOf(text)){
-        //         case 'string':
-        //             return text;
-        //         case 'array':
-        //             return text.join(',');
-        //         default:
-        //             return text;
-        //     }
-        // }
-
+        }
     });
 
 
@@ -5123,7 +4861,9 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
         viewFlag: '',
         viewId: '',
         filterList: [],
-        parameter: {}
+        parameter: {},
+        ignoreDialog: false,
+        allowSelectColumn: false
     },
     initialize: function (options, viewer) {
         this.setOptions(options);
@@ -5132,16 +4872,18 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
         this.Macro = viewer ? viewer.Macro : new MWF.Macro.ViewContext(this);
     },
     exportView: function(){
-        this.lookup( function(){
-            if(this.options.ignoreDialog){
-                var total = this.getExportTotalCount();
-                var max = this.getExportMaxCount();
-                var end = Math.min( total, max );
-                this._doExportView(1, end);
-            }else{
-                this.showDialog();
-            }
-        }.bind(this))
+        this._getView().then(()=>{
+            this.lookup( function(){
+                if(this.options.ignoreDialog){
+                    var total = this.getExportTotalCount();
+                    var max = this.getExportMaxCount();
+                    var end = Math.min( total, max );
+                    this._doExportView(1, end);
+                }else{
+                    this.showDialog();
+                }
+            }.bind(this))
+        })
     },
     getExportTotalCount: function(){
         return this.count;
@@ -5157,15 +4899,29 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
         var lp = this.lp.viewExport;
 
         var node = this.exportExcelDlgNode = new Element("div");
-        var html = "<div style=\"color: #333333; overflow: hidden;margin-top:20px;\">"+
-            `   <oo-input label='${lp.fileName}' class='filename' value='' style='margin-left: 14px;width: ${layout.mobile?"340px":"435px"};'></oo-input><span>`+
-            "</div>";
-        html += `<div style="color: #333333; overflow: hidden;margin-top:20px;">`+
-            `   <oo-input style="width:${layout.mobile?'200px':'auto'}" label='${lp.exportRange}' class='start' value='${this.exportExcelStart || 1}'></oo-input>` +
-            `   <oo-input style="width:${layout.mobile?'150px':'auto'}" label='${lp.to}' class='end' value='${this.exportExcelEnd || Math.min( total, max )}'></oo-input><span>${lp.item}</span>` +
-            "</div>";
-        html += "<div style=\"clear:both; max-height: 300px; margin-bottom:10px; margin-top:10px; overflow-y:auto;\">"+( lp.description.replace("{count}", total ))+"</div>";
+        const labelStyle = 'label-style="width:3.2vw;"'
+        var html = `
+        <div style="display: flex; flex-direction: column; gap: 10px;padding: 20px">
+            <div>
+                <oo-input ${labelStyle} label='${lp.fileName}' class='filename' value='' style='width:100%'></oo-input><span>
+            </div>
+            <div>
+                <oo-input ${labelStyle} type="number" label='${lp.exportRange}' class='start' value='${this.exportExcelStart || 1}'></oo-input>
+                <oo-input type="number" label='${lp.to}' class='end' value='${this.exportExcelEnd || Math.min( total, max )}'></oo-input>
+                <span>${lp.item}</span>
+            </div>
+            <div style="color: #666;">${ lp.description.replace("{count}", total )}</div>
+            <div>
+                <div style="padding: 0.8em 1em; font-size: 1.14286rem; display: ${this.options.allowSelectColumn?'block':'none'};">选择列</div>
+                <div class="selector"></div>
+            </div>
+        </div>
+       `;
         node.set("html", html);
+        if(this.options.allowSelectColumn){
+            this.loadSelector(node.querySelector('.selector'));
+        }
+
         var check = function () {
             if(this.value.length == 1){
                 this.value = this.value.replace(/[^1-9]/g,'')
@@ -5182,11 +4938,11 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
 
         var dlg = o2.DL.open({
             "title": this.lp.exportExcel,
-            "style": layout.mobile ? 'v10_mobile' : "user",
+            "style": layout.mobile ? 'v10_mobile' : "v10",
             "isResize": false,
             "content": node,
-            "width": layout.mobile ? '100%' : 600,
-            "height" : layout.mobile ? '100%' : 260,
+            "width": layout.mobile ? '100%' : (this.options.allowSelectColumn ? '840' : '600'),
+            "height" : layout.mobile ? '100%' : (this.options.allowSelectColumn ? '800' : '300'),
             "buttonList": [
                 {
                     "type": "ok",
@@ -5213,8 +4969,17 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
                             MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.startLargetThanEndNotice, node, {"x": 0, "y": 85});
                             return false;
                         }
+                        if(this.selector){
+                            if(!this.selector.selectedItems.length){
+                                MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.selectColumnNotice, node, {"x": 0, "y": 85});
+                                return false;
+                            }else{
+                                this.selectedColumns = this.selector.selectedItems.map(item=>item.data.column);
+                            }
+                        }
                         this.exportExcelStart = start;
                         this.exportExcelEnd = end;
+
                         this._doExportView(start, end, filename);
                         dlg.close();
                     }.bind(this)
@@ -5227,7 +4992,26 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
             ]
         });
     },
-
+    loadSelector: function (node) {
+        const selectList = this.viewJson.selectList.filter(c=>{
+            return c.hideColumn !== true && c.exportEnable !== false
+        })
+        o2.xDesktop.requireApp('Template', 'Selector.Custom', null, false);
+        var selector = new MWF.xApplication.Template.Selector.Custom(node, {
+            "style": layout.mobile ? "v10_mobile" : "v10_flow",
+            "embedded" : true,
+            "hasTop": true,
+            "selectableItems": selectList.map(d=>{
+                return {
+                    name: d.displayName, id: d.id,
+                    isItem: true, column: d
+                }
+            }),
+            "values": selectList.map(d=>d.id)
+        });
+        selector.load();
+        this.selector = selector;
+    },
     _exportViewAll: function (filename, dlg){
         MWF.require("MWF.widget.Mask", null, false);
         var mask = new MWF.widget.Mask({"style": "desktop", "loading": true});
@@ -5261,20 +5045,15 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
             })
         }.bind(this));
     },
-    _doExportView: function(start, end, filename){
-        this._getView().then(function(){
-            this._exportView( start, end, filename );
-        }.bind(this))
-    },
-    _getView: function () {
+    _getView: function (callback) {
         if(this.getViewRes){
             return this.getViewRes;
         }
         if(this.options.viewId){
-            this.getViewRes = o2.Actions.load("x_query_assemble_surface").ViewAction.get(this.json.viewId, function(json){
+            this.getViewRes = o2.Actions.load("x_query_assemble_surface").ViewAction.get(this.options.viewId, function(json){
                 this.viewJson = JSON.decode(json.data.data);
+                this.json = json.data;
                 this.json.application = json.data.query;
-                this.json = Object.merge(this.json, json.data);
                 if (callback) callback();
             }.bind(this));
         }else{
@@ -5284,12 +5063,13 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
                 function (json) {
                     this.json = json.data;
                     this.viewJson = JSON.decode(json.data.data);
+                    if (callback) callback();
                 }.bind(this)
             );
         }
         return this.getViewRes;
     },
-    _exportView: function(start, end, filename){
+    _doExportView: function(start, end, filename){
         Promise.resolve(this.loadExportData(start, end)).then(function (data) {
             debugger;
             var excelName;
@@ -5317,7 +5097,9 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
                 idx = idx + 1;
             }
 
-            data.selectList.each(function (c, k) {
+            const selectList = this.selectedColumns || this.viewJson.selectList;
+
+            selectList.each(function (c, k) {
                 if ( c.hideColumn !== true && c.exportEnable !== false) {
                     titleArray.push(c.displayName);
                     colWidthArr.push(c.exportWidth || 200);
@@ -5332,7 +5114,7 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
             exportArray.push(titleArray);
 
             var rowIndex = 0;
-            data.grid.each(function (d, i) {
+            data.each(function (d, i) {
                 rowIndex = rowIndex + 1;
 
                 var columnIndex = 0;
@@ -5341,9 +5123,9 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
                     dataArray.push( (start-1)+rowIndex );
                     columnIndex++;
                 }
-                data.selectList.each(function (c, k) {
+                selectList.each(function (c, i) {
                     if ( c.hideColumn !== true && c.exportEnable !== false) {
-                        var text = this.getExportText(c, k, d);
+                        var text = this.getExportText(c, c.column, d.data);
                         dataArray.push( text );
                         switch (c.total){
                             case 'number':
@@ -5427,7 +5209,7 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
                     offsetColumnIndex: 0,
                     startAddress: '' //如 H12
                 }]
-            }).execute(arg.data || exportArray);
+            }).execute([arg.data || exportArray]);
 
         }.bind(this))
     },
@@ -5435,9 +5217,7 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
         var p = o2.Actions.load('x_query_assemble_surface').ViewAction.executeV2(this.json.id, 1, 1, {
             filterList: this.options.filterList,
             parameter: this.options.parameter,
-            searchKey: this.options.searchKey,
-            orderList: this.orderList,
-            selectList: this.selectList
+            searchKey: this.options.searchKey
         })
         return Promise.resolve( p ).then(function (json) {
             this.count = json.count;
@@ -5464,14 +5244,14 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
                 parameter: this.options.parameter,
                 searchKey: this.options.searchKey,
                 orderList: this.orderList,
-                selectList: this.selectList
+                selectList: this.selectedColumns || null
             })
             list.push(promise);
             loaded = loaded + count;
             page = page + 1;
         }while( end > loaded );
         var result = [];
-        Promise.all( list ).then(function (arr) {
+        return Promise.all( list ).then(function (arr) {
             arr.each(function (json, i) {
                 var data = json.data.grid;
                 var length = json.count;
@@ -5488,6 +5268,7 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
                 result.push(...data);
             });
             if( callback )callback(result);
+            return result;
         });
 
     },

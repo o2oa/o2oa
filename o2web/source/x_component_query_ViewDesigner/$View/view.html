@@ -218,15 +218,15 @@
                 <tr>
                     <td class="editTableTitle">{{$.lp.exportView}}:</td>
                     <td class="editTableValue">
-                        <div class="MWFQueryViewSelect" name="exportView"></div>
+                        <div class="MWFQueryViewSelect" name="data.exportView"></div>
                         <div style="color: #999;padding: 5px;">{{$.lp.exportViewNotice}}</div>
                     </td>
                 </tr>
                 <tr>
                     <td class="editTableTitle">{{$.lp.allowSelectColumn}}:</td>
                     <td class="editTableValue">
-                        <input class="editTableRadio" name="allowSelectColumn" text{($.allowSelectColumn===true)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
-                        <input class="editTableRadio" name="allowSelectColumn" text{($.allowSelectColumn!==true)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+                        <input class="editTableRadio" name="data.allowSelectColumn" text{($.data.allowSelectColumn===true)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                        <input class="editTableRadio" name="data.allowSelectColumn" text{($.data.allowSelectColumn!==true)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
                     </td>
                 </tr>
             </table>

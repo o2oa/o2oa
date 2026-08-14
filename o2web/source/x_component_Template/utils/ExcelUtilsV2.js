@@ -346,7 +346,7 @@ MWF.ExcelExporter = new Class({
 
         this.setOptions(options);
     },
-    execute: function(data, callback, mergeConfig){
+    execute: function(data, callback, mergeConfig=[]){
         // var array = [["姓名","性别","学历","专业","出生日期","毕业日期"]];
         // array.push([ "张三","男","大学本科","计算机","2001-1-2","2019-9-2" ]);
         // array.push([ "李四","男","大学专科","数学","1998-1-2","2018-9-2" ]);

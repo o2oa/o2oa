@@ -531,6 +531,23 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
     },
     loadStatColumnSelect: function () {
     },
+    _getPathValue: function(object, path, defaultValue = undefined) {
+        if (!object || !path) return defaultValue;
+        // 把 a[0].b['xx-yy'] 转成数组key列表
+        const keys = String(path)
+            .replace(/\[(['"]?)(.*?)\1\]/g, '.$2') // [] 转 .
+            .split('.')
+            .filter(k => k !== '');
+
+        let result = object;
+        for (const key of keys) {
+            if (result == null || !Object.prototype.hasOwnProperty.call(result, key)) {
+                return defaultValue;
+            }
+            result = result[key];
+        }
+        return result;
+    },
     loadPersonInput: function () {
         var identityNodes = this.propertyContent.getElements(".MWFPersonIdentity");
         var personNodes = this.propertyContent.getElements(".MWFPersonPerson");
@@ -569,10 +586,11 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             }.bind(this));
 
             queryviewNodes.each(function(node){
+                const value = this._getPathValue(this.data, node.get("name"));
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
                     "type": "QueryView",
                     "count": node.dataset["count"] || 1,
-                    "names": typeOf(this.data[node.get("name")]) === "array" ? this.data[node.get("name")] : [this.data[node.get("name")]],
+                    "names": Array.isArray(value) ? value : [value],
                     "onChange": function(ids){this.saveViewItem(node, ids);}.bind(this)
                 });
             }.bind(this));
@@ -580,13 +598,22 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
     },
     saveViewItem: function(node, ids){
         var name = node.get("name");
-        var oldValue = this.data[name];
+        debugger;
         var count = (node.dataset["count"] || 1).toInt();
+
+        var key = name.split(".");
+        var o = this.data;
+        var len = key.length - 1;
+        key.each(function (n, i) {
+            if (!o[n]) o[n] = {};
+            if (i < len) o = o[n];
+        }.bind(this));
+
         if( !ids )ids = [];
         if( count === 1 ){
             if (ids[0]){
                 var view = ids[0].data;
-                this.data[node.get("name")] = {
+                o[key[len]] = {
                     "name": view.name,
                     "alias": view.alias,
                     "id": view.id,
@@ -595,10 +622,10 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     "application": view.application || view.query
                 };
             }else{
-                this.data[node.get("name")] = null;
+                o[key[len]] = null;
             }
         }else{
-            this.data[node.get("name")] = ids.map(function (id) {
+            o[key[len]] = ids.map(function (id) {
                 var view = id.data;
                 return {
                     "name": view.name,
@@ -610,8 +637,6 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                 };
             })
         }
-
-        if (this.module._checkView) this.module._checkView(null, name, oldValue, this.data[name]);
     },
     savePersonItem: function (node, ids) {
         var values = [];
@@ -621,7 +646,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
         }.bind(this));
         var name = node.get("name");
 
-        key = name.split(".");
+        var key = name.split(".");
         var o = this.data;
         var len = key.length - 1;
         key.each(function (n, i) {
