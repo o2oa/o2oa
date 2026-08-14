@@ -525,6 +525,24 @@ public class LeaveManagerAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "根据人员和时间统计假期申请和假期余额.", action = ActionLeaveRequestStatic.class)
+    @POST
+    @Path("request/static")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void requestStatic(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request, JsonElement jsonElement) {
+        ActionResult<List<ActionLeaveRequestStatic.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLeaveRequestStatic().execute(effectivePerson, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "根据开始结束时间计算实际请假天数.", action = ActionLeaveDurationCalculate.class)
     @POST
     @Path("request/duration/calculate")
