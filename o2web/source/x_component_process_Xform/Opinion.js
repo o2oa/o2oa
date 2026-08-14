@@ -499,6 +499,16 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
                 var h = this.handwritingActionNode.getSize().y + this.handwritingActionNode.getStyle("margin-top").toInt() + this.handwritingActionNode.getStyle("margin-bottom").toInt();
                 h = y - h;
                 this.handwritingAreaNode.setStyle("height", "" + h + "px");
+
+                this.isCollectNode = new Element('oo-checkbox-group', {styles:{
+                        position: "absolute",
+                        bottom: "3px",
+                        right: "5px"
+                    }}).inject(this.handwritingAreaNode);
+                new Element('oo-checkbox', {
+                    text: MWF.xApplication.process.Work.LP.collect,
+                    value: "yes"
+                }).inject(this.isCollectNode);
             } else {
                 this.handwritingAreaNode.setStyle("height", "" + y + "px");
             }
@@ -513,6 +523,24 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
                     "toolHidden": this.json.toolHidden || [],
                     "contentWidth": this.json.tabletWidth || 0,
                     "contentHeight": this.json.tabletHeight || 0,
+                    tools: [
+                        "save", "|",
+                        "undo",
+                        "redo", "|",
+                        "eraser", //橡皮
+                        "input", //输入法
+                        "pen", "|", //笔画
+                        "eraserRadius",
+                        "size",
+                        "color",
+                        "fontSize", "|",
+                        // "fontFamily",
+                        "image",
+                        "imageClipper", "|",
+                        "collect", "|",
+                        "reset",
+                        "cancel"
+                    ],
                     "onSave": function (base64code, base64Image, imageFile) {
                         this.handwritingFile[layout.session.user.distinguishedName] = imageFile;
                         if (this.previewNode) {
@@ -527,8 +555,19 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
                         }
                         this.handwritingNode.hide();
 
-                        this.validation();
-                        this.fireEvent("change");
+                        const callback = ()=>{
+                            this.validation();
+                            this.fireEvent("change");
+                        };
+
+                        if( !!this.isCollectNode?.value?.length ){
+                            this.tablet.saveToCollection(callback);
+                            this.isCollectNode.value = [];
+                        }else{
+                            callback();
+                        }
+
+
                         // this.page.get("div_image").node.set("src",base64Image);
                     }.bind(this),
                     "onCancel": function () {
