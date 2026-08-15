@@ -2960,7 +2960,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class(
                 viewId: this.viewJson.exportView?.id || this.json.id,
                 filterList: this.currentFilterData?.filterList || [],
                 searchKey: this.currentFilterData?.searchKey || '',
-                allowSelectColumn: this.viewJson.allowSelectColumn
+                allowSelectColumn: this.viewJson.allowSelectColumn,
+                exportType: this.viewJson.exportType || 'both'
             }, this)
             exporter.exportView();
         },
@@ -4860,6 +4861,7 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
         queryFlag: '',
         viewFlag: '',
         viewId: '',
+        exportType: 'both', //both all range
         filterList: [],
         parameter: {},
         ignoreDialog: false,
@@ -4899,18 +4901,23 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
         var lp = this.lp.viewExport;
 
         var node = this.exportExcelDlgNode = new Element("div");
-        const labelStyle = 'label-style="width:3.2vw;"'
-        var html = `
-        <div style="display: flex; flex-direction: column; gap: 10px;padding: 20px">
-            <div>
-                <oo-input ${labelStyle} label='${lp.fileName}' class='filename' value='' style='width:100%'></oo-input><span>
-            </div>
+        const labelStyle = 'label-style="width:3.2vw;"';
+
+        const rangeHtml = !['both','range'].includes(this.options.exportType) ? '' : `
             <div>
                 <oo-input ${labelStyle} type="number" label='${lp.exportRange}' class='start' value='${this.exportExcelStart || 1}'></oo-input>
                 <oo-input type="number" label='${lp.to}' class='end' value='${this.exportExcelEnd || Math.min( total, max )}'></oo-input>
                 <span>${lp.item}</span>
             </div>
             <div style="color: #666;">${ lp.description.replace("{count}", total )}</div>
+        `;
+
+        var html = `
+        <div style="display: flex; flex-direction: column; gap: 10px;padding: 20px">
+            <div>
+                <oo-input ${labelStyle} label='${lp.fileName}' class='filename' value='' style='width:100%'></oo-input><span>
+            </div>
+            ${rangeHtml}
             <div>
                 <div style="padding: 0.8em 1em; font-size: 1.14286rem; display: ${this.options.allowSelectColumn?'block':'none'};">选择列</div>
                 <div class="selector"></div>
@@ -4932,23 +4939,52 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
                 this.value = total;
             }
         }
-        node.getElement(".start").addEvent( "keyup", function(){ check.call(this) } );
-        node.getElement(".end").addEvent( "keyup", function(){ check.call(this) } );
+        node.getElement(".start")?.addEvent( "keyup", function(){ check.call(this) } );
+        node.getElement(".end")?.addEvent( "keyup", function(){ check.call(this) } );
 
+
+        const _setSelectedColumn = ()=>{
+            const selectedIds = this.selector.selectedItems.map(item=>item.data.id);
+            this.selectedColumns = this.viewJson.selectList.filter(d=>{
+                return selectedIds.includes(d.id);
+            })
+        }
+
+        let widthPc = layout.mobile ? '100%' : (this.options.allowSelectColumn ? '840' : '600');
+        let heightPc;
+        switch (this.options.exportType){
+            case 'both':
+                heightPc = this.options.allowSelectColumn ? '750' : '300'
+                break;
+            case 'all':
+                heightPc = this.options.allowSelectColumn ? '680' : '230';
+                break;
+            case 'range':
+                heightPc = this.options.allowSelectColumn ? '750' : '300';
+                break;
+        }
 
         var dlg = o2.DL.open({
             "title": this.lp.exportExcel,
             "style": layout.mobile ? 'v10_mobile' : "v10",
             "isResize": false,
             "content": node,
-            "width": layout.mobile ? '100%' : (this.options.allowSelectColumn ? '840' : '600'),
-            "height" : layout.mobile ? '100%' : (this.options.allowSelectColumn ? '800' : '300'),
+            "width": layout.mobile ? '100%' : widthPc,
+            "height" : layout.mobile ? '100%' : heightPc,
             "buttonList": [
                 {
                     "type": "ok",
                     "text": lp.exportAll,
                     "action": function (d, e) {
                         var filename = node.getElement(".filename").get("value");
+                        if(this.selector){
+                            if(!this.selector.selectedItems.length){
+                                MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.selectColumnNotice, node, {"x": 0, "y": 85});
+                                return false;
+                            }else{
+                                _setSelectedColumn();
+                            }
+                        }
                         this._exportViewAll(filename, dlg);
                     }.bind(this)
                 },
@@ -4974,7 +5010,7 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
                                 MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.selectColumnNotice, node, {"x": 0, "y": 85});
                                 return false;
                             }else{
-                                this.selectedColumns = this.selector.selectedItems.map(item=>item.data.column);
+                                _setSelectedColumn();
                             }
                         }
                         this.exportExcelStart = start;
@@ -4989,7 +5025,13 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
                     "text": MWF.LP.process.button.cancel,
                     "action": function () { dlg.close(); }
                 }
-            ]
+            ].filter((obj, i)=>{
+                switch (i){
+                    case 0: return ['both','all'].includes(this.options.exportType);
+                    case 1: return ['both','range'].includes(this.options.exportType);
+                    default: return true;
+                }
+            })
         });
     },
     loadSelector: function (node) {
@@ -5017,33 +5059,23 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
         var mask = new MWF.widget.Mask({"style": "desktop", "loading": true});
         mask.loadNode(dlg.node);
 
-        var action = MWF.Actions.get("x_query_assemble_surface");
-
-        var filterData = this.json.filter ? this.json.filter.clone() : [];
-        if (this.filterItems.length){
-            this.filterItems.each(function(filter){
-                filterData.push(filter.data);
-            }.bind(this));
-        }
-        if(this.customFilterListData?.length){
-            this.customFilterListData.each(function(filter){
-                filterData.push(filter);
-            }.bind(this));
-        }
-        var data = {"filterList": filterData};
-        data.excelName = filename || this.json.name;
-        action.exportViewWithQuery(this.json.viewName, this.json.application, data, function(json){
-            var uri = action.action.actions.getViewExcel.uri;
+        o2.Actions.load('x_query_assemble_surface').ViewAction.excel(this.json.id, {
+            filterList: this.options.filterList,
+            parameter: this.options.parameter,
+            searchKey: this.options.searchKey,
+            orderList: this.orderList,
+            selectList: this.selectedColumns || null,
+            excelName: filename || null
+        },function(json){
+            const action = o2.Actions.load('x_query_assemble_surface').ViewAction.action;
+            var uri = action.actions.excelResult.uri;
             uri = uri.replace("{flag}", json.data.id);
-            uri = o2.filterUrl( action.action.address+uri );
-            // var a = new Element("a", {"href": uri, "target":"_blank"});
-            // a.click();
-            // a.destroy();
-            MWF.ExcelExporter.openDownloadDialog(uri, data.excelName, function (){
+            uri = o2.filterUrl( action.address+uri );
+            MWF.ExcelUtilsV2.openDownloadDialog(uri, filename, function (){
                 mask.hide()
                 if(dlg)dlg.close();
             })
-        }.bind(this));
+        })
     },
     _getView: function (callback) {
         if(this.getViewRes){
@@ -5071,7 +5103,6 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
     },
     _doExportView: function(start, end, filename){
         Promise.resolve(this.loadExportData(start, end)).then(function (data) {
-            debugger;
             var excelName;
             if( this.options.ignoreDialog ){
                 excelName = this.viewer.json.name;
@@ -5192,23 +5223,24 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
                 this.viewer.loadingAreaNode = null;
             }
 
+            const options = {
+                hasTitle: true,
+                headText: arg.headText,
+                sheetName: "",
+                colWidthArr: arg.colWidthArray || colWidthArr,
+                dateIndexArray: dateIndexArray,
+                numberIndexArray: numberIndexArray,
+                offsetRowIndex: 0,
+                offsetColumnIndex: 0,
+                startAddress: '' //如 H12
+            };
+            if(arg.headStyle)options.headStyle = arg.headStyle;
+            if(arg.columnTitleStyle)options.columnTitleStyle = arg.titleStyle;
+            if(arg.columnContentStyle)options.columnContentStyle = arg.contentStyle;
 
             new MWF.ExcelExporter({
                 fileName: excelName,
-                worksheet: [{
-                    'hasTitle': true,
-                    'headText': arg.headText,
-                    'headStyle': arg.headStyle,
-                    'columnTitleStyle': arg.titleStyle,
-                    'columnContentStyle': arg.contentStyle,
-                    sheetName: "",
-                    colWidthArr: arg.colWidthArray || colWidthArr,
-                    dateIndexArray: dateIndexArray,
-                    numberIndexArray: numberIndexArray,
-                    offsetRowIndex: 0,
-                    offsetColumnIndex: 0,
-                    startAddress: '' //如 H12
-                }]
+                worksheet: [options]
             }).execute([arg.data || exportArray]);
 
         }.bind(this))

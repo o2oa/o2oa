@@ -223,6 +223,14 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="editTableTitle">{{$.lp.exportType}}:</td>
+                    <td class="editTableValue">
+                        <input class="editTableRadio" name="data.exportType" text{(!$.data.exportType || $.data.exportType==='both')?'checked':''} type="radio" value="both"/>{{$.lp.exportTypeBoth}}
+                        <input class="editTableRadio" name="data.exportType" text{($.data.exportType==='range')?'checked':''} type="radio" value="range"/>{{$.lp.exportTypeRange}}
+                        <input class="editTableRadio" name="data.exportType" text{($.data.exportType==='all')?'checked':''} type="radio" value="all"/>{{$.lp.exportTypeAll}}
+                    </td>
+                </tr>
+                <tr>
                     <td class="editTableTitle">{{$.lp.allowSelectColumn}}:</td>
                     <td class="editTableValue">
                         <input class="editTableRadio" name="data.allowSelectColumn" text{($.data.allowSelectColumn===true)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
@@ -824,7 +832,7 @@
                                     $('text{$.id}viewCustomFilterValueScriptDiv').setStyle('display', 'none');
                                     $('text{$.id}viewCustomFilterValueOrgArea').setStyle('display', 'block');
                                     $('text{$.id}viewCustomFilterOrgOptionScriptDiv').setStyle('display', 'block');
-                                }" name="viewCustomFilterValueType" type="radio" value="org"/>{{$.lp.org}} 
+                                }" name="viewCustomFilterValueType" type="radio" value="org"/>{{$.lp.org}}
                             </td>
                         </tr>
                     </table>
