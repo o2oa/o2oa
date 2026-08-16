@@ -5105,9 +5105,9 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
         Promise.resolve(this.loadExportData(start, end)).then(function (data) {
             var excelName;
             if( this.options.ignoreDialog ){
-                excelName = this.viewer.json.name;
+                excelName = this.json.name;
             }else{
-                excelName = filename || (this.viewer.json.name + "(" + start + "-" + end + ")");
+                excelName = filename || (this.json.name + "(" + start + "-" + end + ")");
             }
 
             this.viewer.createLoadding();
@@ -5153,6 +5153,7 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
                 if (this.viewJson.isSequence === "yes") {
                     dataArray.push( (start-1)+rowIndex );
                     columnIndex++;
+                    columnIndex++;
                 }
                 selectList.each(function (c, i) {
                     if ( c.hideColumn !== true && c.exportEnable !== false) {
@@ -5173,6 +5174,7 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
                 }.bind(this));
                 //exportRow事件
                 var argu = {"index":rowIndex, "source": d, "data":dataArray};
+                this.viewer?.fireEvent("exportRow", [argu]);
                 this.fireEvent("exportRow", [argu]);
                 exportArray.push( argu.data || dataArray );
             }.bind(this));
@@ -5216,6 +5218,8 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
                 colWidthArray : colWidthArr,
                 title : excelName
             };
+
+            this.viewer?.fireEvent("export", [arg]);
             this.fireEvent("export", [arg]);
 
             if (this.viewer?.loadingAreaNode) {
