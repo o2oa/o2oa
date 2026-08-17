@@ -31,10 +31,10 @@ import com.x.calendar.core.entity.Calendar_Event;
  *
  */
 public class ActionSimpleListWithCondition extends BaseAction {
-	
+
 private Logger logger = LoggerFactory.getLogger( ActionSimpleListWithCondition.class );
-	
-	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {		
+
+	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
 		List<Calendar_Event> calendar_EventList = null;
@@ -45,7 +45,7 @@ private Logger logger = LoggerFactory.getLogger( ActionSimpleListWithCondition.c
 		List<String> unitNames = null;
 		List<String> groupNames = null;
 		String personName = effectivePerson.getDistinguishedName();
-				
+
 		if( check ) {
 			try {
 				manager = ThisApplication.isCalendarSystemManager( effectivePerson );
@@ -55,7 +55,7 @@ private Logger logger = LoggerFactory.getLogger( ActionSimpleListWithCondition.c
 				result.error( exception );
 				logger.error( e, effectivePerson, request, null);
 			}
-		}		
+		}
 
 		try {
 			wi = this.convertToWrapIn( jsonElement, Wi.class );
@@ -65,7 +65,7 @@ private Logger logger = LoggerFactory.getLogger( ActionSimpleListWithCondition.c
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		
+
 		if( check ){
 			//如果没有设置查询日期范围就查本月的
 			if( wi.getStartTime() == null && wi.getEndTime() == null ) {
@@ -76,11 +76,11 @@ private Logger logger = LoggerFactory.getLogger( ActionSimpleListWithCondition.c
 				wi.setEventType( "CAL_EVENT" );
 			}
 		}
-		
+
 		if( check ){
 			if( manager ) {
 				try {
-					ids = calendar_EventServiceAdv.listWithCondition( wi.getKey(), wi.getEventType(), wi.getSource(), wi.getCreatePerson(), wi.getCalendarIds(), 
+					ids = calendar_EventServiceAdv.listWithCondition( wi.getKey(), wi.getEventType(), wi.getSource(), null, wi.getCalendarIds(),
 							null, null, null, wi.getStartTime(), wi.getEndTime() );
 				} catch (Exception e) {
 					check = false;
@@ -97,7 +97,7 @@ private Logger logger = LoggerFactory.getLogger( ActionSimpleListWithCondition.c
 						wi.setCalendarIds( calendarServiceAdv.listWithCondition(personName, unitNames, groupNames) );
 					}
 					if( ListTools.isNotEmpty( wi.getCalendarIds()  ) ) {
-						ids = calendar_EventServiceAdv.listWithCondition( wi.getKey(), wi.getEventType(), wi.getSource(), wi.getCreatePerson(), wi.getCalendarIds(),
+						ids = calendar_EventServiceAdv.listWithCondition( wi.getKey(), wi.getEventType(), wi.getSource(), null, wi.getCalendarIds(),
 								personName, unitNames, groupNames, wi.getStartTime(), wi.getEndTime() );
 					}
 				} catch (Exception e) {
@@ -108,7 +108,7 @@ private Logger logger = LoggerFactory.getLogger( ActionSimpleListWithCondition.c
 				}
 			}
 		}
-		
+
 		if( check ){
 			if( ListTools.isNotEmpty( ids )) {
 				calendar_EventList = calendar_EventServiceAdv.list(ids);
@@ -128,29 +128,26 @@ private Logger logger = LoggerFactory.getLogger( ActionSimpleListWithCondition.c
 		result.setData( wos );
 		return result;
 	}
-	
+
 	public static class Wi{
 
 		@FieldDescribe("日历账号ID")
 		private List<String> calendarIds = null;
-		
+
 		@FieldDescribe("信息类别: CAL_EVENT | TASK_EVENT")
 		private String eventType = "CAL_EVENT";
-		
+
 		@FieldDescribe("信息来源: PERSONAL| LEADER | UNIT | MEETING | BUSINESS_TRIP | HOLIDAY")
 		private String source;
-		
+
 		@FieldDescribe("事件标题 或者 备注信息 模糊搜索")
 		private String key = null;
-		
+
 		@FieldDescribe("查询开始时间")
 		private Date startTime = null;
 
 		@FieldDescribe("查询结束时间")
 		private Date endTime = null;
-
-		@FieldDescribe("创建者")
-	    private String createPerson = null;
 
 		public String getEventType() {
 			return eventType;
@@ -200,22 +197,14 @@ private Logger logger = LoggerFactory.getLogger( ActionSimpleListWithCondition.c
 			this.calendarIds = calendarIds;
 		}
 
-		public String getCreatePerson() {
-			return createPerson;
-		}
-
-		public void setCreatePerson(String createPerson) {
-			this.createPerson = createPerson;
-		}
-		
 	}
-	
+
 	public static class Wo extends Calendar_Event  {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
-		
+
 		public static WrapCopier<Calendar_Event, Wo> copier = WrapCopierFactory.wo( Calendar_Event.class, Wo.class, null,Wo.Excludes);
 	}
 }

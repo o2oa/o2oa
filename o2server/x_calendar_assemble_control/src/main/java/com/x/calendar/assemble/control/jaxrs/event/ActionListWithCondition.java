@@ -29,10 +29,10 @@ import com.x.calendar.core.entity.Calendar_Event;
  *
  */
 public class ActionListWithCondition extends BaseAction {
-	
+
 private Logger logger = LoggerFactory.getLogger( ActionListWithCondition.class );
-	
-	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {		
+
+	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		List<WoCalendar_Event> wrapEvents = null;
@@ -43,7 +43,7 @@ private Logger logger = LoggerFactory.getLogger( ActionListWithCondition.class )
 		List<String> unitNames = null;
 		List<String> groupNames = null;
 		String personName = effectivePerson.getDistinguishedName();
-				
+
 //		if( check ) {
 //			try {
 //				manager = ThisApplication.isCalendarSystemManager( effectivePerson );
@@ -53,7 +53,7 @@ private Logger logger = LoggerFactory.getLogger( ActionListWithCondition.class )
 //				result.error( exception );
 //				logger.error( e, effectivePerson, request, null);
 //			}
-//		}		
+//		}
 
 		try {
 			wi = this.convertToWrapIn( jsonElement, Wi.class );
@@ -63,7 +63,7 @@ private Logger logger = LoggerFactory.getLogger( ActionListWithCondition.class )
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		
+
 		if( check ){
 			//如果没有设置查询日期范围就查本月的
 			if( wi.getStartTime() == null && wi.getEndTime() == null ) {
@@ -74,7 +74,7 @@ private Logger logger = LoggerFactory.getLogger( ActionListWithCondition.class )
 				wi.setEventType( "CAL_EVENT" );
 			}
 		}
-		
+
 		if( check ){
 			try {
 				unitNames = userManagerService.listUnitNamesWithPerson( personName );
@@ -84,7 +84,7 @@ private Logger logger = LoggerFactory.getLogger( ActionListWithCondition.class )
 					wi.setCalendarIds( calendarServiceAdv.listWithCondition(personName, unitNames, groupNames) );
 				}
 				if( ListTools.isNotEmpty( wi.getCalendarIds()  ) ) {
-					ids = calendar_EventServiceAdv.listWithCondition( wi.getKey(), wi.getEventType(), wi.getSource(), wi.getCreatePerson(), wi.getCalendarIds(),
+					ids = calendar_EventServiceAdv.listWithCondition( wi.getKey(), wi.getEventType(), wi.getSource(), null, wi.getCalendarIds(),
 							personName, unitNames, groupNames, wi.getStartTime(), wi.getEndTime() );
 				}
 			} catch (Exception e) {
@@ -95,7 +95,7 @@ private Logger logger = LoggerFactory.getLogger( ActionListWithCondition.class )
 			}
 //			if( manager ) {
 //				try {
-//					ids = calendar_EventServiceAdv.listWithCondition( wi.getKey(), wi.getEventType(), wi.getSource(), wi.getCreatePerson(), wi.getCalendarIds(), 
+//					ids = calendar_EventServiceAdv.listWithCondition( wi.getKey(), wi.getEventType(), wi.getSource(), wi.getCreatePerson(), wi.getCalendarIds(),
 //							null, null, null, wi.getStartTime(), wi.getEndTime() );
 //				} catch (Exception e) {
 //					check = false;
@@ -104,10 +104,10 @@ private Logger logger = LoggerFactory.getLogger( ActionListWithCondition.class )
 //					logger.error( e, effectivePerson, request, null);
 //				}
 //			}else {
-//				
+//
 //			}
 		}
-		
+
 		if( check ){
 			if( ListTools.isNotEmpty( ids )) {
 				calendar_EventList = calendar_EventServiceAdv.list(ids);
@@ -130,7 +130,7 @@ private Logger logger = LoggerFactory.getLogger( ActionListWithCondition.class )
 					}
 					if( wo.getWholeDayEvents() == null ) {
 						wo.setWholeDayEvents( new ArrayList<>());
-					}					
+					}
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new ExceptionEventProcess( e, "将所有查询到的日历信息对象转换为可以输出的信息时发生异常." );
@@ -142,29 +142,26 @@ private Logger logger = LoggerFactory.getLogger( ActionListWithCondition.class )
 		result.setData(wo);
 		return result;
 	}
-	
+
 	public static class Wi{
 
 		@FieldDescribe("日历账号ID")
 		private List<String> calendarIds = null;
-		
+
 		@FieldDescribe("信息类别: CAL_EVENT | TASK_EVENT")
 		private String eventType = "CAL_EVENT";
-		
+
 		@FieldDescribe("信息来源: PERSONAL| LEADER | UNIT | MEETING | BUSINESS_TRIP | HOLIDAY")
 		private String source;
-		
+
 		@FieldDescribe("事件标题 或者 备注信息 模糊搜索")
 		private String key = null;
-		
+
 		@FieldDescribe("查询开始时间")
 		private Date startTime = null;
 
 		@FieldDescribe("查询结束时间")
 		private Date endTime = null;
-
-		@FieldDescribe("创建者")
-	    private String createPerson = null;
 
 		public String getEventType() {
 			return eventType;
@@ -214,21 +211,13 @@ private Logger logger = LoggerFactory.getLogger( ActionListWithCondition.class )
 			this.calendarIds = calendarIds;
 		}
 
-		public String getCreatePerson() {
-			return createPerson;
-		}
-
-		public void setCreatePerson(String createPerson) {
-			this.createPerson = createPerson;
-		}
-		
 	}
-	
+
 	public static class Wo {
-		
+
 		@FieldDescribe("全天或者持续超1天（跨1天）的事件列表.")
 		private List<WoCalendar_Event> wholeDayEvents = null;
-		
+
 		@FieldDescribe("持续时间在1天以内的事件列表.按日期分开")
 		private List<WoCalendar_Event_ForDay> inOneDayEvents = null;
 
@@ -253,7 +242,7 @@ private Logger logger = LoggerFactory.getLogger( ActionListWithCondition.class )
 		public void setInOneDayEvents(List<WoCalendar_Event_ForDay> inOneDayEvents) {
 			this.inOneDayEvents = inOneDayEvents;
 		}
-		
+
 		public List<WoCalendar_Event_ForDay> initInOneDayEventsList( Date startDate, Date endDate ){
 			List<WoCalendar_Event_ForDay> eventsForDayList = new ArrayList<>();
 			List<String> dateStrings = dateOperation.listDaysBetweenDate(startDate, endDate);
@@ -268,7 +257,7 @@ private Logger logger = LoggerFactory.getLogger( ActionListWithCondition.class )
 			this.inOneDayEvents = eventsForDayList;
 			return this.inOneDayEvents;
 		}
-		
+
 		public List<WoCalendar_Event_ForDay> addInOneDayEvents( String eventDate, WoCalendar_Event woEvent ){
 			if( this.inOneDayEvents == null ) {
 				this.inOneDayEvents = new ArrayList<>();
@@ -280,7 +269,7 @@ private Logger logger = LoggerFactory.getLogger( ActionListWithCondition.class )
 			}
 			return this.inOneDayEvents;
 		}
-		
+
 		public List<WoCalendar_Event> addWholeDayEvent( WoCalendar_Event woEvent ){
 			if( this.wholeDayEvents == null ) {
 				this.wholeDayEvents = new ArrayList<>();
@@ -291,12 +280,12 @@ private Logger logger = LoggerFactory.getLogger( ActionListWithCondition.class )
 			return this.wholeDayEvents;
 		}
 	}
-	
+
 	public static class WoCalendar_Event_ForDay  {
-		
+
 		@FieldDescribe("日期字符串.")
 		private String eventDate = null;
-		
+
 		@FieldDescribe("持续时间在1天以内的事件列表.")
 		private List<WoCalendar_Event> inOneDayEvents = null;
 
@@ -317,8 +306,8 @@ private Logger logger = LoggerFactory.getLogger( ActionListWithCondition.class )
 
 		public void setInOneDayEvents(List<WoCalendar_Event> inOneDayEvents) {
 			this.inOneDayEvents = inOneDayEvents;
-		}		
-		
+		}
+
 		public List<WoCalendar_Event> addEventInDay( WoCalendar_Event woEvent ){
 			if( this.inOneDayEvents == null ) {
 				this.inOneDayEvents = new ArrayList<>();
@@ -331,12 +320,12 @@ private Logger logger = LoggerFactory.getLogger( ActionListWithCondition.class )
 	}
 
 	public static class WoCalendar_Event extends Calendar_Event  {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
-		
-		public static WrapCopier<Calendar_Event, WoCalendar_Event> copier = 
+
+		public static WrapCopier<Calendar_Event, WoCalendar_Event> copier =
 				WrapCopierFactory.wo( Calendar_Event.class, WoCalendar_Event.class, null,WoCalendar_Event.Excludes);
 	}
 }
