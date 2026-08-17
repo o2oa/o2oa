@@ -553,6 +553,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
         var personNodes = this.propertyContent.getElements(".MWFPersonPerson");
         var personUnitNodes = this.propertyContent.getElements(".MWFPersonUnit");
         var queryviewNodes = this.propertyContent.getElements(".MWFQueryViewSelect");
+        var statementNodes = this.propertyContent.getElements(".MWFStatementSelect");
 
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function () {
             identityNodes.each(function (node) {
@@ -589,6 +590,16 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                 const value = this._getPathValue(this.data, node.get("name"));
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
                     "type": "QueryView",
+                    "count": node.dataset["count"] || 1,
+                    "names": Array.isArray(value) ? value : [value],
+                    "onChange": function(ids){this.saveViewItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
+
+            statementNodes.each(function(node){
+                const value = this._getPathValue(this.data, node.get("name"));
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
+                    "type": "QueryStatement",
                     "count": node.dataset["count"] || 1,
                     "names": Array.isArray(value) ? value : [value],
                     "onChange": function(ids){this.saveViewItem(node, ids);}.bind(this)
