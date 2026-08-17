@@ -74,7 +74,7 @@ private static final Logger logger = LoggerFactory.getLogger( ActionSimpleListWi
 					wi.setCalendarIds( calendarServiceAdv.listWithCondition(personName, unitNames, groupNames) );
 				}
 				if( ListTools.isNotEmpty( wi.getCalendarIds()  ) ) {
-					ids = calendar_EventServiceAdv.listWithCondition( wi.getKey(), wi.getEventType(), wi.getSource(), wi.getCreatePerson(), wi.getCalendarIds(),
+					ids = calendar_EventServiceAdv.listWithCondition( wi.getKey(), wi.getEventType(), wi.getSource(), null, wi.getCalendarIds(),
 							personName, unitNames, groupNames, wi.getStartTime(), wi.getEndTime() );
 				}
 			} catch (Exception e) {
@@ -125,9 +125,6 @@ private static final Logger logger = LoggerFactory.getLogger( ActionSimpleListWi
 		@FieldDescribe("查询结束时间")
 		private Date endTime = null;
 
-		@FieldDescribe("创建者")
-	    private String createPerson = null;
-
 		public String getEventType() {
 			return eventType;
 		}
@@ -174,14 +171,6 @@ private static final Logger logger = LoggerFactory.getLogger( ActionSimpleListWi
 
 		public void setCalendarIds(List<String> calendarIds) {
 			this.calendarIds = calendarIds;
-		}
-
-		public String getCreatePerson() {
-			return createPerson;
-		}
-
-		public void setCreatePerson(String createPerson) {
-			this.createPerson = createPerson;
 		}
 
 	}
