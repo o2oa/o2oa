@@ -257,6 +257,16 @@
                             <option value="booleanValue">{{$.lp.booleanValue}}</option>
                         </select></td>
                     </tr>
+                    <tr id="text{$.id}parameterIsParseTr" style="display: none">
+                        <td class="editTableTitle">{{$.lp.isParse}}:</td>
+                        <td class="editTableValue">
+                            <select class="parameterIsParseSelect_vf">
+                                <option value="true" selected>{{$.lp.yes}}</option>
+                                <option value="false">{{$.lp.no}}</option>
+                            </select>
+                            <div style="line-height: 20px;color:#999; white-space: pre-wrap;">{{$.lp.isParseNote}}</div>
+                        </td>
+                    </tr>
                     <tr>
                         <td class="editTableTitle"></td>
                         <td class="editTableValue">

@@ -291,7 +291,17 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
             const parameterList = data.filterList.filter( function(d){ return d.filterType === "parameter"; });
             if(parameterList && parameterList.length){
                 parameterList.forEach( (d)=>{
-                    this.parameter[d.parameter] = this._parseFilterValue(d, true);
+                    const value = d.isParseParameter === false ? d.value : this._parseFilterValue(d, true);
+                    if(this.parameter.hasOwnProperty(d.parameter)){
+                        if(Array.isArray(this.parameter[d.parameter])){
+                            this.parameter[d.parameter].push(value);
+                        }else{
+                            this.parameter[d.parameter] = [this.parameter[d.parameter], value];
+                        }
+                        this.parameter[d.parameter] = this.parameter[d.parameter];
+                    }else{
+                        this.parameter[d.parameter] = value;
+                    }
                 });
             }
         }
@@ -550,6 +560,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
 
     //v10的搜索
     _filterData: function(data, value, comparison, logic='and'){
+        debugger;
         const filterData = value ? {
             "filterType": data.filterType,
             "parameter": data.parameter,
@@ -557,6 +568,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
             "path": data.path,
             "title": data.title,
             "comparison": comparison,
+            "isParseParameter": data.isParseParameter,
             "comparisonTitle": '',
             "value": value,
             "formatType": (data.formatType=="datetimeValue") ? "dateTimeValue": data.formatType
