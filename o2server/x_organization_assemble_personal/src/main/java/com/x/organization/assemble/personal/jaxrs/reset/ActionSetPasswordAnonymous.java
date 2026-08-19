@@ -13,11 +13,13 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
+import com.x.base.core.project.tools.MD5Tool;
 import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.Person;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 public class ActionSetPasswordAnonymous extends BaseAction {
 
@@ -66,27 +68,23 @@ public class ActionSetPasswordAnonymous extends BaseAction {
                         BooleanUtils.isTrue(Config.token().getRsaEnable()) ? Crypto.rsaDecrypt(
                                 wi.getConfirmPassword(), Config.privateKey())
                                 : wi.getConfirmPassword();
-                if (StringUtils.equals(newPassword, oldPassword)) {
+                if (Strings.CS.equals(newPassword, oldPassword)) {
                     throw new ExceptionNewPasswordSameAsOldPassword();
                 }
 
-                if (!StringUtils.equals(newPassword, confirmPassword)) {
+                if (!Strings.CS.equals(newPassword, confirmPassword)) {
                     throw new ExceptionTwicePasswordNotMatch();
                 }
-
-                if (BooleanUtils.isTrue(Config.person().getSuperPermission())
-                        && StringUtils.equals(Config.token().getPassword(), oldPassword)) {
-                    LOGGER.info("user{name:" + person.getName() + "} use superPermission.");
-                } else {
-                    if (!StringUtils.equals(
-                            Crypto.encrypt(oldPassword, Config.token().getKey(),
-                                    Config.person().getEncryptType()),
-                            person.getPassword())) {
-                        throw new ExceptionPersonNotExistOrInvalidPassword();
-                    }
-                    if (!newPassword.matches(Config.person().getPasswordRegex())) {
-                        throw new ExceptionInvalidPassword(Config.person().getPasswordRegexHint());
-                    }
+                boolean flag =  Strings.CS.equals(Crypto.encrypt(oldPassword, Config.token().getKey(), Config.person().getEncryptType()),
+                        person.getPassword()) ||
+                        Strings.CS.equals(Crypto.encodeDES(oldPassword, Config.token().getKey()),
+                                person.getPassword()) ||
+                        Strings.CS.equals(MD5Tool.getMD5Str(oldPassword), person.getPassword());
+                if (!flag) {
+                    throw new ExceptionPersonNotExistOrInvalidPassword();
+                }
+                if (!newPassword.matches(Config.person().getPasswordRegex())) {
+                    throw new ExceptionInvalidPassword(Config.person().getPasswordRegexHint());
                 }
 
                 emc.beginTransaction(Person.class);
