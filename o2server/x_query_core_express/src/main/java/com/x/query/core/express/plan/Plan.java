@@ -94,6 +94,9 @@ public abstract class Plan extends GsonPropertyObject {
 
 	public void init(Runtime runtime, ExecutorService threadPool) {
 		this.runtime = runtime;
+		if(runtime.selectList != null){
+			this.selectList = runtime.selectList;
+		}
 		this.threadPool = threadPool;
 	}
 
@@ -485,8 +488,12 @@ public abstract class Plan extends GsonPropertyObject {
 					p = cb.and(p, cb.equal(sortRoot.get("path" + i), paths[i]));
 				}
 			}
-			sortSubquery.select(sortRoot.get(DataItem.stringShortValue_FIELDNAME)).where(p);
-			Order order = StringUtils.equals(SelectEntry.ORDER_ASC, selectEntry.orderType) ? cb.asc(sortSubquery) : cb.desc(sortSubquery);
+			if(BooleanUtils.isTrue(selectEntry.numberOrder)){
+				sortSubquery.select(sortRoot.get(DataItem.numberValue_FIELDNAME)).where(p);
+			}else{
+				sortSubquery.select(sortRoot.get(DataItem.stringShortValue_FIELDNAME)).where(p);
+			}
+			Order order = SelectEntry.ORDER_ASC.equals(selectEntry.orderType) ? cb.asc(sortSubquery) : cb.desc(sortSubquery);
 			orderList.add(order);
 		}
 	}
