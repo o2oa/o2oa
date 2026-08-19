@@ -317,7 +317,7 @@ public class CipherConnectionAction {
 		return putMultiPartBinary(xdebugger, connectTimeout, readTimeout, addr, formFields, fileParts);
 	}
 
-	private static List<NameValuePair> cipher() throws Exception {
+	public static List<NameValuePair> cipher() throws Exception {
 		EffectivePerson effectivePerson = EffectivePerson.cipher(Config.token().getCipher(),
 				Config.person().getEncryptType());
 		return ListTools.toList(new NameValuePair(Config.person().getTokenName(), effectivePerson.getToken()));
