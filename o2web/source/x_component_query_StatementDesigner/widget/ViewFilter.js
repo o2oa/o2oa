@@ -230,10 +230,12 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 this.pathInputSelect?.getParent('tr').setStyle('display', '');
                 this.pathInput?.getParent('tr').setStyle('display', '');
                 this.parameterInput?.getParent('tr').setStyle('display', 'none');
+                this.parameterIsParseSelect?.getParent('tr').setStyle('display', 'none');
             }else if( v === 'parameter' ){
                 this.pathInputSelect?.getParent('tr').setStyle('display', 'none');
                 this.pathInput?.getParent('tr').setStyle('display', 'none');
                 this.parameterInput?.getParent('tr').setStyle('display', '');
+                this.parameterIsParseSelect?.getParent('tr').setStyle('display', '');
             }
         }.bind(this));
 
@@ -241,6 +243,8 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         this.parameterInput = this.inputAreaNode.getElement(".parameterInput_vf");
         // this.parameterInputSelect = this.inputAreaNode.getElement(".parameterInputSelect_vf");
         this.datatypeInput = this.inputAreaNode.getElement(".datatypeInput_vf");
+        debugger;
+        this.parameterIsParseSelect = this.inputAreaNode.getElement(".parameterIsParseSelect_vf");
 
         this.restrictParameterInput = this.inputAreaNode.getElement(".restrictParameterInput_vf");
         if(this.restrictParameterInput && !this.restrictParameterInput.onclick){
@@ -732,10 +736,12 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             }
         }
         if( flag ){
+            debugger;
             this.setData({
                 "logic": "and",
                 "path": "",
                 "parameter" : "",
+                "isParseParameter": true,
                 "title": "",
                 "type": type,
                 "comparison": "equals",
@@ -1020,6 +1026,11 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             comparison = this.comparisonInput.options[this.comparisonInput.selectedIndex].value;
         }
 
+        var isParseParameter = true;
+        if(this.parameterIsParseSelect){
+            isParseParameter = this.parameterIsParseSelect.options[this.parameterIsParseSelect.selectedIndex].value !== 'false';
+        }
+
         var formatType = this.datatypeInput.options[this.datatypeInput.selectedIndex].value;
         var value = "";
         var value2 = "";
@@ -1119,6 +1130,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 "title": title,
                 "filterType": this.customFilterTypeSelect?.value || 'filter',
                 "parameter": parameter,
+                "isParseParameter": isParseParameter,
                 "type": type,
                 // "comparison": comparison,
                 "formatType": formatType,
@@ -1313,6 +1325,14 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             }
         }
         this.switchInputDisplay();
+
+        if(this.parameterIsParseSelect){
+            if(data.isParseParameter !== false){
+                this.parameterIsParseSelect.set("value", 'true');
+            }else{
+                this.parameterIsParseSelect.set("value", 'false');
+            }
+        }
 
         if (this.datatypeInput.onchange) {
             this.datatypeInput.onchange();

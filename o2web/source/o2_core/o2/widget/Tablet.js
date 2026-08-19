@@ -890,7 +890,7 @@ o2.widget.Tablet = o2.Tablet = new Class({
                     'max-width': "auto",
                     'min-height': "auto",
                     'max-height': "auto",
-                    'z-index': "1000"
+                    'z-index': "20004"
                 });
             }
         }
@@ -1610,6 +1610,8 @@ o2.widget.Tablet.Collect = new Class({
         this.app = app;
         if(app)this.lp = app.lp;
         this.data = data;
+
+        this.path = "../x_component_Template/$MTooltips/";
 
         if( this.target ){
             this.setTargetEvents();

@@ -531,10 +531,29 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
     },
     loadStatColumnSelect: function () {
     },
+    _getPathValue: function(object, path, defaultValue = undefined) {
+        if (!object || !path) return defaultValue;
+        // 把 a[0].b['xx-yy'] 转成数组key列表
+        const keys = String(path)
+            .replace(/\[(['"]?)(.*?)\1\]/g, '.$2') // [] 转 .
+            .split('.')
+            .filter(k => k !== '');
+
+        let result = object;
+        for (const key of keys) {
+            if (result == null || !Object.prototype.hasOwnProperty.call(result, key)) {
+                return defaultValue;
+            }
+            result = result[key];
+        }
+        return result;
+    },
     loadPersonInput: function () {
         var identityNodes = this.propertyContent.getElements(".MWFPersonIdentity");
         var personNodes = this.propertyContent.getElements(".MWFPersonPerson");
         var personUnitNodes = this.propertyContent.getElements(".MWFPersonUnit");
+        var queryviewNodes = this.propertyContent.getElements(".MWFQueryViewSelect");
+        var statementNodes = this.propertyContent.getElements(".MWFStatementSelect");
 
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function () {
             identityNodes.each(function (node) {
@@ -566,7 +585,69 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     }.bind(this)
                 });
             }.bind(this));
+
+            queryviewNodes.each(function(node){
+                const value = this._getPathValue(this.data, node.get("name"));
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
+                    "type": "QueryView",
+                    "count": node.dataset["count"] || 1,
+                    "names": Array.isArray(value) ? value : [value],
+                    "onChange": function(ids){this.saveViewItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
+
+            statementNodes.each(function(node){
+                const value = this._getPathValue(this.data, node.get("name"));
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
+                    "type": "QueryStatement",
+                    "count": node.dataset["count"] || 1,
+                    "names": Array.isArray(value) ? value : [value],
+                    "onChange": function(ids){this.saveViewItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
         }.bind(this));
+    },
+    saveViewItem: function(node, ids){
+        var name = node.get("name");
+        debugger;
+        var count = (node.dataset["count"] || 1).toInt();
+
+        var key = name.split(".");
+        var o = this.data;
+        var len = key.length - 1;
+        key.each(function (n, i) {
+            if (!o[n]) o[n] = {};
+            if (i < len) o = o[n];
+        }.bind(this));
+
+        if( !ids )ids = [];
+        if( count === 1 ){
+            if (ids[0]){
+                var view = ids[0].data;
+                o[key[len]] = {
+                    "name": view.name,
+                    "alias": view.alias,
+                    "id": view.id,
+                    "appName" : view.appName || view.applicationName || view.query,
+                    "appId": view.appId,
+                    "application": view.application || view.query
+                };
+            }else{
+                o[key[len]] = null;
+            }
+        }else{
+            o[key[len]] = ids.map(function (id) {
+                var view = id.data;
+                return {
+                    "name": view.name,
+                    "alias": view.alias,
+                    "id": view.id,
+                    "appName" : view.appName || view.applicationName || view.query,
+                    "appId": view.appId,
+                    "application": view.application || view.query
+                };
+            })
+        }
     },
     savePersonItem: function (node, ids) {
         var values = [];
@@ -576,7 +657,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
         }.bind(this));
         var name = node.get("name");
 
-        key = name.split(".");
+        var key = name.split(".");
         var o = this.data;
         var len = key.length - 1;
         key.each(function (n, i) {
