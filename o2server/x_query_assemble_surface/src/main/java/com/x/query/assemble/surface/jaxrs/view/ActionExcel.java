@@ -65,10 +65,17 @@ class ActionExcel extends BaseAction {
 			if (!business.readable(effectivePerson, view)) {
 				throw new ExceptionAccessDenied(effectivePerson, view);
 			}
+			if(wi.getCount() == null || wi.getCount() < 1){
+				wi.setCount(65535);
+			}
 			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getOrderList(),
 					wi.getParameter(), wi.getCount(), true);
 			runtime.bundleList = wi.getBundleList();
 			runtime.selectList = wi.getSelectList();
+		}
+		if(ListTools.isEmpty(runtime.bundleList)){
+			runtime.bundleList = this.fetchBundleV3(view, runtime, ThisApplication.forkJoinPool());
+			runtime.hasBundle = true;
 		}
 		Plan plan = this.accessPlan(business, view, runtime, ThisApplication.forkJoinPool());
 		String excelFlag = this.writeExcel(effectivePerson, business, plan, view, wi.getExcelName());

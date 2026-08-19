@@ -27,6 +27,7 @@ import com.x.query.core.entity.ItemAccess_;
 import com.x.query.core.entity.Item_;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -200,6 +201,8 @@ public abstract class Plan extends GsonPropertyObject {
 
 	abstract List<String> listBundle() throws Exception;
 
+	public abstract List<String> listBundleV2() throws Exception;
+
 	public abstract Pair<List<String>, Long> listBundlePaging() throws Exception;
 
 	abstract Map<String, Pair<List<ItemAccess>, String>> listBundleItemAccess(List<String> bundles) throws Exception;
@@ -286,14 +289,14 @@ public abstract class Plan extends GsonPropertyObject {
 		for (CompletableFuture<Void> future : futures) {
 			future.get(300, TimeUnit.SECONDS);
 		}
-		Table table = this.order(fillTable);
+		Table table = this.runtime.hasBundle ? fillTable : this.order(fillTable);
 		if (BooleanUtils.isFalse(this.selectList.emptyColumnCode())) {
 			GraalvmScriptingFactory.Bindings bindings = new GraalvmScriptingFactory.Bindings();
 			bindings.putMember("gird", table);
 			for (SelectEntry selectEntry : this.selectList) {
 				if (StringTools.ifScriptHasEffectiveCode(selectEntry.code)) {
 					List<ExtractObject> extractObjects = new TreeList<>();
-					table.stream().forEach(r -> {
+					table.forEach(r -> {
 						ExtractObject extractObject = new ExtractObject();
 						extractObject.setBundle(r.bundle);
 						extractObject.setColumn(selectEntry.getColumn());
@@ -301,8 +304,6 @@ public abstract class Plan extends GsonPropertyObject {
 						extractObject.setEntry(r);
 						extractObjects.add(extractObject);
 					});
-					// scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put("extractObjects",
-					// extractObjects);
 					bindings.putMember("extractObjects", extractObjects);
 					StringBuilder text = new StringBuilder();
 					text.append("function executeScript(o){\n");
@@ -318,9 +319,7 @@ public abstract class Plan extends GsonPropertyObject {
 					text.append("}\n");
 					text.append("extractObject.setValue(executeScript.apply(obj)?.toString());\n");
 					text.append("}");
-					// CompiledScript cs = ScriptingFactory.compile(text.toString());
 					Source source = GraalvmScriptingFactory.source(text.toString());
-//					JsonScriptingExecutor.eval(cs, scriptContext);
 					GraalvmScriptingFactory.eval(source, bindings);
 					for (ExtractObject extractObject : extractObjects) {
 						table.get(extractObject.getBundle()).put(extractObject.getColumn(), extractObject.getValue());
@@ -434,6 +433,18 @@ public abstract class Plan extends GsonPropertyObject {
 		return list;
 	}
 
+	protected List<SelectEntry> listOrderSelectEntryV2() {
+		List<SelectEntry> list = new TreeList<>();
+		if ((null != runtime.orderList) && (!runtime.orderList.isEmpty())) {
+			list.addAll(runtime.orderList);
+			return list;
+		}
+		if(this.orderList != null){
+			list.addAll(this.orderList);
+		}
+		return list;
+	}
+
 	private Table concreteTable(List<String> jobs) {
 		Table table = new Table();
 		for (String str : jobs) {
@@ -474,7 +485,7 @@ public abstract class Plan extends GsonPropertyObject {
 	}
 
 	protected void joinPagingOrder(List<Order> orderList, CriteriaBuilder cb, Root<? extends JpaObject> root, CriteriaQuery<?> cq, String bundleAtt){
-		this.orderList = this.listOrderSelectEntry();
+		this.orderList = this.listOrderSelectEntryV2();
 		for (SelectEntry selectEntry : this.orderList) {
 			if (StringUtils.isBlank(selectEntry.path)) {
 				continue;
@@ -705,7 +716,8 @@ public abstract class Plan extends GsonPropertyObject {
 						r = sheet.createRow(j + 1);
 						i = 0;
 						for (SelectEntry o : selectEntries) {
-							r.createCell(i++).setCellValue(girdToExcelObjectToString(row.find(o.column)));
+							String value = girdToExcelObjectToString(row.find(o.column));
+							r.createCell(i++).setCellValue(value);
 						}
 					}
 				}
@@ -720,7 +732,10 @@ public abstract class Plan extends GsonPropertyObject {
 		if (object instanceof Integer) {
 			str = object.toString();
 		} else if (object instanceof Double) {
-			str = object.toString();
+			str = BigDecimal.valueOf((Double)object).toPlainString();
+			if(str.endsWith(".0")){
+				str = str.substring(0, str.length() - 2);
+			}
 		} else if (object instanceof Float) {
 			str = object.toString();
 		} else if (object instanceof Boolean) {

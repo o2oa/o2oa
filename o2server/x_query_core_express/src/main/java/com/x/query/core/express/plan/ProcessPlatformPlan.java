@@ -4,28 +4,24 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.ApplicationBaseEntity;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.dataitem.DataItem;
 import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.bean.tuple.Triple;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
-import com.x.cms.core.entity.Document;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Review_;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.ItemAccess;
 import com.x.query.core.entity.Item_;
-import com.x.query.core.express.plan.ProcessPlatformPlan.WhereEntry.ApplicationEntry;
 import com.x.query.core.express.plan.ProcessPlatformPlan.WhereEntry.ProcessEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -156,6 +152,29 @@ public class ProcessPlatformPlan extends Plan {
 			}
 		}
 		return processId;
+	}
+
+	@Override
+	public List<String> listBundleV2() throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			EntityManager em = emc.get(ApplicationBaseEntity.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<String> cq = cb.createQuery(String.class);
+			Root<Review> root = cq.from(Review.class);
+			cq.select(root.get(Review_.job)).where(this.reviewPredicate(emc, cb, root, cq));
+			List<Order> orderList = new TreeList<>();
+			this.joinPagingOrder(orderList, cb, root, cq, Review.job_FIELDNAME);
+			if (orderList.isEmpty()) {
+				Order order = cb.desc(root.get(Review_.startTime));
+				orderList.add(order);
+			}
+			cq.orderBy(orderList.toArray(new Order[0]));
+			long start = System.currentTimeMillis();
+			List<String> docIdList = em.createQuery(cq).setMaxResults(this.runtime.count)
+					.getResultList();
+			LOGGER.debug("listBundleV2 cost:{}", System.currentTimeMillis() - start);
+			return docIdList;
+		}
 	}
 
 	@Override

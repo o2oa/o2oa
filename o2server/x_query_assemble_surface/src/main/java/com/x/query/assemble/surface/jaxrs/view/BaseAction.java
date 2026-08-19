@@ -65,22 +65,20 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	private Plan dealPlan(View view, Runtime runtime, ExecutorService threadPool) throws Exception {
-		Plan plan = null;
-		switch (StringUtils.trimToEmpty(view.getType())) {
-		case View.TYPE_CMS:
-			CmsPlan cmsPlan = gson.fromJson(view.getData(), CmsPlan.class);
-			cmsPlan.init(runtime, threadPool);
-			cmsPlan.access();
-			plan = cmsPlan;
-			break;
-		default:
-			ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(), ProcessPlatformPlan.class);
-			this.setProcessEdition(processPlatformPlan);
-			processPlatformPlan.init(runtime, threadPool);
-			processPlatformPlan.access();
-			plan = processPlatformPlan;
-			break;
-		}
+		Plan plan;
+        if (View.TYPE_CMS.equals(StringUtils.trimToEmpty(view.getType()))) {
+            CmsPlan cmsPlan = gson.fromJson(view.getData(), CmsPlan.class);
+            cmsPlan.init(runtime, threadPool);
+            cmsPlan.access();
+            plan = cmsPlan;
+        } else {
+            ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(),
+                    ProcessPlatformPlan.class);
+            this.setProcessEdition(processPlatformPlan);
+            processPlatformPlan.init(runtime, threadPool);
+            processPlatformPlan.access();
+            plan = processPlatformPlan;
+        }
 		return plan;
 	}
 
@@ -110,20 +108,18 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	private List<String> dealBundle(View view, Runtime runtime, ExecutorService threadPool) throws Exception {
-		List<String> os = null;
-		switch (StringUtils.trimToEmpty(view.getType())) {
-		case View.TYPE_CMS:
-			CmsPlan cmsPlan = gson.fromJson(view.getData(), CmsPlan.class);
-			cmsPlan.init(runtime, threadPool);
-			os = cmsPlan.fetchBundles();
-			break;
-		default:
-			ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(), ProcessPlatformPlan.class);
-			this.setProcessEdition(processPlatformPlan);
-			processPlatformPlan.init(runtime, threadPool);
-			os = processPlatformPlan.fetchBundles();
-			break;
-		}
+		List<String> os;
+        if (View.TYPE_CMS.equals(StringUtils.trimToEmpty(view.getType()))) {
+            CmsPlan cmsPlan = gson.fromJson(view.getData(), CmsPlan.class);
+            cmsPlan.init(runtime, threadPool);
+            os = cmsPlan.fetchBundles();
+        } else {
+            ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(),
+                    ProcessPlatformPlan.class);
+            this.setProcessEdition(processPlatformPlan);
+            processPlatformPlan.init(runtime, threadPool);
+            os = processPlatformPlan.fetchBundles();
+        }
 		return os;
 	}
 
@@ -164,6 +160,27 @@ abstract class BaseAction extends StandardJaxrsAction {
 	protected Pair<List<String>, Long> fetchBundleV2(View view, Runtime runtime, ExecutorService threadPool)
 			throws Exception {
 		return this.dealBundleV2(view, runtime, threadPool);
+	}
+
+	private List<String> dealBundleV3(View view, Runtime runtime, ExecutorService threadPool)
+			throws Exception {
+		Plan plan;
+		if (StringUtils.trimToEmpty(view.getType()).equals(View.TYPE_CMS)) {
+			CmsPlan cmsPlan = gson.fromJson(view.getData(), CmsPlan.class);
+			cmsPlan.init(runtime, threadPool);
+			plan = cmsPlan;
+		} else {
+			ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(), ProcessPlatformPlan.class);
+			this.setProcessEdition(processPlatformPlan);
+			processPlatformPlan.init(runtime, threadPool);
+			plan = processPlatformPlan;
+		}
+		return plan.listBundleV2();
+	}
+
+	protected List<String> fetchBundleV3(View view, Runtime runtime, ExecutorService threadPool)
+			throws Exception {
+		return this.dealBundleV3(view, runtime, threadPool);
 	}
 
 	public static class ExcelResultObject extends GsonPropertyObject {
