@@ -2,7 +2,6 @@ package com.x.base.core.project.tools;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.scripting.GraalvmScriptingFactory;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -32,6 +31,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.graalvm.polyglot.Source;
@@ -70,19 +70,17 @@ public class Crypto {
 	}
 
 	public static String encrypt(String data, String key, String type)
-            throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
-            IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException, NoSuchMethodException,
+            throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
+            IllegalBlockSizeException, BadPaddingException, NoSuchMethodException,
             IllegalAccessException, InvocationTargetException, ClassNotFoundException, InvalidAlgorithmParameterException {
 		byte[] bt = null;
-		if (StringUtils.equalsIgnoreCase(type, TYPE_SM4)) {
+		if (Strings.CI.equals(type, TYPE_SM4)) {
 			bt = encryptSm4(data.getBytes(StandardCharsets.UTF_8), key);
-		} else if (StringUtils.equalsIgnoreCase(type, TYPE_AES)) {
-			bt = encryptAes(data.getBytes(StandardCharsets.UTF_8), DigestUtils.md5(key));
 		} else {
-			bt = encrypt(data.getBytes(StandardCharsets.UTF_8), key.getBytes());
+			bt = encryptAes(data.getBytes(StandardCharsets.UTF_8), DigestUtils.md5(key));
 		}
 		String str = Base64.encodeBase64URLSafeString(bt);
-		return URLEncoder.encode(str, StandardCharsets.UTF_8.name());
+		return URLEncoder.encode(str, StandardCharsets.UTF_8);
 	}
 
 	private static byte[] encrypt(byte[] data, byte[] key) throws InvalidKeyException, NoSuchAlgorithmException,
@@ -109,7 +107,7 @@ public class Crypto {
 
 		Cipher cipher = Cipher.getInstance(AES_TRANSFORMATION);
 		byte[] iv = new byte[AES_IV_LENGTH];
-		new java.security.SecureRandom().nextBytes(iv);
+		new SecureRandom().nextBytes(iv);
 		GCMParameterSpec gcmSpec = new GCMParameterSpec(AES_TAG_LENGTH, iv);
 
 		cipher.init(Cipher.ENCRYPT_MODE, aesKey, gcmSpec);
@@ -157,26 +155,22 @@ public class Crypto {
 	}
 
 	public static String decrypt(String data, String key, String type)
-            throws UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException,
+            throws InvalidKeyException, NoSuchAlgorithmException,
             NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, NoSuchMethodException,
             IllegalAccessException, InvocationTargetException, ClassNotFoundException, InvalidAlgorithmParameterException {
 		if (StringUtils.isEmpty(data)) {
 			return null;
 		}
-		String str = URLDecoder.decode(data, StandardCharsets.UTF_8.name());
+		String str = URLDecoder.decode(data, StandardCharsets.UTF_8);
 		byte[] buf = Base64.decodeBase64(str);
-		byte[] bt = null;
-		if (StringUtils.equalsIgnoreCase(type, TYPE_SM4)) {
+		byte[] bt;
+		if (Strings.CI.equals(type, TYPE_SM4)) {
 			bt = decryptSm4(buf, key);
-			return new String(bt, StandardCharsets.UTF_8);
-		} else if (StringUtils.equalsIgnoreCase(type, TYPE_AES)) {
+        } else {
 			bt = decryptAes(buf, DigestUtils.md5(key));
-			return new String(bt, StandardCharsets.UTF_8);
-		} else {
-			bt = decrypt(buf, key.getBytes());
-			return new String(bt, StandardCharsets.UTF_8);
-		}
-	}
+        }
+        return new String(bt, StandardCharsets.UTF_8);
+    }
 
 	private static byte[] decrypt(byte[] data, byte[] key) throws InvalidKeyException, NoSuchAlgorithmException,
 			InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
@@ -239,9 +233,9 @@ public class Crypto {
 		Matcher matcher = PLAINTEXT_TRANSFORM_REGEX.matcher(text);
 		if (matcher.matches()) {
 			try {
-				if (StringUtils.startsWithIgnoreCase(matcher.group(1), ENCRYPT_PREFIX)) {
-					return decrypt(matcher.group(2), NEVERCHANGEKEY, null);
-				} else if (StringUtils.startsWithIgnoreCase(matcher.group(1), SCRIPT_PREFIX)) {
+				if (Strings.CI.equals(matcher.group(1), ENCRYPT_PREFIX)) {
+					return decodeDES(matcher.group(2), NEVERCHANGEKEY);
+				} else if (Strings.CI.equals(matcher.group(1), SCRIPT_PREFIX)) {
 					Source source = GraalvmScriptingFactory
 							.functionalization(StringEscapeUtils.unescapeJson(matcher.group(2)));
 					Optional<String> opt = GraalvmScriptingFactory.evalAsString(source, null);
@@ -260,15 +254,15 @@ public class Crypto {
 
 	public static String defaultEncrypt(String data)
 			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
-			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+			IllegalBlockSizeException, BadPaddingException {
 		byte[] bt = encrypt(data.getBytes(), NEVERCHANGEKEY.getBytes());
 		String str = Base64.encodeBase64URLSafeString(bt);
-		return URLEncoder.encode(str, StandardCharsets.UTF_8.name());
+		return URLEncoder.encode(str, StandardCharsets.UTF_8);
 	}
 
 	public static String formattedDefaultEncrypt(String data)
 			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
-			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+			IllegalBlockSizeException, BadPaddingException {
 		return "(" + ENCRYPT_PREFIX + defaultEncrypt(data) + ")";
 	}
 
@@ -319,5 +313,21 @@ public class Crypto {
 
 		return new String(decryptAes(debase64Bytes, keyBytes));
 
+	}
+
+	public static String encodeDES(String data, String key) throws Exception {
+		byte[] bt = encrypt(data.getBytes(StandardCharsets.UTF_8), key.getBytes());
+		String str = Base64.encodeBase64URLSafeString(bt);
+		return URLEncoder.encode(str, StandardCharsets.UTF_8);
+	}
+
+	public static String decodeDES(String data, String key) {
+		try {
+			String str = URLDecoder.decode(data, StandardCharsets.UTF_8);
+			byte[] bt = decrypt(Base64.decodeBase64(str), key.getBytes());
+			return new String(bt, StandardCharsets.UTF_8);
+		} catch (Exception e) {
+			return "";
+		}
 	}
 }
