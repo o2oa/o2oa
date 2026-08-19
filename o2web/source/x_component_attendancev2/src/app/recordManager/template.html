@@ -6,7 +6,7 @@
         <!--人员组织选择  -->
         <div style="margin-right: 10px;float: left;">
             <o-org-person-selector
-                oo-prop="{  'selectorTitle': $.lp.detailTable.filterSelectTitle,  'placeholder': $.lp.detailTable.filterEmptyPlaceholder,  'count':1, 'value': $.filterList, 'types': ['identity'], 'units': $.units}"
+                oo-prop="{'isRequried': true, 'selectorTitle': $.lp.detailTable.filterSelectTitle, 'placeholder': $.lp.detailTable.filterEmptyPlaceholder, 'value': $.filterList, 'units': $.units}"
                 oo-model="filterList"></o-org-person-selector>
         </div>
         <div style="margin: 10px 0;float: left;">
@@ -18,6 +18,10 @@
         </div>
         <div style="margin: 10px 0;float: left;">
             <button class="mainColor_bg" @click="search">{{$.lp.search}}</button>
+        </div>
+        <div style="margin: 10px 0 10px 10px;float: left;display: flex; align-items: center; cursor: pointer;" @click="toggleRecursive">
+            <i class="{{ $.form.recursive ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+            <span style="margin-left: 6px;">{{$.lp.recursive}}</span>
         </div>
        
         <div style="float: right;margin: 10px 10px 10px 0;">

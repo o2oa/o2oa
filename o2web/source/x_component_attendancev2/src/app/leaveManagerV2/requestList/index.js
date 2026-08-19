@@ -15,9 +15,11 @@ export default content({
         return {
             lp,
             filterList: [],
+            self: true, // Show current user's leave requests by default.
             form: {
                 startDate: "",
                 endDate: "",
+                recursive: true,
             },
             requestList: [],
             pagerData: {
@@ -29,18 +31,31 @@ export default content({
         };
     },
     beforeRender() {
-        const today = new Date();
-        const start = new Date(today);
-        start.setDate(start.getDate() - 30);
-        this.bind.form.startDate = this.formatDate(start);
-        this.bind.form.endDate = this.formatDate(today);
+        if (!this.bind.self) {
+            const today = new Date();
+            const start = new Date(today);
+            start.setDate(start.getDate() - 30);
+            this.bind.form.startDate = this.formatDate(start);
+            this.bind.form.endDate = this.formatDate(today);
+        }
+    },
+    afterRender() {
+        if (this.bind.self) {
+            this.bind.filterList = [layout.session.user.distinguishedName];
+            this.search();
+        }
+
     },
     clickBackTypeList() {
         this.$parent.clickBackTypeList();
     },
     search() {
         this.bind.pagerData.page = 1;
+
         this.queryData();
+    },
+    toggleRecursive() {
+        this.bind.form.recursive = !this.bind.form.recursive;
     },
     loadData(e) {
         if (e && e.detail && e.detail.module && e.detail.module.bind) {
@@ -56,14 +71,14 @@ export default content({
             o2.api.page.notice(lp.leaveManagerV2.request.filterEmptyPlaceholder, "error");
             return;
         }
-        if (isEmpty(this.bind.form.startDate) || isEmpty(this.bind.form.endDate)) {
-            o2.api.page.notice(lp.leaveManagerV2.request.dateEmptyPlaceholder, "error");
-            return;
-        }
-        if (new Date(this.bind.form.startDate).getTime() > new Date(this.bind.form.endDate).getTime()) {
-            o2.api.page.notice(lp.leaveManagerV2.request.dateRangeError, "error");
-            return;
-        }
+        // if (isEmpty(this.bind.form.startDate) || isEmpty(this.bind.form.endDate)) {
+        //     o2.api.page.notice(lp.leaveManagerV2.request.dateEmptyPlaceholder, "error");
+        //     return;
+        // }
+        // if (new Date(this.bind.form.startDate).getTime() > new Date(this.bind.form.endDate).getTime()) {
+        //     o2.api.page.notice(lp.leaveManagerV2.request.dateRangeError, "error");
+        //     return;
+        // }
         this.queryLoading = true;
         try {
             await showLoading(this);
@@ -75,6 +90,7 @@ export default content({
                     filterList: this.bind.filterList,
                     startDate: this.bind.form.startDate,
                     endDate: this.bind.form.endDate,
+                    recursive: this.bind.form.recursive,
                 }
             );
             if (json) {

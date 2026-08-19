@@ -16,6 +16,8 @@ MWF.xApplication.attendancev2.LP={
 		"groupmanager": "Attendance Group Management",
 		"addressmanger": "Workplace Management",
 		"leavemanager": "Out of Office Leave Records",
+		"leave1": "Out-of-Office Records",
+		"leave2": "Leave Records",
 		"leavemanagerv2": "Leave Management",
 		"configmanager": "Configuration Management"
 	},
@@ -27,7 +29,8 @@ MWF.xApplication.attendancev2.LP={
 	"delete": "Delete",
 	"update": "Update",
 	"search": "Search",
-	"statisticExport": "Export (Recursive)",
+	"recursive": "Recursive",
+	"statisticExport": "Export",
 	"positive": "OK",
 	"cancel": "Cancel",
 	"add": "Add",
@@ -127,6 +130,9 @@ MWF.xApplication.attendancev2.LP={
 		"beforeOffDutyTimePlaceholder": "Select Before End Time",
 		"afterOffDutyTimePlaceholder": "Select After End Time",
 		"afterOffDutyTimeLabel": "After End",
+		"restPeriodLabel": "Rest Period:",
+		"restPeriodStartPlaceholder": "Select Rest Start Time",
+		"restPeriodEndPlaceholder": "Select Rest End Time",
 		"lateAndEarlyOnTimeLabel1": "Maximum Allowed Late Arrival:",
 		"lateAndEarlyOnTimeLabel2": " (Not Considered Late)",
 		"lateAndEarlyOffTimeLabel1": "Maximum Allowed Early Departure:",
@@ -134,6 +140,7 @@ MWF.xApplication.attendancev2.LP={
 		"shiftNameNotEmpty": "Shift Name cannot be empty!",
 		"onDutyTimeNotEmpty": "Start Time cannot be empty!",
 		"offDutyTimeNotEmpty": "End Time cannot be empty!",
+		"restPeriodNeedComplete": "Please select both start and end times for the rest period!",
 		"success": "Save Successful!",
 		"confirmDelete": "Are you sure you want to delete this {name} information?",
 		"selectShiftEmpty": "Please select a shift",
@@ -294,7 +301,8 @@ MWF.xApplication.attendancev2.LP={
 		"startDateEmptyPlaceholder": "Select start date!",
 		"endDateEmptyPlaceholder": "Select end date!",
 		"endDateCannotSmaller": "The end date cannot be earlier than the start date!",
-		"startDateAndEndDateMoreThan": "The date interval cannot exceed 31 days!"
+		"startDateAndEndDateMoreThan": "The date interval cannot exceed 31 days!",
+		"exportDataEmptyPlaceholder": "Please query data before exporting!"
 	},
 	"detailRecordList": {
 		"title": "Clock-In Records",
@@ -360,6 +368,7 @@ MWF.xApplication.attendancev2.LP={
 		"requestList": "Leave Data",
 		"leaveData": "Out-of-Office Data",
 		"holidayCalendar": "Holiday Calendar",
+		"ledgerImportHistoryDeleteUnlocked": "Import history delete actions are now visible. Please proceed carefully.",
 		"calendar": {
 			"today": "Back to Today",
 			"offday": "Holiday",
@@ -373,7 +382,19 @@ MWF.xApplication.attendancev2.LP={
 			"dateString": "Date",
 			"dateError": "Please select a valid date!",
 			"offDay": "Type",
-			"deleteConfirm": "Are you sure you want to delete this holiday record?"
+			"deleteConfirm": "Are you sure you want to delete this holiday record?",
+			"importHoliday": "Import Holidays",
+			"importFormatTitle": "Import JSON format",
+			"importFormatDesc": "Prepare one JSON object: year is the target year, overwrite controls whether existing dates are replaced, and days is the holiday array. In each item, name is the holiday name, date is a yyyy-MM-dd date, and isOffDay true means holiday while false means adjusted workday.",
+			"importFormatCompatible": "The API also accepts dateString/offDay fields, and the array field may be holidayList or holidays. You can also import an array directly; it is treated as days.",
+			"importJson": "Holiday JSON",
+			"importJsonEmpty": "Enter holiday JSON!",
+			"importJsonError": "The JSON format is invalid. Please check it before importing!",
+			"importDataEmpty": "Enter at least one holiday record!",
+			"importOverwrite": "Overwrite existing date records",
+			"startImport": "Start Import",
+			"importFail": "Holiday import failed!",
+			"importResult": "Import complete: total {total}, inserted {inserted}, updated {updated}, skipped {skipped}, errors {errors}"
 		},
 		"type": {
 			"name": "Leave Type Name",
@@ -417,7 +438,14 @@ MWF.xApplication.attendancev2.LP={
 		},
 		"account": {
 			"filterSelectTitle": "Select person or organization",
-			"filterEmptyPlaceholder": "Select a person or organization to search!"
+			"filterEmptyPlaceholder": "Select a person or organization to search!",
+			"balanceFormatTip": "Limited leave shows:",
+			"totalGranted": "Total",
+			"totalGrantedShort": "Total",
+			"totalUsed": "Used",
+			"totalUsedShort": "Used",
+			"balance": "Balance",
+			"balanceShort": "Bal."
 		},
 		"request": {
 			"filterSelectTitle": "Select person or organization",

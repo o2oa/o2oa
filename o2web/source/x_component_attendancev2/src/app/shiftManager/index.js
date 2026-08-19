@@ -41,6 +41,9 @@ export default content({
       offDutyTime: "18:00",
       offDutyTimeBeforeLimit: "",
       offDutyTimeAfterLimit: "",
+      restPeriod: "",
+      restPeriodStart: "",
+      restPeriodEnd: "",
     };
     // 添加
     // const content = (await import(`./addShift/index.js`)).default;
@@ -70,6 +73,7 @@ export default content({
       // 这里不能直接赋值 会带 proxy 代理过去
       if (shift && shift.properties && shift.properties.timeList) {
         shiftData.timeType = shift.properties.timeList.length;
+        const restPeriod1 = this.parseRestPeriod(shift.properties.timeList[0].restPeriod);
         shiftData.time1 = {
           onDutyTime: shift.properties.timeList[0].onDutyTime || "09:00",
           onDutyTimeBeforeLimit: shift.properties.timeList[0].onDutyTimeBeforeLimit || "",
@@ -78,8 +82,12 @@ export default content({
           offDutyTimeBeforeLimit: shift.properties.timeList[0].offDutyTimeBeforeLimit || "",
           offDutyTimeAfterLimit: shift.properties.timeList[0].offDutyTimeAfterLimit || "",
           offDutyNextDay: shift.properties.timeList[0].offDutyNextDay || false,
+          restPeriod: shift.properties.timeList[0].restPeriod || "",
+          restPeriodStart: restPeriod1.start,
+          restPeriodEnd: restPeriod1.end,
         };
         if (shift.properties.timeList.length > 1) {
+          const restPeriod2 = this.parseRestPeriod(shift.properties.timeList[1].restPeriod);
           shiftData.time2  = {
             onDutyTime: shift.properties.timeList[1].onDutyTime || "",
             onDutyTimeBeforeLimit: shift.properties.timeList[1].onDutyTimeBeforeLimit || "",
@@ -88,9 +96,13 @@ export default content({
             offDutyTimeBeforeLimit: shift.properties.timeList[1].offDutyTimeBeforeLimit || "",
             offDutyTimeAfterLimit: shift.properties.timeList[1].offDutyTimeAfterLimit || "",
             offDutyNextDay: shift.properties.timeList[1].offDutyNextDay || false,
+            restPeriod: shift.properties.timeList[1].restPeriod || "",
+            restPeriodStart: restPeriod2.start,
+            restPeriodEnd: restPeriod2.end,
           };
         }
         if (shift.properties.timeList.length > 2) {
+          const restPeriod3 = this.parseRestPeriod(shift.properties.timeList[2].restPeriod);
           shiftData.time3  = {
             onDutyTime: shift.properties.timeList[2].onDutyTime || "",
             onDutyTimeBeforeLimit: shift.properties.timeList[2].onDutyTimeBeforeLimit || "",
@@ -99,6 +111,9 @@ export default content({
             offDutyTimeBeforeLimit: shift.properties.timeList[2].offDutyTimeBeforeLimit || "",
             offDutyTimeAfterLimit: shift.properties.timeList[2].offDutyTimeAfterLimit || "",
             offDutyNextDay: shift.properties.timeList[2].offDutyNextDay || false,
+            restPeriod: shift.properties.timeList[2].restPeriod || "",
+            restPeriodStart: restPeriod3.start,
+            restPeriodEnd: restPeriod3.end,
           };
         }
         // 修改
@@ -121,6 +136,16 @@ export default content({
     } else {
       o2.api.page.notice(lp.dataError, 'error');
     }
+  },
+  parseRestPeriod(restPeriod) {
+    if (!restPeriod || !restPeriod.includes("-")) {
+      return {start: "", end: ""};
+    }
+    const list = restPeriod.split("-");
+    return {
+      start: list[0] || "",
+      end: list[1] || "",
+    };
   },
   clickDeleteShift(id, name) {
     var _self = this;

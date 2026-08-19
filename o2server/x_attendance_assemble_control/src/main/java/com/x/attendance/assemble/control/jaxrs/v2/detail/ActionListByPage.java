@@ -2,13 +2,16 @@ package com.x.attendance.assemble.control.jaxrs.v2.detail;
 
 import com.x.attendance.entity.v2.AttendanceV2LeaveRequest;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
+import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2Detail;
 import com.x.attendance.entity.v2.AttendanceV2LeaveData;
@@ -45,8 +48,19 @@ public class ActionListByPage extends BaseAction {
             Business business = new Business(emc);
             Integer adjustPage = this.adjustPage(page);
             Integer adjustPageSize = this.adjustSize(size);
+            List<String> userList = null;
+            if (wi.getFilterList() != null && !wi.getFilterList().isEmpty()) {
+                userList = new ArrayList<>();
+                for (String f : wi.getFilterList()) {
+                    AttendanceV2Helper.analysisFilterToPersonList(userList, f, business, wi.getRecursive());
+                }
+                userList = new ArrayList<>(new LinkedHashSet<>(userList));
+                if (userList.isEmpty()) {
+                    throw new ExceptionWithMessage("当前查询条件没有找到人员信息！");
+                }
+            }
             List<AttendanceV2Detail> list = business.getAttendanceV2ManagerFactory().listDetailByPage(adjustPage,
-                    adjustPageSize, wi.getUserId(), wi.getStartDate(), wi.getEndDate());
+                    adjustPageSize, wi.getUserId(), userList, wi.getStartDate(), wi.getEndDate());
             List<Wo> wos =  Wo.copier.copy(list);
             if (wos != null && !wos.isEmpty()) {
                 for (Wo detail : wos) {
@@ -79,12 +93,12 @@ public class ActionListByPage extends BaseAction {
                 }
             }
             result.setData(wos);
-            result.setCount(business.getAttendanceV2ManagerFactory().detailCount(wi.getUserId(), wi.getStartDate(), wi.getEndDate()));
+            result.setCount(business.getAttendanceV2ManagerFactory()
+                    .detailCount(wi.getUserId(), userList, wi.getStartDate(), wi.getEndDate()));
             return result;
         }
 
     }
-
 
     public static class Wi extends GsonPropertyObject {
 
@@ -94,6 +108,12 @@ public class ActionListByPage extends BaseAction {
 
         @FieldDescribe("用户标识")
         private String userId;
+
+        @FieldDescribe("过滤人员或组织，组织默认递归: 用户或组织的DN，如xxx@xxx@P、xxx@xxx@U")
+        private List<String> filterList;
+
+        @FieldDescribe("过滤组织是否递归查询下级组织人员，默认true，false时仅查询当前组织直属人员")
+        private Boolean recursive;
 
         @FieldDescribe("开始日期")
         private String startDate;
@@ -107,6 +127,22 @@ public class ActionListByPage extends BaseAction {
 
         public void setUserId(String userId) {
             this.userId = userId;
+        }
+
+        public List<String> getFilterList() {
+            return filterList;
+        }
+
+        public void setFilterList(List<String> filterList) {
+            this.filterList = filterList;
+        }
+
+        public Boolean getRecursive() {
+            return recursive;
+        }
+
+        public void setRecursive(Boolean recursive) {
+            this.recursive = recursive;
         }
 
         public String getStartDate() {

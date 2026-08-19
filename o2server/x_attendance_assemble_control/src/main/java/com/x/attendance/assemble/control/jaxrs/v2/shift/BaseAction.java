@@ -1,15 +1,14 @@
 package com.x.attendance.assemble.control.jaxrs.v2.shift;
 
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2ShiftWorkTimeHelper;
 import com.x.attendance.entity.v2.AttendanceV2ShiftCheckTime;
 import com.x.attendance.entity.v2.AttendanceV2ShiftCheckTimeProperties;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.tools.DateTools;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Date;
 import java.util.List;
 
 abstract class BaseAction extends StandardJaxrsAction {
@@ -34,19 +33,7 @@ abstract class BaseAction extends StandardJaxrsAction {
         if (properties == null || properties.getTimeList() == null || properties.getTimeList().isEmpty()) {
             throw new ExceptionEmptyParameter("班次上下班打卡时间");
         }
-        List<AttendanceV2ShiftCheckTime> timeList = properties.getTimeList();
-        long time = 0; //分钟数
-        for (AttendanceV2ShiftCheckTime checkTime : timeList) {
-            String onDutyTime = checkTime.getOnDutyTime();
-            String offDutyTime = checkTime.getOffDutyTime();
-            Date onDuty = DateTools.parseTime(onDutyTime+":00");
-            Date offDuty = DateTools.parseTime(offDutyTime+":00");
-            long milliOnDuty = onDuty.getTime();
-            long milliOffDuty = offDuty.getTime();
-            long diffMilliseconds = Math.abs(milliOffDuty - milliOnDuty);
-            time += diffMilliseconds / (60 * 1000); //分钟数
-        }
-        return time;
+        return AttendanceV2ShiftWorkTimeHelper.shiftWorkMinutes(properties);
     }
     
 
@@ -56,6 +43,9 @@ abstract class BaseAction extends StandardJaxrsAction {
         }
         if (StringUtils.isEmpty(time.getOffDutyTime())) {
             throw new ExceptionEmptyParameter("下班时间");
+        }
+        if (!AttendanceV2ShiftWorkTimeHelper.restPeriodAvailable(time.getRestPeriod())) {
+            throw new ExceptionOnDutyOffDuty("休息时间格式错误");
         }
         String onDuty = time.getOnDutyTime().replace(":", "");
         String offDuty = time.getOffDutyTime().replace(":", "");

@@ -1,6 +1,5 @@
 package com.x.attendance.entity.v2;
 
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -59,16 +58,16 @@ public class AttendanceV2Shift extends SliceJpaObject {
 	 */
 	public static final String shiftName_FIELDNAME = "shiftName";
 	@FieldDescribe("班次名称")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-			+ shiftName_FIELDNAME)
+	@Column(name = ColumnNamePrefix
+                   + shiftName_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String shiftName;
 
 
 	public static final String operator_FIELDNAME = "operator";
 	@FieldDescribe("最后操作人")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-			+ operator_FIELDNAME)
+	@Column(name = ColumnNamePrefix
+                   + operator_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String operator;
 
@@ -104,14 +103,14 @@ public class AttendanceV2Shift extends SliceJpaObject {
 
 	public static final String lateAndEarlyOnTime_FIELDNAME = "lateAndEarlyOnTime";
 	@FieldDescribe("上班最多可晚时间")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-			+ lateAndEarlyOnTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix
+                   + lateAndEarlyOnTime_FIELDNAME)
 	private String lateAndEarlyOnTime; // 上班最多可晚时间 上班晚到几分钟，下班须晚走几分钟。 如 30 表示30分钟
 
 	public static final String lateAndEarlyOffTime_FIELDNAME = "lateAndEarlyOffTime";
 	@FieldDescribe("下班最多可早走时间")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-			+ lateAndEarlyOffTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix
+                   + lateAndEarlyOffTime_FIELDNAME)
 	private String lateAndEarlyOffTime; // 下班最多可早走时间，上班早到几分钟，下班可早走几分钟 如 90 表示1小时30分钟
 
 

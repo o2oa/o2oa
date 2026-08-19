@@ -13,15 +13,18 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2RestDayHelper;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2ShiftWorkTimeHelper;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.assemble.control.jaxrs.v2.WoGroupShift;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.ExceptionDateEndBeforeStartError;
+import com.x.attendance.entity.v2.AttendanceV2Holiday;
 import com.x.attendance.entity.v2.AttendanceV2Shift;
 import com.x.attendance.entity.v2.AttendanceV2ShiftCheckTime;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.organization.Person;
@@ -38,12 +41,6 @@ public class ActionLeaveDurationCalculate extends BaseAction {
             }
             Date startTime = wi.getStartTime();
             Date endTime = wi.getEndTime();
-            if (startTime == null && StringUtils.isNotEmpty(wi.getStartDate())) {
-                startTime = DateTools.parse(wi.getStartDate(), DateTools.format_yyyyMMdd);
-            }
-            if (endTime == null && StringUtils.isNotEmpty(wi.getEndDate())) {
-                endTime = DateTools.addDay(DateTools.parse(wi.getEndDate(), DateTools.format_yyyyMMdd), 1);
-            }
             if (startTime == null) {
                 throw new ExceptionEmptyParameter("开始时间");
             }
@@ -64,14 +61,20 @@ public class ActionLeaveDurationCalculate extends BaseAction {
             Date endDate = DateTools.floorDate(startTime.before(endTime) ? DateTools.addMinutes(endTime, -1) : endTime,
                     0);
             List<String> dateList = AttendanceV2RestDayHelper.listDateRange(startDate, endDate);
-            List<String> restDateList = AttendanceV2RestDayHelper.listRestDate(business, person.getDistinguishedName(), dateList);
-            List<String> workDateList = dateList.stream().filter(date -> !restDateList.contains(date))
-                    .collect(Collectors.toList());
+            String personDn = person.getDistinguishedName();
+            List<String> restDateList = AttendanceV2RestDayHelper.listRestDate(business, personDn, dateList);
+            List<String> weekendDateList = AttendanceV2RestDayHelper.listWeekend(dateList);
+            List<String> legalHolidayDateList = listLegalHolidayDate(emc, dateList);
+            List<String> calculateDateList = listCalculateDate(dateList, restDateList, weekendDateList,
+                    legalHolidayDateList, wi.getExcludeRestDay(), wi.getIncludeWeekend());
             List<String> leaveDateList = new ArrayList<>();
             long durationMinutes = 0;
             double duration = 0.0;
-            for (String date : workDateList) {
-                DayDuration dayDuration = calculateDayDuration(business, person.getDistinguishedName(), date, startTime, endTime);
+            for (String date : calculateDateList) {
+                boolean calculateWithWeekendShift = isWeekendLeaveDate(date, restDateList, weekendDateList,
+                        legalHolidayDateList, wi.getIncludeWeekend());
+                DayDuration dayDuration = calculateDayDuration(business, personDn, date, startTime, endTime,
+                        calculateWithWeekendShift);
                 if (dayDuration.getDurationMinutes() > 0) {
                     leaveDateList.add(date);
                 }
@@ -90,28 +93,73 @@ public class ActionLeaveDurationCalculate extends BaseAction {
         }
     }
 
+    static List<String> listCalculateDate(List<String> dateList, List<String> restDateList, Boolean excludeRestDay) {
+        return listCalculateDate(dateList, restDateList, new ArrayList<>(), new ArrayList<>(), excludeRestDay, false);
+    }
+
+    static List<String> listCalculateDate(List<String> dateList, List<String> restDateList,
+            List<String> weekendDateList, List<String> legalHolidayDateList, Boolean excludeRestDay,
+            Boolean includeWeekend) {
+        if (BooleanUtils.isFalse(excludeRestDay)) {
+            return dateList;
+        }
+        if (BooleanUtils.isTrue(includeWeekend)) {
+            return dateList.stream()
+                    .filter(date -> !legalHolidayDateList.contains(date)
+                            && (!restDateList.contains(date) || weekendDateList.contains(date)))
+                    .collect(Collectors.toList());
+        }
+        return dateList.stream().filter(date -> !restDateList.contains(date)).collect(Collectors.toList());
+    }
+
     private DayDuration calculateDayDuration(Business business, String personDn, String date, Date startTime,
-            Date endTime) throws Exception {
+            Date endTime, boolean calculateWithWeekendShift) throws Exception {
         WoGroupShift woGroupShift = business.getAttendanceV2ManagerFactory().getGroupShiftByPersonDate(personDn, date);
         AttendanceV2Shift shift = woGroupShift.getShift();
         if (shift == null || shift.getProperties() == null || shift.getProperties().getTimeList().isEmpty()) {
+            if (calculateWithWeekendShift) {
+                AttendanceV2Shift weekendShift = nearestPastWorkdayShift(business, personDn, date);
+                if (weekendShift != null) {
+                    return calculateDayDurationWithShift(weekendShift, date, startTime, endTime);
+                }
+            }
             return calculateDayDurationWithoutShift(date, startTime, endTime);
         }
+        return calculateDayDurationWithShift(shift, date, startTime, endTime);
+    }
+
+    private DayDuration calculateDayDurationWithShift(AttendanceV2Shift shift, String date, Date startTime,
+            Date endTime) throws Exception {
         long shiftWorkMinutes = shift.getWorkTime();
         long calculatedWorkMinutes = 0;
         long durationMinutes = 0;
         for (AttendanceV2ShiftCheckTime checkTime : shift.getProperties().getTimeList()) {
-            Date onDuty = DateTools.parse(date + " " + checkTime.getOnDutyTime(), DateTools.format_yyyyMMddHHmm);
-            Date offDuty = DateTools.parse(date + " " + checkTime.getOffDutyTime(), DateTools.format_yyyyMMddHHmm);
-            if (BooleanUtils.isTrue(checkTime.getOffDutyNextDay())) {
-                offDuty = DateTools.addDay(offDuty, 1);
-            }
-            calculatedWorkMinutes += standardMinutes(onDuty, offDuty);
-            durationMinutes += overlapMinutes(startTime, endTime, onDuty, offDuty);
+            calculatedWorkMinutes += AttendanceV2ShiftWorkTimeHelper.standardWorkMinutes(date, checkTime);
+            durationMinutes += AttendanceV2ShiftWorkTimeHelper.overlapWorkMinutes(startTime, endTime, date, checkTime);
         }
-        long standardMinutes = shiftWorkMinutes > 0 ? shiftWorkMinutes : calculatedWorkMinutes;
+        long standardMinutes = calculatedWorkMinutes > 0 ? calculatedWorkMinutes : shiftWorkMinutes;
         double duration = standardMinutes > 0 ? durationMinutes * 1.0 / standardMinutes : 0.0;
         return new DayDuration(durationMinutes, duration);
+    }
+
+    private AttendanceV2Shift nearestPastWorkdayShift(Business business, String personDn, String date) throws Exception {
+        Date cursor = DateTools.addDay(DateTools.parse(date, DateTools.format_yyyyMMdd), -1);
+        for (int i = 0; i < 366; i++) {
+            String cursorDate = DateTools.format(cursor, DateTools.format_yyyyMMdd);
+            if (!AttendanceV2RestDayHelper.isRestDay(business, personDn, cursorDate)) {
+                WoGroupShift woGroupShift = business.getAttendanceV2ManagerFactory().getGroupShiftByPersonDate(personDn,
+                        cursorDate);
+                if (woGroupShift != null) {
+                    AttendanceV2Shift shift = woGroupShift.getShift();
+                    if (shift != null && shift.getProperties() != null && !shift.getProperties().getTimeList()
+                            .isEmpty()) {
+                        return shift;
+                    }
+                }
+            }
+            cursor = DateTools.addDay(cursor, -1);
+        }
+        return null;
     }
 
     private DayDuration calculateDayDurationWithoutShift(String date, Date startTime, Date endTime) throws Exception {
@@ -122,10 +170,6 @@ public class ActionLeaveDurationCalculate extends BaseAction {
         return new DayDuration(durationMinutes, duration);
     }
 
-    private long standardMinutes(Date onDuty, Date offDuty) {
-        return Math.max(0, (offDuty.getTime() - onDuty.getTime()) / (60 * 1000));
-    }
-
     private long overlapMinutes(Date startTime, Date endTime, Date rangeStart, Date rangeEnd) {
         long start = Math.max(startTime.getTime(), rangeStart.getTime());
         long end = Math.min(endTime.getTime(), rangeEnd.getTime());
@@ -133,6 +177,36 @@ public class ActionLeaveDurationCalculate extends BaseAction {
             return 0;
         }
         return (end - start) / (60 * 1000);
+    }
+
+    private static boolean isWeekendLeaveDate(String date, List<String> restDateList, List<String> weekendDateList,
+            List<String> legalHolidayDateList, Boolean includeWeekend) {
+        return BooleanUtils.isTrue(includeWeekend) && restDateList.contains(date) && weekendDateList.contains(date)
+                && !legalHolidayDateList.contains(date);
+    }
+
+    private static List<String> listLegalHolidayDate(EntityManagerContainer emc, List<String> dateList)
+            throws Exception {
+        List<String> legalHolidayDateList = new ArrayList<>();
+        for (String date : dateList) {
+            if (isLegalHoliday(emc, date)) {
+                legalHolidayDateList.add(date);
+            }
+        }
+        return legalHolidayDateList;
+    }
+
+    private static boolean isLegalHoliday(EntityManagerContainer emc, String date) throws Exception {
+        Date parsedDate = DateTools.parse(date, DateTools.format_yyyyMMdd);
+        if (Config.workTime() != null && Config.workTime().inDefinedHoliday(parsedDate)) {
+            return true;
+        }
+        List<AttendanceV2Holiday> holidays = emc.listEqual(AttendanceV2Holiday.class,
+                AttendanceV2Holiday.dateString_FIELDNAME, date);
+        if (holidays == null || holidays.isEmpty()) {
+            return false;
+        }
+        return holidays.stream().anyMatch(holiday -> BooleanUtils.isTrue(holiday.getOffDay()));
     }
 
     private static class DayDuration {
@@ -168,11 +242,12 @@ public class ActionLeaveDurationCalculate extends BaseAction {
         @FieldDescribe("结束时间，yyyy-MM-dd HH:mm:ss")
         private Date endTime;
 
-        @FieldDescribe("开始日期，yyyy-MM-dd，兼容旧参数")
-        private String startDate;
 
-        @FieldDescribe("结束日期，yyyy-MM-dd，兼容旧参数")
-        private String endDate;
+        @FieldDescribe("是否排除节假休息日，默认true；传false时不排除节假休息日")
+        private Boolean excludeRestDay;
+
+        @FieldDescribe("普通周末是否算请假时长，默认false；传true时普通周末按最近过去的工作日班次计算，法定节假日仍排除")
+        private Boolean includeWeekend;
 
         public String getPerson() {
             return person;
@@ -198,20 +273,20 @@ public class ActionLeaveDurationCalculate extends BaseAction {
             this.endTime = endTime;
         }
 
-        public String getStartDate() {
-            return startDate;
+        public Boolean getExcludeRestDay() {
+            return excludeRestDay;
         }
 
-        public void setStartDate(String startDate) {
-            this.startDate = startDate;
+        public void setExcludeRestDay(Boolean excludeRestDay) {
+            this.excludeRestDay = excludeRestDay;
         }
 
-        public String getEndDate() {
-            return endDate;
+        public Boolean getIncludeWeekend() {
+            return includeWeekend;
         }
 
-        public void setEndDate(String endDate) {
-            this.endDate = endDate;
+        public void setIncludeWeekend(Boolean includeWeekend) {
+            this.includeWeekend = includeWeekend;
         }
     }
 

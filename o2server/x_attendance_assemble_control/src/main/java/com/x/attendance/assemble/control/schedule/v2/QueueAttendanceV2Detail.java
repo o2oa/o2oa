@@ -35,8 +35,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
         if (logger.isDebugEnabled()) {
             logger.debug("考勤数据处理 ==== 处理人员 {} 处理日期 {} ===================", model.getPerson(), model.getDate());
         }
-        if (!AttendanceV2Helper.beforeToday(model.getDate())) {
-            logger.info("日期不正确！");
+        if (!allowProcessDate(model)) {
             return;
         }
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -276,6 +275,24 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                     isWorkDay);
         }
 
+    }
+
+    private boolean allowProcessDate(QueueAttendanceV2DetailModel model) throws Exception {
+        if (BooleanUtils.isTrue(model.getAllowToday())) {
+            Date date = DateTools.parse(model.getDate(), DateTools.format_yyyyMMdd);
+            Date today = DateTools.parse(DateTools.format(new Date(), DateTools.format_yyyyMMdd),
+                    DateTools.format_yyyyMMdd);
+            if (date.after(today)) {
+                logger.info("日期不正确！");
+                return false;
+            }
+            return true;
+        }
+        if (!AttendanceV2Helper.beforeToday(model.getDate())) {
+            logger.info("日期不正确！");
+            return false;
+        }
+        return true;
     }
 
     private Date parseRecordDutyTime(AttendanceV2CheckInRecord record) throws Exception {

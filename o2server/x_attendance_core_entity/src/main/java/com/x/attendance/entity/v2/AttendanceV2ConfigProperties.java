@@ -2,11 +2,14 @@ package com.x.attendance.entity.v2;
 
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
+import java.util.Collections;
+import java.util.List;
 
-public class AttendanceV2ConfigProperties  extends JsonProperties {
+public class AttendanceV2ConfigProperties extends JsonProperties {
 
-    private static final long serialVersionUID = -8203944978565083706L;
-    
+    private static final long serialVersionUID = 2401225663110698389L;
+
+    final List<String> defaultList = Collections.singletonList("考勤管理员");
 
     @FieldDescribe("假期管理默认数据是否已经初始化.")
     private Boolean leaveTypeInitialized = false;
@@ -14,7 +17,29 @@ public class AttendanceV2ConfigProperties  extends JsonProperties {
     private Integer checkInAlertOffDutyAfterMinutes = 10;
     @FieldDescribe("上班前提醒分钟数.")
     private Integer checkInAlertOnDutyBeforeMinutes = 10;
+    @FieldDescribe("是否开启中国节假日数据同步")
+    private Boolean chineseHolidaySyncEnable = true;
+    @FieldDescribe("考勤管理员职务名称")
+    private List<String> statisticUnitDutyNameList =  defaultList;
+    @FieldDescribe("外勤打卡执行脚本")
+    private String fieldWorkExecuteScript;
 
+
+    public String getFieldWorkExecuteScript() {
+        return fieldWorkExecuteScript;
+    }
+
+    public void setFieldWorkExecuteScript(String fieldWorkExecuteScript) {
+        this.fieldWorkExecuteScript = fieldWorkExecuteScript;
+    }
+
+    public List<String> getStatisticUnitDutyNameList() {
+        return statisticUnitDutyNameList;
+    }
+
+    public void setStatisticUnitDutyNameList(List<String> statisticUnitDutyNameList) {
+        this.statisticUnitDutyNameList = statisticUnitDutyNameList;
+    }
 
     public Integer getCheckInAlertOffDutyAfterMinutes() {
         return checkInAlertOffDutyAfterMinutes;
@@ -41,5 +66,11 @@ public class AttendanceV2ConfigProperties  extends JsonProperties {
         this.leaveTypeInitialized = leaveTypeInitialized;
     }
 
-    
+    public Boolean getChineseHolidaySyncEnable() {
+        return chineseHolidaySyncEnable;
+    }
+
+    public void setChineseHolidaySyncEnable(Boolean chineseHolidaySyncEnable) {
+        this.chineseHolidaySyncEnable = chineseHolidaySyncEnable;
+    }
 }

@@ -48,3 +48,25 @@
     font-size: 14px;
     text-align: center;
 }
+.config-text-input {
+    height: 30px;
+    width: 280px;
+    padding: 0 10px;
+    border: 1px solid #DEDEDE;
+    border-radius: var(--att-default-radius);
+    box-sizing: border-box;
+    font-size: 14px;
+    color: #666666;
+}
+.config-form-select {
+    height: 30px;
+    width: 72px;
+    margin: 0 4px;
+    padding: 0 8px;
+    border: 1px solid #DEDEDE;
+    border-radius: var(--att-default-radius);
+    box-sizing: border-box;
+    font-size: 14px;
+    color: #666666;
+    background-color: #FFFFFF;
+}

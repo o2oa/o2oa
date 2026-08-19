@@ -36,9 +36,29 @@ export default content({
       this.bind.menu.currentMenu = menu[0].children[0];
     }
     this._initEventBus()
+    console.debug('attendancev2 beforeRender .......');
   },
   async afterRender() {
     this._initOONav()
+  },
+  startOpenMenu(action) {
+    if (!action) return;
+    for (let index = 0; index < this.bind.menu.menuData.length; index++) {
+      const element = this.bind.menu.menuData[index];
+      for (let j = 0; j < element.children.length; j++) {
+        const child = element.children[j];
+        if (child.action === action) {
+          this.bind.menu.currentMenu = child;
+          break;
+        }
+      }
+    }
+    setTimeout(() => {
+      const ooNav = document.querySelector('#app-attendance-v2-menu');
+      const item = ooNav.getItem(this.bind.menu.currentMenu.name);
+      item.select();
+    });
+    console.debug('attendancev2 startOpenMenu .......');
   },
   // 初始化 EventBus
   _initEventBus() {
@@ -47,9 +67,11 @@ export default content({
   _initOONav() {
     const ooNav = document.querySelector('#app-attendance-v2-menu')
     ooNav.addEventListener('select', (e) => {
-      this.bind.menu.currentMenu = e.detail.data
+      this.bind.menu.currentMenu = e.detail.data;
+      this.closeFormVm(); // 关闭 form 窗口
     })
     ooNav.setMenu(this.bind.menu.menuData)
+
   },
   // 添加监听
   listenEventBus(eventName, callback) {
@@ -218,6 +240,18 @@ export default content({
             "text": lp.menu.myAppealList,
             "action": "appealManager",
             "icon": "ooicon-emoji-prompt"
+          },
+          {
+            "name": "1-3",
+            "text": lp.menu.leave1,
+            "action": "leaveManager",
+            "icon": "ooicon-zaotui"
+          },
+          {
+            "name": "1-4",
+            "text": lp.menu.leave2,
+            "action": "leaveManagerV2/requestList",
+            "icon": "ooicon-working_hours"
           }
         ]
       },

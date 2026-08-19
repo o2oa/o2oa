@@ -1,6 +1,7 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
 import { getFileDownloadUrl } from "../../../utils/actions";
+import { fieldWorkFormat } from "../../../utils/common";
 import template from "./template.html";
 
 
@@ -43,6 +44,9 @@ export default content({
     }
     return this.bind.record.recordDate;
   },
+  hasLeave(record) {
+    return record && (record.requestDataId || record.leaveDataId)
+  },
   formatRecordResultClass(record) {
     let span = "";
     if (record.fieldWork) {
@@ -51,6 +55,8 @@ export default content({
       const result = record.checkInResult;
       if (result === "PreCheckIn") {
         span = "";
+      } else if (this.hasLeave(record)) {
+        span = "color-leave";
       } else if (result === "NotSigned") {
         span = "color-nosign";
       } else if (result === "Normal") {
@@ -70,11 +76,13 @@ export default content({
   formatRecordResult(record) {
     let span = "";
     if (record.fieldWork) {
-      span = lp.appeal.fieldWork;
+      span = fieldWorkFormat(record);
     } else {
       const result = record.checkInResult;
       if (result === "PreCheckIn") {
         span = "";
+      } else if (this.hasLeave(record)) {
+        span =lp.appeal.leave;
       } else if (result === "NotSigned") {
         span = lp.appeal.notSigned;
       } else if (result === "Normal") {

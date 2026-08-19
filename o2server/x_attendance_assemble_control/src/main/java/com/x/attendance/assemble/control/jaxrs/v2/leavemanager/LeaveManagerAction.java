@@ -9,6 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
@@ -116,11 +117,29 @@ public class LeaveManagerAction extends StandardJaxrsAction {
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
     public void typeListWithAccount(@Suspended final AsyncResponse asyncResponse,
-            @Context HttpServletRequest request) {
+            @Context HttpServletRequest request, @JaxrsParameterDescribe("查询人员的 DN") @QueryParam("person") String person) {
         ActionResult<List<ActionLeaveTypeListWithAccount.Wo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionLeaveTypeListWithAccount().execute(effectivePerson);
+            result = new ActionLeaveTypeListWithAccount().execute(effectivePerson, person);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "假期类型列表,带用户账户和当年请假统计.", action = ActionLeaveTypeListWithAccountAndCountYear.class)
+    @GET
+    @Path("type/list/account/{person}/count/year")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void typeListWithAccountAndCountYear(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request, @JaxrsParameterDescribe("查询人员的 DN") @PathParam("person") String person) {
+        ActionResult<List<ActionLeaveTypeListWithAccountAndCountYear.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLeaveTypeListWithAccountAndCountYear().execute(effectivePerson, person);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);
@@ -296,6 +315,24 @@ public class LeaveManagerAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "调整假期额度批次.", action = ActionLeaveLedgerAdjust.class)
+    @POST
+    @Path("ledger/adjust")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void ledgerAdjust(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request, JsonElement jsonElement) {
+        ActionResult<ActionLeaveLedgerAdjust.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLeaveLedgerAdjust().execute(effectivePerson, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "批量删除假期发放批次.", action = ActionLeaveLedgerBatchDelete.class)
     @POST
     @Path("ledger/delete/batch")
@@ -374,6 +411,24 @@ public class LeaveManagerAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "批量导入中国节假日数据.", action = ActionHolidayImport.class)
+    @POST
+    @Path("holiday/import")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void holidayImport(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request, JsonElement jsonElement) {
+        ActionResult<ActionHolidayImport.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionHolidayImport().execute(effectivePerson, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "删除中国节假日数据.", action = ActionHolidayDelete.class)
     @GET
     @Path("holiday/delete/{id}")
@@ -433,6 +488,25 @@ public class LeaveManagerAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "根据日期查询假期申请.", action = ActionLeaveRequestSearchWithDate.class)
+    @GET
+    @Path("request/search/date/{date}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void requestSearchWithDate(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request,
+            @JaxrsParameterDescribe("日期，格式 yyyy-MM-dd") @PathParam("date") String date) {
+        ActionResult<List<ActionLeaveRequestSearchWithDate.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLeaveRequestSearchWithDate().execute(date);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "根据人员和假期类型ID查询今年请假次数.", action = ActionLeaveRequestCountYear.class)
     @POST
     @Path("request/count/year")
@@ -451,6 +525,24 @@ public class LeaveManagerAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "根据人员和时间统计假期申请和假期余额.", action = ActionLeaveRequestStatic.class)
+    @POST
+    @Path("request/static")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void requestStatic(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request, JsonElement jsonElement) {
+        ActionResult<List<ActionLeaveRequestStatic.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionLeaveRequestStatic().execute(effectivePerson, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "根据开始结束时间计算实际请假天数.", action = ActionLeaveDurationCalculate.class)
     @POST
     @Path("request/duration/calculate")
@@ -462,6 +554,24 @@ public class LeaveManagerAction extends StandardJaxrsAction {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
             result = new ActionLeaveDurationCalculate().execute(jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "根据开始结束时间计算实际加班时长.", action = ActionOvertimeDurationCalculate.class)
+    @POST
+    @Path("request/overtime/duration/calculate")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void requestOvertimeDurationCalculate(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request, JsonElement jsonElement) {
+        ActionResult<ActionOvertimeDurationCalculate.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionOvertimeDurationCalculate().execute(jsonElement);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, jsonElement);
             result.error(e);

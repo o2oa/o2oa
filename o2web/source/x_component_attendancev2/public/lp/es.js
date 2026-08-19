@@ -16,6 +16,8 @@ MWF.xApplication.attendancev2.LP={
 		"groupmanager": "Gestión de grupos de asistencia",
 		"addressmanger": "Gestión de lugares de trabajo",
 		"leavemanager": "Registros de ausencia",
+		"leave1": "Registros de salidas",
+		"leave2": "Registros de permisos",
 		"leavemanagerv2": "Gestión de vacaciones",
 		"configmanager": "Gestión de configuración"
 	},
@@ -27,7 +29,8 @@ MWF.xApplication.attendancev2.LP={
 	"delete": "Eliminar",
 	"update": "Modificar",
 	"search": "Buscar",
-	"statisticExport": "Exportar (recursivo)",
+	"recursive": "Recursivo",
+	"statisticExport": "Exportar",
 	"positive": "Aceptar",
 	"cancel": "Cancelar",
 	"add": "Agregar",
@@ -127,6 +130,9 @@ MWF.xApplication.attendancev2.LP={
 		"beforeOffDutyTimePlaceholder": "Por favor, elija la hora antes del trabajo.",
 		"afterOffDutyTimePlaceholder": "Por favor, elija la hora después del trabajo.",
 		"afterOffDutyTimeLabel": "Después de salir",
+		"restPeriodLabel": "Periodo de descanso:",
+		"restPeriodStartPlaceholder": "Seleccione la hora de inicio del descanso",
+		"restPeriodEndPlaceholder": "Seleccione la hora de fin del descanso",
 		"lateAndEarlyOnTimeLabel1": "Retraso máximo permitido para la entrada:",
 		"lateAndEarlyOnTimeLabel2": " sin contar como retraso",
 		"lateAndEarlyOffTimeLabel1": "Salida anticipada máxima permitida:",
@@ -134,6 +140,7 @@ MWF.xApplication.attendancev2.LP={
 		"shiftNameNotEmpty": "¡El nombre del turno no puede estar vacío!",
 		"onDutyTimeNotEmpty": "¡La hora de entrada no puede estar vacía!",
 		"offDutyTimeNotEmpty": "¡La hora de salida no puede estar vacía!",
+		"restPeriodNeedComplete": "Seleccione la hora de inicio y fin del periodo de descanso.",
 		"success": "¡Guardado exitoso!",
 		"confirmDelete": "¿Estás seguro de que deseas eliminar esta información de 【{name}】?",
 		"selectShiftEmpty": "Seleccione un turno",
@@ -294,7 +301,8 @@ MWF.xApplication.attendancev2.LP={
 		"startDateEmptyPlaceholder": "¡Seleccione la fecha de inicio!",
 		"endDateEmptyPlaceholder": "¡Seleccione la fecha de finalización!",
 		"endDateCannotSmaller": "La fecha de finalización no puede ser inferior a la fecha de inicio!",
-		"startDateAndEndDateMoreThan": "El intervalo de fechas no puede exceder los 31 días!"
+		"startDateAndEndDateMoreThan": "El intervalo de fechas no puede exceder los 31 días!",
+		"exportDataEmptyPlaceholder": "¡Consulte datos antes de exportar!"
 	},
 	"detailRecordList": {
 		"title": "Registro de asistencia",
@@ -360,6 +368,7 @@ MWF.xApplication.attendancev2.LP={
 		"requestList": "Datos de permisos",
 		"leaveData": "Datos de salidas",
 		"holidayCalendar": "Calendario de festivos",
+		"ledgerImportHistoryDeleteUnlocked": "Las acciones de eliminación del historial de importación ahora están visibles. Proceda con cuidado.",
 		"calendar": {
 			"today": "Volver a hoy",
 			"offday": "Festivo",
@@ -373,7 +382,19 @@ MWF.xApplication.attendancev2.LP={
 			"dateString": "Fecha",
 			"dateError": "¡Seleccione una fecha válida!",
 			"offDay": "Tipo",
-			"deleteConfirm": "¿Está seguro de que desea eliminar este registro de festivo?"
+			"deleteConfirm": "¿Está seguro de que desea eliminar este registro de festivo?",
+			"importHoliday": "Importar festivos",
+			"importFormatTitle": "Formato JSON de importación",
+			"importFormatDesc": "Prepare un objeto JSON: year es el año, overwrite indica si se reemplazan fechas existentes y days es la lista de festivos. En cada elemento, name es el nombre, date es una fecha yyyy-MM-dd e isOffDay true indica festivo; false indica día laboral ajustado.",
+			"importFormatCompatible": "La API también acepta dateString/offDay, y el campo de lista puede llamarse holidayList u holidays. También puede importar directamente un array; se tratará como days.",
+			"importJson": "JSON de festivos",
+			"importJsonEmpty": "Introduzca el JSON de festivos.",
+			"importJsonError": "El formato JSON no es válido. Revíselo antes de importar.",
+			"importDataEmpty": "Introduzca al menos un registro de festivo.",
+			"importOverwrite": "Reemplazar datos de fechas existentes",
+			"startImport": "Iniciar importación",
+			"importFail": "No se pudieron importar los festivos.",
+			"importResult": "Importación completada: total {total}, nuevos {inserted}, actualizados {updated}, omitidos {skipped}, errores {errors}"
 		},
 		"type": {
 			"name": "Nombre del tipo de vacaciones",
@@ -417,7 +438,14 @@ MWF.xApplication.attendancev2.LP={
 		},
 		"account": {
 			"filterSelectTitle": "Seleccionar persona u organización",
-			"filterEmptyPlaceholder": "Seleccione una persona u organización para consultar."
+			"filterEmptyPlaceholder": "Seleccione una persona u organización para consultar.",
+			"balanceFormatTip": "Las vacaciones limitadas muestran:",
+			"totalGranted": "Total",
+			"totalGrantedShort": "Total",
+			"totalUsed": "Usado",
+			"totalUsedShort": "Usado",
+			"balance": "Saldo",
+			"balanceShort": "Saldo"
 		},
 		"request": {
 			"filterSelectTitle": "Seleccionar persona u organización",

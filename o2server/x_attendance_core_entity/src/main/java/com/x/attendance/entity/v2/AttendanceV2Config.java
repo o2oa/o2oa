@@ -8,8 +8,16 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import javax.persistence.*;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Strategy;
 
@@ -23,7 +31,7 @@ import org.apache.openjpa.persistence.jdbc.Strategy;
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.AttendanceV2Config.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceV2Config.table
-        + JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = {JpaObject.IDCOLUMN,
+                                                                                                           + JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = {JpaObject.IDCOLUMN,
         JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN}))
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AttendanceV2Config extends SliceJpaObject {
@@ -46,6 +54,9 @@ public class AttendanceV2Config extends SliceJpaObject {
     private String id = createId();
 
     public void onPersist() throws Exception {
+        if(this.properties == null){
+            this.properties = new AttendanceV2ConfigProperties();
+        }
     }
     /*
      * =============================================================================
@@ -74,12 +85,12 @@ public class AttendanceV2Config extends SliceJpaObject {
 
     public static final String processId_FIELDNAME = "processId";
     @FieldDescribe("自定义流程id")
-    @Column(length = length_255B, name = ColumnNamePrefix + processId_FIELDNAME)
+    @Column(name = ColumnNamePrefix + processId_FIELDNAME)
     private String processId;
 
     public static final String processName_FIELDNAME = "processName";
     @FieldDescribe("自定义流程名称")
-    @Column(length = length_255B, name = ColumnNamePrefix + processName_FIELDNAME)
+    @Column(name = ColumnNamePrefix + processName_FIELDNAME)
     private String processName;
 
     public static final String onDutyFastCheckInEnable_FIELDNAME = "onDutyFastCheckInEnable";
@@ -107,12 +118,17 @@ public class AttendanceV2Config extends SliceJpaObject {
     @Column(length = length_8B, name = ColumnNamePrefix + exceptionAlertTime_FIELDNAME)
     private String exceptionAlertTime = "09:30";
 
+    // 0 表示当天，1表示次日
+    public static final String exceptionAlertDateNumber_FIELDNAME = "exceptionAlertDateNumber";
+    @FieldDescribe("异常打卡提醒日期计算值")
+    @Column(  name = ColumnNamePrefix + exceptionAlertDateNumber_FIELDNAME)
+    private Integer exceptionAlertDateNumber = 1;
+
     // 记录任务执行的日期，用于判断当天是否已经执行过提醒任务了
     public static final String exceptionAlertDate_FIELDNAME = "exceptionAlertDate";
     @FieldDescribe("异常打卡定时执行日期：yyyy-MM-dd .")
     @Column(length = length_32B, name = ColumnNamePrefix + exceptionAlertDate_FIELDNAME)
     private String exceptionAlertDate;
-
 
     // 统计定时任务表达式
     public static final String detailStatisticCronString_FIELDNAME = "detailStatisticCronString";
@@ -132,13 +148,37 @@ public class AttendanceV2Config extends SliceJpaObject {
     @Column(name = ColumnNamePrefix + faceDetectionEnable_FIELDNAME)
     private Boolean faceDetectionEnable = false;
 
-    public static final String PROPERTIES_FIELDNAME = "properties";
-	@FieldDescribe("更多配置信息.")
-	@Persistent
-	@Strategy(JsonPropertiesValueHandler)
-	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + PROPERTIES_FIELDNAME)
+    public static final String properties_FIELDNAME = "properties";
+    @FieldDescribe("属性对象存储字段.")
+    @Persistent(fetch = FetchType.EAGER)
+    @Strategy(JsonPropertiesValueHandler)
+    @Column(length = JpaObject.length_4K, name = ColumnNamePrefix + properties_FIELDNAME)
+    @CheckPersist(allowEmpty = true)
 	private AttendanceV2ConfigProperties properties;
 
+
+    @Transient
+    private String fieldWorkExecuteScript;
+
+    public String getFieldWorkExecuteScript() {
+        if (this.fieldWorkExecuteScript == null || this.fieldWorkExecuteScript.isEmpty()) {
+            this.fieldWorkExecuteScript = this.getProperties().getFieldWorkExecuteScript();
+        }
+        return fieldWorkExecuteScript;
+    }
+
+    public void setFieldWorkExecuteScript(String fieldWorkExecuteScript) {
+        this.fieldWorkExecuteScript = fieldWorkExecuteScript;
+        this.getProperties().setFieldWorkExecuteScript(fieldWorkExecuteScript);
+    }
+
+    public Integer getExceptionAlertDateNumber() {
+        return exceptionAlertDateNumber;
+    }
+
+    public void setExceptionAlertDateNumber(Integer exceptionAlertDateNumber) {
+        this.exceptionAlertDateNumber = exceptionAlertDateNumber;
+    }
 
     public Boolean getFaceDetectionEnable() {
         return faceDetectionEnable;
@@ -245,6 +285,9 @@ public class AttendanceV2Config extends SliceJpaObject {
     }
 
     public AttendanceV2ConfigProperties getProperties() {
+        if (null == this.properties) {
+            this.properties = new AttendanceV2ConfigProperties();
+        }
         return properties;
     }
 

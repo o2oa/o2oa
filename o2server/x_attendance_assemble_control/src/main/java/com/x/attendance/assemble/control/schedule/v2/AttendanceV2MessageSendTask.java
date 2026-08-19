@@ -76,6 +76,12 @@ public class AttendanceV2MessageSendTask extends AbstractJob {
                 emc.beginTransaction(AttendanceV2AlertMessage.class);
                 emc.persist(old, CheckPersistType.all);
                 emc.commit();
+                // 不是今天的消息，不发送
+                String today = DateTools.format(now, DateTools.format_yyyyMMdd);
+                String sendDate = DateTools.format(message.getSendDateTime(), DateTools.format_yyyyMMdd);
+                if (!today.equals(sendDate)) {
+                    continue;
+                }
                 // 判断个人配置 是否需要真实的发送消息
                 List<AttendanceV2PersonConfig> list = business.getAttendanceV2ManagerFactory()
                         .personConfigWithPerson(message.getUserId());
@@ -98,6 +104,19 @@ public class AttendanceV2MessageSendTask extends AbstractJob {
                 if (message.getCheckInType().equals(AttendanceV2CheckInRecord.OffDuty) && !isOffDutySendPerson) {
                     continue;
                 }
+                // 判断是否已经打过卡了
+                List<AttendanceV2CheckInRecord> records = business.getAttendanceV2ManagerFactory().listRecordWithPersonAndDate(message.getUserId(), today);
+                if (records != null && !records.isEmpty()) {
+                    boolean isOnDutyCheckIn = records.stream().anyMatch(r -> AttendanceV2CheckInRecord.OnDuty.equals(r.getCheckInType()) && !AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn.equals(r.getCheckInResult()));
+                    boolean isOffDutyCheckIn = records.stream().anyMatch(r -> AttendanceV2CheckInRecord.OffDuty.equals(r.getCheckInType()) && !AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn.equals(r.getCheckInResult()));
+                    if (AttendanceV2CheckInRecord.OnDuty.equals(message.getCheckInType()) && isOnDutyCheckIn) {
+                        continue;
+                    }
+                    if (AttendanceV2CheckInRecord.OffDuty.equals(message.getCheckInType()) && isOffDutyCheckIn) {
+                        continue;
+                    }
+                }
+
                 String title;
                 if (AttendanceV2CheckInRecord.OnDuty.equals(message.getCheckInType())) {
                     title = "即将开始上班，请别忘记打卡哦！";
@@ -135,7 +154,7 @@ public class AttendanceV2MessageSendTask extends AbstractJob {
                 return;
             }
             logger.info("开始发送异常数据提醒，当前时间：{} , 异常数据提醒时间：{}", now.toString(), alertTime.toString());
-            sendExceptionMsgAlert(emc);
+            sendExceptionMsgAlert(emc, config);
             // 更新配置 today 表示已经发送过提醒
             config.setExceptionAlertDate(today);
             emc.beginTransaction(AttendanceV2Config.class);
@@ -150,11 +169,20 @@ public class AttendanceV2MessageSendTask extends AbstractJob {
     /**
      * 发送异常数据提醒
      */
-    private void sendExceptionMsgAlert(EntityManagerContainer emc) {
+    private void sendExceptionMsgAlert(EntityManagerContainer emc, AttendanceV2Config config) {
         try {
             Business business = new Business(emc);
-            // 昨天产生的数据 今天发送消息
-            Date yesterday = DateTools.addDay(new Date(), -1);
+            //
+            Integer dateNumber = config.getExceptionAlertDateNumber();
+            if (dateNumber == null || dateNumber < 0 ) {
+                dateNumber = 1; // 默认提醒前一天的异常数据
+            }
+            Date yesterday;
+            if (dateNumber == 0) {
+                yesterday = new Date();
+            } else {
+                yesterday = DateTools.addDay(new Date(), -(dateNumber));
+            }
             String yesterdayString = DateTools.format(yesterday, DateTools.format_yyyyMMdd);
             List<AttendanceV2AppealInfo> list = business.getAttendanceV2ManagerFactory().listAppealInfoWithRecordDateString(yesterdayString);
             if (list == null || list.isEmpty()) {

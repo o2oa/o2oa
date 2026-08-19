@@ -8,6 +8,7 @@ import {
     myAction,
     processAction
 } from "../../../utils/actions";
+import {fieldWorkFormat} from "../../../utils/common";
 
 
 export default content({
@@ -140,7 +141,7 @@ export default content({
     formatRecordResult(record) {
         let span = "";
         if (record.fieldWork) {
-            span = lp.appeal.fieldWork;
+            span = fieldWorkFormat(record);
         } else {
             const result = record.checkInResult;
             if (result === "PreCheckIn") {

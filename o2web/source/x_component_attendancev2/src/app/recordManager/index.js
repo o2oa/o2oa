@@ -5,7 +5,7 @@ import oPager from "../../components/o-pager";
 import oOrgPersonSelector from "../../components/o-org-person-selector";
 import oDatePicker from "../../components/o-date-picker";
 import template from "./template.html";
-import {lpFormat, isEmpty, chooseSingleFile} from "../../utils/common";
+import {lpFormat, isEmpty, chooseSingleFile, fieldWorkFormat} from "../../utils/common";
 
 export default content({
   template,
@@ -19,6 +19,7 @@ export default content({
         userId: "",
         startDate: "",
         endDate: "",
+        recursive: true,
       },
       units: [], // 控制组织选择的范围
       filterList:[],
@@ -59,17 +60,26 @@ export default content({
     this.bind.pagerData.page = 1;
     this.loadRecordlList();
   },
+  toggleRecursive() {
+    this.bind.form.recursive = !this.bind.form.recursive;
+  },
   async loadRecordlList() {
     const form = this.bind.form;
-    if (this.bind.filterList.length > 0) {
-      form.userId = this.bind.filterList[0];
-    } else {
-      if (this.bind.units.length > 0) {
-        o2.api.page.notice(lp.detailStatisticList.filterEmptyPlaceholder, 'error');
-        return;
-      }
-      form.userId = "";
+    // if (this.bind.filterList.length > 0) {
+    //   form.userId = this.bind.filterList[0];
+    // } else {
+    //   if (this.bind.units.length > 0) {
+    //     o2.api.page.notice(lp.detailStatisticList.filterEmptyPlaceholder, 'error');
+    //     return;
+    //   }
+    //   form.userId = "";
+    // }
+    form.filterList = this.bind.filterList;
+    if (form.filterList.length < 1) {
+      o2.api.page.notice(lp.detailStatisticList.filterEmptyPlaceholder, 'error');
+      return;
     }
+
     if ((isEmpty(form.startDate) && !isEmpty(form.endDate)) || (!isEmpty(form.startDate) && isEmpty(form.endDate))) {
       o2.api.page.notice(lp.record.searchDateError, 'error');
       return;
@@ -114,6 +124,9 @@ export default content({
     }
     return record.recordDate;
   },
+  hasLeave(record) {
+    return record && (record.requestDataId || record.leaveDataId)
+  },
   formatRecordResultClass(record) {
     let span = "";
     if (record.fieldWork) {
@@ -122,6 +135,8 @@ export default content({
       const result = record.checkInResult;
       if (result === "PreCheckIn") {
         span = "";
+      } else if (this.hasLeave(record)) {
+        span = "color-leave";
       } else if (result === "NotSigned") {
         span = "color-nosign";
       } else if (result === "Normal") {
@@ -141,11 +156,13 @@ export default content({
   formatRecordResult(record) {
     let span = "";
     if (record.fieldWork) {
-      span = lp.appeal.fieldWork;
+      span = fieldWorkFormat(record);
     } else {
       const result = record.checkInResult;
       if (result === "PreCheckIn") {
         span = "";
+      } else if (this.hasLeave(record)) {
+        span =lp.appeal.leave;
       } else if (result === "NotSigned") {
         span = lp.appeal.notSigned;
       } else if (result === "Normal") {

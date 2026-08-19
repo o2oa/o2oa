@@ -22,8 +22,9 @@ export default content({
         offDutyFastCheckInEnable: false,
         checkInAlertEnable: false,
         exceptionAlertEnable: false,
+        exceptionAlertDateNumber: 1,
         exceptionAlertTime: "09:30",
-        appealMaxTimes: 0,
+        appealMaxTimes: '0',
         detailStatisticCronString: "0 0 3 * * ?", //默认凌晨 3 点
         closeOldAttendance: true, // 是否关闭旧考勤
         aliFaceControlEnable: false, // 阿里云人脸扩展是否启用
@@ -31,6 +32,9 @@ export default content({
         properties: {
           checkInAlertOnDutyBeforeMinutes: 10, // 默认上班前 10 分钟
           checkInAlertOffDutyAfterMinutes: 10, // 默认下班后 10 分钟 
+          statisticUnitDutyNameList:[], // 考勤统计管理员的职务名称
+          statisticUnitDutyNameListInput: "", // 考勤统计管理员的职务名称输入框
+          fieldWorkExecuteScript: "", // 外勤自动发起脚本
         }
       },
       holidayList: [],
@@ -58,6 +62,9 @@ export default content({
     const json = await configAction("get");
     if (json) {
       this.bind.form = json || {};
+      if (!this.bind.form.appealMaxTimes) {
+        this.bind.form.appealMaxTimes = '0';
+      }
       if (!json.properties) {
         this.bind.form.properties = {};
       }
@@ -67,6 +74,10 @@ export default content({
       if (!json.properties.checkInAlertOffDutyAfterMinutes) {
         this.bind.form.properties.checkInAlertOffDutyAfterMinutes = 10;
       }
+      if (!json.properties.statisticUnitDutyNameList) {
+        this.bind.form.properties.statisticUnitDutyNameList = ["考勤管理员"];
+      } 
+      this.bind.form.properties.statisticUnitDutyNameListInput = this.bind.form.properties.statisticUnitDutyNameList.join(", ");
       if (json.holidayList) {
         this.bind.holidayList = json.holidayList;
       }
@@ -79,7 +90,9 @@ export default content({
       if (typeof json.appealEnable == "undefined") {
         this.bind.form.appealEnable = false;
       }
-      debugger;
+      if (typeof json.exceptionAlertDateNumber == "undefined" || json.exceptionAlertDateNumber === null) {
+        this.bind.form.exceptionAlertDateNumber = 1;
+      }
       if (json.processId && json.processName) {
         this.bind.processSelector.value = [
           {
@@ -90,6 +103,7 @@ export default content({
         this.showProcessSelectorValueFun();
       }
     }
+    console.debug('load', this.bind.form);
   },
   // 保存
   async submit() {
@@ -103,6 +117,7 @@ export default content({
       );
       return;
     }
+    console.debug('submit', form);
     if (!isInt(form.appealMaxTimes)) {
       o2.api.page.notice(lp.config.appealMaxTimesError, "error");
       return;
@@ -129,9 +144,22 @@ export default content({
         return;
       }
     }
+    form.exceptionAlertDateNumber = Number(form.exceptionAlertDateNumber) === 0 ? 0 : 1;
+    if (form.exceptionAlertEnable === true && form.exceptionAlertDateNumber === 0) {
+      const alertTimeMinutes = this.getTimeMinutes(form.exceptionAlertTime);
+      if (alertTimeMinutes < 18 * 60) {
+        o2.api.page.notice("异常打卡提醒选择当天时，提醒时间必须为18:00或之后", "error");
+        return;
+      }
+    }
+    if (form.properties.statisticUnitDutyNameListInput) {
+      // 这里拆分代码 兼容下中英文的逗号
+      form.properties.statisticUnitDutyNameListInput = form.properties.statisticUnitDutyNameListInput.replace(/，/g, ",");
+      form.properties.statisticUnitDutyNameList = form.properties.statisticUnitDutyNameListInput.split(",").map(item => item.trim()).filter(item => item.length > 0);
+    }
     form.closeOldAttendance = true
     const result = await configAction("post", form);
-    console.log(result);
+    console.debug('submit result', result);
     o2.api.page.notice(lp.saveSuccess, "success");
     this.loadConfig();
   },
@@ -258,6 +286,16 @@ export default content({
   },
   clickExceptionAlertEnable() {
     this.bind.form.exceptionAlertEnable = !this.bind.form.exceptionAlertEnable;
+  },
+  changeExceptionAlertDateNumber(e) {
+    this.bind.form.exceptionAlertDateNumber = Number(e.target.value) === 0 ? 0 : 1;
+  },
+  getTimeMinutes(time) {
+    if (!time || !time.includes(":")) {
+      return 0;
+    }
+    const values = time.split(":");
+    return (Number(values[0]) || 0) * 60 + (Number(values[1]) || 0);
   },
   showProcessSelectorValueFun() {
     if (this.bind.processSelector.value.length > 0) {

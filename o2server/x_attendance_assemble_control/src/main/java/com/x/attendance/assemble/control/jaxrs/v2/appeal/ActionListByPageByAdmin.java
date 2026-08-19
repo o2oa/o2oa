@@ -2,6 +2,8 @@ package com.x.attendance.assemble.control.jaxrs.v2.appeal;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
+import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
 import com.x.attendance.entity.v2.AttendanceV2AppealInfo;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.base.core.container.EntityManagerContainer;
@@ -10,13 +12,13 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class ActionListByPageByAdmin extends BaseAction {
@@ -28,15 +30,26 @@ public class ActionListByPageByAdmin extends BaseAction {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             ActionResult<List<Wo>> result = new ActionResult<>();
             Business business = new Business(emc);
-            if (!business.isManager(person)) {
-                throw new ExceptionAccessDenied(person);
-            }
+//            if (!business.isManager(person)) {
+//                throw new ExceptionAccessDenied(person);
+//            }
             Integer adjustPage = this.adjustPage(page);
             Integer adjustPageSize = this.adjustSize(size);
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("person {}, page: {}, size: {}", person.getDistinguishedName(), adjustPage, adjustPageSize);
             }
             AppealInfoWi wi = this.convertToWrapIn(jsonElement, AppealInfoWi.class);
+            if (wi.getFilterList() != null && !wi.getFilterList().isEmpty()) {
+                List<String> userList = new ArrayList<>();
+                for (String f : wi.getFilterList()) {
+                    AttendanceV2Helper.analysisFilterToPersonList(userList, f, business, wi.getRecursive());
+                }
+                userList = new ArrayList<>(new LinkedHashSet<>(userList));
+                if (userList.isEmpty()) {
+                    throw new ExceptionWithMessage("当前查询条件没有找到人员信息！");
+                }
+                wi.setUsers(userList);
+            }
             List<AttendanceV2AppealInfo> list = business.getAttendanceV2ManagerFactory().listAppealInfoByPage(adjustPage, adjustPageSize, wi);
             List< Wo> wos =   Wo.copier.copy(list);
             if (wos != null && !wos.isEmpty()) {
@@ -52,7 +65,6 @@ public class ActionListByPageByAdmin extends BaseAction {
             return result;
         }
     }
-
 
     public static class Wo extends AttendanceV2AppealInfo {
         private static final long serialVersionUID = 6142658857959870785L;

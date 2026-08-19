@@ -1,6 +1,6 @@
 <div class="manager-box white-bg">
     <div class="index_page_header_container">
-        <div class="index_page_header_title">{{$.lp.detailManagerTitle}}</div>
+        <div class="index_page_header_title">{{ $.lp.menu.detailStatisticFilter }}</div>
     </div>
     <div style="padding: 20px;height: calc(100% - 104px);">
         <div style="margin: 10px 0;float: left;display: flex; align-items: center;">
@@ -19,6 +19,10 @@
             </div>
             <div class="margin-top margin-right">
                 <button class="mainColor_bg" @click="search">{{$.lp.search}}</button>
+            </div>
+            <div class="margin-top margin-right" style="display: flex; align-items: center; cursor: pointer;" @click="toggleRecursive">
+                <i class="{{ $.form.recursive ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                <span style="margin-left: 6px;">{{$.lp.recursive}}</span>
             </div>
         </div>
         <div style="margin: 10px 0;float: right;">
@@ -55,7 +59,7 @@
                         <td>{{d.value.absenceTimes}}</td>
                         <td>{{d.value.fieldWorkTimes}}</td>
                         <td oo-each="$.tableHeaderList" oo-item="h">
-                            <span oo-if="$m.checkDateDetail(h.value, d.value)" class="operator_link_underline" @click="this.openRecordList(h.value, d.value)" >{{ $m.formatRecordList(h.value, d.value)}}</span>
+                            <span oo-if="$m.checkDateDetail(h.value, d.value)" class="operator_link_underline" style="white-space: pre-line;" @click="this.openRecordList(h.value, d.value)" >{{ $m.formatRecordList(h.value, d.value)}}</span>
                         </td>
                     </tr>
                 </tbody>

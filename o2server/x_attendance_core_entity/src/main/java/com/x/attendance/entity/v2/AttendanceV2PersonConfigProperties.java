@@ -3,8 +3,7 @@ package com.x.attendance.entity.v2;
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
 
-public class AttendanceV2PersonConfigProperties   extends JsonProperties {
-
+public class AttendanceV2PersonConfigProperties extends JsonProperties{
 
     private static final long serialVersionUID = -3073887599579463766L;
     @FieldDescribe("上班前消息提醒打卡.")
@@ -29,4 +28,5 @@ public class AttendanceV2PersonConfigProperties   extends JsonProperties {
     public void setCheckInAlertOffDutyEnable(Boolean checkInAlertOffDutyEnable) {
         this.checkInAlertOffDutyEnable = checkInAlertOffDutyEnable;
     }
+
 }

@@ -36,6 +36,8 @@ public class ActionListWithWorkPlaceObject extends BaseAction {
 					wos.add(Wo.copier.copy(workPlace));
 				}
 			}
+			// 用 createTime 降序排序
+			wos.sort((o1, o2) -> o2.getCreateTime().compareTo(o1.getCreateTime()));
 		}
 		result.setData(wos);
 		return result;

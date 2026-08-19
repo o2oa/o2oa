@@ -1,4 +1,4 @@
-<!-- 假期类型规则 -->
+<!-- Leave type policy -->
 <div style="display: flex; flex-direction: column;" >
     <div class="index_page_header_container">
         <div class="index_page_header_title"><button style="margin-left: 0;margin-right: 10px;"
@@ -7,7 +7,7 @@
     </div>
     <div class="manager-box-content">
         <div style="margin: 10px 0;float: left;display: flex; align-items: center;">
-            <!--人员组织选择  -->
+            <!-- Person and organization selector -->
             <div class="margin-right">
                 <o-org-person-selector
                     oo-prop="{'isRequried': true, 'selectorTitle': $.lp.leaveManagerV2.account.filterSelectTitle,  'placeholder': $.lp.leaveManagerV2.account.filterEmptyPlaceholder, 'value': $.filterList}"
@@ -17,19 +17,91 @@
             <div class="margin-top margin-right">
                 <button class="mainColor_bg" @click="search">{{$.lp.search}}</button>
             </div>
+            <div class="margin-top margin-right" style="display: flex; align-items: center; cursor: pointer;" @click="toggleRecursive">
+                <i class="{{ $.form.recursive ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                <span style="margin-left: 6px;">{{$.lp.recursive}}</span>
+            </div>
         </div>
-        <!-- 表格数据展现 -->
+        <div class="leave-account-legend" oo-if="$.personList.length > 0">
+            <span>{{$.lp.leaveManagerV2.account.balanceFormatTip}}</span>
+            <span class="leave-account-legend-item">{{$.lp.leaveManagerV2.account.totalGranted}}</span>
+            <span class="leave-account-legend-separator">/</span>
+            <span class="leave-account-legend-item">{{$.lp.leaveManagerV2.account.totalUsed}}</span>
+            <span class="leave-account-legend-separator">/</span>
+            <span class="leave-account-legend-item">{{$.lp.leaveManagerV2.account.balance}}</span>
+        </div>
+        <!-- Table data -->
         <div style="clear: both; overflow-x: auto;">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table" oo-if="$.personList.length > 0">
                 <thead>
-                    <th style="min-width: 160px;">人员</th>
+                    <th style="min-width: 160px;">{{$.lp.leaveManagerV2.account.person}}</th>
                     <th oo-each="$.leaveTypeList" oo-item="leaveType" style="min-width: 120px;">{{leaveType.value.name}}</th>
                 </thead>
                 <tr oo-each="$.accountTableList" oo-item="row">
                     <td>{{row.value.personName}}</td>
-                    <td oo-each="row.value.balanceList" oo-item="balance">{{balance.value.value}}</td>
+                    <td oo-each="row.value.balanceList" oo-item="balance">
+                        <div oo-if="balance.value.limited" class="leave-account-balance-wrap">
+                            <div class="leave-account-balance" title="{{balance.value.title}}">
+                                <span class="leave-account-balance-item">
+                                    <span class="leave-account-balance-label">{{$.lp.leaveManagerV2.account.totalGrantedShort}}</span>
+                                    <span class="leave-account-balance-value">{{balance.value.totalGranted}}</span>
+                                </span>
+                                <span class="leave-account-balance-separator">/</span>
+                                <span class="leave-account-balance-item">
+                                    <span class="leave-account-balance-label">{{$.lp.leaveManagerV2.account.totalUsedShort}}</span>
+                                    <span class="leave-account-balance-value">{{balance.value.totalUsed}}</span>
+                                </span>
+                                <span class="leave-account-balance-separator">/</span>
+                                <span class="leave-account-balance-item leave-account-balance-item-primary">
+                                    <span class="leave-account-balance-label">{{$.lp.leaveManagerV2.account.balanceShort}}</span>
+                                    <span class="leave-account-balance-value">{{balance.value.balance}}</span>
+                                </span>
+                            </div>
+                            <button class="leave-account-adjust-button" @click="this.clickOpenLedgerAdjust(row.value, balance.value)">{{this.getAdjustLabel('adjust')}}</button>
+                        </div>
+                        <span oo-if="!balance.value.limited">{{balance.value.value}}</span>
+                    </td>
                 </tr>
             </table>
+        </div>
+    </div>
+
+    <div class="leave-import-mask" oo-if="$.adjustFormShow">
+        <div class="o2-form leave-import-form leave-adjust-form">
+            <div class="o2-form-header">
+                <span class="title">{{this.getAdjustLabel('title')}}</span>
+                <button class="close" @click="closeLedgerAdjust"><i class="o2icon-icon_off"></i></button>
+            </div>
+            <div class="o2-form-content leave-import-content">
+                <div class="leave-import-row">
+                    <div class="leave-import-label">{{this.getAdjustLabel('person')}}</div>
+                    <div class="leave-import-field leave-adjust-static">{{$.currentAdjustData ? $.currentAdjustData.personName : ''}}</div>
+                </div>
+                <div class="leave-import-row">
+                    <div class="leave-import-label">{{this.getAdjustLabel('leaveType')}}</div>
+                    <div class="leave-import-field leave-adjust-static">{{$.currentAdjustData ? $.currentAdjustData.leaveTypeName : ''}}</div>
+                </div>
+                <div class="leave-import-row">
+                    <div class="leave-import-label">{{this.getAdjustLabel('currentBalance')}}</div>
+                    <div class="leave-import-field leave-adjust-static leave-account-balance-item-primary">{{$.currentAdjustData ? $.currentAdjustData.balance : ''}}</div>
+                </div>
+                <div class="leave-import-row">
+                    <div class="leave-import-label"><span class="required">*</span>{{this.getAdjustLabel('adjustedAmount')}}</div>
+                    <div class="leave-import-field">
+                        <input class="leave-import-input" type="text" oo-model="adjustForm.adjustedAmount" placeholder="{{this.getAdjustLabel('adjustedAmountPlaceholder')}}" />
+                    </div>
+                </div>
+                <div class="leave-import-row">
+                    <div class="leave-import-label">{{this.getAdjustLabel('expireTime')}}</div>
+                    <div class="leave-import-field">
+                        <o-date-picker oo-prop="{'value': $.adjustForm.expireTime}" oo-model="adjustForm.expireTime"></o-date-picker>
+                    </div>
+                </div>
+            </div>
+            <div class="o2-form-footer leave-import-footer">
+                <button style="width: 120px;" class="mainColor_bg" @click="submitLedgerAdjust">{{$.adjustSubmitting ? this.getAdjustLabel('submitting') : this.getAdjustLabel('submit')}}</button>
+                <button class="lightColor_bg" @click="closeLedgerAdjust">{{$.lp.cancel}}</button>
+            </div>
         </div>
     </div>
 </div>

@@ -1,6 +1,7 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, component as app } from "@o2oa/component";
 import { appealInfoActionManagerListByPaging, appealInfoAction } from "../../utils/actions";
+import { fieldWorkFormat } from "../../utils/common";
 import oOrgPersonSelector from "../../components/o-org-person-selector";
 import oDatePicker from "../../components/o-date-picker";
 import oPager from "../../components/o-pager";
@@ -24,7 +25,8 @@ export default content({
       form: {
         users: [],
         startDate: '',
-        endDate: ''
+        endDate: '',
+        recursive: true
       },
       filterList: [],
       units: [], // 控制组织选择的范围
@@ -60,16 +62,24 @@ export default content({
     this.bind.pagerData.page = 1;
     this.loadAppealList();
   },
+  toggleRecursive() {
+    this.bind.form.recursive = !this.bind.form.recursive;
+  },
   async loadAppealList() {
     let form = this.bind.form;
-    if (this.bind.filterList && this.bind.filterList.length>0) {
-      form.users = this.bind.filterList;
-    } else {
-      if (this.bind.units.length > 0) {
-        o2.api.page.notice(lp.detailStatisticList.filterEmptyPlaceholder, 'error');
-        return;
-      }
-      form.users = [];
+    // if (this.bind.filterList && this.bind.filterList.length>0) {
+    //   form.users = this.bind.filterList;
+    // } else {
+    //   if (this.bind.units.length > 0) {
+    //     o2.api.page.notice(lp.detailStatisticList.filterEmptyPlaceholder, 'error');
+    //     return;
+    //   }
+    //   form.users = [];
+    // }
+    form.filterList = this.bind.filterList;
+    if (form.filterList.length < 1) {
+      o2.api.page.notice(lp.detailStatisticList.filterEmptyPlaceholder, 'error');
+      return;
     }
     const json = await appealInfoActionManagerListByPaging(
       this.bind.pagerData.page,
@@ -115,7 +125,7 @@ export default content({
   formatRecordResult(record) {
     let span = "";
     if (record.fieldWork) {
-      span = lp.appeal.fieldWork;
+      span = fieldWorkFormat(record);
     } else {
       const result = record.checkInResult;
       if (result === 'PreCheckIn') {

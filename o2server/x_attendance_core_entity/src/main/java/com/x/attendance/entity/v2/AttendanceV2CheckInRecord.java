@@ -1,7 +1,6 @@
 package com.x.attendance.entity.v2;
 
 import com.x.attendance.entity.PersistenceProperties;
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -10,6 +9,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
@@ -18,25 +18,45 @@ import org.apache.openjpa.persistence.jdbc.ElementIndex;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 /**
- * 打卡考勤记录
- * Created by fancyLou on 2023/2/20.
- * Copyright © 2023 O2. All rights reserved.
+ * 打卡考勤记录 Created by fancyLou on 2023/2/20. Copyright © 2023 O2. All rights reserved.
  */
 
 @Schema(name = "AttendanceV2CheckInRecord", description = "打卡考勤记录.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.AttendanceV2CheckInRecord.table, indexes = {
-        @javax.persistence.Index(name = PersistenceProperties.AttendanceV2CheckInRecord.table + JpaObject.IndexNameMiddle + AttendanceV2CheckInRecord.userId_FIELDNAME + "_IDX",
-                columnList = JpaObject.ColumnNamePrefix + AttendanceV2CheckInRecord.userId_FIELDNAME + "," + JpaObject.ColumnNamePrefix + AttendanceV2CheckInRecord.recordDateString_FIELDNAME),
+        @javax.persistence.Index(name = PersistenceProperties.AttendanceV2CheckInRecord.table
+                                        + "_UDS_IDX", columnList = JpaObject.ColumnNamePrefix
+                                                                   + AttendanceV2CheckInRecord.userId_FIELDNAME
+                                                                   + ","
+                                                                   + JpaObject.ColumnNamePrefix
+                                                                   + AttendanceV2CheckInRecord.recordDateString_FIELDNAME
+                                                                   + ","
+                                                                   + JpaObject.ColumnNamePrefix
+                                                                   + AttendanceV2CheckInRecord.recordDate_FIELDNAME),
+        @javax.persistence.Index(name = PersistenceProperties.AttendanceV2CheckInRecord.table
+                                        + "_URD_IDX", columnList = JpaObject.ColumnNamePrefix
+                                                                   + AttendanceV2CheckInRecord.userId_FIELDNAME
+                                                                   + ","
+                                                                   + JpaObject.ColumnNamePrefix
+                                                                   + AttendanceV2CheckInRecord.recordDate_FIELDNAME),
+        @javax.persistence.Index(name = PersistenceProperties.AttendanceV2CheckInRecord.table
+                                        + "_RD_IDX", columnList = JpaObject.ColumnNamePrefix
+                                                                  + AttendanceV2CheckInRecord.recordDate_FIELDNAME)
+
 }, uniqueConstraints = {
-        @UniqueConstraint(name = PersistenceProperties.AttendanceV2CheckInRecord.table + JpaObject.IndexNameMiddle
-                + JpaObject.DefaultUniqueConstraintSuffix, columnNames = {JpaObject.IDCOLUMN,
+        @UniqueConstraint(name = PersistenceProperties.AttendanceV2CheckInRecord.table
+                                 + JpaObject.IndexNameMiddle
+                                 + JpaObject.DefaultUniqueConstraintSuffix, columnNames = {
+                JpaObject.IDCOLUMN,
                 JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN}),
-        @UniqueConstraint(name = PersistenceProperties.AttendanceV2CheckInRecord.table + JpaObject.IndexNameMiddle
-                + "person_date_type_time_UNIQUE", columnNames = {JpaObject.ColumnNamePrefix + AttendanceV2CheckInRecord.userId_FIELDNAME,
+        @UniqueConstraint(name = PersistenceProperties.AttendanceV2CheckInRecord.table
+                                 + JpaObject.IndexNameMiddle
+                                 + "person_date_type_time_UNIQUE", columnNames = {
+                JpaObject.ColumnNamePrefix + AttendanceV2CheckInRecord.userId_FIELDNAME,
                 JpaObject.ColumnNamePrefix + AttendanceV2CheckInRecord.recordDateString_FIELDNAME,
                 JpaObject.ColumnNamePrefix + AttendanceV2CheckInRecord.checkInType_FIELDNAME,
                 JpaObject.ColumnNamePrefix + AttendanceV2CheckInRecord.preDutyTime_FIELDNAME})})
@@ -62,6 +82,7 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
 
     public void onPersist() throws Exception {
     }
+
     /*
      * =============================================================================
      * ===== 以上为 JpaObject 默认字段
@@ -103,11 +124,13 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
     @FieldDescribe("打卡时间")
     private String preDutyTime;
     public static final String preDutyTimeBeforeLimit_FIELDNAME = "preDutyTimeBeforeLimit";
-    @Column(length = JpaObject.length_32B, name = ColumnNamePrefix + preDutyTimeBeforeLimit_FIELDNAME)
+    @Column(length = JpaObject.length_32B, name = ColumnNamePrefix
+                                                  + preDutyTimeBeforeLimit_FIELDNAME)
     @FieldDescribe("打卡时间前限制打卡时间")
     private String preDutyTimeBeforeLimit;
     public static final String preDutyTimeAfterLimit_FIELDNAME = "preDutyTimeAfterLimit";
-    @Column(length = JpaObject.length_32B, name = ColumnNamePrefix + preDutyTimeAfterLimit_FIELDNAME)
+    @Column(length = JpaObject.length_32B, name = ColumnNamePrefix
+                                                  + preDutyTimeAfterLimit_FIELDNAME)
     @FieldDescribe("打卡时间后限制打卡时间")
     private String preDutyTimeAfterLimit;
 
@@ -154,17 +177,17 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
 
     public static final String sourceDevice_FIELDNAME = "sourceDevice";
     @FieldDescribe("来源设备")
-    @Column( length = JpaObject.length_128B, name = ColumnNamePrefix + sourceDevice_FIELDNAME )
+    @Column(length = JpaObject.length_128B, name = ColumnNamePrefix + sourceDevice_FIELDNAME)
     private String sourceDevice;
 
     public static final String description_FIELDNAME = "description";
     @FieldDescribe("其他说明备注")
-    @Column(length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
+    @Column(name = ColumnNamePrefix + description_FIELDNAME)
     private String description;
 
     public static final String recordAddress_FIELDNAME = "recordAddress";
     @FieldDescribe("打卡地点描述")
-    @Column(length = JpaObject.length_255B, name = ColumnNamePrefix + recordAddress_FIELDNAME)
+    @Column(name = ColumnNamePrefix + recordAddress_FIELDNAME)
     private String recordAddress;
 
     public static final String longitude_FIELDNAME = "longitude";
@@ -180,7 +203,7 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
 
     public static final String signDescription_FIELDNAME = "signDescription";
     @FieldDescribe("外勤打卡说明")
-    @Column(length = JpaObject.length_255B, name = ColumnNamePrefix + signDescription_FIELDNAME)
+    @Column(name = ColumnNamePrefix + signDescription_FIELDNAME)
     private String signDescription;
 
     public static final String fieldWork_FIELDNAME = "fieldWork";
@@ -193,8 +216,10 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
     @PersistentCollection(fetch = FetchType.EAGER)
     @OrderColumn(name = ORDERCOLUMNCOLUMN)
     @ContainerTable(name = TABLE + ContainerTableNameMiddle
-            + fieldWorkPhotoFileIdList_FIELDNAME, joinIndex = @org.apache.openjpa.persistence.jdbc.Index(name = TABLE + fieldWorkPhotoFileIdList_FIELDNAME + JoinIndexNameSuffix))
-    @ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + fieldWorkPhotoFileIdList_FIELDNAME)
+                           + fieldWorkPhotoFileIdList_FIELDNAME, joinIndex = @org.apache.openjpa.persistence.jdbc.Index(name =
+            TABLE + fieldWorkPhotoFileIdList_FIELDNAME + JoinIndexNameSuffix))
+    @ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix
+                                                         + fieldWorkPhotoFileIdList_FIELDNAME)
     @ElementIndex(name = TABLE + fieldWorkPhotoFileIdList_FIELDNAME + ElementIndexNameSuffix)
     private List<String> fieldWorkPhotoFileIdList;
 
@@ -206,15 +231,15 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
 
     public static final String groupName_FIELDNAME = "groupName";
     @FieldDescribe("考勤组名称")
-    @Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-            + groupName_FIELDNAME)
-    private String groupName ;
+    @Column(name = ColumnNamePrefix
+                   + groupName_FIELDNAME)
+    private String groupName;
 
 
     public static final String groupCheckType_FIELDNAME = "groupCheckType";
     @FieldDescribe("考勤组的考勤类型，自由工时的时候打卡处理方式不同，不需要打卡时间")
     @Column(length = length_16B, name = ColumnNamePrefix
-            + groupCheckType_FIELDNAME)
+                                        + groupCheckType_FIELDNAME)
     private String groupCheckType;
 
     public static final String shiftId_FIELDNAME = "shiftId";
@@ -224,8 +249,8 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
 
     public static final String shiftName_FIELDNAME = "shiftName";
     @FieldDescribe("班次名称")
-    @Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-            + shiftName_FIELDNAME)
+    @Column(name = ColumnNamePrefix
+                   + shiftName_FIELDNAME)
     private String shiftName;
 
     public static final String workPlaceIdd_FIELDNAME = "workPlaceId";
@@ -235,8 +260,8 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
 
     public static final String placeName_FIELDNAME = "placeName";
     @FieldDescribe("场所名称")
-    @Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-            + placeName_FIELDNAME)
+    @Column(name = ColumnNamePrefix
+                   + placeName_FIELDNAME)
     private String placeName;
 
 
@@ -248,38 +273,79 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
 
     public static final String appealId_FIELDNAME = "appealId";
     @FieldDescribe("考勤申诉信息记录ID(申诉成功后记录).")
-    @Column( length = JpaObject.length_id, name = ColumnNamePrefix + appealId_FIELDNAME)
+    @Column(length = JpaObject.length_id, name = ColumnNamePrefix + appealId_FIELDNAME)
     private String appealId;
-
 
 
     public static final String leaveDataId_FIELDNAME = "leaveDataId";
     @FieldDescribe("外出数据id，关联外出数据，如果有值表示在外出时间段内.")
-    @Column( length = JpaObject.length_id, name = ColumnNamePrefix + leaveDataId_FIELDNAME)
+    @Column(length = JpaObject.length_id, name = ColumnNamePrefix + leaveDataId_FIELDNAME)
     private String leaveDataId;
 
     public static final String requestDataId_FIELDNAME = "requestDataId";
     @FieldDescribe("请假数据id，关联请假数据，如果有值表示在请假时间段内.")
-    @Column( length = JpaObject.length_id, name = ColumnNamePrefix + requestDataId_FIELDNAME)
+    @Column(length = JpaObject.length_id, name = ColumnNamePrefix + requestDataId_FIELDNAME)
     private String requestDataId;
 
 
+    public static final String fieldWorkJobId_FIELDNAME = "fieldWorkJobId";
+    @FieldDescribe("外勤打卡关联工作id.")
+    @Column(length = JpaObject.length_id, name = ColumnNamePrefix + fieldWorkJobId_FIELDNAME)
+    private String fieldWorkJobId;
+
+    public static final String fieldWorkJobStatus_FIELDNAME = "fieldWorkJobStatus";
+    @FieldDescribe("外勤打卡关联工作状态，1:审批中，2:已审核.)")
+    @Column( name = ColumnNamePrefix + fieldWorkJobStatus_FIELDNAME)
+    private Integer fieldWorkJobStatus;
+
+    public String getFieldWorkJobId() {
+        return fieldWorkJobId;
+    }
+
+    public void setFieldWorkJobId(String fieldWorkJobId) {
+        this.fieldWorkJobId = fieldWorkJobId;
+    }
+
+    public Integer getFieldWorkJobStatus() {
+        return fieldWorkJobStatus;
+    }
+
+    public void setFieldWorkJobStatus(Integer fieldWorkJobStatus) {
+        this.fieldWorkJobStatus = fieldWorkJobStatus;
+    }
+
+    public void startFieldWorkJob(String jobId) {
+        this.setFieldWorkJobId(jobId);
+        this.setFieldWorkJobStatus(1);
+    }
+    public void finishFieldWorkJob() {
+        this.setFieldWorkJobStatus(2);
+    }
+    public void cancelFieldWorkJob() {
+        this.setFieldWorkJobId(null);
+        this.setFieldWorkJobStatus(null);
+    }
+
     /**
      * 判断当前打卡记录是否为异常数据
+     *
      * @param fieldWorkMarkError 外勤是否标记为异常数据
      * @return true 是异常数据
      */
     public boolean checkResultException(boolean fieldWorkMarkError) {
         if (fieldWorkMarkError) {
-            return (getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL) && BooleanUtils.isTrue(getFieldWork())
+            return (getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL)
+                    && BooleanUtils.isTrue(getFieldWork())
                     || (
-                            !getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)
-                                    && !getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL)
-                                    && !hasLeaveOrRequest()));
+                            !getCheckInResult().equals(
+                                    AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)
+                            && !getCheckInResult().equals(
+                                    AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL)
+                            && !hasLeaveOrRequest()));
         } else {
             return !getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)
-                    && !hasLeaveOrRequest()
-                    && !getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL);
+                   && !hasLeaveOrRequest()
+                   && !getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL);
         }
     }
 
@@ -288,9 +354,9 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
      * 是否有请假或外出记录
      */
     public boolean hasLeaveOrRequest() {
-        return StringUtils.isNotEmpty(getLeaveDataId()) || StringUtils.isNotEmpty(getRequestDataId());
+        return StringUtils.isNotEmpty(getLeaveDataId()) || StringUtils.isNotEmpty(
+                getRequestDataId());
     }
-
 
     public Boolean getOffDutyNextDay() {
         return offDutyNextDay;

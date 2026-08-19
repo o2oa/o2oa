@@ -1,6 +1,27 @@
 import { exec } from "@o2oa/util";
 import { lp } from "@o2oa/component";
 
+
+/**
+ * 根据打卡对象，如果是外勤打卡，输出外勤打卡的格式化信息
+ * @param {*} record 打卡对象 
+ */
+function fieldWorkFormat(record) {
+  if (record && record.fieldWork) {
+    let out = lp.appeal.fieldWork;
+    if ( record.fieldWorkJobId) {
+      if (record.fieldWorkJobStatus === 1) {
+        out = lp.appeal.fieldWorkApprovaling;
+      } else if (record.fieldWorkJobStatus === 2) {
+        out = lp.appeal.fieldWorkApprovaled;
+      }
+    }
+    return out;
+  }
+
+  return "";
+}
+
 /**
  * 是否为空
  * 数字0也是不为空
@@ -177,6 +198,7 @@ const showLoading = async (component, newText) => {
     bind = { text: newText }
   }
   component.loadingVm = await loading.generate(document.body, {bind: bind}, component);
+  await new Promise((resolve) => window.requestAnimationFrame(resolve));
 }
 /**
  * 关闭 loading 
@@ -186,6 +208,7 @@ const showLoading = async (component, newText) => {
 const hideLoading = async (component) => {
   if (component.loadingVm) {
     component.loadingVm.destroy();
+    component.loadingVm = null;
   }
 }
 
@@ -392,6 +415,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
 }
 
 export {
+  fieldWorkFormat,
   getAllDatesInMonth,
   formatPersonName,
   setJSONValue,

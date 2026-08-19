@@ -250,6 +250,10 @@
 .color-appeal {
   color: var(--att-record-status-appeal-color);
 }
+/* 请假 */
+.color-leave {
+  color: var(--att-record-status-leave-color);
+}
 /* 节假日 */
 .color-holiday {
   color: var(--att-record-status-leave-color);
@@ -434,7 +438,7 @@
 }
 /* form 表单弹出窗口 */
 .index_page_form_container {
-  width: 500px;
+  width: 540px;
   background-color: white;
   margin: 0.71rem 0;
 }
@@ -450,6 +454,7 @@
 .manager-box-content {
   padding: 20px;
   height: inherit;
+  overflow: auto;
 }
 
 /* mask */
@@ -471,35 +476,37 @@
 }
 
 .o2-mask-container {
-  position: absolute;
-  opacity: 0.8;
-  width: 100%;
-  height: 100%;
-  top: 0px;
-  border-radius: 5px;
-  left: 0px;
-  z-index: 1024;
+  position: fixed;
+  opacity: 1;
+  width: auto;
+  height: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 0;
+  left: 0;
+  z-index: 9999;
 }
 .o2-mask-backgroundBar {
   position: absolute;
   opacity: 0.8;
   width: 100%;
   height: 100%;
-  top: 0px;
-  border-radius: 5px;
+  top: 0;
+  border-radius: 0;
   background-color: #f1f1f1;
-  left: 0px;
-  z-index: 1025;
+  left: 0;
+  z-index: 10000;
 }
 .o2-mask {
   position: absolute;
   opacity: 0.8;
   width: 100%;
   height: 100%;
-  top: 0px;
+  top: 0;
   border: 0;
-  left: 0px;
-  z-index: 1024;
+  left: 0;
+  z-index: 9999;
 }
 .o2-mask-loadingBar {
   width: 160px;
@@ -507,10 +514,10 @@
   position: absolute;
   text-align: center;
   opacity: 1;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   font-size: 12px;
-  z-index: 1026;
+  z-index: 10001;
 }
 .o2-form {
   position: relative;

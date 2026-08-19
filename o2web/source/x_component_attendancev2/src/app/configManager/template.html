@@ -24,7 +24,7 @@
             </div>
             <div class="margin-left" oo-if="$.form.appealEnable">
                 <div>{{$.lp.config.appealMaxTimesLabel}}</div>
-                <o-input oo-prop="{'value': $.form.appealMaxTimes}" oo-model="form.appealMaxTimes"></o-input>
+                <input class="config-text-input margin-top" oo-model="form.appealMaxTimes" name="appealMaxTimes" type="text">
             </div>
             
         </div>
@@ -54,15 +54,37 @@
                     </div>
                     <label style="margin: 5px;" >
                         {{$.lp.config.exceptionAlertEnable}} 
-                        {{$.lp.config.exceptionAlertEnableTime1}} 
+                        <select class="config-form-select" name="exceptionAlertDateNumber" @change="changeExceptionAlertDateNumber">
+                            <option value="0" .selected="($.form.exceptionAlertDateNumber == 0)">当天</option>
+                            <option value="1" .selected="($.form.exceptionAlertDateNumber == 1)">次日</option>
+                        </select>
                         <o-time-picker oo-prop="{'value': $.form.exceptionAlertTime, 'key': 'form.exceptionAlertTime'}"></o-time-picker>
                         {{$.lp.config.exceptionAlertEnableTime2}} 
                     </label>
                 </div>
             </div>
         </div>
-        <!-- 定时器配置 -->
+        <!-- 统计管理员 职务配置 -->
         <div class="margin-top">
+            <div class="form-item-label">
+                {{$.lp.config.statisticUnitDutyName}}
+            </div>
+            <div class="form-item-content margin-top padding-bottom">
+                    <input class="config-text-input" oo-model="form.properties.statisticUnitDutyNameListInput" name="statisticUnitDutyNameListInput" type="text">
+            </div>
+        </div>
+        <!-- 外勤打卡自动脚本配置 -->
+        <div class="margin-top">
+            <div class="form-item-label">
+                {{$.lp.config.fieldWorkAutoScript}}
+            </div>
+            <div class="form-item-content margin-top padding-bottom">
+                    <input class="config-text-input" oo-model="form.properties.fieldWorkExecuteScript" name="fieldWorkExecuteScript" type="text">
+            </div>
+        </div>
+
+        <!-- 定时器配置 -->
+        <!-- <div class="margin-top">
             <div class="form-item-label">
                 {{$.lp.config.detailStatisticCron}}
             </div>
@@ -71,7 +93,8 @@
                     {{$.form.detailStatisticCronString}}
                 </div>
             </div>
-        </div>
+        </div> -->
+
 
         <!-- 人脸比对功能 -->
         <div class="margin-top" oo-if="$.form.aliFaceControlEnable">

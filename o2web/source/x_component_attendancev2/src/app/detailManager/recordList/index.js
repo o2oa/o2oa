@@ -1,6 +1,7 @@
 import { component as content } from "@o2oa/oovm";
 import { lp } from "@o2oa/component";
 import { getFileDownloadUrl } from "../../../utils/actions";
+import { fieldWorkFormat } from "../../../utils/common";
 import template from "./temp.html";
 
 export default content({
@@ -28,11 +29,16 @@ export default content({
       return time;
     }
   },
+  hasLeave(record) {
+    return record && (record.requestDataId || record.leaveDataId)
+  },
   formatResultClass(record) {
     let span = "";
     const result = record.checkInResult;
     if (result === "PreCheckIn") {
       span = "";
+    } else if (this.hasLeave(record)) {
+      span = "color-leave";
     } else if (result === "NotSigned") {
       span = "color-nosign";
     } else if (result === "Normal") {
@@ -53,6 +59,8 @@ export default content({
     const result = record.checkInResult;
     if (result === "PreCheckIn") {
       span = "";
+    } else if (this.hasLeave(record)) {
+      span =lp.appeal.leave;
     } else if (result === "NotSigned") {
       span = lp.appeal.notSigned;
     } else if (result === "Normal") {
@@ -70,7 +78,9 @@ export default content({
     }
     return span;
   },
-
+  fieldWorkFormatOut(record) {
+    return fieldWorkFormat(record);
+  },
   // 关闭当前窗口
   close() {
     this.$parent.closeFormVm();

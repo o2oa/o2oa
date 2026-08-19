@@ -2,6 +2,7 @@ package com.x.attendance.assemble.control.jaxrs.v2.detail;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWi;
@@ -50,10 +51,10 @@ public class ActionStatisticWithFilter extends BaseAction {
             Business business = new Business(emc);
             if (wi.getFilterList() != null && !wi.getFilterList().isEmpty()) {
                 for (String f : wi.getFilterList()) {
-                    analysisPerson(userList, f, business);
+                    AttendanceV2Helper.analysisFilterToPersonList(userList, f, business, wi.getRecursive());
                 }
             } else if (StringUtils.isNotEmpty(wi.getFilter())) {
-                analysisPerson(userList, wi.getFilter(), business);
+                AttendanceV2Helper.analysisFilterToPersonList(userList, wi.getFilter(), business, wi.getRecursive());
             }
             
             if (userList.isEmpty()) {
@@ -66,20 +67,6 @@ public class ActionStatisticWithFilter extends BaseAction {
             return result;
         }
     }
-
-
-    private void analysisPerson(List<String> userList, String filter, Business business) throws Exception {
-        if (filter.endsWith("@U")) { // 组织转化成人员列表 不递归
-            List<String> users = business.organization().person().listWithUnitSubDirect(filter);
-            if (users != null && !users.isEmpty()) {
-                userList.addAll(users);
-            }
-        } else if (filter.endsWith("@P")) {
-            userList.add(filter);
-        }
-    }
-
-    
 
 
 }

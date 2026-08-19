@@ -90,6 +90,8 @@ public class ActionCheckInRecordFromOut extends BaseAction {
 
             Wo wo = new Wo();
             ActionResult<Wo> result = new ActionResult<>();
+            String detailPerson = null;
+            String detailDate = null;
             if (record != null) {
 //                checkIn(emc, business, checkInDate, rInstance, null, null, wi);
                 AttendanceV2CheckInRecord back = executeWithCheckLock("check:" + record.getId(),
@@ -99,12 +101,17 @@ public class ActionCheckInRecordFromOut extends BaseAction {
                     generateAppealInfo(back, woGroupShift.getGroup().getFieldWorkMarkError(), emc,
                             business);
                 }
+                if (back != null) {
+                    detailPerson = back.getUserId();
+                    detailDate = back.getRecordDateString();
+                }
                 wo.setValue(true);
             } else {
                 LOGGER.warn("没有找到打卡记录！");
                 wo.setValue(false);
             }
             result.setData(wo);
+            checkAndSendV2DetailIfAllCheckInCompletedAsync(detailPerson, detailDate);
             return result;
         }
     }

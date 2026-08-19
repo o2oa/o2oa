@@ -31,6 +31,13 @@
   cursor: pointer;
 }
 
+.map-panel {
+  width: 100%;
+  height: calc( 100vh / 3 );
+  border-radius: 8px;
+  overflow: hidden;
+}
+
 .location-panel {
   width: 100%;
   text-align: center;

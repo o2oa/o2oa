@@ -14,8 +14,8 @@ export default content({
     bind() {
         return {
             lp,
-            currentLeaveType: null, // 当前选中的假期类型
-            leaveTypePolicyList: [], // 某一个假期类型的规则列表
+            currentLeaveType: null, // Currently selected leave type.
+            leaveTypePolicyList: [], // Policy list for one leave type.
         };
     },
     afterRender() {
@@ -24,7 +24,7 @@ export default content({
     },
     listenEventBus() {
         this.$topParent.listenEventBus("leaveTypePolicy", (data) => {
-            console.log("接收到了leaveTypePolicy消息", data);
+            console.log("received leaveTypePolicy event", data);
             this.refreshPolicyList();
         });
     },
@@ -36,7 +36,7 @@ export default content({
     },
     async refreshPolicyList() {
         if (!this.bind.currentLeaveType) {
-            console.log("没有选中的假期类型，无法刷新规则列表");
+            console.log("no selected leave type, cannot refresh policy list");
             return;
         }
         const typeId = this.bind.currentLeaveType.id;
@@ -62,13 +62,23 @@ export default content({
         if (policy.grantType === "ONE_TIME") {
             return lp.leaveManagerV2.policy.grantTypeONE_TIME;
         } else if (policy.grantType === "MONTHLY") {
-            return `每月${policy.grantTypeValue.substring(3)}日，发放${policy.grantAmount}天`;
+            return lpFormat(lp, "leaveManagerV2.policy.grantTypeMonthlyText", {
+                day: policy.grantTypeValue.substring(3),
+                amount: policy.grantAmount,
+            });
         } else {
             if (policy.grantAmountType ) { 
                 if (policy.grantAmountType.type === "FIXED") {
-                    return `每年${policy.grantTypeValue.substring(2, 4)}月${policy.grantTypeValue.substring(5)}日，发放${policy.grantAmountType.grantAmount}天`;
+                    return lpFormat(lp, "leaveManagerV2.policy.grantTypeYearlyFixedText", {
+                        month: policy.grantTypeValue.substring(2, 4),
+                        day: policy.grantTypeValue.substring(5),
+                        amount: policy.grantAmountType.grantAmount,
+                    });
                 } else {
-                    return `每年${policy.grantTypeValue.substring(2, 4)}月${policy.grantTypeValue.substring(5)}日，按司龄发放`;
+                    return lpFormat(lp, "leaveManagerV2.policy.grantTypeYearlyServiceLenText", {
+                        month: policy.grantTypeValue.substring(2, 4),
+                        day: policy.grantTypeValue.substring(5),
+                    });
                 }
             }
             return lp.leaveManagerV2.policy.grantTypeYEARLY;
@@ -81,7 +91,7 @@ export default content({
         this.$topParent.openLeaveTypePolicyForm({ bind: { form: { leaveTypeId: this.bind.currentLeaveType.id } } });
     },
     clickEditLeaveTypePolicy(id) {
-        console.log("点击编辑假期类型规程", id);
+        console.log("click edit leave type policy", id);
         this.$topParent.openLeaveTypePolicyForm({ bind: { updateId: id } });
     },
     clickDeletePolicy(id) {

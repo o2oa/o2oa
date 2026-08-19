@@ -34,6 +34,7 @@ public class ActionCheckIn extends BaseAction {
             throw new ExceptionEmptyParameter("当前用户信息");
         }
         ActionResult<Wo> result = new ActionResult<>();
+        String detailDate = null;
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
             if (StringUtils.isEmpty(wi.getRecordId())) {
@@ -78,11 +79,14 @@ public class ActionCheckIn extends BaseAction {
                 wo.setRecordDate(nowDate);
                 wo.setCheckInRecordId(back.getId());
                 result.setData(wo);
+                detailDate = back.getRecordDateString();
             }
         }
         if (result.getData() == null) {
             throw new ExceptionNoCheckInResult();
         }
+        checkAndSendV2DetailIfAllCheckInCompletedAsync(effectivePerson.getDistinguishedName(),
+                detailDate);
         return result;
     }
 

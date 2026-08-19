@@ -1,0 +1,110 @@
+<div class="public-statistic-page">
+    <div class="public-statistic-shell">
+        <div class="public-statistic-header">{{$.title}}</div>
+        <div class="public-statistic-content">
+            <div class="public-statistic-loading" oo-if="$.loading">加载中...</div>
+
+            <div class="public-statistic-grid">
+                <div class="public-statistic-item">
+                    <div class="public-statistic-number">{{$m.statisticValue($.statistic.attendance)}}</div>
+                    <div class="public-statistic-label">
+                        <span class="public-statistic-dot record-status-normal"></span>
+                        <span>{{$.lp.myStatistic.attendance}}</span>
+                    </div>
+                </div>
+                <div class="public-statistic-item">
+                    <div class="public-statistic-number">{{$m.statisticValue($.statistic.absenceTimes)}}</div>
+                    <div class="public-statistic-label">
+                        <span class="public-statistic-dot record-status-nosign"></span>
+                        <span>{{$.lp.myStatistic.nosignTimes}}</span>
+                    </div>
+                </div>
+                <div class="public-statistic-item">
+                    <div class="public-statistic-number">{{$m.statisticValue($.statistic.lateTimes)}}</div>
+                    <div class="public-statistic-label">
+                        <span class="public-statistic-dot record-status-late"></span>
+                        <span>{{$.lp.myStatistic.lateTimes}}</span>
+                    </div>
+                </div>
+                <div class="public-statistic-item">
+                    <div class="public-statistic-number">{{$m.statisticValue($.statistic.leaveEarlierTimes)}}</div>
+                    <div class="public-statistic-label">
+                        <span class="public-statistic-dot record-status-early"></span>
+                        <span>{{$.lp.myStatistic.leaveEarlierTimes}}</span>
+                    </div>
+                </div>
+                <div class="public-statistic-item">
+                    <div class="public-statistic-number">{{$m.statisticValue($.statistic.leaveDays)}}</div>
+                    <div class="public-statistic-label">
+                        <span class="public-statistic-dot record-status-leave"></span>
+                        <span>{{$.lp.myStatistic.leaveDays}}</span>
+                    </div>
+                </div>
+                <div class="public-statistic-item">
+                    <div class="public-statistic-number">{{$m.statisticValue($.statistic.absenteeismDays)}}</div>
+                    <div class="public-statistic-label">
+                        <span class="public-statistic-dot record-status-absenteeism"></span>
+                        <span>{{$.lp.myStatistic.absenteeismDays}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="public-calendar-panel">
+                <div class="public-calendar-toolbar">
+                    <div class="public-calendar-month">{{$.cycleMonth}}</div>
+                    <div class="public-calendar-actions">
+                        <button class="public-calendar-today" @click="this.clickToToday()">{{$.todayLabel}}</button>
+                        <button class="public-calendar-icon-btn" @click="this.clickToPreMonth()">
+                            <i class="o2icon-icon_arrow_left"></i>
+                        </button>
+                        <button class="public-calendar-icon-btn" @click="this.clickToNextMonth()">
+                            <i class="o2icon-icon_arrow_right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="public-calendar-weekdays">
+                    <div class="public-calendar-weekday" oo-each="$.dayList" oo-item="day">{{day.value.name}}</div>
+                </div>
+                <div class="public-calendar-body">
+                    <div class="public-calendar-row" oo-each="$.dateWithData" oo-item="line">
+                        <div oo-each="line.value" oo-item="item" class="{{$m.formatCalendarCellClass(item.value)}}" @click="this.clickCalendarDay(item.value)">
+                            <div oo-if="item.value.inMonth" class="{{$m.formatDateClass(item.value)}}">{{item.value.date}}</div>
+                            <div oo-if="item.value.inMonth && item.value.hasRecord" class="public-calendar-marker ooicon-pentagram_fill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="public-record-drawer" oo-if="$.showRecordPanel">
+                <div class="public-record-mask" @click="closeRecordPanel"></div>
+                <div class="public-record-sheet">
+                    <div class="public-record-sheet-handle"></div>
+                    <div class="record-card">
+                        <div class="record-card-header">
+                            <div class="record-card-title">{{$.selectedRecordTitle}}</div>
+                            <button class="record-close" @click="closeRecordPanel">关闭</button>
+                        </div>
+                        <div class="record-list">
+                            <div oo-each="$.selectedRecordList" oo-item="record" class="{{record.value.lineClass}}">
+                                <div class="record-time-column">
+                                    <div class="record-plan-time">{{record.value.planTime}}</div>
+                                    <div class="record-axis" oo-if="!record.value.isLast"></div>
+                                </div>
+                                <div class="record-content">
+                                    <div class="record-main">
+                                        <span>{{record.value.checkInTypeText}}</span>
+                                        <span oo-if="record.value.sourceText"> · {{record.value.sourceText}}</span>
+                                    </div>
+                                    <div class="{{record.value.statusClass}}">
+                                        <span>{{record.value.resultText}}</span>
+                                        <span oo-if="record.value.actualTime">（{{record.value.actualTime}}）</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

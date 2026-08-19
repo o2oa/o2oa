@@ -99,7 +99,7 @@ public class AttendanceV2LeaveData extends SliceJpaObject {
 
     public static final String description_FIELDNAME = "description";
     @FieldDescribe("外出说明")
-    @Column( length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME )
+    @Column(name = ColumnNamePrefix + description_FIELDNAME )
     private String description;
 
     public static final String jobId_FIELDNAME = "jobId";

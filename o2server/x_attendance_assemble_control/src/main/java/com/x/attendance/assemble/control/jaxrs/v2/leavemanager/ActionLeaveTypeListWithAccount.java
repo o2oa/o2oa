@@ -1,5 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.v2.leavemanager;
 
+import com.x.attendance.assemble.control.Business;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -16,10 +17,11 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import org.apache.commons.lang3.StringUtils;
 
 public class ActionLeaveTypeListWithAccount extends BaseAction {
 
-    ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
+    ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String person) throws Exception {
         ActionResult<List<Wo>> result = new ActionResult<>();
         List<AttendanceV2LeaveType> types = getLeaveTypeList(null);
         List<Wo> wos = types.stream().map(type -> {
@@ -28,8 +30,14 @@ public class ActionLeaveTypeListWithAccount extends BaseAction {
         }).collect(Collectors.toList());
 
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            String searchPerson = effectivePerson.getDistinguishedName();
+            Business business = new Business(emc);
+            // 如果传入的人员标识不为空，并且当前用户是管理员，则使用传入的人员标识进行查询
+            if (StringUtils.isNotBlank(person) && business.isManager(effectivePerson)) {
+                searchPerson = person;
+            }
             List<AttendanceV2LeaveAccount> accounts = emc.listEqual(AttendanceV2LeaveAccount.class,
-                    AttendanceV2LeaveAccount.person_FIELDNAME, effectivePerson.getDistinguishedName());
+                    AttendanceV2LeaveAccount.person_FIELDNAME, searchPerson);
             attachAccounts(wos, accounts);
         }
 
@@ -37,7 +45,7 @@ public class ActionLeaveTypeListWithAccount extends BaseAction {
         return result;
     }
 
-    static void attachAccounts(List<Wo> wos, List<AttendanceV2LeaveAccount> accounts) {
+    static void attachAccounts(List<? extends Wo> wos, List<AttendanceV2LeaveAccount> accounts) {
         Map<String, AttendanceV2LeaveAccount> accountMap = accounts == null ? Collections.emptyMap() : accounts.stream()
                 .filter(account -> account.getLeaveTypeId() != null)
                 .collect(Collectors.toMap(AttendanceV2LeaveAccount::getLeaveTypeId, account -> account,

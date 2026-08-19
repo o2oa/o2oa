@@ -88,6 +88,24 @@ public class DetailAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "按人员查询指定日期考勤信息.", action = ActionListPersonAttendance.class)
+    @POST
+    @Path("list/person/attendance")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void listPersonAttendance(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+            JsonElement jsonElement) {
+        ActionResult<List<ActionListPersonAttendance.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionListPersonAttendance().execute(jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "统计导出.", action = ActionStatisticExportExcel.class)
     @POST
     @Path("statistic/export/filter")

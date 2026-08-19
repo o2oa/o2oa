@@ -18,7 +18,8 @@ export default content({
       form: {
         userId: '',
         startDate: '',
-        endDate: ''
+        endDate: '',
+        recursive: true
       },
       filterList: [],
       units: [], // 控制组织选择的范围
@@ -68,6 +69,9 @@ export default content({
     this.bind.pagerData.page = 1;
     this.loadDetailList();
   },
+  toggleRecursive() {
+    this.bind.form.recursive = !this.bind.form.recursive;
+  },
   loadData(e) {
     if (
       e &&
@@ -81,14 +85,19 @@ export default content({
   },
   async loadDetailList() {
     let form = this.bind.form;
-    if (this.bind.filterList && this.bind.filterList.length>0) {
-      form.userId = this.bind.filterList[0];
-    } else {
-      if (this.bind.units.length > 0) {
-        o2.api.page.notice(lp.detailStatisticList.filterEmptyPlaceholder, 'error');
-        return;
-      }
-      form.userId = "";
+    // if (this.bind.filterList && this.bind.filterList.length>0) {
+    //   form.userId = this.bind.filterList[0];
+    // } else {
+    //   if (this.bind.units.length > 0) {
+    //     o2.api.page.notice(lp.detailStatisticList.filterEmptyPlaceholder, 'error');
+    //     return;
+    //   }
+    //   form.userId = "";
+    // }
+    form.filterList = this.bind.filterList;
+    if (form.filterList.length < 1) {
+      o2.api.page.notice(lp.detailStatisticList.filterEmptyPlaceholder, 'error');
+      return;
     }
     const json = await detailActionListByPaging(
       this.bind.pagerData.page,

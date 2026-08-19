@@ -1,13 +1,17 @@
 package com.x.attendance.assemble.control.jaxrs.v2.record;
 
 import com.x.attendance.entity.v2.AttendanceV2LeaveRequest;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
+import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2LeaveData;
 import com.x.base.core.container.EntityManagerContainer;
@@ -52,8 +56,19 @@ public class ActionListByPage extends BaseAction {
                 start = DateTools.parseDateTime(wi.getStartDate() + " 00:00:00");
                 end = DateTools.parseDateTime(wi.getEndDate() + " 23:59:59");
             }
+            List<String> userList = null;
+            if (wi.getFilterList() != null && !wi.getFilterList().isEmpty()) {
+                userList = new ArrayList<>();
+                for (String f : wi.getFilterList()) {
+                    AttendanceV2Helper.analysisFilterToPersonList(userList, f, business, wi.getRecursive());
+                }
+                userList = new ArrayList<>(new LinkedHashSet<>(userList));
+                if (userList.isEmpty()) {
+                    throw new ExceptionWithMessage("当前查询条件没有找到人员信息！");
+                }
+            }
             List<AttendanceV2CheckInRecord> list = business.getAttendanceV2ManagerFactory().listRecordByPage(adjustPage,
-                    adjustPageSize, wi.getUserId(), start, end, wi.getSourceType(), wi.getCheckInResult(),
+                    adjustPageSize, wi.getUserId(), userList, start, end, wi.getSourceType(), wi.getCheckInResult(),
                     wi.getCheckInType(), wi.getFieldWork());
             List<Wo> wos = Wo.copier.copy(list);
             for (Wo wo : wos) {
@@ -73,8 +88,8 @@ public class ActionListByPage extends BaseAction {
                 } catch (Exception ignore) {}
             }
             result.setData(wos);
-            result.setCount(business.getAttendanceV2ManagerFactory().recordCount(wi.getUserId(), start, end, wi.getSourceType(), wi.getCheckInResult(),
-                    wi.getCheckInType(), wi.getFieldWork()));
+            result.setCount(business.getAttendanceV2ManagerFactory().recordCount(wi.getUserId(), userList, start, end,
+                    wi.getSourceType(), wi.getCheckInResult(), wi.getCheckInType(), wi.getFieldWork()));
             return result;
         }
     }
@@ -85,6 +100,10 @@ public class ActionListByPage extends BaseAction {
         private static final long serialVersionUID = 4227642755086093795L;
         @FieldDescribe("打卡的用户标识")
         private String userId;
+        @FieldDescribe("过滤人员或组织，组织默认递归: 用户或组织的DN，如xxx@xxx@P、xxx@xxx@U")
+        private List<String> filterList;
+        @FieldDescribe("过滤组织是否递归查询下级组织人员，默认true，false时仅查询当前组织直属人员")
+        private Boolean recursive;
         @FieldDescribe("打卡记录开始日期: YYYY-MM-dd")
         private String startDate;
         @FieldDescribe("打卡记录结束日期: YYYY-MM-dd")
@@ -136,6 +155,22 @@ public class ActionListByPage extends BaseAction {
 
         public void setUserId(String userId) {
             this.userId = userId;
+        }
+
+        public List<String> getFilterList() {
+            return filterList;
+        }
+
+        public void setFilterList(List<String> filterList) {
+            this.filterList = filterList;
+        }
+
+        public Boolean getRecursive() {
+            return recursive;
+        }
+
+        public void setRecursive(Boolean recursive) {
+            this.recursive = recursive;
         }
 
         public String getStartDate() {

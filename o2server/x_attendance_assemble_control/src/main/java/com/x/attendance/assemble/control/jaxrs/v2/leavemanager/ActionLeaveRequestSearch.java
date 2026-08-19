@@ -13,6 +13,7 @@ import javax.persistence.criteria.Root;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.AttendanceV2Helper;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.ExceptionDateEndBeforeStartError;
 import com.x.attendance.entity.v2.AttendanceV2LeaveRequest;
 import com.x.attendance.entity.v2.AttendanceV2LeaveRequest_;
@@ -41,7 +42,7 @@ public class ActionLeaveRequestSearch extends BaseAction {
             Business business = new Business(emc);
             if (wi.getFilterList() != null && !wi.getFilterList().isEmpty()) {
                 for (String f : wi.getFilterList()) {
-                    analysisPerson(userList, f, business);
+                    AttendanceV2Helper.analysisFilterToPersonList(userList, f, business, wi.getRecursive());
                 }
             }
             if (userList.isEmpty()) {
@@ -119,8 +120,11 @@ public class ActionLeaveRequestSearch extends BaseAction {
     public static class Wi extends GsonPropertyObject {
         private static final long serialVersionUID = 8433642169523374771L;
 
-        @FieldDescribe("过滤人员或组织，组织只支持单层: 用户或组织的DN，如xxx@xxx@P、xxx@xxx@U")
+        @FieldDescribe("过滤人员或组织，组织默认递归: 用户或组织的DN，如xxx@xxx@P、xxx@xxx@U")
         private List<String> filterList;
+
+        @FieldDescribe("过滤组织是否递归查询下级组织人员，默认true，false时仅查询当前组织直属人员")
+        private Boolean recursive;
 
         @FieldDescribe("开始日期")
         private String startDate;
@@ -134,6 +138,14 @@ public class ActionLeaveRequestSearch extends BaseAction {
 
         public void setFilterList(List<String> filterList) {
             this.filterList = filterList;
+        }
+
+        public Boolean getRecursive() {
+            return recursive;
+        }
+
+        public void setRecursive(Boolean recursive) {
+            this.recursive = recursive;
         }
 
         public String getStartDate() {
