@@ -441,7 +441,7 @@ public abstract class Plan extends GsonPropertyObject {
 			list.addAll(runtime.orderList);
 			return list;
 		}
-		for (SelectEntry o : this.selectList) {
+		for (SelectEntry o : this.selectList2) {
 			if (o.isOrderType()) {
 				list.add(o);
 			}
