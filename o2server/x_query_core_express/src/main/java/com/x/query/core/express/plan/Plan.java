@@ -95,6 +95,7 @@ public abstract class Plan extends GsonPropertyObject {
 
 	public void init(Runtime runtime, ExecutorService threadPool) {
 		this.runtime = runtime;
+		this.selectList2 = this.selectList;
 		if(runtime.selectList != null){
 			this.selectList = runtime.selectList;
 		}
@@ -104,6 +105,7 @@ public abstract class Plan extends GsonPropertyObject {
 	public Runtime runtime;
 
 	public SelectEntries selectList = new SelectEntries();
+	public SelectEntries selectList2 = new SelectEntries();
 
 	public List<FilterEntry> filterList = new TreeList<>();
 
@@ -439,8 +441,10 @@ public abstract class Plan extends GsonPropertyObject {
 			list.addAll(runtime.orderList);
 			return list;
 		}
-		if(this.orderList != null){
-			list.addAll(this.orderList);
+		for (SelectEntry o : this.selectList) {
+			if (o.isOrderType()) {
+				list.add(o);
+			}
 		}
 		return list;
 	}
@@ -485,8 +489,8 @@ public abstract class Plan extends GsonPropertyObject {
 	}
 
 	protected void joinPagingOrder(List<Order> orderList, CriteriaBuilder cb, Root<? extends JpaObject> root, CriteriaQuery<?> cq, String bundleAtt){
-		this.orderList = this.listOrderSelectEntryV2();
-		for (SelectEntry selectEntry : this.orderList) {
+		List<SelectEntry> entryOrderList = this.listOrderSelectEntryV2();
+		for (SelectEntry selectEntry : entryOrderList) {
 			if (StringUtils.isBlank(selectEntry.path)) {
 				continue;
 			}
