@@ -2,8 +2,10 @@ package com.x.attendance.assemble.control.jaxrs.v2.leavemanager;
 
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.CronTools;
 import com.x.base.core.project.tools.ListTools;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import java.util.Optional;
@@ -66,6 +68,9 @@ public class ActionLeavePolicyPost extends BaseAction {
             if (StringUtils.isBlank(wi.getLeaveTypeId())) {
                 throw new ExceptionEmptyParameter("假期类型ID");
             }
+            if (StringUtils.isEmpty(wi.getGrantCron()) || !CronTools.available(wi.getGrantScript())) {
+                throw new ExceptionWithMessage("定时器表达式错误！");
+            }
             if (StringUtils.isBlank(wi.getGrantScopeType())
                 || (!GrantScopeTypeEnum.ALL.getValue().equals(wi.getGrantScopeType())
                     && !GrantScopeTypeEnum.DEPARTMENT.getValue().equals(wi.getGrantScopeType()))) {
@@ -124,11 +129,13 @@ public class ActionLeavePolicyPost extends BaseAction {
                     }
                 }
             }
-            if (StringUtils.isBlank(wi.getGrantType()) || (
-                    !GrantTypeEnum.YEARLY.getValue().equals(wi.getGrantType())
-                    && !GrantTypeEnum.MONTHLY.getValue().equals(wi.getGrantType())
-                    && !GrantTypeEnum.ONE_TIME.getValue().equals(wi.getGrantType()))) {
-                throw new ExceptionEmptyParameter("发放方式");
+            // 使用脚本
+            if (BooleanUtils.isTrue(wi.getGrantAmountTypeUseScript()) && StringUtils.isEmpty(wi.getGrantScript())) {
+                throw new ExceptionWithMessage("额度发放执行脚本不能为空");
+            }
+            // 不使用脚本，发放额度不能为空且不能小于0
+            if (BooleanUtils.isFalse(wi.getGrantAmountTypeUseScript()) && (wi.getGrantAmount() == null || wi.getGrantAmount() < 0)) {
+                throw new ExceptionEmptyParameter("发放额度");
             }
             if (StringUtils.isBlank(wi.getExpireType()) || (
                     !ExpireTypeEnum.NEVER.getValue().equals(wi.getExpireType())
@@ -136,24 +143,12 @@ public class ActionLeavePolicyPost extends BaseAction {
                     && !ExpireTypeEnum.RELATIVE.getValue().equals(wi.getExpireType()))) {
                 throw new ExceptionEmptyParameter("过期类型");
             }
-            // 单次 发放必须指定发放额度，且不能为负数
-            if ((GrantTypeEnum.ONE_TIME.getValue().equals(wi.getGrantType())
-                 || GrantTypeEnum.MONTHLY.getValue().equals(wi.getGrantType()))
-                && (wi.getGrantAmount() == null || wi.getGrantAmount() < 0)) {
-                throw new ExceptionEmptyParameter("发放额度");
-            } else if (GrantTypeEnum.YEARLY.getValue().equals(wi.getGrantType())) {
-                if (wi.getGrantAmountType() == null || !wi.getGrantAmountType().validate()) {
-                    throw new ExceptionWithMessage("发放额度规则错误");
-                }
-            }
             if (BooleanUtils.isTrue(wi.getCarryForward())
                 && (wi.getMaxCarryForward() == null || wi.getMaxCarryForward() < 0)) {
                 throw new ExceptionEmptyParameter("最大结转额度");
             }
 
             AttendanceV2LeavePolicy leavePolicy = Wi.copier.copy(wi);
-            // 生成grantNextExecuteTime
-            AttendanceV2LeaveManager.calculateNextExecutionTimeForLeavePolicy(leavePolicy);
             emc.beginTransaction(AttendanceV2LeavePolicy.class);
             if (StringUtils.isBlank(wi.getId())) {
                 emc.persist(leavePolicy, CheckPersistType.all);
@@ -169,6 +164,7 @@ public class ActionLeavePolicyPost extends BaseAction {
                     wo.setId(old.getId());
                     result.setData(wo);
                 } else {
+                    leavePolicy.setGrantLastExecuteTime(new Date()); // 新增的时候添加执行时间，放在定时器错误执行
                     emc.persist(leavePolicy, CheckPersistType.all);
                     Wo wo = new Wo();
                     wo.setId(leavePolicy.getId());

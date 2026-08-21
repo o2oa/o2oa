@@ -22,14 +22,12 @@ public class ActionLeavePolicyList extends BaseAction {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             ActionResult<List<Wo>> result = new ActionResult<>();
             List<AttendanceV2LeaveType> typeList = emc.listAll(AttendanceV2LeaveType.class);
-            List<Wo> wos = emc.listEqualAndEqual(AttendanceV2LeavePolicy.class, AttendanceV2LeavePolicy.active_FIELDNAME, true, AttendanceV2LeavePolicy.leaveTypeId_FIELDNAME, typeId)
+            List<Wo> wos = emc.listEqual(AttendanceV2LeavePolicy.class, AttendanceV2LeavePolicy.leaveTypeId_FIELDNAME, typeId)
                     .stream().map(policy -> {
                         Wo wo = Wo.copier.copy(policy);
-                        AttendanceV2LeaveType leaveType = typeList.stream()
-                                .filter(type -> type.getId().equals(policy.getLeaveTypeId())).findFirst().orElse(null);
-                        if (leaveType != null) {
-                            wo.setLeaveType(leaveType);
-                        }
+                        typeList.stream()
+                                .filter(type -> type.getId().equals(policy.getLeaveTypeId()))
+                                .findFirst().ifPresent(wo::setLeaveType);
                         return wo;
                     }).collect(java.util.stream.Collectors.toList());
             result.setData(wos);

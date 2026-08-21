@@ -11,16 +11,16 @@ import style from "./style.scope.css";
 
 
 const definitionHistoryKey = "leaveManagerV2LedgerImportHistory";
-const defaultLeaveTypeList = [ "49448f7d-086e-4f05-8f2c-f64121588661",
-            "e9a3b632-1b12-4d9b-bc75-6e54c86d8a35",
-            "2f98e6c7-3a15-4e78-9041-3b562a4d9e12",
-            "9b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e",
-            "782a1b9c-d3e4-4f5a-bc6d-7e8f9a0b1c2d",
-            "a1b2c3d4-e5f6-47a8-b9c0-d1e2f3a4b5c6",
-            "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-            "550e8400-e29b-41d4-a716-446655440000",
-            "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
-            "8d61239c-4f12-4e92-bc10-72a3b1c4d5e6"]
+const defaultLeaveTypeList = ["49448f7d-086e-4f05-8f2c-f64121588661",
+  "e9a3b632-1b12-4d9b-bc75-6e54c86d8a35",
+  "2f98e6c7-3a15-4e78-9041-3b562a4d9e12",
+  "9b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e",
+  "782a1b9c-d3e4-4f5a-bc6d-7e8f9a0b1c2d",
+  "a1b2c3d4-e5f6-47a8-b9c0-d1e2f3a4b5c6",
+  "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "550e8400-e29b-41d4-a716-446655440000",
+  "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+  "8d61239c-4f12-4e92-bc10-72a3b1c4d5e6"]
 
 export default content({
   template,
@@ -349,44 +349,49 @@ export default content({
   },
   // Open account search view.
   async clickOpenAccountSearchView() {
-    const bindData = {  };
+    const bindData = {};
     const c = (await import('./accountList/index.js')).default;
     this.openOtherListViewVm(c, bindData);
   },
   // Open request search view.
   async clickOpenRequestSearchView() {
-    const bindData = { bind: {self: false} };
+    const bindData = { bind: { self: false } };
     const c = (await import('./requestList/index.js')).default;
     this.openOtherListViewVm(c, bindData);
   },
   // Open holiday calendar view.
   async clickOpenHolidayCalendarView() {
-    const bindData = {  };
+    const bindData = {};
     const c = (await import('./calendar/index.js')).default;
     this.openOtherListViewVm(c, bindData);
   },
   async clickOpenLeaveDataView() {
-    const bindData = { bind: {self: false} };
+    const bindData = { bind: { self: false } };
     const c = (await import('../leaveManager/index.js')).default;
     this.openOtherListViewVm(c, bindData);
   },
-  // Open policy list for a leave type.
-  clickOpenPolicyList(typeId) {
-    console.log("click open policy list", typeId);
+  // Open policy page for a leave type.
+  clickOpenPolicyForType(typeId) {
+    console.log("click open policy page", typeId);
     if (this.clickOpenPolicyLoading === true) {
-      console.log("policy list is loading, skip duplicate click");
+      console.log("policy page is loading, skip duplicate click");
       return;
     }
     this.clickOpenPolicyLoading = true;
-    this.$parent.closeFormVm();
-    this.bind.leaveTypePolicyShow = true;
-    // this.loadPolicyList(typeId);
-    this.openPolicyListView(typeId);
+    this.queryPolicyForLeaveType(typeId);
   },
-  async openPolicyListView(typeId) {
-    const bindData = { bind: { typeId: typeId } };
-    const c = (await import('./policyList/index.js')).default;
-    this.openOtherListViewVm(c, bindData);
+  // 获取规则配置
+  async queryPolicyForLeaveType(typeId) {
+    const list = await leaveManagerAction("policyListWithTypeId", typeId)
+    if (list && list.length > 0) {
+      const id = list[0].id;
+      // 修改配置
+      this.$topParent.openLeaveTypePolicyForm({ bind: { updateId: id } });
+    } else {
+      // 新增配置
+      this.$topParent.openLeaveTypePolicyForm({ bind: { form: { leaveTypeId: typeId } } });
+    }
+    this.clickOpenPolicyLoading = false;
   },
 
   clickBackTypeList() {
@@ -475,7 +480,7 @@ export default content({
       };
       this.bind.importHistoryList.push(newHistoryItem);
     }
-    await definitionAction("updateMockPutToPost", definitionHistoryKey,  this.bind.importHistoryList);
+    await definitionAction("updateMockPutToPost", definitionHistoryKey, this.bind.importHistoryList);
     this.bind.currentImportHistoryList = this.getLedgerImportHistoryList(leaveTypeId);
   },
   clickRemoveLedgerImportHistory(grantPeriod, leaveTypeId) {

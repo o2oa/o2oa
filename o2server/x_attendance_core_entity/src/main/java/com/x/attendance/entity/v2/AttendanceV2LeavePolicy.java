@@ -7,6 +7,7 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -16,8 +17,10 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OrderColumn;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 
+import javax.persistence.Transient;
 import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.PersistentCollection;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
@@ -43,6 +46,13 @@ public class AttendanceV2LeavePolicy extends SliceJpaObject {
     public void setId(String id) {
         this.id = id;
     }
+
+
+    @PostLoad
+    public void postLoad() {
+        this.grantScript = this.getGrantAmountProperties().getGrantScript();
+    }
+
 
     @Id
     @Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
@@ -86,34 +96,41 @@ public class AttendanceV2LeavePolicy extends SliceJpaObject {
     @ElementIndex(name = PersistenceProperties.AttendanceV2LeavePolicy.table + grantExcludeList_FIELDNAME + ElementIndexNameSuffix)
     private List<String> grantExcludeList;
 
-    public static final String grantType_FIELDNAME = "grantType";
-    @FieldDescribe("发放方式： YEARLY/MONTHLY/ONE_TIME")
-    @Column(length = JpaObject.length_16B, name = ColumnNamePrefix + grantType_FIELDNAME)
-    private String grantType;
+//    public static final String grantType_FIELDNAME = "grantType";
+//    @FieldDescribe("发放方式： YEARLY/MONTHLY/ONE_TIME")
+//    @Column(length = JpaObject.length_16B, name = ColumnNamePrefix + grantType_FIELDNAME)
+//    private String grantType;
+//
+//    public static final String grantTypeValue_FIELDNAME = "grantTypeValue";
+//    @FieldDescribe("发放方式日期规则配置： Y:01-01/MS:1,ME:1/ONE_TIME")
+//    @Column(length = JpaObject.length_16B, name = ColumnNamePrefix + grantTypeValue_FIELDNAME)
+//    private String grantTypeValue;
 
-    public static final String grantTypeValue_FIELDNAME = "grantTypeValue";
-    @FieldDescribe("发放方式日期规则配置： Y:01-01/MS:1,ME:1/ONE_TIME")
-    @Column(length = JpaObject.length_16B, name = ColumnNamePrefix + grantTypeValue_FIELDNAME)
-    private String grantTypeValue;
+    @FieldDescribe("定时任务corn表达式")
+    @Column(  length = JpaObject.length_64B, name = ColumnNamePrefix + "grantCron")
+    private String grantCron;
 
-    public static final String grantNextExecuteTime_FIELDNAME = "grantNextExecuteTime";
-    @FieldDescribe("下次发放时间，yyyy-MM-dd")
-    @Column(  length = JpaObject.length_16B, name = ColumnNamePrefix + grantNextExecuteTime_FIELDNAME)
-    private String grantNextExecuteTime;
+    @FieldDescribe("上次定时任务执行的时间")
+    @Column(name = ColumnNamePrefix + "grantLastExecuteTime")
+    private Date grantLastExecuteTime;
    
     public static final String grantAmount_FIELDNAME = "grantAmount";
     @FieldDescribe("发放额度")
     @Column(name = ColumnNamePrefix + grantAmount_FIELDNAME)
     private Double grantAmount = 0.0;
+
+    @FieldDescribe("发放额度类型是否为脚本执行, true: 脚本执行, false: 使用grantAmount字段的值")
+    @Column(name = ColumnNamePrefix + "grantAmountTypeUseScript")
+    private Boolean grantAmountTypeUseScript = false;
     
-	public static final String grantAmountType_FIELDNAME = "grantAmountType";
-	@FieldDescribe("发放额度规则，只在按年发放时需要.")
+	@FieldDescribe("发放额度规则配置，执行脚本")
 	@Persistent
 	@Strategy(JsonPropertiesValueHandler)
-	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + grantAmountType_FIELDNAME)
-	private AttendanceV2LeavePolicyGrantAmountTypeProperties grantAmountType;
- 
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + "grantAmountProperties")
+	private AttendanceV2LeavePolicyGrantAmountTypeProperties grantAmountProperties;
 
+
+    //TODO 过期时间需要重新设计
     public static final String expireType_FIELDNAME = "expireType";
     @FieldDescribe("过期类型 NEVER / FIXED / RELATIVE")
     @Column(length = JpaObject.length_16B, name = ColumnNamePrefix + expireType_FIELDNAME)
@@ -145,6 +162,22 @@ public class AttendanceV2LeavePolicy extends SliceJpaObject {
     private Boolean active = true;
 
 
+
+
+    @FieldDescribe("额度发放执行脚本.")
+    @Transient
+    private String grantScript;
+
+
+    public String getGrantScript() {
+        return grantScript;
+    }
+
+    public void setGrantScript(String grantScript) {
+        this.getGrantAmountProperties().setGrantScript(grantScript);
+        this.grantScript = grantScript;
+    }
+
     public String getLeaveTypeId() {
         return leaveTypeId;
     }
@@ -161,13 +194,6 @@ public class AttendanceV2LeavePolicy extends SliceJpaObject {
         this.policyName = policyName;
     }
 
-    public String getGrantType() {
-        return grantType;
-    }
-
-    public void setGrantType(String grantType) {
-        this.grantType = grantType;
-    }
 
     public Double getGrantAmount() {
         return grantAmount;
@@ -241,28 +267,32 @@ public class AttendanceV2LeavePolicy extends SliceJpaObject {
         this.grantScopeList = grantScopeList;
     }
 
-    public String getGrantTypeValue() {
-        return grantTypeValue;
+    public String getGrantCron() {
+        return grantCron;
     }
 
-    public void setGrantTypeValue(String grantTypeValue) {
-        this.grantTypeValue = grantTypeValue;
+    public void setGrantCron(String grantCron) {
+        this.grantCron = grantCron;
     }
 
-    public String getGrantNextExecuteTime() {
-        return grantNextExecuteTime;
+    public Date getGrantLastExecuteTime() {
+        return grantLastExecuteTime;
     }
 
-    public void setGrantNextExecuteTime(String grantNextExecuteTime) {
-        this.grantNextExecuteTime = grantNextExecuteTime;
+    public void setGrantLastExecuteTime(Date grantLastExecuteTime) {
+        this.grantLastExecuteTime = grantLastExecuteTime;
     }
 
-    public AttendanceV2LeavePolicyGrantAmountTypeProperties getGrantAmountType() {
-        return grantAmountType;
+    public AttendanceV2LeavePolicyGrantAmountTypeProperties getGrantAmountProperties() {
+        if (this.grantAmountProperties == null) {
+            this.grantAmountProperties = new AttendanceV2LeavePolicyGrantAmountTypeProperties();
+        }
+        return grantAmountProperties;
     }
 
-    public void setGrantAmountType(AttendanceV2LeavePolicyGrantAmountTypeProperties grantAmountType) {
-        this.grantAmountType = grantAmountType;
+    public void setGrantAmountProperties(
+            AttendanceV2LeavePolicyGrantAmountTypeProperties grantAmountProperties) {
+        this.grantAmountProperties = grantAmountProperties;
     }
 
     public List<String> getGrantExcludeList() {
@@ -271,5 +301,13 @@ public class AttendanceV2LeavePolicy extends SliceJpaObject {
 
     public void setGrantExcludeList(List<String> grantExcludeList) {
         this.grantExcludeList = grantExcludeList;
+    }
+
+    public Boolean getGrantAmountTypeUseScript() {
+        return grantAmountTypeUseScript;
+    }
+
+    public void setGrantAmountTypeUseScript(Boolean grantAmountTypeUseScript) {
+        this.grantAmountTypeUseScript = grantAmountTypeUseScript;
     }
 }
