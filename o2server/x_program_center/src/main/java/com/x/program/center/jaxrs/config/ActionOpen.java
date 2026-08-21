@@ -1,5 +1,7 @@
 package com.x.program.center.jaxrs.config;
 
+import com.x.base.core.project.config.ExternalDataSource;
+import com.x.base.core.project.config.ExternalDataSources;
 import com.x.base.core.project.config.Token;
 import com.x.base.core.project.gson.XGsonBuilder;
 import java.io.File;
@@ -33,7 +35,6 @@ import com.x.base.core.project.tools.StringTools;
 public class ActionOpen extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionOpen.class);
 	private static final String NODE_CONFIG = "node";
-	private static final String TOKEN_CONFIG = "token.json";
 
 	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson,JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
@@ -68,6 +69,7 @@ public class ActionOpen extends BaseAction {
 			Token token = Config.token();
 			Token nToken = XGsonBuilder.instance().fromJson(token.toString(), Token.class);
 			if(BooleanUtils.isFalse(Config.general().getConfigApiEnable())) {
+				nToken.setPassword("***");
 				nToken.getSsos().forEach(s -> s.setKey("***"));
 				nToken.getOauthClients().forEach(o -> o.setClientSecret("***"));
 			}
@@ -81,11 +83,16 @@ public class ActionOpen extends BaseAction {
 				wo.setSample(true);
 			}
 
-			if (file.exists()) {
-				if (file.isFile()) {
-					String json = FileUtils.readFileToString(file, DefaultCharset.charset);
-					wo.setFileContent(json);
+			if (file.exists() && file.isFile()) {
+				String json = FileUtils.readFileToString(file, DefaultCharset.charset);
+				if(DATASOURCE_CONFIG.equalsIgnoreCase(fileName)) {
+					ExternalDataSources externalDataSources = XGsonBuilder.instance().fromJson(json, ExternalDataSources.class);
+					for (ExternalDataSource externalDataSource : externalDataSources) {
+						externalDataSource.setPassword("***");
+					}
+					json = XGsonBuilder.toJson(externalDataSources);
 				}
+				wo.setFileContent(json);
 			}
 		}
 

@@ -1,20 +1,21 @@
 package com.x.program.center.jaxrs.config;
 
-import java.io.File;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.ExternalDataSource;
+import com.x.base.core.project.config.ExternalDataSources;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.StringTools;
+import java.io.File;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 获取运行中的配置文件
@@ -39,9 +40,14 @@ public class ActionOpenRuntimeConfig extends BaseAction {
 
 		if(file.exists() && file.isFile()) {
 			String json = FileUtils.readFileToString(file, DefaultCharset.charset);
-			if(StringUtils.isNotBlank(json)) {
-				wo.setFileContent(json);
+			if(DATASOURCE_CONFIG.equalsIgnoreCase(fileName)) {
+				ExternalDataSources externalDataSources = XGsonBuilder.instance().fromJson(json, ExternalDataSources.class);
+				for (ExternalDataSource externalDataSource : externalDataSources) {
+					externalDataSource.setPassword("***");
+				}
+				json = XGsonBuilder.toJson(externalDataSources);
 			}
+			wo.setFileContent(json);
 		}
 		result.setData(wo);
 		return result;
