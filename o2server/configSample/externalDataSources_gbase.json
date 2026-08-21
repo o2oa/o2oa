@@ -2,7 +2,7 @@
 	{
 		"url": "jdbc:gbasedbt-sqli://127.0.0.1:9088/gbasedb:GBASEDBTSERVER=gbaseserver",
 		"username": "gbasedbt",
-		"password": "password",
+		"password": "***",
 		"driverClassName": "",
 		"includes": [],
 		"excludes": [],

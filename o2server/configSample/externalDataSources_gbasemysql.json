@@ -1,8 +1,8 @@
 [
 	{
-		"url":"jdbc:gbase://127.0.0.1:5258/X?allowPublicKeyRetrieval=true&useSSL=false&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8",      
+		"url":"jdbc:gbase://127.0.0.1:5258/X?allowPublicKeyRetrieval=true&useSSL=false&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8",
 		"username" : "sysdba",
-		"password" :"123456",
+		"password" :"***",
 		"includes": [],
 		"excludes": [],
 		"maxTotal":200,

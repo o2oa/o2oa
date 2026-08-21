@@ -3,7 +3,7 @@
     "enable": false,
     "url": "jdbc:mysql://127.0.0.1:3306/X?autoReconnect\u003dtrue\u0026allowPublicKeyRetrieval\u003dtrue\u0026useSSL\u003dfalse\u0026useUnicode\u003dtrue\u0026characterEncoding\u003dUTF-8\u0026useLegacyDatetimeCode\u003dfalse\u0026serverTimezone\u003dGMT%2B8",
     "username": "root",
-    "password": "password",
+    "password": "***",
     "driverClassName": "",
     "dictionary": "",
     "maxTotal": 100.0,
