@@ -93,6 +93,9 @@ export default content({
     },
     normalizeExpireFields() {
         const form = this.bind.form;
+        if (form.active === null || form.active === undefined) {
+            form.active = true;
+        }
         if (!form.expireType || !this.isValidExpireType(form.expireType)) {
             form.expireType = "AFTER_GRANT";
         }
@@ -180,6 +183,9 @@ export default content({
         if (this.bind.form.grantAmountTypeUseScript) {
             this.loadScriptEditor();
         }
+    },
+    clickChangeActive() {
+        this.bind.form.active = !this.bind.form.active;
     },
     clickChangeGrantScopeType(type) {
         this.bind.form.grantScopeType = type;

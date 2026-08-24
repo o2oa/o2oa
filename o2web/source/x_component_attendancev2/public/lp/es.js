@@ -407,6 +407,9 @@ MWF.xApplication.attendancev2.LP={
 		"policy": {
 			"policyName": "Nombre de la regla",
 			"policyNamePlaceholder": "Ingrese el nombre de la regla",
+			"active": "Habilitado",
+			"activeEnabled": "Habilitado",
+			"activeDisabled": "Deshabilitado",
 			"grantScopeType": "Alcance de asignación",
 			"grantExludeLabel" : "Distribuir al personal excluido",
       		"grantExludePlaceholder" : "Seleccione el personal excluido.",

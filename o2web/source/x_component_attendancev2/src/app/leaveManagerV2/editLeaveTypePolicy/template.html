@@ -11,6 +11,18 @@
                 </div>
                 <div class="leave-policy-content leave-policy-text">{{($.leaveType && $.leaveType.name) ? $.leaveType.name : ''}}</div>
             </div>
+            <div class="leave-policy-row">
+                <div class="leave-policy-label">{{$.lp.leaveManagerV2.policy.active}}</div>
+                <div class="leave-policy-content">
+                    <div class="leave-policy-check" @click="clickChangeActive">
+                        <div class="o2-icon-14">
+                            <i
+                                class="{{ $.form.active ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}}"></i>
+                        </div>
+                        <label>{{$.form.active ? $.lp.leaveManagerV2.policy.activeEnabled : $.lp.leaveManagerV2.policy.activeDisabled}}</label>
+                    </div>
+                </div>
+            </div>
             <!-- <div class="leave-policy-row">
                 <div class="leave-policy-label"><span class="required">*</span>{{$.lp.leaveManagerV2.policy.policyName}}</div>
                 <div class="leave-policy-content">

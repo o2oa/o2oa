@@ -407,6 +407,9 @@ MWF.xApplication.attendancev2.LP={
 		"policy": {
 			"policyName": "Rule Name",
 			"policyNamePlaceholder": "Enter rule name",
+			"active": "Enabled",
+			"activeEnabled": "Enabled",
+			"activeDisabled": "Disabled",
 			"grantScopeType": "Grant Scope",
 			"grantExludeLabel" : "Distribute to excluded personnel",
       		"grantExludePlaceholder" : "Please select the excluded personnel.",
