@@ -434,7 +434,16 @@ MWF.xApplication.attendancev2.LP={
 			"grantTypeAddRule": "Add Rule",
 			"grantTypeServiceLenRuleScope": "Service Length Range",
 			"expireTime": "Leave Validity Period",
-			"expireValuePlaceholder": "Enter the leave validity period, must be an integer greater than 0"
+			"expireTypeTHIS_YEAR": "Expires on a date this year",
+			"expireTypeNEXT_YEAR": "Expires on a date next year",
+			"expireTypeAFTER_GRANT": "Expires days after grant",
+			"expireTypePlaceholder": "Select leave validity type",
+			"expireMonthDayPlaceholder": "Select the expiration month and day",
+			"expireValuePlaceholder": "Enter the leave validity period, must be an integer greater than 0",
+			"expireFromGrantDate": "From grant date",
+			"expireOnMonthDayPrefix": "Expires on",
+			"expireOnMonthDaySuffix": "",
+			"expireAfterDay": "days later"
 		},
 		"account": {
 			"filterSelectTitle": "Select person or organization",

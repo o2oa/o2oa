@@ -4,7 +4,6 @@ import { hideLoading, isEmpty, setJSONValue, showLoading } from "../../../utils/
 import { leaveManagerAction } from "../../../utils/actions";
 import template from "./template.html";
 import style from "./style.scope.css";
-import oInput from "../../../components/o-input";
 import oOrgPersonSelector from "../../../components/o-org-person-selector";
 import oMonthDaySelector from "../../../components/o-month-day-selector";
 
@@ -38,7 +37,7 @@ function trimNumber(value) {
 export default content({
     style,
     template,
-    components: { oInput, oOrgPersonSelector, oMonthDaySelector },
+    components: { oOrgPersonSelector, oMonthDaySelector },
     autoUpdate: true,
     bind() {
         return {
@@ -54,14 +53,19 @@ export default content({
                 grantAmountTypeUseScript: false, // 是否启用脚本计算额度
                 grantAmount: 0, // Grant amount.
                 grantScript: "", // 脚本内容
-                expireType: "RELATIVE", // NEVER / RELATIVE
-                expireValue: 1, // Expiration value.
-                expireValueExtendDay: 0, // Extra expiration days.
+                expireType: "AFTER_GRANT", // AFTER_GRANT / THIS_YEAR / NEXT_YEAR
+                expireValue: "", // 当 expireType = AFTER_GRANT 时使用.
+                expireMonthDay: "",
                 carryForward: false, // Whether carry-forward is allowed.
                 maxCarryForward: 0, // Maximum carry-forward amount.
                 policyVersion: "1",
                 active: true, // 是否启用
             },
+            expireTypeList: [
+                { key: "THIS_YEAR", name: lp.leaveManagerV2.policy.expireTypeTHIS_YEAR },
+                { key: "NEXT_YEAR", name: lp.leaveManagerV2.policy.expireTypeNEXT_YEAR },
+                { key: "AFTER_GRANT", name: lp.leaveManagerV2.policy.expireTypeAFTER_GRANT }
+            ],
             leaveType: null
         }
     },
@@ -71,9 +75,7 @@ export default content({
             const policy = await leaveManagerAction("policyGet", this.bind.updateId);
             if (policy) {
                 this.bind.form = policy;
-                if (this.bind.form.expireValueExtendDay === null || this.bind.form.expireValueExtendDay === undefined || this.bind.form.expireValueExtendDay === "") {
-                    this.bind.form.expireValueExtendDay = 0;
-                }
+                this.normalizeExpireFields();
                 this.bind.fTitle = lp.leaveManagerV2.editTypePolicy;
                 if (this.bind.form.grantAmountTypeUseScript) {
                     this.loadScriptEditor();
@@ -88,6 +90,18 @@ export default content({
             this.bind.leaveType = leaveType;
         }
         this.loadGrantCronClick();
+    },
+    normalizeExpireFields() {
+        const form = this.bind.form;
+        if (!form.expireType || !this.isValidExpireType(form.expireType)) {
+            form.expireType = "AFTER_GRANT";
+        }
+        if (form.expireValue === null || form.expireValue === undefined) {
+            form.expireValue = "";
+        }
+        if (form.expireMonthDay === null || form.expireMonthDay === undefined) {
+            form.expireMonthDay = "";
+        }
     },
     // 定时器表达式工具加载
     loadGrantCronClick() {
@@ -167,6 +181,24 @@ export default content({
             this.loadScriptEditor();
         }
     },
+    clickChangeGrantScopeType(type) {
+        this.bind.form.grantScopeType = type;
+        if (!this.bind.form.grantScopeList) {
+            this.bind.form.grantScopeList = [];
+        }
+        if (!this.bind.form.grantExcludeList) {
+            this.bind.form.grantExcludeList = [];
+        }
+    },
+    changeExpireType(e) {
+        const expireType = e.target.value;
+        this.bind.form.expireType = expireType;
+        if (expireType === "AFTER_GRANT") {
+            this.bind.form.expireMonthDay = "";
+        } else {
+            this.bind.form.expireValue = "";
+        }
+    },
     // Used by the o-month-day-selector return value.
     setSelectorValue(key, value) {
         setJSONValue(key, value, this.bind);
@@ -193,11 +225,17 @@ export default content({
                 return;
             }
         }
-        if (!this.isValidGrantAmount(form.expireValue)) {
-            o2.api.page.notice(lp.leaveManagerV2.policy.expireValuePlaceholder, 'error');
+        const postForm = Object.assign({}, form);
+        if (!this.validateExpireFields(postForm)) {
             return;
         }
-        const postForm = Object.assign({}, form);
+        delete postForm.expireValueExtendDay;
+        if (postForm.expireType === "AFTER_GRANT") {
+            postForm.expireValue = Number(postForm.expireValue);
+            postForm.expireMonthDay = "";
+        } else {
+            postForm.expireValue = null;
+        }
         if (this.submitLoading) {
             return;
         }
@@ -225,6 +263,35 @@ export default content({
         if (!/^\d+$/.test(input)) return false;
         const num = Number(input);
         return num >= 1;
+    },
+    isValidExpireType(type) {
+        return ["THIS_YEAR", "NEXT_YEAR", "AFTER_GRANT"].indexOf(type) > -1;
+    },
+    isValidExpireMonthDay(value) {
+        if (!/^\d{2}-\d{2}$/.test(value || "")) {
+            return false;
+        }
+        const arr = value.split("-");
+        const month = Number(arr[0]);
+        const day = Number(arr[1]);
+        const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        return month >= 1 && month <= 12 && day >= 1 && day <= monthDays[month - 1];
+    },
+    validateExpireFields(form) {
+        if (!this.isValidExpireType(form.expireType)) {
+            o2.api.page.notice(lp.leaveManagerV2.policy.expireTypePlaceholder, "error");
+            return false;
+        }
+        if (form.expireType === "AFTER_GRANT") {
+            if (!this.isValidGrantAmount(form.expireValue)) {
+                o2.api.page.notice(lp.leaveManagerV2.policy.expireValuePlaceholder, "error");
+                return false;
+            }
+        } else if (!this.isValidExpireMonthDay(form.expireMonthDay)) {
+            o2.api.page.notice(lp.leaveManagerV2.policy.expireMonthDayPlaceholder, "error");
+            return false;
+        }
+        return true;
     },
     isValidExtendDay(input) {
         // Extra expiration days can be 0.

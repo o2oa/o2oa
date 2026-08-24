@@ -27,6 +27,7 @@ import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.lang3.BooleanUtils;
@@ -132,14 +133,23 @@ public class QueueAttendanceV2LeavePolicyGrant extends
                 ledger.setRemainingAmount(grantAmount);
                 ledger.setGrantAmount(grantAmount);
                 ledger.setGrantTime(today);
-                //TODO 过期时间需要重新设计
-                if (ExpireTypeEnum.RELATIVE.getValue().equals(policy.getExpireType())) {
+                if (ExpireTypeEnum.AFTER_GRANT.getValue().equals(policy.getExpireType())) {
                     int addDay = policy.getExpireValue() != null ? policy.getExpireValue() : 0;
                     if (addDay > 0) {
                         Date expireTime = DateTools.addDay(today, addDay);
+                        expireTime = endOfDay(expireTime);
                         ledger.setExpireTime(expireTime);
                     }
-                } //
+                } else {
+                   String monthDay = policy.getExpireMonthDay();
+                   int year = getYear(today);
+                   if (ExpireTypeEnum.NEXT_YEAR.getValue().equals(policy.getExpireType())) {
+                       year += 1;
+                   }
+                   Date expireTime = DateTools.parseDate(year+"-"+monthDay);
+                    expireTime = endOfDay(expireTime);
+                    ledger.setExpireTime(expireTime);
+                }
                 grantLeaveLedgerAndRefreshAccount(emc, ledger);
             }
             logger.info("发放完成，政策ID: {}, 用户数量: {} 。 开始更新下一次执行时间",
@@ -157,6 +167,28 @@ public class QueueAttendanceV2LeavePolicyGrant extends
                     "======================新版考勤假期管理策略 {} 发放 执行完成==============================",
                     policy.getPolicyName());
         }
+    }
+
+    private int getYear(Date date) {
+        if (date == null) {
+            return 0;
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.YEAR);
+    }
+    // 设置时间到 23:59:59
+    private Date endOfDay(Date expireTime) {
+        if (expireTime == null) {
+            return null;
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(expireTime);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+        return calendar.getTime();
     }
 
     // 执行脚本获取发放额度

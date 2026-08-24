@@ -129,15 +129,18 @@ public class AttendanceV2LeavePolicy extends SliceJpaObject {
 	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + "grantAmountProperties")
 	private AttendanceV2LeavePolicyGrantAmountTypeProperties grantAmountProperties;
 
-
-    //TODO 过期时间需要重新设计
     public static final String expireType_FIELDNAME = "expireType";
-    @FieldDescribe("过期类型 NEVER / FIXED / RELATIVE")
+    @FieldDescribe("过期类型 THIS_YEAR / NEXT_YEAR / AFTER_GRANT")
     @Column(length = JpaObject.length_16B, name = ColumnNamePrefix + expireType_FIELDNAME)
     private String expireType;
 
+    public static final String expireMonthDay_FIELDNAME = "expireMonthDay";
+    @FieldDescribe("当 expireType = THIS_YEAR 或 NEXT_YEAR 时使用,表示几月几日过期，例如 \"12-31\"、\"03-31\"")
+    @Column(length = JpaObject.length_16B, name = ColumnNamePrefix + expireMonthDay_FIELDNAME)
+    private String expireMonthDay;
+
     public static final String expireValue_FIELDNAME = "expireValue";
-    @FieldDescribe("过期值")
+    @FieldDescribe("当 expireType = AFTER_GRANT 使用，表示发放后多少天过期，例如 365")
     @Column(name = ColumnNamePrefix + expireValue_FIELDNAME)
     private Integer expireValue;
 
@@ -201,6 +204,14 @@ public class AttendanceV2LeavePolicy extends SliceJpaObject {
 
     public void setGrantAmount(Double grantAmount) {
         this.grantAmount = grantAmount;
+    }
+
+    public String getExpireMonthDay() {
+        return expireMonthDay;
+    }
+
+    public void setExpireMonthDay(String expireMonthDay) {
+        this.expireMonthDay = expireMonthDay;
     }
 
     public String getExpireType() {

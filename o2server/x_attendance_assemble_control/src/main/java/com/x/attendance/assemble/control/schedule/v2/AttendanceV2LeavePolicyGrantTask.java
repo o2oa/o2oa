@@ -19,28 +19,38 @@ public class AttendanceV2LeavePolicyGrantTask extends AbstractJob {
 
     @Override
     public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
-        if (logger.isDebugEnabled()) {
-            logger.debug("======================新版考勤假期管理策略发放定时器开始执行==============================");
-        }
+        long start = System.currentTimeMillis();
+        int policyCount = 0;
+        int enqueueCount = 0;
+        logger.info("======================新版考勤假期管理策略发放定时器开始执行==============================");
         try {
             try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+                logger.info("开始查询启用中的假期发放策略.");
                 List<AttendanceV2LeavePolicy> policyList = emc.listEqual(AttendanceV2LeavePolicy.class, AttendanceV2LeavePolicy.active_FIELDNAME, true);
-                policyList.forEach(policy -> {
+                policyCount = policyList == null ? 0 : policyList.size();
+                logger.info("启用中的假期发放策略查询完成, 数量: {}.", policyCount);
+                if (policyList == null || policyList.isEmpty()) {
+                    return;
+                }
+                for (AttendanceV2LeavePolicy policy : policyList) {
                     try {
+                        logger.info("假期发放策略准备入队, policyId: {}, policyName: {}.", policy.getId(), policy.getPolicyName());
                         QueueAttendanceV2LeavePolicyGrantModel model = new QueueAttendanceV2LeavePolicyGrantModel();
                         model.setPolicy(policy);
                         model.setIsImmediately(false);
                         ThisApplication.queueV2LeavePolicyGrant.send(model);
+                        enqueueCount++;
+                        logger.info("假期发放策略入队完成, policyId: {}, policyName: {}.", policy.getId(), policy.getPolicyName());
                     } catch (Exception e) {
                         logger.error(e);
                     }
-                });
+                }
             }
-        }catch (Exception e) {
-            logger.error( e);
-        }
-        if (logger.isDebugEnabled()) {
-            logger.debug("======================新版考勤假期管理策略发放定时器执行完成==============================");
+        } catch (Exception e) {
+            logger.error(e);
+        } finally {
+            logger.info("======================新版考勤假期管理策略发放定时器执行完成, 策略数量: {}, 入队数量: {}, 耗时: {}ms==============================",
+                    policyCount, enqueueCount, System.currentTimeMillis() - start);
         }
     }
     

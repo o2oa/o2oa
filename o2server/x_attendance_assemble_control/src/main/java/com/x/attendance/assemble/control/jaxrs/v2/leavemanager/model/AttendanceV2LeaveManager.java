@@ -11,14 +11,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Pattern;
-
 import org.apache.commons.lang3.StringUtils;
-
-import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
-import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeavePolicyEnums.GrantTypeEnum;
-import com.x.attendance.entity.v2.AttendanceV2LeavePolicy;
-import com.x.base.core.project.tools.DateTools;
 
 public class AttendanceV2LeaveManager {
 

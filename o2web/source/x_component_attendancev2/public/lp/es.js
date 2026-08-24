@@ -434,7 +434,16 @@ MWF.xApplication.attendancev2.LP={
 			"grantTypeAddRule": "Agregar regla",
 			"grantTypeServiceLenRuleScope": "Rango de antigüedad",
 			"expireTime": "Periodo de validez de las vacaciones",
-			"expireValuePlaceholder": "Ingrese el periodo de validez de las vacaciones, debe ser un entero mayor que 0"
+			"expireTypeTHIS_YEAR": "Vence en una fecha de este año",
+			"expireTypeNEXT_YEAR": "Vence en una fecha del próximo año",
+			"expireTypeAFTER_GRANT": "Vence días después de la asignación",
+			"expireTypePlaceholder": "Seleccione el tipo de validez de vacaciones",
+			"expireMonthDayPlaceholder": "Seleccione el mes y día de vencimiento",
+			"expireValuePlaceholder": "Ingrese el periodo de validez de las vacaciones, debe ser un entero mayor que 0",
+			"expireFromGrantDate": "Desde la fecha de asignación",
+			"expireOnMonthDayPrefix": "Vence el",
+			"expireOnMonthDaySuffix": "",
+			"expireAfterDay": "días después"
 		},
 		"account": {
 			"filterSelectTitle": "Seleccionar persona u organización",
