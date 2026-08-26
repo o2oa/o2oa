@@ -250,7 +250,7 @@ MWF.xApplication.process.Xform.Codeeditor = MWF.APPCodeeditor =  new Class({
     },
     validation: function(routeName, opinion){
         this.moduleValidationAG = null;
-        if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
+        if (this.isReadonly() || this.json.showMode==="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
 
         if (!this.validationConfig(routeName, opinion))  return false;
 

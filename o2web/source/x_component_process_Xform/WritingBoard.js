@@ -487,7 +487,7 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
         validation: function (routeName, opinion) {
             //if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
             this.moduleValidationAG = null;
-            if (this.isReadonly() || this.json.showMode!=="disabled" || !this.isEditable) return true;
+            if (this.isReadonly() || this.json.showMode==="disabled" || !this.isEditable) return true;
             
             if( !this.isReadonly() ){
                 if (!this.validationConfig(routeName, opinion)) return false;
