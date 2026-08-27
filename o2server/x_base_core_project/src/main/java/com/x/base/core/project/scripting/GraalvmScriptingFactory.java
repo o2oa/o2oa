@@ -1,6 +1,18 @@
 package com.x.base.core.project.scripting;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.reflect.TypeToken;
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -19,37 +31,66 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.Value;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.reflect.TypeToken;
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-
 public class GraalvmScriptingFactory {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GraalvmScriptingFactory.class);
 	private static final List<String> denyClassList = List.of(GraalvmScriptingFactory.class.getName(),
 			CipherConnectionAction.class.getName(),
-			"com.x.base.core.project.config.Config","java.lang.Runtime","java.lang.ProcessBuilder","java.lang.System",
-			"java.net.ServerSocket","java.net.Socket","javax.script.ScriptEngine","javax.script.ScriptEngineManager",
-            "java.lang.reflect.Method","java.lang.reflect.Field","java.lang.ProcessHandle","java.io.File");
+			Config.class.getName(),Runtime.class.getName(),ProcessBuilder.class.getName(),System.class.getName(),
+			java.net.ServerSocket.class.getName(),java.net.Socket.class.getName(),javax.script.ScriptEngine.class.getName(),
+			javax.script.ScriptEngineManager.class.getName(),java.lang.reflect.Method.class.getName(),
+			java.lang.reflect.Field.class.getName(), ProcessHandle.class.getName(),java.io.File.class.getName());
+
+	private static final HostAccess SCRIPTING_HOST_ACCESS = HostAccess.newBuilder(HostAccess.ALL)
+			.denyAccess(Class.class)
+			.denyAccess(ClassLoader.class)
+			.denyAccess(java.lang.reflect.AccessibleObject.class)
+			.denyAccess(java.lang.reflect.Constructor.class)
+			.denyAccess(java.lang.reflect.Field.class)
+			.denyAccess(java.lang.reflect.InvocationHandler.class)
+			.denyAccess(java.lang.reflect.Method.class)
+			.denyAccess(java.lang.reflect.Proxy.class)
+			.denyAccess(java.lang.invoke.MethodHandle.class)
+			.denyAccess(java.lang.invoke.MethodHandles.class)
+			.denyAccess(Process.class)
+			.denyAccess(ProcessBuilder.class)
+			.denyAccess(ProcessHandle.class)
+			.denyAccess(Runtime.class)
+			.denyAccess(System.class)
+			.denyAccess(java.io.File.class)
+			.denyAccess(java.io.FileInputStream.class)
+			.denyAccess(java.io.FileOutputStream.class)
+			.denyAccess(java.io.RandomAccessFile.class)
+			.denyAccess(java.nio.file.Files.class)
+			.denyAccess(java.nio.file.Path.class)
+			.denyAccess(java.nio.file.Paths.class)
+			.denyAccess(java.net.ServerSocket.class)
+			.denyAccess(java.net.Socket.class)
+			.denyAccess(java.net.URI.class)
+			.denyAccess(java.net.URL.class)
+			.denyAccess(java.net.URLClassLoader.class)
+			.denyAccess(javax.script.ScriptEngine.class)
+			.denyAccess(javax.script.ScriptEngineManager.class)
+			.denyAccess(javax.tools.JavaCompiler.class)
+			.denyAccess(javax.tools.ToolProvider.class)
+			.denyAccess(Config.class)
+			.denyAccess(CipherConnectionAction.class)
+			.denyAccess(GraalvmScriptingFactory.class)
+			.denyAccess(Context.class)
+			.denyAccess(Engine.class)
+			.denyAccess(Source.class)
+			.denyAccess(Value.class)
+			.build();
 	private static final Gson gson = XGsonBuilder.instance();
 
 	private GraalvmScriptingFactory() {
@@ -67,8 +108,7 @@ public class GraalvmScriptingFactory {
 	private static String database;
 	private static Set<String> scriptingAllowedClasses;
 
-	private static Type stringsType = new TypeToken<ArrayList<String>>() {
-	}.getType();
+	private static final Type stringsType = new TypeToken<ArrayList<String>>() {}.getType();
 
 	public static void flush() {
 		LOCK.lock();
@@ -85,7 +125,7 @@ public class GraalvmScriptingFactory {
 
 	public static JsonElement eval(Source source, Bindings bindings) throws ExceptionEvalPromiseScript {
 		try (Context context = Context.newBuilder().engine(ENGINE).allowHostClassLoading(true)
-				.allowHostAccess(HostAccess.ALL).allowHostClassLookup(GraalvmScriptingFactory::allowClass).build()) {
+				.allowHostAccess(SCRIPTING_HOST_ACCESS).allowHostClassLookup(GraalvmScriptingFactory::allowClass).build()) {
 			Value bind = context.getBindings(LANGUAGE_ID_JS);
 			Map<String, Class<?>> dataAssignDataEmbedDataClasses = new HashMap<>();
 			if (null != bindings) {
@@ -353,6 +393,11 @@ public class GraalvmScriptingFactory {
 		if(text.contains("getClassLoader") || text.contains("loadClass")){
 			throw new ExceptionEvalPromiseScript("classLoader is not allowed.");
 		}
+		for(String cls : denyClassList){
+			if(text.contains(cls)) {
+				throw new ExceptionEvalPromiseScript("class " + cls + " is not allowed.");
+			}
+		}
 	}
 
 	public static class Bindings extends LinkedHashMap<String, Object> {
@@ -360,7 +405,7 @@ public class GraalvmScriptingFactory {
 		private static final long serialVersionUID = 304948629493499012L;
 
 		public Bindings() {
-			BINDING_NAMES.stream().forEach(o -> this.put(o, null));
+			BINDING_NAMES.forEach(o -> this.put(o, null));
 		}
 
 		public Bindings putMember(String key, Object value) {
@@ -378,9 +423,6 @@ public class GraalvmScriptingFactory {
 
 		/**
 		 * 对jsonElement抽取可能是身份,个人,组织,群组的文本值,不进行递归的抽取,仅抽取地一层
-		 *
-		 * @param jsonElement
-		 * @return
 		 *
 		 */
 		public static List<String> stringOrDistinguishedNameAsList(JsonElement jsonElement) {
@@ -415,7 +457,7 @@ public class GraalvmScriptingFactory {
 
 		private static void objectStringOrDistinguishedNameAsList(JsonObject jsonObject, List<String> list) {
 			for (Entry<String, JsonElement> entry : jsonObject.entrySet()) {
-				if (StringUtils.equals(entry.getKey(), JpaObject.DISTINGUISHEDNAME)
+				if (Strings.CS.equals(entry.getKey(), JpaObject.DISTINGUISHEDNAME)
 						&& entry.getValue().isJsonPrimitive() && entry.getValue().getAsJsonPrimitive().isString()) {
 					list.add(entry.getValue().getAsJsonPrimitive().getAsString());
 				}
