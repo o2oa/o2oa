@@ -52,6 +52,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.graalvm.polyglot.Source;
 
 abstract class BaseAction extends StandardJaxrsAction {
@@ -223,8 +224,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (BooleanUtils.isTrue(Config.token().getLdapAuth().getEnable())) {
 			return LdapTools.auth(credential, password);
 		}
-		return (StringUtils.equals(Crypto.encrypt(password, Config.token().getKey(), Config.person().getEncryptType()),
-				person.getPassword()) || StringUtils.equals(MD5Tool.getMD5Str(password), person.getPassword()));
+		return (Strings.CS.equals(Crypto.encrypt(password, Config.token().getKey(), Config.person().getEncryptType()),
+				person.getPassword()) ||
+				Strings.CS.equals(Crypto.encodeDES(password, Config.token().getKey()),
+						person.getPassword()) ||
+				Strings.CS.equals(MD5Tool.getMD5Str(password), person.getPassword()));
 	}
 
 	public abstract static class AbstractWoAuthentication extends Person {

@@ -1,5 +1,7 @@
 package com.x.base.core.project;
 
+import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.tools.Crypto;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
@@ -724,28 +726,32 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		String urlDescribeApiJson = "";
 		if (name.equalsIgnoreCase(x_program_center.class.getSimpleName())
 				|| name.equalsIgnoreCase(x_program_center.class.getName())) {
-			final Node node = Config.nodes().get(Config.resource_node_centersPirmaryNode());
-			if (null != node) {
-				Integer port = node.getCenter().getPort();
-				StringBuilder buffer = new StringBuilder();
-				if (BooleanUtils.isTrue(node.getCenter().getSslEnable())) {
-					buffer.append("https://").append(Config.resource_node_centersPirmaryNode()).append(":" + port);
-				} else {
-					buffer.append("http://").append(Config.resource_node_centersPirmaryNode()).append(":" + port);
-				}
-				urlDescribeApiJson = buffer.append("/x_program_center/describe/api.json").toString();
-			} else {
-				throw new ExceptionNotFindPirmaryCenterServer(Config.resource_node_centersPirmaryNode());
-			}
+			urlDescribeApiJson = Config.url_x_program_center_jaxrs("describe");
 		} else {
 			String applicationName = this.findApplicationName(name);
 			if (StringUtils.isEmpty(applicationName)) {
 				throw new ExceptionFindApplicationName(name);
 			}
 			Application application = this.randomWithWeight(applicationName);
-			urlDescribeApiJson = application.getUrlDescribeApiJson();
+			urlDescribeApiJson = application.getUrlJaxrsRoot() + "describe";
 		}
-		return HttpConnection.getAsString(urlDescribeApiJson, null);
+		String data = CipherConnectionAction.get(false, urlDescribeApiJson).getData(Wo.class).getData();
+		return Crypto.decodeAES(data, Crypto.DESCRIBE_AES_KEY);
+	}
+
+	private static class Wo extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 6772463745917569315L;
+
+		private String data;
+
+		public String getData() {
+			return data;
+		}
+
+		public void setData(String data) {
+			this.data = data;
+		}
 	}
 
 	public ActionResponse authorizedGetQuery(String applicationName, String uri, String person) throws Exception {

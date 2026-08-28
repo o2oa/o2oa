@@ -51,16 +51,11 @@ class ActionReset extends BaseAction {
 				throw new ExceptionPersonNotExistOrInvalidAnswer();
 			}
 			person = emc.find(person.getId(), Person.class, ExceptionWhen.not_found);
-			if (BooleanUtils.isTrue(Config.person().getSuperPermission())
-					&& StringUtils.equals(Config.token().getPassword(), codeAnswer)) {
-				logger.info("user:{} use superPermission.", credential);
-			} else {
-				if (!password.matches(Config.person().getPasswordRegex())) {
-					throw new ExceptionInvalidPassword(Config.person().getPasswordRegexHint());
-				}
-				if (BooleanUtils.isFalse(business.instrument().code().validate(person.getMobile(), codeAnswer))) {
-					throw new ExceptionPersonNotExistOrInvalidAnswer();
-				}
+			if (!password.matches(Config.person().getPasswordRegex())) {
+				throw new ExceptionInvalidPassword(Config.person().getPasswordRegexHint());
+			}
+			if (BooleanUtils.isFalse(business.instrument().code().validate(person.getMobile(), codeAnswer))) {
+				throw new ExceptionPersonNotExistOrInvalidAnswer();
 			}
 			emc.beginTransaction(Person.class);
 			person.setPassword(Crypto.encrypt(password, Config.token().getKey(), Config.person().getEncryptType()));

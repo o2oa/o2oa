@@ -1,8 +1,15 @@
 package com.x.base.core.project.http;
 
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.Crypto;
+import com.x.base.core.project.tools.DateTools;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URLEncoder;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -13,21 +20,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
-
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.tools.Crypto;
-import com.x.base.core.project.tools.DateTools;
 
 public class EffectivePerson extends GsonPropertyObject {
 
@@ -90,9 +87,9 @@ public class EffectivePerson extends GsonPropertyObject {
 	}
 
 	public EffectivePerson(String distinguishedName, TokenType tokenType, String client, String key, String encryptType)
-			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
-			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException, NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+            throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
+            IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException, NoSuchMethodException,
+            IllegalAccessException, InvocationTargetException, ClassNotFoundException, InvalidAlgorithmParameterException {
 		this.setDistinguishedName(distinguishedName);
 		this.tokenType = tokenType;
 		this.client = client;
@@ -122,9 +119,9 @@ public class EffectivePerson extends GsonPropertyObject {
 	}
 
 	private String concreteToken(String key, String encryptType)
-			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
-			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException, NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+            throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
+            IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException, NoSuchMethodException,
+            IllegalAccessException, InvocationTargetException, ClassNotFoundException, InvalidAlgorithmParameterException {
 		return Crypto.encrypt(this.getTokenType().toString()
 				+ (DateFormatUtils.format(new Date(), DateTools.formatCompact_yyyyMMddHHmmss)
 						+ Objects.toString(this.client, HttpToken.CLIENT_H5)
@@ -148,9 +145,9 @@ public class EffectivePerson extends GsonPropertyObject {
 	}
 
 	public static EffectivePerson cipher(String key, String encryptType)
-			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
-			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException, NoSuchMethodException,
-			IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+            throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
+            IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException, NoSuchMethodException,
+            IllegalAccessException, InvocationTargetException, ClassNotFoundException, InvalidAlgorithmParameterException {
 		return new EffectivePerson(CIPHER, TokenType.cipher, HttpToken.CLIENT_H5, key, encryptType);
 	}
 

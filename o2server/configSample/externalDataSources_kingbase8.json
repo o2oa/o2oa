@@ -2,7 +2,7 @@
 	{
 		"url": "jdbc:kingbase8://127.0.0.1:54321/X",
 		"username": "system",
-		"password": "krms",
+		"password": "***",
 		"includes": [],
 		"excludes": [],
 		"enable": true,
