@@ -1355,7 +1355,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             //var pNode = this.toolNode.getOffsetParent();
 
             var paddingTop = (this.isFullScreen) ? 0 : (node || this.form.node).getStyle("padding-top");
-            var pTop = window.getComputedStyle(node || this.scrollNode).paddingTop;
+            var pTop = (node || this.scrollNode) ? window.getComputedStyle(node || this.scrollNode).paddingTop : 0;
             try {
                 paddingTop = paddingTop.toInt();
                 pTop = pTop.toInt();
@@ -2150,13 +2150,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.resizeToolbar();
     },
     _returnScreen: function(){
-        this.form.node.show();
-        this.node.inject(this.positionNode, "before");
-        this.positionNode.destroy();
-        this.node.setStyle("min-height", "");
-        this.fireEvent("returnScreen");
-        this.isFullScreen = false;
-        this.resizeToolbar();
+        if (this.positionNode){
+            this.form.node.show();
+            this.node.inject(this.positionNode, "before");
+            this.positionNode.destroy();
+            this.node.setStyle("min-height", "");
+            this.fireEvent("returnScreen");
+            this.isFullScreen = false;
+            this.resizeToolbar();
+        }
     },
 
     fullScreen: function(bt){
