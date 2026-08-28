@@ -426,51 +426,29 @@ MWF.xDesktop.getServiceAddressConfigArray = function(config, callback, error) {
     }.bind(this));
 };
 MWF.xDesktop.getServiceAddressConfigObject = function(center, callback, error){
-    var centerConfig = center;
-    if (!centerConfig) centerConfig = layout.config.center;
-    var host = centerConfig.host || window.location.hostname;
-    var port = centerConfig.port;
-    var uri = "";
+    // var centerConfig = center;
+    // if (!centerConfig) centerConfig = layout.config.center;
+    // var host = centerConfig.host || window.location.hostname;
+    // var port = centerConfig.port;
+    // var uri = "";
 
-    if (layout.config.app_protocol=="auto"){
-        layout.config.app_protocol = window.location.protocol;
-    }
+    // if (layout.config.app_protocol=="auto"){
+    //     layout.config.app_protocol = window.location.protocol;
+    // }
 
-    if (!port || port=="80"){
-        uri = layout.config.app_protocol+"//"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
-    }else{
-        uri = layout.config.app_protocol+"//"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
-    }
+    // if (!port || port=="80"){
+    //     uri = layout.config.app_protocol+"//"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+    // }else{
+    //     uri = layout.config.app_protocol+"//"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+    // }
 
-    var currenthost = (layout.config.applicationServer && layout.config.applicationServer.host) ? layout.config.applicationServer.host : window.location.hostname;
-    //var currenthost = window.location.hostname;
-    uri = uri.replace(/{source}/g, currenthost);
-    //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
+    // var currenthost = (layout.config.applicationServer && layout.config.applicationServer.host) ? layout.config.applicationServer.host : window.location.hostname;
+    // //var currenthost = window.location.hostname;
+    // uri = uri.replace(/{source}/g, currenthost);
+    // //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
 
-    try{
-        return MWF.restful("get", uri, null, {
-            "onSuccess": function(json){
-                //this.serviceAddressList = json.data;
-                //this.centerServer = center;
-                var serviceAddressList = json.data;
-                if (layout.config.proxyApplicationEnable || !layout.config.center){
-                    Object.keys(serviceAddressList).forEach(function(k){
-                        if (k!=="x_message_assemble_communicate" || !layout.config.center) serviceAddressList[k].port = window.location.port;
-                    })
-                }
-                if (callback) callback(serviceAddressList, center);
-            }.bind(this),
-            "onRequestFailure": function(xhr){
-                if (error) error(xhr);
-            }.bind(this),
-            "onError": function(xhr){
-                if (error) error(xhr);
-            }.bind(this)
-        });
-    }catch(e){
-        if (error) error();
-        return null;
-    }
+    if (callback) callback({}, center);
+
 };
 MWF.xDesktop.$globalEvents = {};
 MWF.xDesktop.addEvent = function(appName, type, fn){
