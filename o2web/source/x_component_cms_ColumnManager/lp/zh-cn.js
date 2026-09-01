@@ -195,6 +195,9 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "defaultReadForm": "默认阅读表单",
         "editformNote": "注：创建分类时的默认编辑表单",
         "readformNote": "注：创建分类时的默认阅读表单，如果不选则和编辑表单一致",
+        "anonymousAccess": "匿名访问",
+        "anonymousAccessEnabled": "允许匿名访问文档",
+        "anonymousAccessDisabled": "禁止匿名访问文档",
         viewerSetting : {
             title : "可见范围",
             set: "设置可见范围",
