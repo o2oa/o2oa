@@ -48,12 +48,13 @@ public class ActionQueryViewDocument extends BaseAction {
 		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), id, effectivePerson.getDistinguishedName() );
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
 
-		if (optional.isPresent()) {
+		if (!effectivePerson.isAnonymous() && optional.isPresent()) {
 			result = (ActionResult<Wo>) optional.get();
 		} else {
-			//继续进行数据查询
 			result = getDocumentQueryResult( id, effectivePerson, isManager );
-			CacheManager.put(cacheCategory, cacheKey, result );
+			if (!effectivePerson.isAnonymous()) {
+				CacheManager.put(cacheCategory, cacheKey, result);
+			}
 		}
 
 		//只要不是管理员访问，则记录该文档的访问记录
