@@ -173,7 +173,8 @@ export default content({
                 "grantPerson; //需要计算的用户对象，如：{\"distinguishedName\":\"张三@zhangsan@P\",\"unique\":\"zhangsan\",\"name\":\"张三\"}\n" +
                 "根据这个 grantPerson 用户计算出这个用户本次需要发放的额度，然后 return 返回\n" +
                 "return 10; //返回额度10天\n" +
-                "********************/";
+                "********************/\n\n\n" +
+                "return 0;";
             const v = this.bind.form.grantScript || defaultText;
             this.grantScriptArea.load({ code: v });
         });

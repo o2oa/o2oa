@@ -46,8 +46,9 @@
                     <td>
                         <span class="operator_link" @click="this.clickEditLeaveType(d.value.id)">{{$.lp.update}}</span>
                         <span class="operator_link" @click="this.clickDeleteType(d.value.id)" oo-if="this.checkCanDeleteType(d.value.id)">{{$.lp.delete}}</span>
-                        <span class="operator_link" @click="this.clickOpenPolicyForType(d.value.id)"
-                            oo-if="d.value.quotaType == 'QUOTA'">{{$.lp.leaveManagerV2.type.configPolicy}}</span>
+                        <!-- 后续再使用，暂时先不开放 -->
+                        <!-- <span class="operator_link" @click="this.clickOpenPolicyForType(d.value.id)"
+                            oo-if="d.value.quotaType == 'QUOTA'">{{$.lp.leaveManagerV2.type.configPolicy}}</span> -->
                         <span class="operator_link" @click="this.clickOpenLedgerImport(d.value)"
                             oo-if="d.value.quotaType == 'QUOTA'">{{$.lp.leaveManagerV2.importData}}</span>
                     </td>
