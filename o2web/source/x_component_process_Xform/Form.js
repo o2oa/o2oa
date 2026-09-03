@@ -945,7 +945,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 }
                 if (i == 2) {
                     this.css.html5ActionButtonDingdingMore.width = buttonWidth + "px";
-                    var action = new Element("div", { "styles": this.css.html5ActionButtonDingdingMore, "text": "…"}).inject(node);
+                    var action = new Element("div.o2_form_mobile_action_more", { "styles": this.css.html5ActionButtonDingdingMore, "text": "…"}).inject(node);
                     action.addEvent("click", function (e) {
                         this._loadMoreMobileActionsDingdingStyle(tools, 2, node);
                     }.bind(this));
@@ -1087,8 +1087,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }
             new Element("div", { "styles": this.css.html5ActionButtonSplit }).inject(node.getLast(), "before");
             new Element("div", { "styles": this.css.html5ActionButtonSplit }).inject(node);
-            this.css.html5ActionButton.width = "23%"
-            var action = new Element("div", { "styles": this.css.html5ActionButton, "class": "mainColor_color", "text": "…" }).inject(node);
+            this.css.html5ActionButton.width = "23%";
+            var action = new Element("div.o2_form_mobile_action_more", { "styles": this.css.html5ActionButton, "class": "mainColor_color", "text": "…" }).inject(node);
             action.addEvent("click", function (e) {
                 this._loadMoreMobileActions(tools, 2, node);
             }.bind(this));
