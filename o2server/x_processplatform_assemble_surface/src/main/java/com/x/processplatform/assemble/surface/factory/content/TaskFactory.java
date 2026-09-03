@@ -112,6 +112,17 @@ public class TaskFactory extends AbstractFactory {
 		return em.createQuery(cq).getSingleResult();
 	}
 
+	public List<Task> listWithPersonWithJob(String person, String job) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Task.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Task> cq = cb.createQuery(Task.class);
+		Root<Task> root = cq.from(Task.class);
+		Predicate p = cb.equal(root.get(Task_.job), job);
+		p = cb.and(p, cb.equal(root.get(Task_.person), person));
+		cq.select(root).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
 	public List<String> listPersonWithWork(String work) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Task.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
