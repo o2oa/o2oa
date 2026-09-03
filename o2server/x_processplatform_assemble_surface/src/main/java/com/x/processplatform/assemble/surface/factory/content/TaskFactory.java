@@ -1,25 +1,22 @@
 package com.x.processplatform.assemble.surface.factory.content;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.BooleanUtils;
-
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.AbstractFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Task_;
 import com.x.processplatform.core.entity.content.Work;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.apache.commons.lang3.BooleanUtils;
 
 public class TaskFactory extends AbstractFactory {
 
@@ -110,6 +107,17 @@ public class TaskFactory extends AbstractFactory {
 		p = cb.and(p, cb.equal(root.get(Task_.person), person));
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
+	}
+
+	public List<Task> listWithPersonWithJob(String person, String job) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Task.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Task> cq = cb.createQuery(Task.class);
+		Root<Task> root = cq.from(Task.class);
+		Predicate p = cb.equal(root.get(Task_.job), job);
+		p = cb.and(p, cb.equal(root.get(Task_.person), person));
+		cq.select(root).where(p);
+		return em.createQuery(cq).getResultList();
 	}
 
 	public List<String> listPersonWithWork(String work) throws Exception {
