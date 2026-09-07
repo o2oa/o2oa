@@ -106,7 +106,7 @@ public class QueueDocumentIndex extends AbstractQueue<String> {
 			}
 		});
 		if(!filePartList.isEmpty()){
-			String url = aiConfig.getO2AiBaseUrl() + "/gateway-doc/upload/"+document.getId()+"/mode/replace";
+			String url = aiConfig.getO2AiBaseUrl() + "/idx-gateway-doc/upload/"+document.getId()+"/mode/replace";
 			List<NameValuePair> heads = List.of(new NameValuePair("Authorization", "Bearer " + aiConfig.getO2AiToken()));
 			ActionResponse response = HttpUtil.postMultiPartBinary(url, heads, null, filePartList);
 			logger.debug("ai document {} file index resp: {}", document.getId(), XGsonBuilder.toJson(response));
