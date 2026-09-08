@@ -12,6 +12,8 @@ import com.x.base.core.project.connection.FilePart;
 import com.x.base.core.project.exception.ExceptionFileNameInvalid;
 import com.x.base.core.project.http.ActionResult.Type;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import java.util.ArrayList;
@@ -21,6 +23,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 abstract class BaseAction extends StandardJaxrsAction {
+
+    private static final Logger logger = LoggerFactory.getLogger(BaseAction.class);
 
     private static final List<String> accessFileTypeList = List.of("pdf", "ofd", "txt", "md", "docx", "doc",
             "wps", "pptx", "ppt", "pub", "vsd", "xlsx", "xls", "png", "jpg", "jpeg", "html", "htm");
@@ -58,6 +62,9 @@ abstract class BaseAction extends StandardJaxrsAction {
                 if(ListTools.isNotEmpty(woFileList)){
                     return woFileList.get(0).getId();
                 }
+            }else{
+                logger.warn("upload file to o2-ai error, url:{}, fileName:{}, error:{}",
+                        url, f.getName(), resp.getMessage());
             }
         }
         return "";
