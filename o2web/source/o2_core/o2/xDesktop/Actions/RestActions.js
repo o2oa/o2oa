@@ -177,7 +177,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
             xhr.setRequestHeader("Authorization", token);
         }
 
-        if (file && File.prototype.isPrototypeOf(file)) messageItem = this.addFormDataMessage(file, false, xhr, progress);
+        if (file && File.prototype.isPrototypeOf(file) && async!==false) messageItem = this.addFormDataMessage(file, false, xhr, progress);
         xhr.send(data);
     },
     setMessageText: function(messageItem, text){
