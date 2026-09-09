@@ -4,6 +4,7 @@ import com.x.ai.assemble.control.Business;
 import com.x.ai.assemble.control.bean.AiConfig;
 import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.connection.ConnectionAction;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -18,6 +19,9 @@ class ActionDeleteDocIndex extends BaseAction {
 	private static final Logger logger = LoggerFactory.getLogger(ActionDeleteDocIndex.class);
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 		logger.info("{}操作删除索引文档:{}",effectivePerson.getDistinguishedName(), id);
+		if (effectivePerson.isNotManager()) {
+			throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+		}
 		AiConfig aiConfig = Business.getConfig();
 		if (BooleanUtils.isNotTrue(aiConfig.getO2AiEnable())
 				|| StringUtils.isBlank(aiConfig.getO2AiToken()) && StringUtils.isBlank(
