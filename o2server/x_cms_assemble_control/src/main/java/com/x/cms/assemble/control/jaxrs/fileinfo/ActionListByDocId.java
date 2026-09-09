@@ -1,5 +1,7 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.cms.core.entity.Document;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -50,6 +52,13 @@ public class ActionListByDocId extends BaseAction {
 	private List<Wo> list(EffectivePerson effectivePerson, String docId) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
+			Document document = emc.find(docId, Document.class);
+			if (null == document) {
+				throw new ExceptionDocumentNotExists(docId);
+			}
+			if (!business.isDocumentReader(effectivePerson, document)) {
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
 			FileInfoFactory fileInfoFactory = business.getFileInfoFactory();
 			List<String> ids = fileInfoFactory.listAttachmentByDocument(docId);// 获取指定文档的所有附件列表
 			List<FileInfo> fileInfoList = emc.list(FileInfo.class, ids);// 查询ID IN ids 的所有文件或者附件信息列表

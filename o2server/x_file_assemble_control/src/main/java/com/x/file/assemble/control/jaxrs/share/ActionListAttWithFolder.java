@@ -1,5 +1,7 @@
 package com.x.file.assemble.control.jaxrs.share;
 
+import com.x.base.core.project.tools.ListTools;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -15,6 +17,7 @@ import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Folder2;
 import com.x.file.core.entity.personal.Share;
+import java.util.stream.Collectors;
 
 class ActionListAttWithFolder extends BaseAction {
 
@@ -30,11 +33,17 @@ class ActionListAttWithFolder extends BaseAction {
 			if (null == folder) {
 				throw new ExceptionFolderNotExist(folderId);
 			}
-			if(!"password".equals(share.getShareType())) {
-				if(!hasPermission(business,effectivePerson,share)){
-					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
-				}
+			if(!hasPermission(business,effectivePerson,share)){
+				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
+			List<String> idList = ListTools.toList(folderId);
+			List<Folder2> supFolderList = new ArrayList<>();
+			business.folder2().listSuPNested(folder.getSuperior(), supFolderList);
+			idList.addAll(supFolderList.stream().map(Folder2::getId).collect(Collectors.toList()));
+			if(!idList.contains(share.getFileId())){
+				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+			}
+
 			List<String> ids = business.attachment2().listWithFolder(folder.getId(), FileStatus.VALID.getName());
 			List<Wo> wos = Wo.copier.copy(emc.list(Attachment2.class, ids));
 			SortTools.asc(wos, false, "name");
