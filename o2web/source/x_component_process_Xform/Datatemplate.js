@@ -1850,7 +1850,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			return this.json.id+i;
 		},
 		saveArrayData: function(type, index, toIndex, data, sectionBy){
-			if(this.form.app.options.name !== 'process.Work' || this.form.isDraftWork()){
+			if(this.form.app.options.name !== 'process.Work' || this.form.isDraftWork() || !this.form.businessData.work.dataChanged){
 				return;
 			}
 			if( this.isMergeRead ){ //合并且只读，不处理
