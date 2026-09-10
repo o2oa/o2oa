@@ -223,6 +223,17 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 			}.bind(this));
 		}
 
+		if (this.json.searchable) {
+			this.node.setAttribute('searchable', 'true');
+		}else{
+			this.node.setAttribute('searchable', 'false');
+		}
+
+		var searchFun = this._getSearchFunction();
+		if(searchFun){
+			this.node.setSearchFunction(searchFun);
+		}
+
 		this.node.addEventListener('validity', (e) => {
 			if (this.validationText) {
 				e.target.setCustomValidity(this.validationText);
@@ -249,6 +260,17 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
         });
 
 		this.setOptions();
+	},
+
+	_getSearchFunction: function (){
+		if(!this.json.searchScript || !this.json.searchScript.code){
+			return null;
+		}
+		if( this.searchFunction ){
+			return this.searchFunction;
+		}
+		this.searchFunction = this.form.Macro.exec(this.json.searchScript.code, this);
+		return this.searchFunction;
 	},
 
 	_setOptions: function(optionItems){
