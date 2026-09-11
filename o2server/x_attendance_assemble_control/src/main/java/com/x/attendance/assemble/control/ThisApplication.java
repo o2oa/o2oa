@@ -98,8 +98,8 @@ public class ThisApplication {
             context.schedule(AttendanceV2TodayMessageDataGenerateTask.class, "0 30 3 * * ?");
             // 4点钟开始 每 5 分钟检查 发送考勤相关消息的任务
             context.schedule(AttendanceV2MessageSendTask.class, "0 0/5 4-23 * * ?");
-            // 每天凌晨 2 点，开启假期数据发放任务。
-            context.schedule(AttendanceV2LeavePolicyGrantTask.class, "0 0 2 * * ?");
+            // 30分执行一次 发放任务。
+            context.schedule(AttendanceV2LeavePolicyGrantTask.class, "0 0/30 * * * ?");
             // 每天凌晨 2 点半，处理过期的假期额度批次。
             context.schedule(AttendanceV2LeaveLedgerExpireTask.class, "0 30 2 * * ?");
             // 每天凌晨 1 点，同步中国节假日数据。

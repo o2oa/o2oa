@@ -1,208 +1,141 @@
 <!-- Form -->
 <div style="height: 100%;">
-    <div class="o2-form">
+    <div class="o2-form leave-policy-form">
         <div class="o2-form-header">
             <span class="title">{{$.fTitle}}</span>
             <button class="close" @click="close"><i class="o2icon-icon_off"></i></button>
         </div>
         <div class="o2-form-content">
-            <div class="form-item-line">
-                <div class="form-item-line-label"><span class="required">*</span>{{$.lp.leaveManagerV2.leaveTypeTitle}}
+            <div class="leave-policy-row">
+                <div class="leave-policy-label"><span class="required">*</span>{{$.lp.leaveManagerV2.leaveTypeTitle}}
                 </div>
-                <div class="form-item-line-content">{{($.leaveType && $.leaveType.name) ? $.leaveType.name : ''}}</div>
+                <div class="leave-policy-content leave-policy-text">{{($.leaveType && $.leaveType.name) ? $.leaveType.name : ''}}</div>
             </div>
-            <o-input
-                oo-prop="{'isRequried': true, 'label':$.lp.leaveManagerV2.policy.policyName, 'placeholder':$.lp.leaveManagerV2.policy.policyNamePlaceholder, 'value': $.form.policyName}"
-                oo-model="form.policyName"></o-input>
+            <div class="leave-policy-row">
+                <div class="leave-policy-label">{{$.lp.leaveManagerV2.policy.active}}</div>
+                <div class="leave-policy-content">
+                    <div class="leave-policy-check" @click="clickChangeActive">
+                        <div class="o2-icon-14">
+                            <i
+                                class="{{ $.form.active ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}}"></i>
+                        </div>
+                        <label>{{$.form.active ? $.lp.leaveManagerV2.policy.activeEnabled : $.lp.leaveManagerV2.policy.activeDisabled}}</label>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="leave-policy-row">
+                <div class="leave-policy-label"><span class="required">*</span>{{$.lp.leaveManagerV2.policy.policyName}}</div>
+                <div class="leave-policy-content">
+                    <input class="leave-policy-input" oo-model="form.policyName"
+                        placeholder="{{$.lp.leaveManagerV2.policy.policyNamePlaceholder}}" />
+                </div>
+            </div> -->
+
+            <!-- 定时器配置 -->
+            <div class="leave-policy-row">
+                <div class="leave-policy-label">
+                    <span class="required">*</span>
+                    {{$.lp.leaveManagerV2.policy.grantCron}}
+                </div>
+                <div class="leave-policy-content">
+                    <div class="config-input-div" id="grantCronNode">
+                        {{$.form.grantCron}}
+                    </div>
+                </div>
+            </div>
 
             <!-- Grant scope -->
-            <div class="margin-top">
-                <div class="form-item-line-label">
+            <div class="leave-policy-row">
+                <div class="leave-policy-label">
                     <span class="required">*</span>
                     {{$.lp.leaveManagerV2.policy.grantScopeType}}
                 </div>
-                <div style="display: flex; flex-wrap: wrap;">
-                    <div class="margin-left" style="display: flex;align-items: center;"
-                        @click="this.clickChangeGrantScopeType('ALL')">
+                <div class="leave-policy-content leave-policy-radio-group">
+                    <div class="leave-policy-radio" @click="this.clickChangeGrantScopeType('ALL')">
                         <div class="o2-icon-14" id="checkTypeFix"><i
                                 class="{{ $.form.grantScopeType == 'ALL' ? 'o2icon-icon_xuanzhong primary_color' : 'o2icon-icon_quan'}}"></i>
                         </div>
-                        <label style="margin: 5px;" for="checkTypeFix">
+                        <label for="checkTypeFix">
                             {{$.lp.leaveManagerV2.policy.grantScopeTypeALL}}</label>
                     </div>
-                    <div class="margin-left" style="display: flex;align-items: center;"
-                        @click="this.clickChangeGrantScopeType('DEPARTMENT')">
+                    <div class="leave-policy-radio" @click="this.clickChangeGrantScopeType('DEPARTMENT')">
                         <div class="o2-icon-14" id="checkTypeFree"><i
                                 class="{{ $.form.grantScopeType == 'DEPARTMENT' ? 'o2icon-icon_xuanzhong primary_color' : 'o2icon-icon_quan'}}"></i>
                         </div>
-                        <label style="margin: 5px;" for="checkTypeFree">
+                        <label for="checkTypeFree">
                             {{$.lp.leaveManagerV2.policy.grantScopeTypeDEPARTMENT}}</label>
                     </div>
                 </div>
-                <o-org-person-selector oo-if="$.form.grantScopeType == 'DEPARTMENT'"
-                    oo-prop="{'selectorTitle': $.lp.leaveManagerV2.policy.grantScopeType, 'label':$.lp.leaveManagerV2.policy.grantScopeType, 'placeholder': $.lp.leaveManagerV2.policy.grantScopeListPickerPlaceholder, 'value': $.form.grantScopeList}"
-                    oo-model="form.grantScopeList"></o-org-person-selector>
-                <o-org-person-selector oo-if="$.form.grantScopeType == 'DEPARTMENT'"
-                    oo-prop="{'selectorTitle': $.lp.leaveManagerV2.policy.grantExludeLabel, 'label':$.lp.leaveManagerV2.policy.grantExludeLabel, 'placeholder': $.lp.leaveManagerV2.policy.grantExludePlaceholder, 'types': ['identity'], 'value': $.form.grantExcludeList}"
-                    oo-model="form.grantExcludeList"></o-org-person-selector>
+            </div>
+            <div class="leave-policy-row" oo-if="$.form.grantScopeType == 'DEPARTMENT'">
+                <div class="leave-policy-label">{{$.lp.leaveManagerV2.policy.grantScopeType}}</div>
+                <div class="leave-policy-content">
+                    <o-org-person-selector
+                        oo-prop="{'selectorTitle': $.lp.leaveManagerV2.policy.grantScopeType, 'placeholder': $.lp.leaveManagerV2.policy.grantScopeListPickerPlaceholder, 'value': $.form.grantScopeList}"
+                        oo-model="form.grantScopeList"></o-org-person-selector>
+                </div>
+            </div>
+            <div class="leave-policy-row" oo-if="$.form.grantScopeType == 'DEPARTMENT'">
+                <div class="leave-policy-label">{{$.lp.leaveManagerV2.policy.grantExludeLabel}}</div>
+                <div class="leave-policy-content">
+                    <o-org-person-selector
+                        oo-prop="{'selectorTitle': $.lp.leaveManagerV2.policy.grantExludeLabel, 'placeholder': $.lp.leaveManagerV2.policy.grantExludePlaceholder, 'types': ['identity'], 'value': $.form.grantExcludeList}"
+                        oo-model="form.grantExcludeList"></o-org-person-selector>
+                </div>
             </div>
 
-            <!-- Grant type -->
-            <div class="margin-top">
-                <div class="form-item-line-label">
+            <div class="leave-policy-row">
+                <div class="leave-policy-label">
                     <span class="required">*</span>
-                    {{$.lp.leaveManagerV2.policy.grantType}}
+                    {{$.lp.leaveManagerV2.policy.grantAmountLabel}}
                 </div>
-                <div style="display: flex; flex-wrap: wrap;">
-                    <div class="margin-left" style="display: flex;align-items: center;"
-                        @click="this.clickChangeGrantType('YEARLY')">
-                        <div class="o2-icon-14" id="checkTypeYearly"><i
-                                class="{{ $.form.grantType == 'YEARLY' ? 'o2icon-icon_xuanzhong primary_color' : 'o2icon-icon_quan'}}"></i>
+                <div class="leave-policy-content">
+                    <div class="leave-policy-check" @click="clickChangeGrantAmountTypeUseScript">
+                        <div class="o2-icon-14">
+                            <i
+                                class="{{ $.form.grantAmountTypeUseScript ? 'o2icon-icon__ok2_click_b primary_color' : 'o2icon-icon_quan'}}"></i>
                         </div>
-                        <label style="margin: 5px;" for="checkTypeYearly">
-                            {{$.lp.leaveManagerV2.policy.grantTypeYEARLY}}</label>
+                        <label>{{$.lp.leaveManagerV2.policy.grantAmountTypeUseScript}}</label>
                     </div>
-                    <div class="margin-left" style="display: flex;align-items: center;"
-                        @click="this.clickChangeGrantType('MONTHLY')">
-                        <div class="o2-icon-14" id="checkTypeMonthly"><i
-                                class="{{ $.form.grantType == 'MONTHLY' ? 'o2icon-icon_xuanzhong primary_color' : 'o2icon-icon_quan'}}"></i>
-                        </div>
-                        <label style="margin: 5px;" for="checkTypeMonthly">
-                            {{$.lp.leaveManagerV2.policy.grantTypeMONTHLY}}</label>
+                    <!-- Grant amount script -->
+                    <div class="leave-policy-script" oo-if="$.form.grantAmountTypeUseScript">
+                        <div id="grantScriptNode"></div>
                     </div>
-                    <div class="margin-left" style="display: flex;align-items: center;"
-                        @click="this.clickChangeGrantType('ONE_TIME')">
-                        <div class="o2-icon-14" id="checkTypeOneTime"><i
-                                class="{{ $.form.grantType == 'ONE_TIME' ? 'o2icon-icon_xuanzhong primary_color' : 'o2icon-icon_quan'}}"></i>
-                        </div>
-                        <label style="margin: 5px;" for="checkTypeOneTime">
-                            {{$.lp.leaveManagerV2.policy.grantTypeONE_TIME}}</label>
+                    <!-- Grant amount fixed -->
+                    <div class="leave-policy-inline" oo-else>
+                        {{$.lp.leaveManagerV2.policy.grantTypeFixedLabel}}
+                        <input oo-model="form.grantAmount" placeholder="{{$.lp.leaveManagerV2.policy.grantAmount}}"
+                            class="leave-policy-number-input" />
+                        {{$.lp.leaveManagerV2.policy.days}}
                     </div>
                 </div>
-                <div class="form-item-line margin-top" oo-if="$.form.grantType == 'YEARLY'">
-                    <div class="form-item-line-content" style="width: 302px;">
-                        {{$.lp.leaveManagerV2.policy.grantTypeYearLabel}} <o-month-day-selector
-                            oo-prop="{ 'value': $.grantTypeValueForYear, 'key': 'grantTypeValueForYear'}"></o-month-day-selector>
-                    </div>
-                </div>
-                <div class="form-item-line margin-top" oo-if="$.form.grantType == 'MONTHLY'">
-                    <div class="form-item-line-content" style="width: 302px;">
-                        {{$.lp.leaveManagerV2.policy.grantTypeMonthLabel}}  <input oo-model="grantTypeValueForMonth" placeholder="$.lp.leaveManagerV2.policy.grantTypeMonthPlaceholder"  
-                        style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" /> {{$.lp.leaveManagerV2.policy.day}}
-                    </div>
-                </div>
-                <!-- <o-input oo-if="$.form.grantType == 'MONTHLY'" 
-                    oo-prop="{'label':$.lp.leaveManagerV2.policy.grantTypeMonthLabel, 'placeholder': $.lp.leaveManagerV2.policy.grantTypeMonthPlaceholder, 'value': $.grantTypeValueForMonth}" 
-                    oo-model="grantTypeValueForMonth"></o-input> -->
             </div>
-            <!-- Grant amount -->
-            <div class="margin-top" oo-if="$.form.grantType == 'MONTHLY'">
-                {{$.lp.leaveManagerV2.policy.grantMonthlyPrefix}}
-                <input oo-model="form.grantAmount" placeholder="$.lp.leaveManagerV2.policy.grantAmount"  
-                    style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
-                {{$.lp.leaveManagerV2.policy.days}}
-            </div>
-            <div class="margin-top" oo-if="$.form.grantType == 'ONE_TIME'">
-                {{$.lp.leaveManagerV2.policy.grantOneTimePrefix}}
-                <input oo-model="form.grantAmount" placeholder="$.lp.leaveManagerV2.policy.grantAmount"  
-                    style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
-                {{$.lp.leaveManagerV2.policy.days}}
-            </div>
-             <!-- <o-input oo-if="$.form.grantType == 'ONE_TIME' || $.form.grantType == 'MONTHLY'"
-                oo-prop="{'isRequried': true, 'label': $.lp.leaveManagerV2.policy.grantAmount, 'placeholder':$.lp.leaveManagerV2.policy.grantAmountPlaceholder, 'value': $.form.grantAmount}"
-                oo-model="form.grantAmount"></o-input> -->
 
-            <!-- Quota type settings -->
-            <div class="margin-top" oo-if="$.form.grantType == 'YEARLY'">
-                <div class="form-item-line-label">
-                    <span class="required">*</span>
-                     {{$.lp.leaveManagerV2.policy.grantTypeLabel}}
-                </div>
-                <div style="display: flex; flex-wrap: wrap;">
-                    <div class="margin-left" style="display: flex;align-items: center;"
-                        @click="this.clickChangeGrantAmountType('FIXED')">
-                        <div class="o2-icon-14" id="checkGrantAmountTypeFixed"><i
-                                class="{{ $.form.grantAmountType.type == 'FIXED' ? 'o2icon-icon_xuanzhong primary_color' : 'o2icon-icon_quan'}}"></i>
-                        </div>
-                        <label style="margin: 5px;" for="checkGrantAmountTypeFixed">{{$.lp.leaveManagerV2.policy.grantTypeFixedLabel}}</label>
-                    </div>
-                    <div class="margin-left" style="display: flex;align-items: center;"
-                        @click="this.clickChangeGrantAmountType('SERVICELEN')">
-                        <div class="o2-icon-14" id="checkGrantAmountTypeServiceLen"><i
-                                class="{{ $.form.grantAmountType.type == 'SERVICELEN' ? 'o2icon-icon_xuanzhong primary_color' : 'o2icon-icon_quan'}}"></i>
-                        </div>
-                        <label style="margin: 5px;" for="checkGrantAmountTypeServiceLen">{{$.lp.leaveManagerV2.policy.grantTypeServiceLenLabel}}</label>
-                    </div>
-                </div>
-                <!-- <o-input oo-if="$.form.grantAmountType.type == 'FIXED'"
-                    oo-prop="{'isRequried': true, 'label':$.lp.leaveManagerV2.policy.grantAmount, 'placeholder':'$.lp.leaveManagerV2.policy.grantAmountPlaceholder', 'value': $.form.grantAmountType.grantAmount}"
-                    oo-model="form.grantAmountType.grantAmount"></o-input> -->
-
-                <div class="margin-top" oo-if="$.form.grantAmountType.type == 'FIXED'">
-                    {{$.lp.leaveManagerV2.policy.grantYearlyPrefix}}
-                    <input oo-model="form.grantAmountType.grantAmount" placeholder="$.lp.leaveManagerV2.policy.grantAmountPlaceholder"  
-                        style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
-                    {{$.lp.leaveManagerV2.policy.days}}
-                </div>
-
-                <div class="margin-top" oo-if="$.form.grantAmountType.type == 'SERVICELEN'">
-                    <div class="o-input-item-label">
-                        {{$.lp.leaveManagerV2.policy.grantTypeServiceLenRule}}
-                        <div style="float: right;" @click="this.addTenureLeaveRule()">
-                            <span class="operator_link primary_color margin-right">{{$.lp.leaveManagerV2.policy.grantTypeAddRule}}</span>
-                            <i class="o2icon-icon_zengjia_blue2_click primary_color"></i>
-                        </div>
-                    </div>
-                    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table margin-top">
-                        <thead>
-                            <th style="width: 45%;">{{$.lp.leaveManagerV2.policy.grantTypeServiceLenRuleScope}}</th>
-                            <th style="width: 30%;">{{$.lp.leaveManagerV2.policy.grantAmount}}</th>
-                            <th>{{$.lp.operate}}</th>
-                        </thead>
-                        <tr oo-each="$.form.grantAmountType.tenureLeaveRules" oo-item="rule" style="background-color: transparent;">
-                            <td>
-                                <span oo-if="!rule.value.minYears && rule.value.maxYears">{{$.lp.leaveManagerV2.policy.grantTypeServiceLen}} &lt;</span>
-                                <span oo-if="rule.value.minYears && rule.value.maxYears">{{rule.value.minYears}} {{$.lp.leaveManagerV2.policy.year}} ≤ {{$.lp.leaveManagerV2.policy.grantTypeServiceLen}} &lt;</span>
-                                <span oo-if="rule.value.minYears && !rule.value.maxYears">{{$.lp.leaveManagerV2.policy.grantTypeServiceLen}} ≥ {{rule.value.minYears}} {{$.lp.leaveManagerV2.policy.year}}</span>
-                                <input oo-if="rule.value.maxYears" value="{{rule.value.maxYears}}" @input="this.changeTenureRuleMaxYears(rule.value, $event)"
-                                    style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
-                                <span oo-if="rule.value.maxYears">{{$.lp.leaveManagerV2.policy.year}}</span>
-                            </td>
-                            <td>
-                                <input value="{{rule.value.amount}}" @input="this.changeTenureRuleAmount(rule.value, $event)"
-                                    style="width: 88px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;" />
-                            </td>
-                            <td>
-                                <span class="operator_link primary_color" @click="this.deleteTenureLeaveRule(rule.value)">{{$.lp.delete}}</span>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
 
             <!-- Expiration -->
-            <div class="margin-top" oo-if="$.form.grantType == 'YEARLY' || $.form.grantType == 'MONTHLY'">
-                <div class="form-item-line-label">
+            <div class="leave-policy-row leave-policy-expire-row">
+                <div class="leave-policy-label">
                     <span class="required">*</span>
-                     {{$.lp.leaveManagerV2.policy.expireTime}}
+                    {{$.lp.leaveManagerV2.policy.expireTime}}
                 </div>
-                <div class="margin-top" oo-if="$.form.grantType == 'YEARLY'">
-                    {{$.lp.leaveManagerV2.policy.expireFromGrantDate}}
-                    <input oo-model="form.expireValue" 
-                        style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
-                    {{$.lp.leaveManagerV2.policy.expireAfterYearExtend}}
-                    <input oo-model="form.expireValueExtendDay"
-                        style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
-                    {{$.lp.leaveManagerV2.policy.expireAfterDay}}
-                </div>
-                <div class="margin-top" oo-if="$.form.grantType == 'MONTHLY'">
-                    {{$.lp.leaveManagerV2.policy.expireFromGrantDate}}
-                    <input oo-model="form.expireValue"  
-                        style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
-                    {{$.lp.leaveManagerV2.policy.expireAfterMonthExtend}}
-                    <input oo-model="form.expireValueExtendDay"
-                        style="width: 68px;height: 28px;line-height: 28px;border: 1px solid #dddddd;border-radius: 4px;text-align: center;margin: 0 6px;" />
-                    {{$.lp.leaveManagerV2.policy.expireAfterDay}}
+                <div class="leave-policy-content">
+                    <select class="leave-policy-select" name="expireType" @change="changeExpireType">
+                        <option oo-each="$.expireTypeList" oo-item="expireType" value="{{expireType.value.key}}"
+                            .selected="(expireType.value.key === $.form.expireType)">{{expireType.value.name}}</option>
+                    </select>
+                    <div class="leave-policy-inline leave-policy-expire-detail" oo-if="$.form.expireType == 'AFTER_GRANT'">
+                        {{$.lp.leaveManagerV2.policy.expireFromGrantDate}}
+                        <input oo-model="form.expireValue" class="leave-policy-number-input" />
+                        {{$.lp.leaveManagerV2.policy.expireAfterDay}}
+                    </div>
+                    <div class="leave-policy-inline leave-policy-month-day leave-policy-expire-detail" oo-else>
+                        {{$.lp.leaveManagerV2.policy.expireOnMonthDayPrefix}}
+                        <span class="leave-policy-month-day-picker">
+                            <o-month-day-selector
+                                oo-prop="{'value': $.form.expireMonthDay, 'key': 'form.expireMonthDay'}"></o-month-day-selector>
+                        </span>
+                        {{$.lp.leaveManagerV2.policy.expireOnMonthDaySuffix}}
+                    </div>
                 </div>
             </div>
 

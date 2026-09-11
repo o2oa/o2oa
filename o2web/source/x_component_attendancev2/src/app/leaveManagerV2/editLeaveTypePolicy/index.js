@@ -1,9 +1,9 @@
 import { component as content } from "@o2oa/oovm";
-import { lp, o2 } from "@o2oa/component";
+import { lp, o2, component as c } from "@o2oa/component";
 import { hideLoading, isEmpty, setJSONValue, showLoading } from "../../../utils/common";
 import { leaveManagerAction } from "../../../utils/actions";
 import template from "./template.html";
-import oInput from "../../../components/o-input";
+import style from "./style.scope.css";
 import oOrgPersonSelector from "../../../components/o-org-person-selector";
 import oMonthDaySelector from "../../../components/o-month-day-selector";
 
@@ -12,8 +12,8 @@ function defaultGrantAmountType() {
         type: "FIXED",
         grantAmount: 5,
         tenureLeaveRules: [
-            {maxYears: 2, amount: 5},
-            {minYears: 2, amount: 10}
+            { maxYears: 2, amount: 5 },
+            { minYears: 2, amount: 10 }
         ]
     };
 }
@@ -35,8 +35,9 @@ function trimNumber(value) {
 }
 
 export default content({
+    style,
     template,
-    components: { oInput, oOrgPersonSelector, oMonthDaySelector },
+    components: { oOrgPersonSelector, oMonthDaySelector },
     autoUpdate: true,
     bind() {
         return {
@@ -45,29 +46,26 @@ export default content({
             form: {
                 policyName: "",
                 leaveTypeId: "",
+                grantCron: "", // 定时器
                 grantScopeType: "ALL", // ALL | DEPARTMENT
                 grantScopeList: [], // Concrete grant scope list.
                 grantExcludeList: [], // Excluded identities for the grant scope.
-                grantType: "YEARLY", // YEARLY | MONTHLY | ONE_TIME
-                grantTypeValue: "Y:01-01", // Grant date rule: Y:01-01/MS:1,ME:1/ONE_TIME
+                grantAmountTypeUseScript: false, // 是否启用脚本计算额度
                 grantAmount: 0, // Grant amount.
-                grantAmountType: { // Quota type settings.
-                    type: "FIXED", // FIXED | SERVICELEN
-                    grantAmount: 5, // Grant quota.
-                    tenureLeaveRules: [ // Tenure quota rules, such as [{maxYears: 2, amount: 5}, {minYears: 2, maxYears: 5, amount: 7}, {minYears: 5, amount: 10}]
-                        {maxYears: 2, amount: 5}, 
-                        {minYears: 2, maxYears: 5, amount: 7},
-                        {minYears: 5, amount: 10}]
-                }, 
-                expireType: "RELATIVE", // NEVER / RELATIVE
-                expireValue: 1, // Expiration value.
-                expireValueExtendDay: 0, // Extra expiration days.
+                grantScript: "", // 脚本内容
+                expireType: "AFTER_GRANT", // AFTER_GRANT / THIS_YEAR / NEXT_YEAR
+                expireValue: "", // 当 expireType = AFTER_GRANT 时使用.
+                expireMonthDay: "",
                 carryForward: false, // Whether carry-forward is allowed.
                 maxCarryForward: 0, // Maximum carry-forward amount.
-                policyVersion: "1"
+                policyVersion: "1",
+                active: true, // 是否启用
             },
-            grantTypeValueForYear: '',
-            grantTypeValueForMonth: 1, // Default monthly grant date, from 1 to 28.
+            expireTypeList: [
+                { key: "THIS_YEAR", name: lp.leaveManagerV2.policy.expireTypeTHIS_YEAR },
+                { key: "NEXT_YEAR", name: lp.leaveManagerV2.policy.expireTypeNEXT_YEAR },
+                { key: "AFTER_GRANT", name: lp.leaveManagerV2.policy.expireTypeAFTER_GRANT }
+            ],
             leaveType: null
         }
     },
@@ -77,14 +75,11 @@ export default content({
             const policy = await leaveManagerAction("policyGet", this.bind.updateId);
             if (policy) {
                 this.bind.form = policy;
-                if (this.bind.form.expireValueExtendDay === null || this.bind.form.expireValueExtendDay === undefined || this.bind.form.expireValueExtendDay === "") {
-                    this.bind.form.expireValueExtendDay = 0;
-                }
-                this.ensureGrantAmountType();
-                if (this.bind.form.grantAmountType.type === "SERVICELEN") {
-                    this.normalizeTenureLeaveRules();
-                }
+                this.normalizeExpireFields();
                 this.bind.fTitle = lp.leaveManagerV2.editTypePolicy;
+                if (this.bind.form.grantAmountTypeUseScript) {
+                    this.loadScriptEditor();
+                }
             }
         }
     },
@@ -94,19 +89,121 @@ export default content({
             const leaveType = await leaveManagerAction("typeGet", this.bind.form.leaveTypeId);
             this.bind.leaveType = leaveType;
         }
+        this.loadGrantCronClick();
+    },
+    normalizeExpireFields() {
+        const form = this.bind.form;
+        if (form.active === null || form.active === undefined) {
+            form.active = true;
+        }
+        if (!form.expireType || !this.isValidExpireType(form.expireType)) {
+            form.expireType = "AFTER_GRANT";
+        }
+        if (form.expireValue === null || form.expireValue === undefined) {
+            form.expireValue = "";
+        }
+        if (form.expireMonthDay === null || form.expireMonthDay === undefined) {
+            form.expireMonthDay = "";
+        }
+    },
+    // 定时器表达式工具加载
+    loadGrantCronClick() {
+        const cronTarget = this.dom.querySelector("#grantCronNode");
+        o2.requireApp("Template", "widget.CronPicker", () => {
+            this.cronPicker = new MWF.xApplication.Template.widget.CronPicker(
+                c.content,
+                cronTarget,
+                c,
+                {},
+                {
+                    style: "design",
+                    position: {
+                        //node 固定的位置
+                        x: "right",
+                        y: "auto",
+                    },
+                    onSelect: (value) => {
+                        this.bind.form.grantCron = value;
+                    },
+                    onQueryLoad: () => {
+                        console.log(this.bind.form.grantCron);
+                        if (!this.cronPicker.node) {
+                            this.cronPicker.options.value = this.bind.form.grantCron;
+                        } else {
+                            this.cronPicker.setCronValue(this.bind.form.grantCron);
+                        }
+                    },
+                }
+            );
+        });
+    },
+    async tick() {
+        return new Promise((resovle, reject) => {
+            setTimeout(() => {
+                resovle()
+            }, 150);
+
+        });
+    },
+    // 额度脚本编辑器加载
+    async loadScriptEditor() {
+        await this.tick();
+        // MWF.require("MWF.widget.ScriptArea", null, false);
+        this.grantScriptNode = this.dom.querySelector("#grantScriptNode")
+        this.grantScriptNode.innerHTML = "";
+        o2.require("MWF.widget.ScriptArea", () => {
+            this.grantScriptArea = new MWF.widget.ScriptArea(this.grantScriptNode, {
+                "type": "service",
+                "api": "../api/index.html#module-print",
+                "title": lp.leaveManagerV2.policy.grantAmountScriptLabel,
+                //"isload" : true,
+                "isbind": false,
+                // "forceType": "ace",
+                "maxObj": c.content,
+                "onChange": function () {
+                    this.bind.form.grantScript = this.grantScriptArea.toJson().code;
+                }.bind(this)
+            });
+            //
+            const host = window.location.origin;
+            if (!host) host = window.location.protocol + "//" + window.location.host;
+            const defaultText = "/********************\n" +
+                "API Document: " + host + "/api\n" +
+                "this.org; //组织快速访问方法\n" +
+                "grantPerson; //需要计算的用户对象，如：{\"distinguishedName\":\"张三@zhangsan@P\",\"unique\":\"zhangsan\",\"name\":\"张三\"}\n" +
+                "根据这个 grantPerson 用户计算出这个用户本次需要发放的额度，然后 return 返回\n" +
+                "return 10; //返回额度10天\n" +
+                "********************/\n\n\n" +
+                "return 0;";
+            const v = this.bind.form.grantScript || defaultText;
+            this.grantScriptArea.load({ code: v });
+        });
+    },
+    clickChangeGrantAmountTypeUseScript() {
+        this.bind.form.grantAmountTypeUseScript = !this.bind.form.grantAmountTypeUseScript;
+        if (this.bind.form.grantAmountTypeUseScript) {
+            this.loadScriptEditor();
+        }
+    },
+    clickChangeActive() {
+        this.bind.form.active = !this.bind.form.active;
     },
     clickChangeGrantScopeType(type) {
         this.bind.form.grantScopeType = type;
+        if (!this.bind.form.grantScopeList) {
+            this.bind.form.grantScopeList = [];
+        }
+        if (!this.bind.form.grantExcludeList) {
+            this.bind.form.grantExcludeList = [];
+        }
     },
-    clickChangeGrantType(type) {
-        this.bind.form.grantType = type;
-        this.bind.form.expireType = type === "ONE_TIME" ? "NEVER" : "RELATIVE";
-    },
-    clickChangeGrantAmountType(type) {
-        this.ensureGrantAmountType();
-        this.bind.form.grantAmountType.type = type;
-        if (type === "SERVICELEN") {
-            this.normalizeTenureLeaveRules();
+    changeExpireType(e) {
+        const expireType = e.target.value;
+        this.bind.form.expireType = expireType;
+        if (expireType === "AFTER_GRANT") {
+            this.bind.form.expireMonthDay = "";
+        } else {
+            this.bind.form.expireValue = "";
         }
     },
     // Used by the o-month-day-selector return value.
@@ -115,52 +212,36 @@ export default content({
     },
     async submit() {
         const form = this.bind.form;
-        if (isEmpty(form.policyName)) {
-            o2.api.page.notice(lp.leaveManagerV2.policy.policyNamePlaceholder, 'error');
-            return;
-        }
+        form.policyName = this.bind.leaveType.name + "_发放规则";
         if (form.grantScopeType !== "ALL" && form.grantScopeList.length === 0) {
             o2.api.page.notice(lp.leaveManagerV2.policy.grantScopeListPickerPlaceholder, 'error');
             return;
         }
-        if (form.grantType === "YEARLY" && isEmpty(this.bind.grantTypeValueForYear)) {
-            o2.api.page.notice(lp.leaveManagerV2.policy.grantTypeYearPlaceholder, 'error');
+        if (isEmpty(form.grantCron)) {
+            o2.api.page.notice(lp.leaveManagerV2.policy.grantCronNotEmpty, 'error');
             return;
         }
-        if (form.grantType === "MONTHLY" && !this.isValidGrantTypeMonthValue(this.bind.grantTypeValueForMonth)) {
-            o2.api.page.notice(lp.leaveManagerV2.policy.grantTypeMonthPlaceholder, 'error');
-            return;
-        }
-        if (form.grantType === "ONE_TIME") {
-            form.grantTypeValue = `ONE_TIME`;
-        } else if (form.grantType === "YEARLY") {
-            form.grantTypeValue = `Y:${this.bind.grantTypeValueForYear}`;
-        } else if (form.grantType === "MONTHLY") {
-            form.grantTypeValue = `MS:${this.bind.grantTypeValueForMonth}`;
-        }
-        if ((form.grantType === "MONTHLY" || form.grantType === "ONE_TIME") && !this.isValidGrantAmount(form.grantAmount)) {
-            o2.api.page.notice(lp.leaveManagerV2.policy.grantAmountPlaceholder, 'error');
-            return;
-        }
-        if (form.grantType === "YEARLY" && !this.validateGrantAmountType()) {
-            return;
-        }
-        if (form.expireType === "RELATIVE" && !this.isValidGrantAmount(form.expireValue)) {
-            o2.api.page.notice(lp.leaveManagerV2.policy.expireValuePlaceholder, 'error');
-            return;
-        }
-        if (form.expireType === "RELATIVE" && !this.isValidExtendDay(form.expireValueExtendDay)) {
-            o2.api.page.notice(lp.leaveManagerV2.policy.expireValueExtendDayPlaceholder, 'error');
-            return;
+        if (form.grantAmountTypeUseScript) {
+            if (isEmpty(form.grantScript)) {
+                o2.api.page.notice(lp.leaveManagerV2.policy.grantAmountScriptNotEmpty, 'error');
+                return;
+            }
+        } else {
+            if (!this.isValidGrantAmount(form.grantAmount)) {
+                o2.api.page.notice(lp.leaveManagerV2.policy.grantAmountPlaceholder, 'error');
+                return;
+            }
         }
         const postForm = Object.assign({}, form);
-        if (form.grantType === "YEARLY") {
-            postForm.expireValue = Number(form.expireValue) * 365 + Number(form.expireValueExtendDay || 0);
-        } else if (form.grantType === "MONTHLY") {
-            postForm.expireValue = Number(form.expireValue) * 30 + Number(form.expireValueExtendDay || 0);
+        if (!this.validateExpireFields(postForm)) {
+            return;
         }
-        if (!form.id) { // Grant immediately by default for new policies.
-            postForm.isGrantImmediately = true; 
+        delete postForm.expireValueExtendDay;
+        if (postForm.expireType === "AFTER_GRANT") {
+            postForm.expireValue = Number(postForm.expireValue);
+            postForm.expireMonthDay = "";
+        } else {
+            postForm.expireValue = null;
         }
         if (this.submitLoading) {
             return;
@@ -190,133 +271,41 @@ export default content({
         const num = Number(input);
         return num >= 1;
     },
+    isValidExpireType(type) {
+        return ["THIS_YEAR", "NEXT_YEAR", "AFTER_GRANT"].indexOf(type) > -1;
+    },
+    isValidExpireMonthDay(value) {
+        if (!/^\d{2}-\d{2}$/.test(value || "")) {
+            return false;
+        }
+        const arr = value.split("-");
+        const month = Number(arr[0]);
+        const day = Number(arr[1]);
+        const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        return month >= 1 && month <= 12 && day >= 1 && day <= monthDays[month - 1];
+    },
+    validateExpireFields(form) {
+        if (!this.isValidExpireType(form.expireType)) {
+            o2.api.page.notice(lp.leaveManagerV2.policy.expireTypePlaceholder, "error");
+            return false;
+        }
+        if (form.expireType === "AFTER_GRANT") {
+            if (!this.isValidGrantAmount(form.expireValue)) {
+                o2.api.page.notice(lp.leaveManagerV2.policy.expireValuePlaceholder, "error");
+                return false;
+            }
+        } else if (!this.isValidExpireMonthDay(form.expireMonthDay)) {
+            o2.api.page.notice(lp.leaveManagerV2.policy.expireMonthDayPlaceholder, "error");
+            return false;
+        }
+        return true;
+    },
     isValidExtendDay(input) {
         // Extra expiration days can be 0.
         if (!/^\d+$/.test(input)) return false;
         const num = Number(input);
         return num >= 0;
     },
-    ensureGrantAmountType() {
-        if (!this.bind.form.grantAmountType) {
-            this.bind.form.grantAmountType = defaultGrantAmountType();
-            return;
-        }
-        const grantAmountType = this.bind.form.grantAmountType;
-        if (grantAmountType.type !== "FIXED" && grantAmountType.type !== "SERVICELEN") {
-            grantAmountType.type = "FIXED";
-        }
-        if (grantAmountType.grantAmount === null || grantAmountType.grantAmount === undefined || grantAmountType.grantAmount === "") {
-            grantAmountType.grantAmount = 5;
-        }
-        if (!grantAmountType.tenureLeaveRules || grantAmountType.tenureLeaveRules.length < 2) {
-            grantAmountType.tenureLeaveRules = defaultGrantAmountType().tenureLeaveRules;
-        }
-    },
-    normalizeTenureLeaveRules() {
-        this.ensureGrantAmountType();
-        const rules = this.bind.form.grantAmountType.tenureLeaveRules;
-        while (rules.length < 2) {
-            const lastBoundary = rules.length > 0 ? toPositiveNumber(rules[rules.length - 1].maxYears || rules[rules.length - 1].minYears) : 2;
-            const boundary = lastBoundary || rules.length + 1;
-            rules.push({minYears: boundary, amount: 5});
-        }
-        let currentMin = 0;
-        for (let i = 0; i < rules.length; i++) {
-            const rule = rules[i];
-            const amount = toPositiveNumber(rule.amount);
-            rule.amount = amount === null ? rule.amount : amount;
-            if (i === 0) {
-                rule.minYears = null;
-            } else {
-                rule.minYears = currentMin;
-            }
-            if (i === rules.length - 1) {
-                rule.maxYears = null;
-            } else {
-                let maxYears = toPositiveNumber(rule.maxYears);
-                if (maxYears === null || maxYears <= currentMin) {
-                    maxYears = currentMin + 1;
-                }
-                rule.maxYears = trimNumber(maxYears);
-                currentMin = rule.maxYears;
-            }
-        }
-        this.bind.form.grantAmountType.tenureLeaveRules = rules;
-    },
-    addTenureLeaveRule() {
-        this.normalizeTenureLeaveRules();
-        const rules = this.bind.form.grantAmountType.tenureLeaveRules;
-        const lastRule = rules[rules.length - 1];
-        const minYears = toPositiveNumber(lastRule.minYears) || rules.length;
-        rules.splice(rules.length - 1, 0, {
-            minYears,
-            maxYears: trimNumber(minYears + 1),
-            amount: lastRule.amount || 5
-        });
-        this.normalizeTenureLeaveRules();
-    },
-    deleteTenureLeaveRule(rule) {
-        this.normalizeTenureLeaveRules();
-        const rules = this.bind.form.grantAmountType.tenureLeaveRules;
-        if (rules.length <= 2) {
-            o2.api.page.notice(lp.leaveManagerV2.policy.grantTypeRuleLengthLabel, "error");
-            return;
-        }
-        for (let i = 0; i < rules.length; i++) {
-            if (rules[i] === rule) {
-                rules.splice(i, 1);
-                break;
-            }
-        }
-        this.normalizeTenureLeaveRules();
-    },
-    changeTenureRuleMaxYears(rule, event) {
-        rule.maxYears = event.target.value;
-        this.normalizeTenureLeaveRules();
-    },
-    changeTenureRuleAmount(rule, event) {
-        rule.amount = event.target.value;
-    },
-    validateGrantAmountType() {
-        debugger;
-        // this.ensureGrantAmountType();
-        const grantAmountType = this.bind.form.grantAmountType;
-        if (grantAmountType.type === "FIXED") {
-            const grantAmount = toPositiveNumber(grantAmountType.grantAmount);
-            if (grantAmount === null) {
-                o2.api.page.notice(lp.leaveManagerV2.policy.grantAmountPlaceholder, "error");
-                return false;
-            }
-            grantAmountType.grantAmount = grantAmount;
-            return true;
-        }
-        // this.normalizeTenureLeaveRules();
-        const rules = grantAmountType.tenureLeaveRules;
-        if (!rules || rules.length < 2) {
-            o2.api.page.notice(lp.leaveManagerV2.policy.grantTypeRuleLengthLabel, "error");
-            return false;
-        }
-        const result = [];
-        for (let i = 0; i < rules.length; i++) {
-            const rule = rules[i];
-            const amount = toPositiveNumber(rule.amount);
-            if (amount === null) {
-                o2.api.page.notice(lp.leaveManagerV2.policy.grantServiceAmountPlaceholder, "error");
-                return false;
-            }
-            const item = {amount};
-            if (i > 0) {
-                item.minYears = Number(rule.minYears);
-            }
-            if (i < rules.length - 1) {
-                item.maxYears = Number(rule.maxYears);
-            }
-            result.push(item);
-        }
-        grantAmountType.tenureLeaveRules = result;
-        return true;
-    },
-
     // Close current window.
     close() {
         this.$parent.publishEvent('leaveTypePolicy', {});

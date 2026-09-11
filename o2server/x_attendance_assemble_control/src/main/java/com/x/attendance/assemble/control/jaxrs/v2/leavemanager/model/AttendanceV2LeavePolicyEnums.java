@@ -17,26 +17,11 @@ public class AttendanceV2LeavePolicyEnums {
         }
     }
 
-    public enum GrantTypeEnum {
-        YEARLY("YEARLY"),
-        MONTHLY("MONTHLY"),
-        ONE_TIME("ONE_TIME");
-
-        private String value;
-
-        GrantTypeEnum(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
 
     public enum ExpireTypeEnum {
-        NEVER("NEVER"),
-        FIXED("FIXED"),
-        RELATIVE("RELATIVE");
+        THIS_YEAR("THIS_YEAR"),
+        NEXT_YEAR("NEXT_YEAR"),
+        AFTER_GRANT("AFTER_GRANT");
 
         private String value;
 
@@ -46,6 +31,13 @@ public class AttendanceV2LeavePolicyEnums {
 
         public String getValue() {
             return value;
+        }
+
+
+        public static boolean isValidateKey(String key) {
+            return ExpireTypeEnum.THIS_YEAR.value.equals(key)
+                   || ExpireTypeEnum.NEXT_YEAR.value.equals(key)
+                   || ExpireTypeEnum.AFTER_GRANT.value.equals(key);
         }
     }
 }

@@ -1,24 +1,12 @@
 package com.x.attendance.assemble.control.jaxrs.v2.leavemanager;
 
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ListTools;
-import java.util.ArrayList;
-import java.util.List;
-
-import java.util.Optional;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
-import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeaveManager;
 import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeavePolicyEnums.ExpireTypeEnum;
 import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeavePolicyEnums.GrantScopeTypeEnum;
-import com.x.attendance.assemble.control.jaxrs.v2.leavemanager.model.AttendanceV2LeavePolicyEnums.GrantTypeEnum;
 import com.x.attendance.assemble.control.schedule.v2.model.QueueAttendanceV2LeavePolicyGrantModel;
 import com.x.attendance.entity.v2.AttendanceV2LeavePolicy;
 import com.x.base.core.container.EntityManagerContainer;
@@ -32,6 +20,17 @@ import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.CronTools;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class ActionLeavePolicyPost extends BaseAction {
 
@@ -65,6 +64,9 @@ public class ActionLeavePolicyPost extends BaseAction {
             }
             if (StringUtils.isBlank(wi.getLeaveTypeId())) {
                 throw new ExceptionEmptyParameter("假期类型ID");
+            }
+            if (StringUtils.isEmpty(wi.getGrantCron()) || !CronTools.available(wi.getGrantCron())) {
+                throw new ExceptionWithMessage("定时器表达式错误！");
             }
             if (StringUtils.isBlank(wi.getGrantScopeType())
                 || (!GrantScopeTypeEnum.ALL.getValue().equals(wi.getGrantScopeType())
@@ -124,36 +126,41 @@ public class ActionLeavePolicyPost extends BaseAction {
                     }
                 }
             }
-            if (StringUtils.isBlank(wi.getGrantType()) || (
-                    !GrantTypeEnum.YEARLY.getValue().equals(wi.getGrantType())
-                    && !GrantTypeEnum.MONTHLY.getValue().equals(wi.getGrantType())
-                    && !GrantTypeEnum.ONE_TIME.getValue().equals(wi.getGrantType()))) {
-                throw new ExceptionEmptyParameter("发放方式");
+            // 使用脚本
+            if (BooleanUtils.isTrue(wi.getGrantAmountTypeUseScript()) && StringUtils.isEmpty(wi.getGrantScript())) {
+                throw new ExceptionWithMessage("额度发放执行脚本不能为空");
             }
-            if (StringUtils.isBlank(wi.getExpireType()) || (
-                    !ExpireTypeEnum.NEVER.getValue().equals(wi.getExpireType())
-                    && !ExpireTypeEnum.FIXED.getValue().equals(wi.getExpireType())
-                    && !ExpireTypeEnum.RELATIVE.getValue().equals(wi.getExpireType()))) {
+            // 不使用脚本，发放额度不能为空且不能小于0
+            if (BooleanUtils.isFalse(wi.getGrantAmountTypeUseScript()) && (wi.getGrantAmount() == null || wi.getGrantAmount() < 0)) {
+                throw new ExceptionEmptyParameter("发放额度");
+            }
+            if (StringUtils.isBlank(wi.getExpireType()) ||  !ExpireTypeEnum.isValidateKey(wi.getExpireType()) ) {
                 throw new ExceptionEmptyParameter("过期类型");
             }
-            // 单次 发放必须指定发放额度，且不能为负数
-            if ((GrantTypeEnum.ONE_TIME.getValue().equals(wi.getGrantType())
-                 || GrantTypeEnum.MONTHLY.getValue().equals(wi.getGrantType()))
-                && (wi.getGrantAmount() == null || wi.getGrantAmount() < 0)) {
-                throw new ExceptionEmptyParameter("发放额度");
-            } else if (GrantTypeEnum.YEARLY.getValue().equals(wi.getGrantType())) {
-                if (wi.getGrantAmountType() == null || !wi.getGrantAmountType().validate()) {
-                    throw new ExceptionWithMessage("发放额度规则错误");
+            if (wi.getExpireType().equals(ExpireTypeEnum.AFTER_GRANT.getValue())) {
+                if (wi.getExpireValue() == null || wi.getExpireValue() <= 0) {
+                    throw new ExceptionEmptyParameter("过期日期配置");
+                }
+            } else {
+                if (StringUtils.isBlank(wi.getExpireMonthDay())) {
+                    throw new ExceptionEmptyParameter("过期日期配置");
+                }
+                if (!isValidExpireMonthDay(wi.getExpireMonthDay())) {
+                    throw new ExceptionWithMessage("过期日期配置格式错误，请使用 MM-dd 格式");
                 }
             }
+
             if (BooleanUtils.isTrue(wi.getCarryForward())
                 && (wi.getMaxCarryForward() == null || wi.getMaxCarryForward() < 0)) {
                 throw new ExceptionEmptyParameter("最大结转额度");
             }
 
             AttendanceV2LeavePolicy leavePolicy = Wi.copier.copy(wi);
-            // 生成grantNextExecuteTime
-            AttendanceV2LeaveManager.calculateNextExecutionTimeForLeavePolicy(leavePolicy);
+            if (ExpireTypeEnum.AFTER_GRANT.getValue().equals(leavePolicy.getExpireType())) {
+                leavePolicy.setExpireMonthDay(null);
+            } else {
+                leavePolicy.setExpireValue(null);
+            }
             emc.beginTransaction(AttendanceV2LeavePolicy.class);
             if (StringUtils.isBlank(wi.getId())) {
                 emc.persist(leavePolicy, CheckPersistType.all);
@@ -169,6 +176,7 @@ public class ActionLeavePolicyPost extends BaseAction {
                     wo.setId(old.getId());
                     result.setData(wo);
                 } else {
+                    leavePolicy.setGrantLastExecuteTime(new Date()); // 新增的时候添加执行时间，放在定时器错误执行
                     emc.persist(leavePolicy, CheckPersistType.all);
                     Wo wo = new Wo();
                     wo.setId(leavePolicy.getId());
@@ -189,6 +197,18 @@ public class ActionLeavePolicyPost extends BaseAction {
             return result;
         }
 
+    }
+
+    private static final Pattern EXPIRE_MONTH_DAY_PATTERN = Pattern.compile("^(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])$");
+
+    private boolean isValidExpireMonthDay(String expireMonthDay) {
+        if (!EXPIRE_MONTH_DAY_PATTERN.matcher(expireMonthDay).matches()) {
+            return false;
+        }
+        String[] monthDay = expireMonthDay.split("-");
+        int month = Integer.parseInt(monthDay[0]);
+        int day = Integer.parseInt(monthDay[1]);
+        return YearMonth.of(2001, month).isValidDay(day);
     }
 
     // 解析人员列表，把组织下人员都查询出来 然后比较
