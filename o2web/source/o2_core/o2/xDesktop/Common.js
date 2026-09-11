@@ -282,8 +282,8 @@ MWF.xDesktop.getImageSrc = function( id ){
         var appPort = addressObj.port || window.location.port;
         var address = layout.config.app_protocol+"//"+(addressObj.host || window.location.hostname)+((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort)+addressObj.context;
     }else{
-        var host = layout.config.center.host || window.location.hostname;
-        var port = layout.config.center.port || window.location.port;
+        var host = layout.config.center?.host || window.location.hostname;
+        var port = layout.config.center?.port || window.location.port;
         var address = layout.config.app_protocol+"//"+host+((!port || port.toString()===defaultPort) ? "" : ":"+port)+"/x_file_assemble_control";
     }
     var url = "/jaxrs/file/"+id+"/download/stream";

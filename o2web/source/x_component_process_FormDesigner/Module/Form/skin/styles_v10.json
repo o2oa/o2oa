@@ -14,6 +14,9 @@
     "label": {
         "title": {
             "name": "表单标题",
+            "properties": {
+                "class": "form-title-label"
+            },
             "styles": {
                 "font-weight": "normal",
                 "color": "var(--oo-color-main-deep)",

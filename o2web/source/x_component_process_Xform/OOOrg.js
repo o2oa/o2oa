@@ -109,7 +109,7 @@ MWF.xApplication.process.Xform.OOOrg = MWF.APPOOOrg = new Class({
             this.validationMode();
             this.validation();
             this._setBusinessData(v);
-            // this.fireEvent('change');
+            this.fireEvent('change');
             this.checkDisplayText();
         }.bind(this));
 
