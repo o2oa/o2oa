@@ -1377,6 +1377,9 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         if(appName === 'process.Work' && this.form.isDraftWork()){
             return;
         }
+        if(appName === 'process.Work' && !this.form.businessData.work.dataChanged){
+            return;
+        }
         var originalData = this.form.businessData.originalData || {};
         var thisId = fieldId || this.json.id;
         if(o2.typeOf(data) === "null"){
