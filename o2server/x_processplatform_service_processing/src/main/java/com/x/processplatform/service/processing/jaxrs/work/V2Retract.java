@@ -1,7 +1,9 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -158,7 +160,6 @@ class V2Retract extends BaseAction {
 
 				update(work, workLog, param.manual);
 
-				// 必然不为null
 				taskCompleted.setProcessingType(TaskCompleted.PROCESSINGTYPE_RETRACT);
 				taskCompleted.setJoinInquire(false);
 				aeiObjects.getUpdateTaskCompleteds().add(taskCompleted);
@@ -193,7 +194,20 @@ class V2Retract extends BaseAction {
 			work.setActivityToken(workLog.getFromActivityToken());
 			work.setSplitting(workLog.getSplitting());
 			work.setSplitToken(workLog.getSplitToken());
+			work.setSplitTokenList(workLog.getSplitTokenList());
 			work.setSplitValue(workLog.getSplitValue());
+			work.setSplitValueList(workLog.getSplitValueList());
+			Map<String, String> map = work.getSplitTokenValueMap();
+			if(ListTools.isEmpty(work.getSplitTokenList())){
+				map.clear();
+			}else{
+				for(String key : map.keySet()){
+					if(!work.getSplitTokenList().contains(key)){
+						map.remove(key);
+					}
+				}
+			}
+			work.setSplitTokenValueMap(map);
 			workLog.setConnected(false);
 		}
 
