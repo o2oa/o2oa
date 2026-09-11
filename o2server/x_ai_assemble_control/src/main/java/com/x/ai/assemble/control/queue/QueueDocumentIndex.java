@@ -99,14 +99,14 @@ public class QueueDocumentIndex extends AbstractQueue<String> {
 		fileInfoList.stream().filter(f -> aiConfig.getO2AiFileList().contains(f.getExtension())).forEach(f -> {
 			try {
 				StorageMapping mapping = ThisApplication.context().storageMappings().get(FileInfo.class, f.getStorage());
-				FilePart filePart = new FilePart(f.getFileName(), f.readContent(mapping), Config.mimeTypes(f.getExtension()), "file");
+				FilePart filePart = new FilePart(f.getName(), f.readContent(mapping), Config.mimeTypes(f.getExtension()), "file");
 				filePartList.add(filePart);
 			} catch (Exception e) {
 				logger.warn(e.getMessage());
 			}
 		});
 		if(!filePartList.isEmpty()){
-			String url = aiConfig.getO2AiBaseUrl() + "/gateway-doc/upload/"+document.getId()+"/mode/replace";
+			String url = aiConfig.getO2AiBaseUrl() + "/idx-gateway-doc/upload/"+document.getId()+"/mode/replace";
 			List<NameValuePair> heads = List.of(new NameValuePair("Authorization", "Bearer " + aiConfig.getO2AiToken()));
 			ActionResponse response = HttpUtil.postMultiPartBinary(url, heads, null, filePartList);
 			logger.debug("ai document {} file index resp: {}", document.getId(), XGsonBuilder.toJson(response));
