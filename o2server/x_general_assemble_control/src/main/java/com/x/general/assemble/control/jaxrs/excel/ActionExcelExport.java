@@ -64,21 +64,18 @@ class ActionExcelExport extends BaseAction {
 			workbook.write(os);
 			bytes = os.toByteArray();
 		}
-
-		Business business;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			business = new Business(emc);
-		}
-		StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
-		GeneralFile generalFile = new GeneralFile(gfMapping.getName(), excelName,
-				effectivePerson.getDistinguishedName());
-		generalFile.saveContent(gfMapping, bytes, excelName);
-		business.entityManagerContainer().beginTransaction(GeneralFile.class);
-		business.entityManagerContainer().persist(generalFile, CheckPersistType.all);
-		business.entityManagerContainer().commit();
-
 		Wo wo = new Wo();
-		wo.setId(generalFile.getId());
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
+			GeneralFile generalFile = new GeneralFile(gfMapping.getName(), excelName,
+					effectivePerson.getDistinguishedName());
+			generalFile.saveContent(gfMapping, bytes, excelName);
+			emc.beginTransaction(GeneralFile.class);
+			emc.persist(generalFile, CheckPersistType.all);
+			emc.commit();
+			wo.setId(generalFile.getId());
+		}
+
 		result.setData(wo);
 		return result;
 	}
