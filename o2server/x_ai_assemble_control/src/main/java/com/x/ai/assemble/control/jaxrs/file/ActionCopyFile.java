@@ -8,15 +8,19 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.bean.NameValuePair;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
-import com.x.base.core.project.exception.ExceptionEntityNotExist;
+import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.exception.ExceptionFieldEmpty;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
-import com.x.cms.core.entity.FileInfo;
-import com.x.processplatform.core.entity.content.Attachment;
+import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_cms_assemble_control;
+import com.x.base.core.project.x_processplatform_assemble_surface;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 class ActionCopyFile extends BaseAction {
@@ -41,33 +45,27 @@ class ActionCopyFile extends BaseAction {
             throw new ExceptionFieldEmpty("copyFrom");
         }
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            byte[] bs = null;
+
+            String downLoadUrl = "";
             if (COPY_FROM_CMS.equals(wi.getCopyFrom())) {
-                FileInfo fileInfo = emc.find(wi.getId(), FileInfo.class);
-                if (fileInfo == null) {
-                    throw new ExceptionEntityNotExist(wi.getId(), FileInfo.class);
-                }
-                StorageMapping fromStorageMapping = ThisApplication.context()
-                        .storageMappings()
-                        .get(FileInfo.class, fileInfo.getStorage());
-                bs = fileInfo.readContent(fromStorageMapping);
+                String className = ThisApplication.context().applications().findApplicationName(
+                        x_cms_assemble_control.class.getSimpleName());
+                downLoadUrl = ThisApplication.context().applications().randomWithWeight(className).getUrlJaxrsRoot();
+                downLoadUrl = downLoadUrl + Applications.joinQueryUri("fileinfo", "download", "document", wi.getId());
             } else if (COPY_FROM_PAN.equals(wi.getCopyFrom())) {
-                String className = ThisApplication.context().applications()
-                        .findApplicationName(COPY_FROM_PAN);
-                String downLoadUrl = Applications.joinQueryUri("attachment3", wi.getId(), "download");
-                bs = ThisApplication.context().applications().getQueryBinary(className, downLoadUrl);
+                String className = ThisApplication.context().applications().findApplicationName(COPY_FROM_PAN);
+                downLoadUrl = ThisApplication.context().applications().randomWithWeight(className).getUrlJaxrsRoot();
+                downLoadUrl = downLoadUrl + Applications.joinQueryUri("attachment3", wi.getId(), "download");
             } else if(COPY_FROM_PROCESSPLATFORM.equals(wi.getCopyFrom())){
-                Attachment o = emc.find(wi.getId(), Attachment.class);
-                if (o == null) {
-                    throw new ExceptionEntityNotExist(wi.getId(), Attachment.class);
-                }
-                StorageMapping fromStorageMapping = ThisApplication.context()
-                        .storageMappings()
-                        .get(Attachment.class, o.getStorage());
-                bs = o.readContent(fromStorageMapping);
+                String className = ThisApplication.context().applications().findApplicationName(
+                        x_processplatform_assemble_surface.class.getSimpleName());
+                downLoadUrl = ThisApplication.context().applications().randomWithWeight(className).getUrlJaxrsRoot();
+                downLoadUrl = downLoadUrl + Applications.joinQueryUri("attachment","download", wi.getId());
             } else {
                 throw new ExceptionCustom("没有匹配的拷贝来源");
             }
+            List<NameValuePair> headers = ListTools.toList(new NameValuePair(Config.person().getTokenName(), effectivePerson.getToken()));
+            byte[] bs = ConnectionAction.getBinary(downLoadUrl, headers);
             StorageMapping mapping = ThisApplication.context().storageMappings().random(File.class);
             File file = new File(mapping.getName(), wi.getName(), effectivePerson.getDistinguishedName());
             emc.check(file, CheckPersistType.all);

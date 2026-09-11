@@ -1,5 +1,7 @@
 package com.x.file.assemble.control.jaxrs.share;
 
+import com.x.base.core.project.tools.ListTools;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,11 +32,17 @@ class ActionListFolderWithFolder extends BaseAction {
 			if (null == folder) {
 				throw new ExceptionFolderNotExist(folderId);
 			}
-			if(!"password".equals(share.getShareType())) {
-				if(!hasPermission(business,effectivePerson,share)){
-					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
-				}
+			if(!hasPermission(business,effectivePerson,share)){
+				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
+			List<String> idList = ListTools.toList(folderId);
+			List<Folder2> supFolderList = new ArrayList<>();
+			business.folder2().listSuPNested(folder.getSuperior(), supFolderList);
+			idList.addAll(supFolderList.stream().map(Folder2::getId).collect(Collectors.toList()));
+			if(!idList.contains(share.getFileId())){
+				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+			}
+
 			List<String> ids = business.folder2().listSubDirect(folder.getId(), FileStatus.VALID.getName());
 			List<Wo> wos = emc.fetch(ids, Wo.copier);
 			wos = wos.stream().sorted(Comparator.comparing(Folder2::getName, Comparator.nullsLast(String::compareTo)))
