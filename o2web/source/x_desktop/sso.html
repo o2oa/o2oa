@@ -24,7 +24,7 @@
                     var locate = window.location;
                     var protocol = locate.protocol;
                     var addressObj = layout.serviceAddressList["x_organization_assemble_authentication"];
-                    // var defaultPort = layout.config.app_protocol==='https' ? "443" : "80";
+                    var defaultPort = layout.config.app_protocol==='https' ? "443" : "80";
                     // var appPort = addressObj.port || window.location.port;
                     // var address = protocol+"//"+(addressObj.host || window.location.hostname)+((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort)+addressObj.context;
 

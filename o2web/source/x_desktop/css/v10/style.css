@@ -152,6 +152,15 @@ oo-card {
     border-radius: var(--oo-area-radius);
 }
 
+@media only screen and (max-width: 767px) {
+    .calendar-area oo-calendar[mode='datetime'],
+    .calendar-area oo-calendar:not([mode]),
+    .calendar-area oo-calendar-range[mode='datetime'],
+    .calendar-area oo-calendar-range:not([mode]) {
+        max-height: 80vh;
+    }
+}
+
 oo-calendar {
     width: 30em;
     height: 24em;
