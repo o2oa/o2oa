@@ -63,7 +63,7 @@ window.O2ProcessorMobile = new Class({
             this.node.setStyles({
                 "width" : "100%",
                 "position" : "absolute",
-                "z-index" : "101"
+                "z-index" : "2999"
             })
 
             this.loadContent();
