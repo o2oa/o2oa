@@ -70,14 +70,15 @@ public class Crypto {
 	}
 
 	public static String encrypt(String data, String key, String type)
-            throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
-            IllegalBlockSizeException, BadPaddingException, NoSuchMethodException,
-            IllegalAccessException, InvocationTargetException, ClassNotFoundException, InvalidAlgorithmParameterException {
+			throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
+			IllegalBlockSizeException, BadPaddingException, NoSuchMethodException,
+			IllegalAccessException, InvocationTargetException, ClassNotFoundException, InvalidAlgorithmParameterException {
 		byte[] bt = null;
 		if (Strings.CI.equals(type, TYPE_SM4)) {
 			bt = encryptSm4(data.getBytes(StandardCharsets.UTF_8), key);
 		} else {
-			bt = encryptAes(data.getBytes(StandardCharsets.UTF_8), DigestUtils.md5(key));
+			byte[] keyBytes = key.length()<16 ? DigestUtils.md5(key) : key.getBytes(StandardCharsets.UTF_8);
+			bt = encryptAes(data.getBytes(StandardCharsets.UTF_8), keyBytes);
 		}
 		String str = Base64.encodeBase64URLSafeString(bt);
 		return URLEncoder.encode(str, StandardCharsets.UTF_8);
@@ -155,9 +156,9 @@ public class Crypto {
 	}
 
 	public static String decrypt(String data, String key, String type)
-            throws InvalidKeyException, NoSuchAlgorithmException,
-            NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, NoSuchMethodException,
-            IllegalAccessException, InvocationTargetException, ClassNotFoundException, InvalidAlgorithmParameterException {
+			throws InvalidKeyException, NoSuchAlgorithmException,
+			NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, NoSuchMethodException,
+			IllegalAccessException, InvocationTargetException, ClassNotFoundException, InvalidAlgorithmParameterException {
 		if (StringUtils.isEmpty(data)) {
 			return null;
 		}
@@ -166,11 +167,12 @@ public class Crypto {
 		byte[] bt;
 		if (Strings.CI.equals(type, TYPE_SM4)) {
 			bt = decryptSm4(buf, key);
-        } else {
-			bt = decryptAes(buf, DigestUtils.md5(key));
-        }
-        return new String(bt, StandardCharsets.UTF_8);
-    }
+		} else {
+			byte[] keyBytes = key.length()<16 ? DigestUtils.md5(key) : key.getBytes(StandardCharsets.UTF_8);
+			bt = decryptAes(buf, keyBytes);
+		}
+		return new String(bt, StandardCharsets.UTF_8);
+	}
 
 	private static byte[] decrypt(byte[] data, byte[] key) throws InvalidKeyException, NoSuchAlgorithmException,
 			InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
