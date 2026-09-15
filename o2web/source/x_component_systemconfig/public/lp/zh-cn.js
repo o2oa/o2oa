@@ -497,8 +497,8 @@ o2.xApplication.systemconfig.LP = {
         "ssoConfigName": "鉴权名称",
         "ssoConfigKey": "密钥",
 
-        "ssoConfigKeyInfo": "密钥长度为8的倍数",
-        "ssoKeyLengthError": "请保持密钥长度为8的倍数",
+        "ssoConfigKeyInfo": "密钥长度为16位或32位",
+        "ssoKeyLengthError": "请保持密钥长度为16位或32位",
 
         "removeSSOConfigTitle": "删除鉴权配置确认",
         "removeSSOConfig": "您确定要删除鉴权配置：“{name}” 吗？",

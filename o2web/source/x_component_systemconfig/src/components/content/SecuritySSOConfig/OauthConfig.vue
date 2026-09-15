@@ -188,7 +188,7 @@ const editSSOConfig = (data, idx)=>{
           if (ssos.value.some(sameName)) {
             const info = lp._ssoConfig.ssoSameNameError.replace('{name}', currentSSOData.value.client);
             component.notice(info, 'error', dlg.node, {x: 'left', y: 'top'}, {x: 10, y: 10});
-          }else if (currentSSOData.value.key.length % 8 !== 0 ){
+          }else if (currentSSOData.value.key.length !== 16 && currentSSOData.value.key.length !== 32 ){
               const info = lp._ssoConfig.ssoKeyLengthError;
               component.notice( info, 'error',  dlg.node, {x: 'left', y: 'top'}, {x: 10, y: 10});
           }else{
