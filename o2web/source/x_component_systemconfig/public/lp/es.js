@@ -427,6 +427,8 @@ MWF.xApplication.systemconfig.LP={
 		"ssoConfigKey": "Clave",
 		"ssoConfigKeyInfo": "La longitud de la clave es de 16 o 32 bytes.",
 		"ssoKeyLengthError": "Mantenga la longitud de la clave en 16 o 32 bytes",
+		"oauthConfigKeyInfo": "La longitud de la clave debe ser un múltiplo de 8",
+		"oauthKeyLengthError": "Asegúrese de que la longitud de la clave sea un múltiplo de 8",
 		"removeSSOConfigTitle": "Confirmar eliminación de configuración de clave de autenticación",
 		"removeSSOConfig": "¿Está seguro de que desea eliminar la configuración de clave de autenticación: '{name}'?",
 		"ssoDataError": "El nombre y la clave de autenticación no pueden estar vacíos.",

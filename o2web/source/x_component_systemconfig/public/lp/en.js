@@ -422,6 +422,8 @@ MWF.xApplication.systemconfig.LP={
 		"ssoConfigKey": "Key",
 		"ssoConfigKeyInfo": "The key length is 16 or 32 bytes.",
 		"ssoKeyLengthError": "Please keep the key length at 16 or 32 bytes.",
+		"oauthConfigKeyInfo": "Key length must be a multiple of 8",
+		"oauthKeyLengthError": "Please ensure key length is a multiple of 8",
 		"removeSSOConfigTitle": "Confirmation of deleting the authentication configuration",
 		"removeSSOConfig": "Are you sure you want to delete the authentication configuration: '{name}'?",
 		"ssoDataError": "Authentication name and authentication key cannot be empty.",
