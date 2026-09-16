@@ -77,7 +77,7 @@
         <BaseInput :label="lp._ssoConfig.oauth_clientId" v-model:value="currentOauthClientData.clientId"/>
 <!--        <BaseInput :label="lp._ssoConfig.oauth_clientSecret" v-model:value="currentOauthClientData.clientSecret"/>-->
         <BaseInput :label="lp._ssoConfig.oauth_clientSecret" input-type="password" :show-password="true" v-model:value="currentOauthClientData.clientSecret"></BaseInput>
-        <div style="color: #999999; margin-left: 120px">{{lp._ssoConfig.ssoConfigKeyInfo}}</div>
+        <div style="color: #999999; margin-left: 120px">{{lp._ssoConfig.oauthConfigKeyInfo}}</div>
         <BaseMap ref="mapEditor" :label="lp._ssoConfig.oauth_mapping" v-model:value="currentOauthClientData.mapping"/>
       </div>
     </div>
@@ -188,8 +188,8 @@ const editSSOConfig = (data, idx)=>{
           if (ssos.value.some(sameName)) {
             const info = lp._ssoConfig.ssoSameNameError.replace('{name}', currentSSOData.value.client);
             component.notice(info, 'error', dlg.node, {x: 'left', y: 'top'}, {x: 10, y: 10});
-          }else if (currentSSOData.value.key.length !== 16 && currentSSOData.value.key.length !== 32 ){
-              const info = lp._ssoConfig.ssoKeyLengthError;
+          }else if (currentSSOData.value.key.length % 8 !== 0 ){
+              const info = lp._ssoConfig.oauthConfigKeyInfo;
               component.notice( info, 'error',  dlg.node, {x: 'left', y: 'top'}, {x: 10, y: 10});
           }else{
             if (idx || idx===0){
@@ -285,7 +285,7 @@ const editOauthClientConfig = (data, idx)=>{
         const info = lp._ssoConfig.oauthClientSameNameError.replace('{name}', currentOauthClientData.value.clientId);
         component.notice( info, 'error',  dlg.node, {x: 'left', y: 'top'}, {x: 10, y: 10});
       }else if (currentOauthClientData.value.clientSecret.length % 8 !== 0 ){
-        const info = lp._ssoConfig.ssoKeyLengthError;
+        const info = lp._ssoConfig.oauthConfigKeyInfo;
         component.notice( info, 'error',  dlg.node, {x: 'left', y: 'top'}, {x: 10, y: 10});
       }else{
         if (idx || idx===0){
