@@ -3,6 +3,7 @@ package com.x.program.center.jaxrs.invoke;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -32,6 +33,9 @@ class ActionListCategory extends BaseAction {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             ActionResult<List<Wo>> result = new ActionResult<>();
             Business business = new Business(emc);
+            if(!business.serviceControlAble(effectivePerson)) {
+                throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+            }
             List<Wo> wos = new ArrayList<>();
             List<Wo> allWos = this.countPortCategory(business);
             List<Wo> defaultWos = allWos.stream().filter(o -> (StringUtils.isBlank(o.getCategory())

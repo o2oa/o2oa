@@ -4,6 +4,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -520,6 +521,13 @@ public class Business {
             return true;
         }
         return publishFlag;
+    }
+
+    public boolean isDocumentReader(EffectivePerson person, Document document, AppInfo appInfo) throws Exception {
+        if( person.isAnonymous() && BooleanUtils.isNotTrue(appInfo.getAllowAnonymousAccessDoc())) {
+            return false;
+        }
+        return isDocumentReader(person, document);
     }
 
     /**
