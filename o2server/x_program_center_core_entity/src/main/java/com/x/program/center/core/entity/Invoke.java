@@ -84,7 +84,7 @@ public class Invoke extends SliceJpaObject {
 	@FieldDescribe("是否启用token验证.")
 	@Column(name = ColumnNamePrefix + enableToken_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private Boolean enableToken = false;
+	private Boolean enableToken = true;
 
 	public static final String alias_FIELDNAME = "alias";
 	@Flag

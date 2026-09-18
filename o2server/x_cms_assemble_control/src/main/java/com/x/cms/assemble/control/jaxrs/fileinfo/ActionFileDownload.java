@@ -13,6 +13,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoFile;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.ThisApplication;
+import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 import org.apache.commons.io.FilenameUtils;
@@ -47,8 +48,12 @@ public class ActionFileDownload extends BaseAction {
 			if (null == document) {
 				throw new ExceptionDocumentNotExists(fileInfo.getDocumentId());
 			}
+			AppInfo appInfo = emc.find(document.getAppId(), AppInfo.class);
+			if(appInfo == null){
+				throw new ExceptionAppInfoNotExists(document.getAppId());
+			}
 			Business business = new Business(emc);
-			if (!business.isDocumentReader(effectivePerson, document)) {
+			if (!business.isDocumentReader(effectivePerson, document, appInfo)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			StorageMapping mapping = ThisApplication.context().storageMappings().get(FileInfo.class, fileInfo.getStorage());

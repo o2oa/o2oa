@@ -1,10 +1,5 @@
 package com.x.organization.assemble.authentication.jaxrs.authentication;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -16,8 +11,10 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.Person;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.StringUtils;
 
 public class ActionOauthQiyeweixinLogin extends BaseAction {
 
@@ -43,17 +40,12 @@ public class ActionOauthQiyeweixinLogin extends BaseAction {
 			if (StringUtils.isEmpty(userId)) {
 				throw new ExceptionOauthEmptyCredential();
 			}
-			Wo wo = new Wo();
-			if (Config.token().isInitialManager(userId)) {
-				wo = this.manager(request, response, userId, Wo.class);
-			} else {
-				String personId = business.person().getPersonIdWithQywxid(userId);
-				if (StringUtils.isEmpty(personId)) {
-					throw new ExceptionPersonNotExistOrInvalidPassword();
-				}
-				Person o = emc.find(personId, Person.class);
-				wo = this.user(request, response, business, o, Wo.class);
+			String personId = business.person().getPersonIdWithQywxid(userId);
+			if (StringUtils.isEmpty(personId)) {
+				throw new ExceptionPersonNotExistOrInvalidPassword();
 			}
+			Person o = emc.find(personId, Person.class);
+			Wo wo = this.user(request, response, business, o, Wo.class);
 			result.setData(wo);
 			return result;
 		}

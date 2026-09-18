@@ -27,7 +27,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 @JaxrsDescribe("可匿名访问的表单信息管理服务")
 public class FormAnonymousAction extends StandardJaxrsAction {
 
-	private static  Logger logger = LoggerFactory.getLogger( FormAnonymousAction.class );
+	private static final Logger logger = LoggerFactory.getLogger( FormAnonymousAction.class );
 
 	@JaxrsMethodDescribe(value = "根据ID获取表单对象.", action = ActionGet.class)
 	@GET

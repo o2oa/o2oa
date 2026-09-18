@@ -1,6 +1,7 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
 import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.Document;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -56,7 +57,11 @@ public class ActionListByDocId extends BaseAction {
 			if (null == document) {
 				throw new ExceptionDocumentNotExists(docId);
 			}
-			if (!business.isDocumentReader(effectivePerson, document)) {
+			AppInfo appInfo = emc.find(document.getAppId(), AppInfo.class);
+			if(appInfo == null){
+				throw new ExceptionAppInfoNotExists(document.getAppId());
+			}
+			if (!business.isDocumentReader(effectivePerson, document, appInfo)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			FileInfoFactory fileInfoFactory = business.getFileInfoFactory();

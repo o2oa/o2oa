@@ -1,10 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
-import java.util.List;
-import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -16,8 +11,12 @@ import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
+import java.util.List;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 
 public class ActionGet extends BaseAction {
 
@@ -33,7 +32,7 @@ public class ActionGet extends BaseAction {
 			result.setData(wo);
 		} else {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-
+				Business business = new Business(emc);
 				FileInfo fileInfo = emc.find(id, FileInfo.class);
 				if (null == fileInfo) {
 					throw new ExceptionFileInfoNotExists(id);
@@ -42,7 +41,13 @@ public class ActionGet extends BaseAction {
 				if (null == document) {
 					throw new ExceptionDocumentNotExists(fileInfo.getDocumentId());
 				}
-				Business business = new Business(emc);
+				AppInfo appInfo = emc.find(document.getAppId(), AppInfo.class);
+				if(appInfo == null){
+					throw new ExceptionAppInfoNotExists(document.getAppId());
+				}
+				if (!business.isDocumentReader(effectivePerson, document, appInfo)) {
+					throw new ExceptionAccessDenied(effectivePerson);
+				}
 				List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 				List<String> units = business.organization().unit().listWithPerson(effectivePerson);
 				if (!business.isDocumentReader(effectivePerson, document)) {

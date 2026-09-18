@@ -1,5 +1,7 @@
 package com.x.cms.assemble.control.jaxrs.appdict;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -20,6 +22,9 @@ class ActionGet extends BaseAction {
 			AppInfo appInfo = business.getAppInfoFactory().pick(appInfoFlag);
 			if (null == appInfo) {
 				throw new ExceptionAppInfoNotExist(appInfoFlag);
+			}
+			if( effectivePerson.isAnonymous() && BooleanUtils.isNotTrue(appInfo.getAllowAnonymousAccessDoc())) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			String id = business.getAppDictFactory().getWithAppInfoWithUniqueName(appInfo.getId(),
 					appDictFlag);

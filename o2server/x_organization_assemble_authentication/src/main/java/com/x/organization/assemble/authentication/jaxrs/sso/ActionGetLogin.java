@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -32,7 +33,7 @@ import com.x.organization.core.entity.Person;
 
 class ActionGetLogin extends BaseAction {
 
-    private static Logger logger = LoggerFactory.getLogger(ActionGetLogin.class);
+    private static final Logger logger = LoggerFactory.getLogger(ActionGetLogin.class);
 
     ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
             String client, String token) throws Exception {
@@ -45,7 +46,7 @@ class ActionGetLogin extends BaseAction {
                 throw new ExceptionEmptyToken();
             }
             Sso sso = Config.token().findSso(client);
-            if (null == sso) {
+            if (null == sso || BooleanUtils.isNotTrue(sso.getEnable())) {
                 throw new ExceptionClientNotExist(client);
             }
             if (StringUtils.isEmpty(sso.getKey())) {

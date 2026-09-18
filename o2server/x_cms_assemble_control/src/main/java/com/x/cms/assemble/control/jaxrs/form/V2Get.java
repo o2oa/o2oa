@@ -1,5 +1,7 @@
 package com.x.cms.assemble.control.jaxrs.form;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.cms.core.entity.AppInfo;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -10,6 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -46,9 +49,16 @@ class V2Get extends BaseAction {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
 				form = business.getFormFactory().pick(id);
-			}
-			if (null == form) {
-				throw new ExceptionEntityNotExist(id, Form.class);
+				if (null == form) {
+					throw new ExceptionEntityNotExist(id, Form.class);
+				}
+				AppInfo appInfo = emc.find(form.getAppId(), AppInfo.class);
+				if(appInfo == null){
+					throw new ExceptionAppInfoNotExist(form.getAppId());
+				}
+				if( effectivePerson.isAnonymous() && BooleanUtils.isNotTrue(appInfo.getAllowAnonymousAccessDoc())) {
+					throw new ExceptionAccessDenied(effectivePerson);
+				}
 			}
 			Wo wo = new Wo();
 			final FormProperties properties = form.getProperties();

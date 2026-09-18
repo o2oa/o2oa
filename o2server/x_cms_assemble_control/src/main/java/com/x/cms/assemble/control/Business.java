@@ -522,6 +522,13 @@ public class Business {
         return publishFlag;
     }
 
+    public boolean isDocumentReader(EffectivePerson person, Document document, AppInfo appInfo) throws Exception {
+        if( person.isAnonymous() && BooleanUtils.isNotTrue(appInfo.getAllowAnonymousAccessDoc())) {
+            return false;
+        }
+        return isDocumentReader(person, document);
+    }
+
     /**
      * 是否是文档的读者
      *

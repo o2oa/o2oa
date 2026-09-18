@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -34,7 +35,7 @@ import com.x.organization.core.express.assemble.authentication.jaxrs.sso.ActionP
 
 class ActionPostLogin extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionPostLogin.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActionPostLogin.class);
 
 	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
 			JsonElement jsonElement) throws Exception {
@@ -48,7 +49,7 @@ class ActionPostLogin extends BaseAction {
 				throw new ExceptionEmptyToken();
 			}
 			Sso sso = Config.token().findSso(wi.getClient());
-			if (null == sso) {
+			if (null == sso || BooleanUtils.isNotTrue(sso.getEnable())) {
 				throw new ExceptionClientNotExist(wi.getClient());
 			}
 			if (StringUtils.isEmpty(sso.getKey())) {

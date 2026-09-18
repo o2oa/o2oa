@@ -1,18 +1,5 @@
 package com.x.organization.assemble.authentication.jaxrs.authentication;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
@@ -25,8 +12,17 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.Person;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 
 public class ActionOauthDingdingLogin extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionOauthDingdingLogin.class);
@@ -70,22 +66,15 @@ public class ActionOauthDingdingLogin extends BaseAction {
 			if (StringUtils.isEmpty(userid)) {
 				throw new ExceptionOauthEmptyCredential();
 			}
-			Wo wo = new Wo();
-			if (Config.token().isInitialManager(userid)) {
-				wo = this.manager(request, response, userid, Wo.class);
-			} else {
-				/* 普通用户登录,也有可能拥有管理员角色 */
-				String personId = business.person().getWithCredential(userid);
-				if (StringUtils.isEmpty(personId)) {
-					throw new ExceptionPersonNotExistOrInvalidPassword();
-				}
-				Person o = emc.find(personId, Person.class);
-				wo = this.user(request, response, business, o, Wo.class);
+			String personId = business.person().getWithCredential(userid);
+			if (StringUtils.isEmpty(personId)) {
+				throw new ExceptionPersonNotExistOrInvalidPassword();
 			}
+			Person o = emc.find(personId, Person.class);
+			Wo wo = this.user(request, response, business, o, Wo.class);
 			result.setData(wo);
 			return result;
 		}
-
 	}
 
 	private JsonElement getDingJsonData(String dingUserBackString) throws ExceptionOauthDingdingErrorInfo {
