@@ -88,12 +88,14 @@ abstract class BaseAction extends StandardJaxrsAction {
         // 根据班次判断打卡结果
         if (shift != null) {
             if (recordDate != null) {
+                String dutyTimeString = date + " " + preDutyTime;
+                String checkTimeString = DateTools.format(recordDate, DateTools.format_yyyyMMddHHmm);
                 // 上班打卡
                 if (dutyType.equals(AttendanceV2CheckInRecord.OnDuty)) {
                     Date dutyTime = DateTools.parse(date + " " + preDutyTime, DateTools.format_yyyyMMddHHmm);
                     checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
                     // 迟到
-                    if (recordDate.after(dutyTime)) {
+                    if (recordDate.after(dutyTime) && !dutyTimeString.equals(checkTimeString)) {
                         checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_Late;
                     }
                     // 严重迟到
@@ -121,7 +123,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                     Date offDutyTime = DateTools.parse(date + " " + preDutyTime, DateTools.format_yyyyMMddHHmm);
                     checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
                     // 早退
-                    if (recordDate.before(offDutyTime)) {
+                    if (recordDate.before(offDutyTime) && !dutyTimeString.equals(checkTimeString)) {
                         checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_Early;
                     }
                     // 可以早走
