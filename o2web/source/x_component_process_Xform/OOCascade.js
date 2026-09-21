@@ -125,6 +125,17 @@ MWF.xApplication.process.Xform.OOCascade = MWF.APPOOCascade =  new Class({
 			this.validationMode();
 		}.bind(this));
 
+		if (this.json.searchable) {
+			this.node.setAttribute('searchable', 'true');
+		}else{
+			this.node.setAttribute('searchable', 'false');
+		}
+
+		var searchFun = this._getSearchFunction();
+		if(searchFun){
+			this.node.setSearchFunction(searchFun);
+		}
+
 		this.node.addEventListener('validity', (e) => {
 			if (this.validationText) {
 				e.target.setCustomValidity(this.validationText);
@@ -150,6 +161,17 @@ MWF.xApplication.process.Xform.OOCascade = MWF.APPOOCascade =  new Class({
         });
 
 		this.setOptions();
+	},
+
+	_getSearchFunction: function (){
+		if(!this.json.searchScript || !this.json.searchScript.code){
+			return null;
+		}
+		if( this.searchFunction ){
+			return this.searchFunction;
+		}
+		this.searchFunction = this.form.Macro.exec(this.json.searchScript.code, this);
+		return this.searchFunction;
 	},
 
 	setOptions: function () {
@@ -209,12 +231,10 @@ MWF.xApplication.process.Xform.OOCascade = MWF.APPOOCascade =  new Class({
 	},
 
 	__setValue: function(value){
-		debugger;
-		var text = this.getText();
-		this.node.text = Array.isArray(text) ? JSON.stringify(text) : text;
-
 		this._setBusinessData(value);
 		this.node.value = Array.isArray(value) ? JSON.stringify(value) : value;
+		var text = this.getText();
+		this.node.text = Array.isArray(text) ? JSON.stringify(text) : text;
 		this.fieldModuleLoaded = true;
 		this.moduleValueAG = null;
 	},
