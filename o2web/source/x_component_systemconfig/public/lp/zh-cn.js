@@ -497,8 +497,11 @@ o2.xApplication.systemconfig.LP = {
         "ssoConfigName": "鉴权名称",
         "ssoConfigKey": "密钥",
 
-        "ssoConfigKeyInfo": "密钥长度为8的倍数",
-        "ssoKeyLengthError": "请保持密钥长度为8的倍数",
+        "ssoConfigKeyInfo": "密钥长度为16位或32位",
+        "ssoKeyLengthError": "请保持密钥长度为16位或32位",
+
+        "oauthConfigKeyInfo": "密钥长度为8的倍数",
+        "oauthKeyLengthError": "请保持密钥长度为8的倍数",
 
         "removeSSOConfigTitle": "删除鉴权配置确认",
         "removeSSOConfig": "您确定要删除鉴权配置：“{name}” 吗？",
@@ -510,7 +513,7 @@ o2.xApplication.systemconfig.LP = {
         "useSSOConfigInfo": "在两种场景下需要使用鉴权密钥：",
         "useSSOConfigInfo1": "1、外部系统需要与O2OA实现单点登录;",
         "useSSOConfigInfo2": "2、外部系统需要调用O2OA平台的接口服务;",
-        "useSSOConfigInfo3": "需要将鉴权的名称，密钥告知外部系统，外部系统采取3DES算法使用密钥对<span style='color: blue'>\"person#timestamp\"</span>文本进行加密，获取到访问O2OA的临时票据（token）。<br/>" +
+        "useSSOConfigInfo3": "需要将鉴权的名称，密钥告知外部系统，外部系统采取AES算法使用密钥对<span style='color: blue'>\"person#timestamp\"</span>文本进行加密，获取到访问O2OA的临时票据（token）。<br/>" +
             "<span style='color: blue'>person</span>：表示指定用户的用户名、唯一编码或员工号。（具体使用哪个要根据外部系统与O2OA的用户关联的字段）<br/>" +
             "<span style='color: blue'>timestamp</span>：表示为1970年1月1日0时0秒到当前时间的毫秒数。（为了确保token的时效性,有效时间为1分钟）<br/><br>" +
             "生成token后，外部系统可以直接通过访问以下地址，实现与O2OA的单点认证：<br/>" +

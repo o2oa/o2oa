@@ -63,9 +63,10 @@ window.O2ProcessorMobile = new Class({
             this.node.setStyles({
                 "width" : "100%",
                 "position" : "absolute",
-                "z-index" : "10001",
+                "z-index" : "2999",
                 "top": "0",
                 "left": "0"
+
             })
 
             this.loadContent();
@@ -86,7 +87,6 @@ window.O2ProcessorMobile = new Class({
         }
         if(  defaultRoute ){
             var flag = true;
-
             if( this.routeGroupNodeList && this.routeGroupNodeList.length ){
                  for( var i=0; i<this.routeGroupNodeList.length; i++ ){
                       var routeGroupNode = this.routeGroupNodeList[i];
