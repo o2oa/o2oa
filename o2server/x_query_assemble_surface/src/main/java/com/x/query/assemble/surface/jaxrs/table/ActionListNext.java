@@ -24,7 +24,7 @@ class ActionListNext extends BaseAction {
 		LOGGER.debug("execute:{}, id:{}, count:{}.", effectivePerson::getDistinguishedName, () -> id, () -> count);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			if (!business.editable(effectivePerson, new Table())) {
+			if (!business.editable(effectivePerson, null)) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 			ActionResult<List<Wo>> result = new ActionResult<>();
