@@ -1,5 +1,6 @@
 package com.x.query.assemble.designer.jaxrs.table;
 
+import com.x.query.core.express.statement.SqlSafetyChecker;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -17,6 +18,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.schema.Table;
+import org.apache.commons.lang3.Strings;
 
 class ActionListRowSelectWhere extends BaseAction {
 
@@ -39,9 +41,10 @@ class ActionListRowSelectWhere extends BaseAction {
 			Class<? extends JpaObject> clz = (Class<JpaObject>) classLoader.loadClass(dynamicEntity.className());
 			EntityManager em = emc.get(clz);
 			String sql = "SELECT o FROM " + clz.getName() + " o";
-			if (StringUtils.isNotBlank(where) && (!StringUtils.equals(where, EMPTY_SYMBOL))) {
+			if (StringUtils.isNotBlank(where) && (!Strings.CS.equals(where, EMPTY_SYMBOL))) {
 				sql += " where (" + where + ")";
 			}
+			SqlSafetyChecker.check(sql);
 			List<?> list = em.createQuery(sql).getResultList();
 			result.setData(list);
 			return result;

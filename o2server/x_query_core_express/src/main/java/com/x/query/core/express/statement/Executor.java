@@ -1,23 +1,5 @@
 package com.x.query.core.express.statement;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.sql.Clob;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -31,11 +13,24 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.NumberTools;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
-
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.sql.Clob;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SelectItem;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 public class Executor {
 
@@ -51,9 +46,9 @@ public class Executor {
     public static Object executeData(Statement statement, Runtime runtime, ExecuteTarget executeTarget)
             throws Exception {
         String sql = executeTarget.getSql().toUpperCase();
-        if (StringUtils.equalsAnyIgnoreCase(statement.getFormat(), Statement.FORMAT_SQL, Statement.FORMAT_SQLSCRIPT)) {
+        if (Strings.CI.equalsAny(statement.getFormat(), Statement.FORMAT_SQL, Statement.FORMAT_SQLSCRIPT)) {
             return executeDataSql(runtime, executeTarget, false);
-        } else if(sql.indexOf(JOIN_KEY) > -1 && sql.indexOf(JOIN_ON_KEY) > -1){
+        } else if(sql.contains(JOIN_KEY) && sql.contains(JOIN_ON_KEY)){
             return executeDataSql(runtime, executeTarget, true);
         } else {
             return executeDataJpql(statement, runtime, executeTarget);
@@ -62,6 +57,7 @@ public class Executor {
 
     private static Object executeDataSql(Runtime runtime, ExecuteTarget executeTarget, boolean isOld) throws Exception {
         checkDeleteInsertUpdateDml(executeTarget.getParsedStatement());
+        SqlSafetyChecker.check(executeTarget.getSql());
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             EntityManager em = emc.get(DynamicBaseEntity.class);
             LOGGER.debug("executeDataSql:{}, param:{}.", executeTarget::getSql, executeTarget::getQuestionMarkParam);
@@ -131,7 +127,7 @@ public class Executor {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Class<? extends JpaObject> cls = clazz(emc, statement);
             EntityManager em;
-            if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
+            if (Strings.CI.equalsAny(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
                     && executeTarget.getParsedStatement() instanceof net.sf.jsqlparser.statement.select.Select) {
                 em = emc.get(DynamicBaseEntity.class);
             } else {
@@ -156,7 +152,7 @@ public class Executor {
                 return os;
             } else {
                 emc.beginTransaction(cls);
-                Object data = Integer.valueOf(query.executeUpdate());
+                Object data = query.executeUpdate();
                 emc.commit();
                 return data;
             }
@@ -166,9 +162,9 @@ public class Executor {
     /**
      * 在8.0.0以上版本jpql的输出值通过jsqlparser转换成字段属性该方法通过fv字段进行判断
      *
-     * @param select
-     * @param list
-     * @return
+     * @param select Select
+     * @param list List
+     * @return Object
      */
     private static Object jpqlResultToMap(net.sf.jsqlparser.statement.select.Select select,
             List<?> list) {
@@ -181,11 +177,11 @@ public class Executor {
         }
         final Map<Integer, String> itemMapping = selectItemMapping(select);
         final List<Map<String, Object>> result = new ArrayList<>();
-        list.stream().forEach(obj -> {
+        list.forEach(obj -> {
             Map<String, Object> target = new LinkedHashMap<>();
             if (obj.getClass().isArray()) {
                 Object[] from = (Object[]) obj;
-                itemMapping.entrySet().forEach(m -> target.put(m.getValue(), from[m.getKey()]));
+                itemMapping.forEach((key, value) -> target.put(value, from[key]));
             } else {
                 target.put(itemMapping.get(0), obj);
             }
@@ -219,25 +215,25 @@ public class Executor {
      * (x.id)
      * ((x.id))
      *
-     * @param name
-     * @return
+     * @param name 名称
+     * @return 简化名称
      */
     private static String simplifyName(String name) {
         name = StringUtils.trimToEmpty(name);
         while (name.startsWith("(") && name.endsWith(")")) {
             name = name.substring(1, name.length() - 1);
         }
-        if (StringUtils.containsAny(name, "(", ")")) {
+        if (Strings.CI.containsAny(name, "(", ")")) {
             return name;
         }
-        return StringUtils.contains(name, ".") ? StringUtils.substringAfterLast(name, ".") : name;
+        return Strings.CI.contains(name, ".") ? StringUtils.substringAfterLast(name, ".") : name;
     }
 
     public static Long executeCount(Statement statement, ExecuteTarget executeTarget) throws Exception {
         String sql = executeTarget.getSql().toUpperCase();
-        if (StringUtils.equalsAnyIgnoreCase(statement.getFormat(), Statement.FORMAT_SQL, Statement.FORMAT_SQLSCRIPT)) {
+        if (Strings.CI.equalsAny(statement.getFormat(), Statement.FORMAT_SQL, Statement.FORMAT_SQLSCRIPT)) {
             return executeCountSql(executeTarget, false);
-        } else if(sql.indexOf(JOIN_KEY) > -1 && sql.indexOf(JOIN_ON_KEY) > -1){
+        } else if(sql.contains(JOIN_KEY) && sql.contains(JOIN_ON_KEY)){
             return executeCountSql(executeTarget, true);
         } else {
             return executeCountJpql(statement, executeTarget);
@@ -245,6 +241,8 @@ public class Executor {
     }
 
     private static Long executeCountSql(ExecuteTarget executeTarget, boolean isOld) throws Exception {
+        checkDeleteInsertUpdateDml(executeTarget.getParsedStatement());
+        SqlSafetyChecker.check(executeTarget.getSql());
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             EntityManager em = emc.get(DynamicBaseEntity.class);
             LOGGER.debug("executeCountSql:{}, param:{}.", executeTarget::getSql, executeTarget::getQuestionMarkParam);
@@ -262,7 +260,7 @@ public class Executor {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Class<? extends JpaObject> cls = clazz(emc, statement);
             EntityManager em;
-            if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
+            if (Strings.CI.equals(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
                     && executeTarget.getParsedStatement() instanceof net.sf.jsqlparser.statement.select.Select) {
                 em = emc.get(DynamicBaseEntity.class);
             } else {
@@ -281,8 +279,7 @@ public class Executor {
     /**
      * jpql不支持insert,进行单独判断,然后判断checkDeleteInsertUpdateDml
      *
-     * @param statement
-     * @throws Exception
+     * @param statement Statement
      */
     private static void checkJpqlDeleteInsertUpdateDml(net.sf.jsqlparser.statement.Statement statement)
             throws Exception {
@@ -296,8 +293,7 @@ public class Executor {
     /**
      * 检查配置文件是否允许执行 delete,insert,update语句
      *
-     * @param statement
-     * @throws Exception
+     * @param statement Statement
      */
     private static void checkDeleteInsertUpdateDml(net.sf.jsqlparser.statement.Statement statement)
             throws Exception {
@@ -322,8 +318,8 @@ public class Executor {
     private static Class<? extends JpaObject> clazz(EntityManagerContainer entityManagerContainer, Statement statement)
             throws Exception {
         Class<? extends JpaObject> cls = null;
-        if (StringUtils.equals(Statement.ENTITYCATEGORY_OFFICIAL, statement.getEntityCategory())
-                || StringUtils.equals(Statement.ENTITYCATEGORY_CUSTOM, statement.getEntityCategory())) {
+        if (Strings.CS.equals(Statement.ENTITYCATEGORY_OFFICIAL, statement.getEntityCategory())
+                || Strings.CS.equals(Statement.ENTITYCATEGORY_CUSTOM, statement.getEntityCategory())) {
             cls = (Class<? extends JpaObject>) Thread.currentThread().getContextClassLoader()
                     .loadClass(statement.getEntityClassName());
         } else {
@@ -340,7 +336,7 @@ public class Executor {
 
     private static String joinSql(String sql) throws Exception{
         String upSql = sql.toUpperCase();
-        if (upSql.indexOf(JOIN_KEY) > -1 && upSql.indexOf(JOIN_ON_KEY) > -1) {
+        if (upSql.contains(JOIN_KEY) && upSql.contains(JOIN_ON_KEY)) {
             sql = sql.replaceAll("\\.", ".x");
             sql = sql.replaceAll("\\.x\\*", ".*");
             List<Table> tables;

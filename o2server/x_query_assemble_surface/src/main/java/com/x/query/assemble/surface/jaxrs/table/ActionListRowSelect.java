@@ -1,5 +1,6 @@
 package com.x.query.assemble.surface.jaxrs.table;
 
+import com.x.query.core.express.statement.SqlSafetyChecker;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -54,6 +55,7 @@ class ActionListRowSelect extends BaseAction {
 			if (StringUtils.isNotBlank(wi.getOrderBy())) {
 				sql += " order by " + wi.getOrderBy();
 			}
+			SqlSafetyChecker.check(sql);
 			List<?> list;
 			if (wi.getSize() != null && wi.getSize() > 0) {
 				list = em.createQuery(sql).setMaxResults(wi.getSize()).getResultList();
