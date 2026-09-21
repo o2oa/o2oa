@@ -84,7 +84,6 @@ window.O2ProcessorMobile = new Class({
         }
         if(  defaultRoute ){
             var flag = true;
-
             if( this.routeGroupNodeList && this.routeGroupNodeList.length ){
                  for( var i=0; i<this.routeGroupNodeList.length; i++ ){
                       var routeGroupNode = this.routeGroupNodeList[i];
