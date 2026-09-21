@@ -230,13 +230,15 @@ abstract class BaseAction extends StandardJaxrsAction {
                             throw new ExceptionTimeError("超过结束时间不能打卡");
                         }
                     }
+                    String dutyTimeString = record.getRecordDateString() + " " + record.getPreDutyTime();
+                    String checkTimeString = DateTools.format(checkTime, DateTools.format_yyyyMMddHHmm);
                     // 上班打卡
                     if (record.getCheckInType().equals(AttendanceV2CheckInRecord.OnDuty)) {
-
                         Date dutyTime = parseRecordDutyTime(record, record.getPreDutyTime());
                         checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
                         // 迟到
-                        if (checkTime.after(dutyTime)) {
+                        // 当前打卡时间大于需要打卡的时间 并且不是同一时间，防止比如 9:00 打卡判断成迟到
+                        if (checkTime.after(dutyTime) && !dutyTimeString.equals(checkTimeString)) {
                             checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_Late;
                         }
                         // 严重迟到
@@ -266,7 +268,8 @@ abstract class BaseAction extends StandardJaxrsAction {
                         Date offDutyTime = parseRecordDutyTime(record, record.getPreDutyTime());
                         checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
                         // 早退
-                        if (checkTime.before(offDutyTime)) {
+                        // 当前打卡时间小于需要打卡的时间 并且不是同一时间，防止比如 18:00 打卡判断成早退
+                        if (checkTime.before(offDutyTime) && !dutyTimeString.equals(checkTimeString)) {
                             checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_Early;
                         }
                         // 可以早走
