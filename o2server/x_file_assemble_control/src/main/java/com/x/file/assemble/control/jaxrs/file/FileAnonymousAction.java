@@ -29,7 +29,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 @JaxrsDescribe("File操作")
 public class FileAnonymousAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(FileAnonymousAction.class);
+	private static final Logger logger = LoggerFactory.getLogger(FileAnonymousAction.class);
 
 	@JaxrsMethodDescribe(value = "下载文件,以附件方式,不输出contentType头.", action = ActionDownloadStream.class)
 	@GET

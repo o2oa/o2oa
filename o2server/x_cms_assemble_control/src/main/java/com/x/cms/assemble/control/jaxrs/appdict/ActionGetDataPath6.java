@@ -1,5 +1,8 @@
 package com.x.cms.assemble.control.jaxrs.appdict;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.http.EffectivePerson;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -12,7 +15,7 @@ import com.x.cms.core.entity.element.AppDict;
 
 class ActionGetDataPath6 extends BaseAction {
 
-	ActionResult<JsonElement> execute(String appDictFlag, String appInfoFlag, String path0, String path1,
+	ActionResult<JsonElement> execute(EffectivePerson effectivePerson, String appDictFlag, String appInfoFlag, String path0, String path1,
 			String path2, String path3, String path4, String path5, String path6) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<JsonElement> result = new ActionResult<>();
@@ -20,6 +23,9 @@ class ActionGetDataPath6 extends BaseAction {
 			AppInfo appInfo = business.getAppInfoFactory().pick(appInfoFlag);
 			if (null == appInfo) {
 				throw new ExceptionAppInfoNotExist(appInfoFlag);
+			}
+			if( effectivePerson.isAnonymous() && BooleanUtils.isNotTrue(appInfo.getAllowAnonymousAccessDoc())) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			String id = business.getAppDictFactory().getWithAppInfoWithUniqueName(appInfo.getId(),
 					appDictFlag);

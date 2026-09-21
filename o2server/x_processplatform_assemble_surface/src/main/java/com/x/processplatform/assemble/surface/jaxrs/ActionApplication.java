@@ -1,10 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs;
 
-import javax.ws.rs.ApplicationPath;
-
 import com.x.base.core.project.Version;
 import com.x.base.core.project.jaxrs.AbstractActionApplication;
-import com.x.processplatform.assemble.surface.jaxrs.anonymous.AnonymousAction;
 import com.x.processplatform.assemble.surface.jaxrs.application.ApplicationAction;
 import com.x.processplatform.assemble.surface.jaxrs.applicationdict.ApplicationDictAction;
 import com.x.processplatform.assemble.surface.jaxrs.attachment.AttachmentAction;
@@ -38,12 +35,12 @@ import com.x.processplatform.assemble.surface.jaxrs.touch.TouchAction;
 import com.x.processplatform.assemble.surface.jaxrs.work.WorkAction;
 import com.x.processplatform.assemble.surface.jaxrs.workcompleted.WorkCompletedAction;
 import com.x.processplatform.assemble.surface.jaxrs.worklog.WorkLogAction;
-
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.servers.Server;
+import javax.ws.rs.ApplicationPath;
 
 @OpenAPIDefinition(servers = {
 		@Server(url = "../../x_processplatform_assemble_surface", description = "current server.") }, info = @Info(title = "流程应用前端服务", version = Version.VALUE, description = "o2server x_processplatform_assemble_surface interface", license = @License(name = "AGPL-3.0", url = "https://www.o2oa.net/license.html"), contact = @Contact(url = "https://www.o2oa.net", name = "o2oa", email = "admin@o2oa.net")))
@@ -63,7 +60,6 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(ReviewAction.class);
 		classes.add(ScriptAction.class);
 		classes.add(SerialNumberAction.class);
-		classes.add(TaskAction.class);
 		classes.add(TaskCompletedAction.class);
 		classes.add(WorkAction.class);
 		classes.add(WorkCompletedAction.class);
@@ -80,7 +76,6 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(ServiceAction.class);
 		classes.add(DraftAction.class);
 		classes.add(SnapAction.class);
-		classes.add(AnonymousAction.class);
 		classes.add(SignAction.class);
 		classes.add(CorrelationAction.class);
 		classes.add(DataRecordAction.class);

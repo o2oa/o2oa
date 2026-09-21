@@ -109,13 +109,9 @@ public class ActionQueryViewDocument extends BaseAction {
 			throw new ExceptionCategoryInfoNotExists( document.getCategoryId() );
 		}
 
-		if( isAnonymous && BooleanUtils.isNotTrue(appInfo.getAllowAnonymousAccessDoc())) {
-			throw new ExceptionAccessDenied(effectivePerson);
-		}
-
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			if(!business.isDocumentReader(effectivePerson, document)){
+			if(!business.isDocumentReader(effectivePerson, document, appInfo)){
 				throw new ExceptionAccessDenied(effectivePerson, document);
 			}
 		}

@@ -1,15 +1,5 @@
 package com.x.organization.assemble.authentication.jaxrs.sso;
 
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -29,6 +19,14 @@ import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.Crypto;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.Person;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionGetLogin extends BaseAction {
 
@@ -45,7 +43,7 @@ class ActionGetLogin extends BaseAction {
                 throw new ExceptionEmptyToken();
             }
             Sso sso = Config.token().findSso(client);
-            if (null == sso) {
+            if (null == sso || BooleanUtils.isNotTrue(sso.getEnable())) {
                 throw new ExceptionClientNotExist(client);
             }
             if (StringUtils.isEmpty(sso.getKey())) {

@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -48,7 +49,7 @@ class ActionPostLogin extends BaseAction {
 				throw new ExceptionEmptyToken();
 			}
 			Sso sso = Config.token().findSso(wi.getClient());
-			if (null == sso) {
+			if (null == sso || BooleanUtils.isNotTrue(sso.getEnable())) {
 				throw new ExceptionClientNotExist(wi.getClient());
 			}
 			if (StringUtils.isEmpty(sso.getKey())) {
