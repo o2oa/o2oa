@@ -346,6 +346,8 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 		debugger;
 		this._setBusinessData(value);
 		this.node.value = Array.isArray(value) ? JSON.stringify(value) : value;
+		var text = this.getText();
+		this.node.text = Array.isArray(text) ? JSON.stringify(text) : text;
 		this.fieldModuleLoaded = true;
 		this.moduleValueAG = null;
 	},
