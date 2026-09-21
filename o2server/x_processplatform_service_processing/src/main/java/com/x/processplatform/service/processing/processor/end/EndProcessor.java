@@ -77,9 +77,8 @@ public class EndProcessor extends AbstractEndProcessor {
 			WorkCompleted workCompleted = this.createWorkCompleted(aeiObjects.getWork(), end);
 			workCompleted.setAllowRollback(end.getAllowRollback());
 			aeiObjects.getCreateWorkCompleteds().add(workCompleted);
-			aeiObjects.getTasks().stream().forEach(o -> aeiObjects.getDeleteTasks().add(o));
-			aeiObjects.getDocumentVersions().stream().forEach(o -> aeiObjects.getDeleteDocumentVersions().add(o));
-			aeiObjects.getTaskCompleteds().stream().forEach(o -> {
+			aeiObjects.getTasks().forEach(o -> aeiObjects.getDeleteTasks().add(o));
+			aeiObjects.getTaskCompleteds().forEach(o -> {
 				// 已办的完成时间是不需要更新的
 				o.setCompleted(true);
 				o.setWorkCompleted(workCompleted.getId());
@@ -88,7 +87,7 @@ public class EndProcessor extends AbstractEndProcessor {
 				// 加入到更新队列保证事务开启
 				aeiObjects.getUpdateTaskCompleteds().add(o);
 			});
-			aeiObjects.getReads().stream().forEach(o -> {
+			aeiObjects.getReads().forEach(o -> {
 				// 待阅的完成时间是不需要更新的
 				o.setCompleted(true);
 				o.setWorkCompleted(workCompleted.getId());
@@ -97,7 +96,7 @@ public class EndProcessor extends AbstractEndProcessor {
 				// 加入到更新队列保证事务开启
 				aeiObjects.getUpdateReads().add(o);
 			});
-			aeiObjects.getReadCompleteds().stream().forEach(o -> {
+			aeiObjects.getReadCompleteds().forEach(o -> {
 				// 已阅的完成时间是不需要更新的
 				o.setCompleted(true);
 				o.setWorkCompleted(workCompleted.getId());
@@ -106,12 +105,12 @@ public class EndProcessor extends AbstractEndProcessor {
 				// 加入到更新队列保证事务开启
 				aeiObjects.getUpdateReadCompleteds().add(o);
 			});
-			aeiObjects.getRecords().stream().forEach(o -> {
+			aeiObjects.getRecords().forEach(o -> {
 				o.setCompleted(true);
 				o.setWorkCompleted(workCompleted.getId());
 				aeiObjects.getUpdateRecords().add(o);
 			});
-			aeiObjects.getReviews().stream().forEach(o -> {
+			aeiObjects.getReviews().forEach(o -> {
 				o.setCompleted(true);
 				o.setWorkCompleted(workCompleted.getId());
 				o.setCompletedTime(workCompleted.getCompletedTime());
@@ -121,7 +120,7 @@ public class EndProcessor extends AbstractEndProcessor {
 				// 加入到更新队列保证事务开启
 				aeiObjects.getUpdateReviews().add(o);
 			});
-			aeiObjects.getWorkLogs().stream().forEach(o -> {
+			aeiObjects.getWorkLogs().forEach(o -> {
 				o.setSplitting(false);
 				o.setSplitToken("");
 				o.getProperties().setSplitTokenList(new ArrayList<>());
@@ -135,7 +134,7 @@ public class EndProcessor extends AbstractEndProcessor {
 					aeiObjects.getDeleteWorkLogs().add(o);
 				}
 			});
-			aeiObjects.getAttachments().stream().forEach(o -> {
+			aeiObjects.getAttachments().forEach(o -> {
 				o.setCompleted(true);
 				o.setWorkCompleted(workCompleted.getId());
 				// 加入到更新队列保证事务开启
