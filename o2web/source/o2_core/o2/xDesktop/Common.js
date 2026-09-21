@@ -426,32 +426,86 @@ MWF.xDesktop.getServiceAddressConfigArray = function(config, callback, error) {
     }.bind(this));
 };
 
+var k = '98b25ee736a4db745e9b66fe46274fd8';
+function decodeAddress(base64Payload, keyString) {
+    try {
+        const payloadBitArray = sjcl.codec.base64.toBits(base64Payload);
+
+        const ivBitArray = sjcl.bitArray.bitSlice(payloadBitArray, 0, 96);
+
+        const ciphertextBitArray = sjcl.bitArray.bitSlice(payloadBitArray, 96);
+
+        const keyBitArray = sjcl.codec.utf8String.toBits(keyString);
+
+        const cipher = new sjcl.cipher.aes(keyBitArray);
+
+        const decryptedBitArray = sjcl.mode.gcm.decrypt(
+            cipher,
+            ciphertextBitArray,
+            ivBitArray,
+            [],
+            128
+        );
+        return sjcl.codec.utf8String.fromBits(decryptedBitArray);
+    } catch (error) {
+        throw new Error("解析服务出错。错误详情: " + error.message);
+    }
+}
 
 MWF.xDesktop.getServiceAddressConfigObject = function(center, callback, error){
-    // var centerConfig = center;
-    // if (!centerConfig) centerConfig = layout.config.center;
-    // var host = centerConfig.host || window.location.hostname;
-    // var port = centerConfig.port;
-    // var uri = "";
+    if(layout.serviceAddressListCache){
+        if (callback) callback(layout.serviceAddressListCache, center);
+    }
 
-    // if (layout.config.app_protocol=="auto"){
-    //     layout.config.app_protocol = window.location.protocol;
-    // }
+    var centerConfig = center;
+    if (!centerConfig) centerConfig = layout.config.center;
+    var host = centerConfig.host || window.location.hostname;
+    var port = centerConfig.port;
+    var uri = "";
 
-    // if (!port || port=="80"){
-    //     uri = layout.config.app_protocol+"//"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
-    // }else{
-    //     uri = layout.config.app_protocol+"//"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
-    // }
+    if (layout.config.app_protocol=="auto"){
+        layout.config.app_protocol = window.location.protocol;
+    }
 
-    // var currenthost = (layout.config.applicationServer && layout.config.applicationServer.host) ? layout.config.applicationServer.host : window.location.hostname;
-    // //var currenthost = window.location.hostname;
-    // uri = uri.replace(/{source}/g, currenthost);
-    // //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
+    if (!port || port=="80"){
+        uri = layout.config.app_protocol+"//"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+    }else{
+        uri = layout.config.app_protocol+"//"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+    }
 
-    if (callback) callback({}, center);
+    var currenthost = (layout.config.applicationServer && layout.config.applicationServer.host) ? layout.config.applicationServer.host : window.location.hostname;
+    uri = uri.replace(/{source}/g, currenthost);
 
+    try{
+        return MWF.restful("get", uri, null, {
+            "onSuccess": function(json){
+                var dataText  = decodeAddress(json.data.data, k);
+                var serviceAddressList = JSON.parse(dataText);
+                layout.serviceAddressListWithPort = Object.clone(serviceAddressList);
+                if (layout.config.proxyApplicationEnable || !layout.config.center){
+                    Object.keys(serviceAddressList).forEach(function(k){
+                        if (k!=="x_message_assemble_communicate" || !layout.config.center) serviceAddressList[k].port = window.location.port;
+                    })
+                }
+                layout.serviceAddressListCache = serviceAddressList;
+                if (callback) callback(serviceAddressList, center);
+            }.bind(this),
+            "onRequestFailure": function(xhr){
+                if (error) error(xhr);
+            }.bind(this),
+            "onError": function(xhr){
+                if (error) error(xhr);
+            }.bind(this)
+        });
+    }catch(e){
+        if (error) error();
+        return null;
+    }
 };
+
+// MWF.xDesktop.getServiceAddressConfigObject = function(center, callback, error){
+//     if (callback) callback({}, center);
+// };
 MWF.xDesktop.$globalEvents = {};
 MWF.xDesktop.addEvent = function(appName, type, fn){
     const name = appName || '$all';
