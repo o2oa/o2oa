@@ -1,7 +1,5 @@
 package com.x.file.assemble.control.jaxrs.file;
 
-import java.util.List;
-
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -9,16 +7,20 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.EqualsTerms;
+import com.x.file.assemble.control.Business;
 import com.x.file.core.entity.open.File;
+import java.util.List;
 
 class ActionListPrev extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, Integer count) throws Exception {
-		ActionResult<List<Wo>> result = new ActionResult<>();
+		Business business = new Business(null);
+		if(!business.controlAble(effectivePerson)) {
+			throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+		}
 		EqualsTerms equals = new EqualsTerms();
 		equals.put("person", effectivePerson.getDistinguishedName());
-		result = this.standardListPrev(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, equals, null, null, null,
+		return this.standardListPrev(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, equals, null, null, null,
 				null, null, null, null, true, DESC);
-		return result;
 	}
 
 	public static class Wo extends File {

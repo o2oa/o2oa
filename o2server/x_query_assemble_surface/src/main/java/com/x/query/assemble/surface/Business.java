@@ -377,7 +377,7 @@ public class Business {
                 OrganizationDefinition.Manager, OrganizationDefinition.QueryManager)))) {
             result = true;
         }
-        if (!result) {
+        if (!result && o != null) {
             if (ListTools.isEmpty(o.getEditPersonList()) && ListTools.isEmpty(o.getEditUnitList())) {
                 result = true;
             } else if (ListTools.isNotEmpty(o.getEditPersonList()) && effectivePerson.isPerson(o.getEditPersonList())) {
