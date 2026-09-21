@@ -1,5 +1,6 @@
 package com.x.query.assemble.designer.jaxrs.table;
 
+import com.x.query.core.express.statement.SqlSafetyChecker;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -42,6 +43,7 @@ class ActionListRowSelectWhere extends BaseAction {
 			if (StringUtils.isNotBlank(where) && (!StringUtils.equals(where, EMPTY_SYMBOL))) {
 				sql += " where (" + where + ")";
 			}
+			SqlSafetyChecker.check(sql);
 			List<?> list = em.createQuery(sql).getResultList();
 			result.setData(list);
 			return result;
