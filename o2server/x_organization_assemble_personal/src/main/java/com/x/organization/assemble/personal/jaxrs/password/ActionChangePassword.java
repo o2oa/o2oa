@@ -52,8 +52,13 @@ class ActionChangePassword extends ActionBase {
 			if (Strings.CS.equals(wi.getNewPassword(), wi.getOldPassword())) {
 				throw new ExceptionNewPasswordSameAsOldPassword();
 			}
-			boolean flag =  Strings.CS.equals(Crypto.decrypt(person.getPassword(), Config.token().getKey(), Config.person().getEncryptType()),
-					wi.getOldPassword()) ||
+			String personPwd = person.getPassword();
+			try {
+				personPwd = Crypto.decrypt(personPwd, Config.token().getKey(), Config.person().getEncryptType());
+			} catch (Exception e) {
+				logger.debug(e.getMessage());
+			}
+			boolean flag =  Strings.CS.equals(personPwd, wi.getOldPassword()) ||
 					Strings.CS.equals(Crypto.encodeDES(wi.getOldPassword(), Config.token().getKey()),
 							person.getPassword()) ||
 					Strings.CS.equals(MD5Tool.getMD5Str(wi.getOldPassword()), person.getPassword());

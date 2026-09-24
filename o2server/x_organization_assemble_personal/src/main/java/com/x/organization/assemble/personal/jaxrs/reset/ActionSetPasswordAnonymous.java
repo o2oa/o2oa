@@ -75,8 +75,13 @@ public class ActionSetPasswordAnonymous extends BaseAction {
                 if (!Strings.CS.equals(newPassword, confirmPassword)) {
                     throw new ExceptionTwicePasswordNotMatch();
                 }
-                boolean flag =  Strings.CS.equals(Crypto.decrypt(person.getPassword(), Config.token().getKey(), Config.person().getEncryptType()),
-                        oldPassword) ||
+                String personPwd = person.getPassword();
+                try {
+                    personPwd = Crypto.decrypt(personPwd, Config.token().getKey(), Config.person().getEncryptType());
+                } catch (Exception e) {
+                    LOGGER.debug(e.getMessage());
+                }
+                boolean flag =  Strings.CS.equals(personPwd, oldPassword) ||
                         Strings.CS.equals(Crypto.encodeDES(oldPassword, Config.token().getKey()),
                                 person.getPassword()) ||
                         Strings.CS.equals(MD5Tool.getMD5Str(oldPassword), person.getPassword());
