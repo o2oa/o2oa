@@ -60,12 +60,10 @@ class ActionSetPassword extends BaseAction {
 				String confirmPassword = wi.getConfirmPassword();
 				String isEncrypted = wi.getIsEncrypted();
 
-				if (!StringUtils.isEmpty(isEncrypted)) {
-					if (isEncrypted.trim().equalsIgnoreCase("y")) {
-						oldPassword = this.decryptRSA(oldPassword);
-						newPassword = this.decryptRSA(newPassword);
-						confirmPassword = this.decryptRSA(confirmPassword);
-					}
+				if (!StringUtils.isEmpty(isEncrypted) && (isEncrypted.trim().equalsIgnoreCase("y"))) {
+					oldPassword = this.decryptRSA(oldPassword);
+					newPassword = this.decryptRSA(newPassword);
+					confirmPassword = this.decryptRSA(confirmPassword);
 				}
 
 				if (!Strings.CS.equals(newPassword, confirmPassword)) {
@@ -74,8 +72,13 @@ class ActionSetPassword extends BaseAction {
 				if (Strings.CS.equals(newPassword, oldPassword)) {
 					throw new ExceptionNewPasswordSameAsOldPassword();
 				}
-				boolean flag =  Strings.CS.equals(Crypto.decrypt(person.getPassword(), Config.token().getKey(), Config.person().getEncryptType()),
-						oldPassword) ||
+				String personPwd = person.getPassword();
+				try {
+					personPwd = Crypto.decrypt(personPwd, Config.token().getKey(), Config.person().getEncryptType());
+				} catch (Exception e) {
+					logger.debug(e.getMessage());
+				}
+				boolean flag =  Strings.CS.equals(personPwd, oldPassword) ||
 						Strings.CS.equals(Crypto.encodeDES(oldPassword, Config.token().getKey()),
 								person.getPassword()) ||
 						Strings.CS.equals(MD5Tool.getMD5Str(oldPassword), person.getPassword());

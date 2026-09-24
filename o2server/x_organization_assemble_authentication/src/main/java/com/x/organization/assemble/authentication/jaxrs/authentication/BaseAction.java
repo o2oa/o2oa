@@ -224,9 +224,15 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (BooleanUtils.isTrue(Config.token().getLdapAuth().getEnable())) {
 			return LdapTools.auth(credential, password);
 		}
-		return (Strings.CS.equals(Crypto.decrypt(person.getPassword(), Config.token().getKey(), Config.person().getEncryptType()), password)
-				|| Strings.CS.equals(Crypto.encodeDES(password, Config.token().getKey()), person.getPassword())
-				|| Strings.CS.equals(MD5Tool.getMD5Str(password), person.getPassword()));
+		String personPwd = person.getPassword();
+		try {
+			personPwd = Crypto.decrypt(personPwd, Config.token().getKey(), Config.person().getEncryptType());
+		} catch (Exception e) {
+			LOGGER.debug(e.getMessage());
+		}
+		return (Strings.CS.equals(personPwd, password) ||
+				Strings.CS.equals(Crypto.encodeDES(password, Config.token().getKey()),person.getPassword()) ||
+				Strings.CS.equals(MD5Tool.getMD5Str(password), person.getPassword()));
 	}
 
 	public abstract static class AbstractWoAuthentication extends Person {
