@@ -74,8 +74,8 @@ class ActionSetPassword extends BaseAction {
 				if (Strings.CS.equals(newPassword, oldPassword)) {
 					throw new ExceptionNewPasswordSameAsOldPassword();
 				}
-				boolean flag =  Strings.CS.equals(Crypto.encrypt(oldPassword, Config.token().getKey(), Config.person().getEncryptType()),
-						person.getPassword()) ||
+				boolean flag =  Strings.CS.equals(Crypto.decrypt(person.getPassword(), Config.token().getKey(), Config.person().getEncryptType()),
+						oldPassword) ||
 						Strings.CS.equals(Crypto.encodeDES(oldPassword, Config.token().getKey()),
 								person.getPassword()) ||
 						Strings.CS.equals(MD5Tool.getMD5Str(oldPassword), person.getPassword());
