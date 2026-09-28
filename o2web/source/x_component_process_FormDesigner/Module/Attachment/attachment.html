@@ -188,9 +188,9 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.allowAI}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="isAIAtt" text{($.isDownload!=='n' && $.isDownload!=='hidden')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
-                    <input class="editTableRadio" name="isAIAtt" text{($.isDownload=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}
-                    <input class="editTableRadio" name="isAIAtt" text{($.isDownload=='hidden')?'checked':''} type="radio" value="hidden"/>{{$.lp.hide}}
+                    <input class="editTableRadio" name="isAIAtt" text{($.isAIAtt!=='n' && $.isAIAtt!=='hidden')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
+                    <input class="editTableRadio" name="isAIAtt" text{($.isAIAtt=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}
+                    <input class="editTableRadio" name="isAIAtt" text{($.isAIAtt=='hidden')?'checked':''} type="radio" value="hidden"/>{{$.lp.hide}}
                 </td>
             </tr>
             <tr>
