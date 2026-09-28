@@ -147,7 +147,10 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
             this.loadDocument();
         },
         createDocumentByTemplate : function (callback){
-
+            if (this.form.businessData.work.startTime){
+            }else{
+                this.form.saveFormDataDraftSync();
+            }
             this.action.CustomAction.getInfo(this.json.template).then(function(json) {
                 var data = {
                     "fileName": MWF.xApplication.process.Xform.LP.onlyoffice.filetext + "." + json.data.extension,
@@ -169,6 +172,10 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
             }.bind(this))
         },
         createDocument : function (callback){
+            if (this.form.businessData.work.startTime){
+            }else{
+                this.form.saveFormDataDraftSync();
+            }
             var data = {
                 "fileName" : MWF.xApplication.process.Xform.LP.onlyoffice.filetext + "." + this.json.officeType,
                 "appToken" : this.appToken,
@@ -509,10 +516,14 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class(
 
             var jsonData = {}
             jsonData[this.json.id] = data;
+            if (this.form.businessData.work.startTime){
+                o2.Actions.load(this.appToken).DataAction.updateWithJob(this.form.businessData.work.job, jsonData, function (json) {
+                    data = json.data;
+                })
+            }else{
+                this.form.saveFormDataDraftSync();
+            }
 
-            o2.Actions.load(this.appToken).DataAction.updateWithJob(this.form.businessData.work.job, jsonData, function (json) {
-                data = json.data;
-            })
         },
         /**
          * @summary 保存wps
