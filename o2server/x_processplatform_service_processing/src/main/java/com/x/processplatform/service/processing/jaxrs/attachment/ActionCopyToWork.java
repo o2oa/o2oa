@@ -81,7 +81,13 @@ class ActionCopyToWork extends BaseAction {
 				List<Attachment> adds = new ArrayList<>();
 				for (WiAttachment w : ListTools.trim(wi.getAttachmentList(), true, true)) {
 					Attachment attachment = this.joinAttachment(effectivePerson.getDistinguishedName(), work, w, emc);
-					adds.add(attachment);
+					if(!WiAttachment.COPY_FROM_DRAFT.equals(w.getCopyFrom())) {
+						adds.add(attachment);
+					}else{
+						emc.beginTransaction(Attachment.class);
+						emc.check(attachment, CheckPersistType.all);
+						emc.commit();
+					}
 				}
 				if (!adds.isEmpty()) {
 					emc.beginTransaction(Attachment.class);
@@ -137,6 +143,19 @@ class ActionCopyToWork extends BaseAction {
 					if(StringUtils.isBlank(attachment.getSite())){
 						attachment.setSite("attachment");
 					}
+				}else if(WiAttachment.COPY_FROM_DRAFT.equals(w.getCopyFrom())){
+					if(o == null){
+						throw new ExceptionEntityNotExist(w.getId(), Attachment.class);
+					}
+					o.setWorkCreateTime(work.getCreateTime() != null ? work.getCreateTime() : new Date());
+					o.setApplication(work.getApplication());
+					o.setProcess(work.getProcess());
+					o.setJob(work.getJob());
+					o.setActivity(work.getActivity());
+					o.setActivityName(work.getActivityName());
+					o.setActivityToken(work.getActivityToken());
+					o.setActivityType(work.getActivityType());
+					return o;
 				}else{
 					if(o == null){
 						throw new ExceptionEntityNotExist(w.getId(), Attachment.class);

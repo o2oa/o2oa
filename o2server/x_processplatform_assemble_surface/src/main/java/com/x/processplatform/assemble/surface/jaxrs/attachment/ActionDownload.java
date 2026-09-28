@@ -1,11 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import java.util.List;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
@@ -22,10 +16,14 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.Draft;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionDownload extends BaseAction {
 
@@ -46,7 +44,12 @@ class ActionDownload extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			if (BooleanUtils.isNotTrue(new JobControlBuilder(effectivePerson, business, attachment.getJob())
+			Draft draft = emc.find(attachment.getJob(), Draft.class);
+			if (draft != null){
+				if(effectivePerson.isNotManager() && !effectivePerson.getDistinguishedName().equals(draft.getPerson())) {
+					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName(), attachment.getJob());
+				}
+			}else if (BooleanUtils.isNotTrue(new JobControlBuilder(effectivePerson, business, attachment.getJob())
 					.enableAllowVisit().build().getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, id);
 			}
