@@ -1627,6 +1627,27 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "afterUpload",
 
             /**
+             * 附件替换前触发。本事件中可以通过this.event获取上传的文件数组
+             * @event MWF.xApplication.process.Xform.Attachment#beforeReplace
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeReplace",
+
+            /**
+             * 每个附件替换后触发。本事件中可以通过this.event获取上传附件的数据
+             * @event MWF.xApplication.process.Xform.Attachment#replace
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "replace",
+
+            /**
+             * 多选的附件替换完成后触发。this.event为当前附件组件的附件列表
+             * @event MWF.xApplication.process.Xform.Attachment#afterReplace
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterReplace",
+
+            /**
              * 从网盘拷贝之前触发。本事件中可以通过this.event获取拷贝的附件数组
              * @event MWF.xApplication.process.Xform.Attachment#copy
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -2354,6 +2375,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             function(){ //finish
                 this.form.workAction.listAttachments(this.form.businessData.work.id, function (json) {
                     this.attachmentController.orderAttachments(json.data);
+                    this.fireEvent("afterReplace", [json.data]);
                 }.bind(this));
             }.bind(this),
             function (o) { //every
@@ -2361,6 +2383,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     attachment.data = json.data;
                     attachment.reload();
 
+                    this.fireEvent("replace", [json.data]);
                     this.fireEvent("change");
 
                     if (o.messageId && this.attachmentController.messageItemList) {
@@ -2373,7 +2396,10 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     this.save();
                 }.bind(this))
             }.bind(this),
-            null,
+            function(files, parameter){
+                this.fireEvent("beforeReplace", [files]);
+                return true;
+            }.bind(this),
             true,
             accept,
             size,

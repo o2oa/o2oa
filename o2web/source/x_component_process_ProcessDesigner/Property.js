@@ -1356,6 +1356,15 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                 var icon = this.data[id];
                 var iconNode = new Element("div", {"styles": this.process.css.processIconNode}).inject(node);
                 if (icon) iconNode.setStyles({"background": "url("+icon+") center center no-repeat"});
+
+                var clearNode = new Element("div", {"styles": this.process.css.processIconSelectNode, "text": "清除图标"}).inject(node);
+                clearNode.addEvent("click", function(e){
+                    var id = node.get("name");
+                    this.data[id] = '';
+                    node.getFirst("div").setStyle("background-image", "");
+                    e.stopPropagation();
+                }.bind(this));
+
                 var selectNode = new Element("div", {"styles": this.process.css.processIconSelectNode, "text": this.process.designer.lp.selectIcon}).inject(node);
                 selectNode.addEvent("click", function(){
                     this.selectIcon(node);

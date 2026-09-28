@@ -502,7 +502,8 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
             function (){ //finish
                 o2.Actions.load('x_cms_assemble_control').FileInfoAction.listFileInfoByDocumentId(this.form.businessData.document.id, function (json){
                     this.attachmentController.orderAttachments(json.data);
-                }.bind(this))
+                    this.fireEvent("afterReplace", [json.data]);
+                }.bind(this));
             }.bind(this),
             function (o) { //every
                 this.form.documentAction.getAttachment(attachment.data.id, this.form.businessData.document.id, function (json) {
@@ -510,6 +511,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                     attachment.data = json.data;
                     attachment.reload();
 
+                    this.fireEvent("replace", [json.data]);
                     this.fireEvent("change");
 
                     if (o.messageId && this.attachmentController.messageItemList) {
@@ -521,7 +523,12 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
 
                     this.save();
                 }.bind(this))
-            }.bind(this), null, true, accept, size, function (o) { //错误的回调
+            }.bind(this),
+            function(files, parameter){
+                this.fireEvent("beforeReplace", [files]);
+                return true;
+            }.bind(this),
+             true, accept, size, function (o) { //错误的回调
                 if (o.messageId && this.attachmentController.messageItemList) {
                     var message = this.attachmentController.messageItemList[o.messageId];
                     if( message && message.node )message.node.destroy();
