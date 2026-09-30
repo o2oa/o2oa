@@ -251,7 +251,7 @@ MWF.xApplication.process.ProcessDesigner.LP={
 		"instanceMode": "instance",
 		"draftMode": "draft",
 		"instanceModeInfo": "(Create a process instance directly when creating a new process, and generate to-do for the drafter)",
-		"draftModeInfo": "(When creating a new process, no process instance is created, no to-do is generated, a draft document is generated, and the process instance is not created until the transfer.Attachments cannot be uploaded in draft mode.)",
+		"draftModeInfo": "(When creating a new process, no process instance is created, no to-do items are generated, and a draft document is produced. The process instance is only created when the workflow is completed. Document association is not supported in draft mode.)",
 		"checkDraft": "Check Draft",
 		"checkDraftInfo": "(Select \"Yes\": unsaved process instances will not be retained)",
 		"power": "Power",
