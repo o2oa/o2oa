@@ -29,16 +29,15 @@ public class StackTraceTask implements Job {
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		try {
 			Date now = new Date();
-			String pid = Files.readString(Paths.get(Config.base(), "pid.log"));
+			String pid = Files.readString(Paths.get(Config.base(), "pid.log")).trim();
+			if (!pid.matches("[0-9]+")) {
+				throw new JobExecutionException("invalid pid value in pid.log: " + pid);
+			}
 			String file = Config.dir_logs().getAbsolutePath() + "/jstack_" + Config.node() + "_"
 					+ DateTools.format(now, DateTools.formatCompact_yyyyMMddHHmmss) + ".txt";
-			String command = Config.command_jstack_path().toString() + " -l -e " + pid + " > " + file;
-			java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder();
-			if (SystemUtils.IS_OS_WINDOWS) {
-				processBuilder.command("cmd", "/c", command);
-			} else {
-				processBuilder.command("sh", "-c", command);
-			}
+			java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder(
+					Config.command_jstack_path().toString(), "-l", "-e", pid);
+			processBuilder.redirectOutput(new java.io.File(file));
 			Process p = processBuilder.start();
 			String resp = IOUtils.toString(p.getErrorStream(), DefaultCharset.charset_utf_8);
 			LOGGER.print("schedule stack trace to {}, {}.", file, resp);
