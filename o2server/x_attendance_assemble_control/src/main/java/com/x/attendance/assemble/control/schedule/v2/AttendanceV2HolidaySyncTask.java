@@ -53,7 +53,10 @@ public class AttendanceV2HolidaySyncTask extends AbstractJob {
                 return;
             }
             HolidaySource source = fetchHolidaySource(year);
-            if (source == null || source.getDays() == null || source.getDays().isEmpty()) {
+            if (source == null) {
+                return;
+            }
+            if (source.getDays() == null || source.getDays().isEmpty()) {
                 logger.warn("{} 年中国节假日数据为空，跳过写入。", year);
                 return;
             }
@@ -71,7 +74,7 @@ public class AttendanceV2HolidaySyncTask extends AbstractJob {
         return list != null && !list.isEmpty();
     }
 
-    private HolidaySource fetchHolidaySource(int year) throws Exception {
+    private HolidaySource fetchHolidaySource(int year) {
         String url = String.format(HOLIDAY_URL, year);
         HttpURLConnection connection = null;
         try {
@@ -93,9 +96,13 @@ public class AttendanceV2HolidaySyncTask extends AbstractJob {
                 }
             }
             if (builder.length() == 0) {
+                logger.warn("读取中国节假日数据失败，年份: {}, 响应内容为空，地址: {}", year, url);
                 return null;
             }
             return XGsonBuilder.instance().fromJson(builder.toString(), HolidaySource.class);
+        } catch (Exception e) {
+            logger.warn("读取中国节假日数据失败，年份: {}, 无法访问远程地址: {}", year, url);
+            return null;
         } finally {
             if (connection != null) {
                 connection.disconnect();
