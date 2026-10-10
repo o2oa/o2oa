@@ -29,6 +29,9 @@ public class WrapInDocumentFilter {
 	@FieldDescribe( "是否需要查询数据，默认不查询." )
 	private Boolean needData = false;
 
+	@FieldDescribe("是否含有首页图片")
+	private Boolean hasIndexPic;
+
 	@FieldDescribe( "是否已读：ALL|READ|UNREAD." )
 	private String readFlag = "ALL";
 
@@ -302,6 +305,14 @@ public class WrapInDocumentFilter {
 		this.categoryNameList = categoryNameList;
 	}
 
+	public Boolean getHasIndexPic() {
+		return hasIndexPic;
+	}
+
+	public void setHasIndexPic(Boolean hasIndexPic) {
+		this.hasIndexPic = hasIndexPic;
+	}
+
 	public String getStringValue01() {
 		return stringValue01;
 	}
@@ -467,6 +478,14 @@ public class WrapInDocumentFilter {
 				queryFilter.addIsTrueTerm( new IsTrueTerm( "isTop" ) );
 			}else if( "UNTOP".equals( this.getTopFlag() )) {
 				queryFilter.addIsFalseTerm( new IsFalseTerm( "isTop" ) );
+			}
+		}
+
+		if(this.getHasIndexPic() != null){
+			if(Boolean.TRUE.equals(this.getHasIndexPic())){
+				queryFilter.addIsTrueTerm( new IsTrueTerm( "hasIndexPic" ) );
+			}else{
+				queryFilter.addIsFalseTerm( new IsFalseTerm( "hasIndexPic" ) );
 			}
 		}
 
