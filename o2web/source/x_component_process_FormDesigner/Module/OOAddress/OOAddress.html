@@ -48,6 +48,12 @@
                     <input type="radio" name="selectRange" value="county" text{($.selectRange==='county' || !$.selectRange)?'checked':''}/>{{$.lp.county}}
                 </td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.showSeparator}}:</td>
+                <td class="editTableValue">
+                    <input type="text" name="separator" value="text{$.separator}" class="editTableInput"/>
+                </td>
+            </tr>
         </table>
 
         <div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
