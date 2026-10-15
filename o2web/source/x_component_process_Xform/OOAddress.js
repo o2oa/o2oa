@@ -49,6 +49,12 @@ MWF.xApplication.process.Xform.OOAddress = MWF.APPOOAddress = new Class({
             this.node.setAttribute('view-style', '');
         }
 
+        if (this.json.checkStrictly) {
+            this.node.setAttribute('check-strictly', 'true');
+        }else{
+            this.node.removeAttribute('check-strictly');
+        }
+
         this.node.setAttribute('readonly', false);
         this.node.setAttribute('readmode', false);
         this.node.setAttribute('disabled', false);

@@ -47,6 +47,13 @@
                     <input type="radio" name="selectRange" value="city" text{($.selectRange==='city')?'checked':''}/>{{$.lp.city}}
                     <input type="radio" name="selectRange" value="county" text{($.selectRange==='county' || !$.selectRange)?'checked':''}/>{{$.lp.county}}
                 </td>
+            <tr>
+                <td class="editTableTitle">{{$.lp.checkStrictly}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="checkStrictly" value="true" text{($.checkStrictly===true)?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="checkStrictly" value="false" text{($.checkStrictly!==true)?'checked':''}/>{{$.lp.no}}
+                    <div style="padding: 5px">{{$.lp.checkStrictlyInfo}}</div>
+                </td>
             </tr>
             <tr>
                 <td class="editTableTitle">{{$.lp.showSeparator}}:</td>
