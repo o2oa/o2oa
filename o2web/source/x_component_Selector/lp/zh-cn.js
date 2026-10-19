@@ -8,6 +8,7 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "selectGroup": "选择群组",
     "selectRole": "选择角色",
     "selectDuty": "选择职务",
+    "selectPage": "选择页面",
     "selectField": "选择字段",
     "selectFile": "选择资源文件",
     "selectAppliction": "选择流程应用",
