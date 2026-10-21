@@ -124,7 +124,7 @@ public class Invoke extends SliceJpaObject {
 	@FieldDescribe("是否允许匿名用户访问接口.")
 	@Column(name = ColumnNamePrefix + enableAnonymous_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private Boolean enableAnonymous = true;
+	private Boolean enableAnonymous = false;
 
 	public static final String text_FIELDNAME = "text";
 	@FieldDescribe("脚本内容.")
