@@ -211,6 +211,64 @@
     z-index: 11;
 }
 
+.form-layout .form-datatable-card .mwf_datatable_top{
+    display: flex;
+}
+.form-layout .form-datatable-card .mwf_datatable:nth-child(odd) {
+    background-color: var(--oo-color-hover) !important;
+}
+.form-layout .form-datatable-card .sequenceDiv{
+    display: none;
+}
+.form-layout .form-datatable-card .mwf_sequence{
+    display: none;
+}
+div[mwftype='datatable'].form-datatable-card .mwf_datatable:nth-child(odd) .mwf_editaction {
+    background-color: var(--oo-color-over) !important;
+    margin-right: 0;
+}
+div[mwftype='datatable'].form-datatable-card .mwf_datatable:nth-child(even) .mwf_editaction {
+    background-color: #f0f0f0 !important;
+    margin-right: 0;
+}
+.form-layout .form-datatable-card .mwf_editaction{
+    flex: 1;
+    padding: 0.4em 0.5em !important;
+}
+.form-layout .form-datatable-card .delLineAction,
+.form-layout .form-datatable-card .editLineAction,
+.form-layout .form-datatable-card .addLineAction,
+.form-layout .form-datatable-card .cancelLineEditAction,
+.form-layout .form-datatable-card .completeLineAction {
+    height: auto !important;
+    line-height: unset !important;
+    width: auto !important;
+    padding: 5px 8px 8px 8px !important;
+    background: #fff !important;
+    border: 1px solid #999999 !important;
+    border-radius: 4px !important;
+    color: #333 !important;
+}
+.form-layout .form-datatable-card tr:nth-child(odd),
+.form-layout .form-datatable-card tr:nth-child(even){
+    background: transparent !important;
+}
+div[mwftype='datatable'].form-datatable-card oo-input[readmode='false'],
+div[mwftype='datatable'].form-datatable-card oo-selector[readmode='false'],
+div[mwftype='datatable'].form-datatable-card oo-textarea[readmode='false'],
+div[mwftype='datatable'].form-datatable-card oo-select[readmode='false'],
+div[mwftype='datatable'].form-datatable-card oo-cascade[readmode='false'],
+div[mwftype='datatable'].form-datatable-card oo-currency[readmode='false'],
+div[mwftype='datatable'].form-datatable-card oo-datetime[readmode='false'] {
+    background-color: #ffffff;
+}
+.form-layout .form-datatable-card .mwf_origional{
+    padding: 0.3em 0.3em !important;
+    vertical-align: middle;
+    font-size: 1rem;
+    background: transparent !important;
+}
+
 .form-layout td[mwftype='datatable$Data'].mwf_origional > * {
     /* width: 100%; */
 }

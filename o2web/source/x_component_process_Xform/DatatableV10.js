@@ -1,5 +1,5 @@
 MWF.xDesktop.requireApp('process.Xform', 'DatatablePC', null, false);
-MWF.xApplication.process.Xform.DatatableV10 = new Class({
+MWF.xApplication.process.Xform.DatatableV10 = MWF.APPDatatableV10 = new Class({
     Implements: [Events],
     Extends: MWF.xApplication.process.Xform.DatatablePC,
     isEdit: false,
