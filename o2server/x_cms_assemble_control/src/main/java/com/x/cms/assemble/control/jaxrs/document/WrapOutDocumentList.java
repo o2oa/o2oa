@@ -17,7 +17,7 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 	private String sequence;
 
 	@FieldDescribe( "文档ID." )
-	private String id = Document.createId();
+	private String id;
 
 	@FieldDescribe( "创建时间" )
 	private Date createTime;
