@@ -194,7 +194,19 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var type = this.currentList.options.type.capitalize();
 		switch (type) {
 			case "MyCreated":
-				return this.action.ReviewAction.filterCreateEntry().then(function(json){return json.data});
+				return this.action.ReviewAction.filterCreateEntry().then(function(json){
+					json.data.completedList = [
+						{
+							"name": "completed",
+							"value": true
+						},
+						{
+							"name": "not completed",
+							"value": false
+						}
+					];
+					return json.data;
+				});
 			case "Review":
 				return this.action.ReviewAction.filterEntry().then(function(json){return json.data});
 			default:
@@ -280,6 +292,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		document.body.addEvent("mousedown", closeFilterDlg);
 	},
 	selectFilterItem: function(name, value, category, e){
+		debugger;
 		var node = e.target;
 		// var value = node.dataset.value;
 		// var category = node.dataset.category;
@@ -1910,7 +1923,20 @@ MWF.xApplication.process.workcenter.MyCreatedList = new Class({
 	loadData: function(){
 		// this.app.filterActionNode.hide();
 		var _self = this;
-		return this.action.ReviewAction.V2ListCreatePaging(this.page, this.size, this.filterList||{}).then(function(json){
+
+		var filter = Object.clone( this.filterList||{} );
+		if( filter.completedList?.length ){
+			var completed = filter.completedList.includes('true');
+			var notcompleted = filter.completedList.includes('false');
+			if( completed && !notcompleted ){
+				filter.completed = 'true';
+			}else if(!completed && notcompleted){
+				filter.notCompleted = 'true';
+			}
+			delete filter.completedList;
+		}
+
+		return this.action.ReviewAction.V2ListCreatePaging(this.page, this.size, filter).then(function(json){
 			_self.fireEvent("loadData");
 			_self.total = json.count;
 			return json.data;

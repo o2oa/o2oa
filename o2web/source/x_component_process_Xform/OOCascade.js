@@ -28,6 +28,12 @@ MWF.xApplication.process.Xform.OOCascade = MWF.APPOOCascade =  new Class({
 			this.node.setAttribute('label', this.json.label);
 		}
 
+		if (this.json.separator) {
+			this.node.setAttribute('separator', this.json.separator);
+		}else{
+			this.node.removeAttribute('separator');
+		}
+
 		if (this.json.inDatatable){
             this.node.setAttribute('view-style', '');
         }

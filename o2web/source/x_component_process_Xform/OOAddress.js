@@ -39,9 +39,20 @@ MWF.xApplication.process.Xform.OOAddress = MWF.APPOOAddress = new Class({
         if (this.json.label) {
             this.node.setAttribute('label', this.json.label);
         }
+        if (this.json.separator) {
+            this.node.setAttribute('separator', this.json.separator);
+        }else{
+            this.node.removeAttribute('separator');
+        }
 
         if (this.json.inDatatable) {
             this.node.setAttribute('view-style', '');
+        }
+
+        if (this.json.checkStrictly) {
+            this.node.setAttribute('check-strictly', 'true');
+        }else{
+            this.node.removeAttribute('check-strictly');
         }
 
         this.node.setAttribute('readonly', false);
