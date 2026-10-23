@@ -1675,7 +1675,8 @@ window.O2Processor = new Class({
                 "border-radius":"8px",
                 "position" : "absolute",
                 // "border":"1px solid #eeeeee",
-                "box-shadow":"5px 5px 30px #999"
+                "box-shadow":"5px 5px 30px #999",
+                "z-index": "600"
             },
             "embeddedNode" : {
                 "margin":"0px",

@@ -959,6 +959,11 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
         _loadModule: function (json, node, beforeLoad, replace) {
             if (!json) return null;
 
+            var moduleType = this._getModuleType(json);
+
+            if (moduleType === "Subform" || json.moduleName === "subform") this.subformCount++;
+
+
             //流程组件返回
             if( ( json.type === "Log" && json.logType ) || ["Sidebar","Monitor","ReadLog"].contains(json.type) ){
                 node.empty();
@@ -967,12 +972,10 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 json.type = "ProcessActionbar"
             }
 
-            if (!MWF["CMS" + json.type]) {
-                var moduleType = json.type;
-                if(moduleType === "AttachmentDg")moduleType = "Attachment";
+            if (!MWF["CMS" + moduleType]) {
                 MWF.xDesktop.requireApp("cms.Xform", moduleType, null, false);
             }
-            var module = new MWF["CMS" + json.type](node, json, this);
+            var module = new MWF["CMS" + moduleType](node, json, this);
             if (beforeLoad) beforeLoad.apply(module);
             if (replace || !this.all[json.id]) this.all[json.id] = module;
             if (module.field) {

@@ -184,7 +184,8 @@ MWF.xApplication.process.Xform.DatatableMobile = MWF.APPDatatableMobile = new Cl
 			titleDiv.setStyle("overflow", "hidden");
 			new Element("div.sequenceDiv", {
 				"styles": {"float": "left"},
-				"text": MWF.xApplication.process.Xform.LP.amount
+				"text": this.form.json.formStyleType === 'v10' ?
+					MWF.xApplication.process.Xform.LP.total : MWF.xApplication.process.Xform.LP.amount
 			}).inject(titleDiv);
 
 			this.totalTable = new Element("table").inject(this.totalDiv);
@@ -643,19 +644,34 @@ MWF.xApplication.process.Xform.DatatableMobile.Line =  new Class({
 	},
 	createActions: function () {
 		//不允许编辑，直接返回
-		if(!this.options.isEditable)return;
 
 		var editActionTd = this.node.getElement(".mwf_editaction");
-		var moveActionTd = this.node.getElement(".mwf_moveaction");
+		if(!this.options.isEditable){
+			editActionTd.hide();
+			return;
+		}
 
-		if( moveActionTd )this.createMoveAction(editActionTd);
+		debugger;
+
+		if( this.datatable.sortable )this.createMoveAction(editActionTd);
 
 		if(this.datatable.multiEditMode){ //多行编辑模式
 			if(this.options.isDeleteable)this.createDelAction(editActionTd);
 			if(this.options.isAddable)this.createAddAction(editActionTd);
 		}else{ //单行编辑模式
 			if(this.options.isDeleteable)this.createDelAction(editActionTd);
-			if(this.options.isEditable)this.createEditAction(editActionTd);
+			if(this.options.isEditable){
+				this.createEditAction(editActionTd);
+				var table = this.node.getElement("table.form-datatable");
+				if(table){
+					this.editFun = function(){
+						if( !this.options.isEdited ){
+							this.datatable._changeEditedLine(this);
+						}
+					}.bind(this);
+					table.addEvent("click", this.editFun);
+				}
+			}
 			if(this.options.isAddable)this.createAddAction(editActionTd);
 			this.createCancelEditAction(editActionTd);
 			this.createCompleteAction(editActionTd);
@@ -698,7 +714,7 @@ MWF.xApplication.process.Xform.DatatableMobile.Line =  new Class({
 	createAddAction: function(td){
 		this.addLineAction = new Element("div.addLineAction", {
 			"styles": this.form.css.mobileDatagridAddActionNode,
-			"text": MWF.xApplication.process.Xform.LP.add,
+			"text": MWF.xApplication.process.Xform.LP.addLine,
 			"events": {
 				"click": function(ev){
 					this.datatable._insertLine( ev, this );
