@@ -1011,7 +1011,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
         var setStyles = function ( templateStyles ){
             this.templateStyles = templateStyles;
 
-            if( !this.json.data.viewStyleType )this.json.data.viewStyleType = "default";
+            if( !this.json.data.viewStyleType )this.json.data.viewStyleType = "v10";
 
             if ( this.templateStyles && this.templateStyles["view"]){
                 if(!this.json.data.viewStyles){
@@ -1027,7 +1027,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
 
         this.loadStylesList(function(){
             var oldStyleValue = "";
-            if (!this.json.data.viewStyleType) this.json.data.viewStyleType="default";
+            if (!this.json.data.viewStyleType) this.json.data.viewStyleType="v10";
             var viewStyleType = this.json.data.viewStyleType;
             if( typeOf( viewStyleType ) === "object" && viewStyleType.type === "script"  ){ //如果是自定义表单样式
                 this.loadCustomTemplateStyles( viewStyleType, function ( templateStyles ) {
@@ -2113,6 +2113,9 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
         var url = this.path+"actionbar.json";
         MWF.getJSON(url, {
             "onSuccess": function(obj){
+                if(this.view.templateStyles?.actionbar){
+                    Object.assign(obj, this.view.templateStyles.actionbar);
+                }
                 this.view.designer.actions.getUUID(function(id){
                     obj.id=id;
                     //obj.isNewView = true;

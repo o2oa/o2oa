@@ -2,6 +2,7 @@
   {
     "type": "MWFToolBarButton",
     "img": "export.png",
+    "icon": "process-downloadall",
     "title": "{{$.lp.exportExcel}}",
     "action": "exportView",
     "text": "{{$.lp.exportExcel}}",

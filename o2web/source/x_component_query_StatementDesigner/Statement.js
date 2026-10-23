@@ -2284,7 +2284,7 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
 
         this.loadStylesList(function () {
             var oldStyleValue = "";
-            if (!this.json.data.viewStyleType) this.json.data.viewStyleType = "default";
+            if (!this.json.data.viewStyleType) this.json.data.viewStyleType = "v10";
             var viewStyleType = this.json.data.viewStyleType;
             if( typeOf( viewStyleType ) === "object" && viewStyleType.type === "script"  ){ //如果是自定义表单样式
 				this.loadCustomTemplateStyles( viewStyleType, function ( templateStyles ) {
