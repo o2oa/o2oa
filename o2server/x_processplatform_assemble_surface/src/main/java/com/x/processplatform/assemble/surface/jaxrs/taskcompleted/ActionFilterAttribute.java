@@ -15,6 +15,7 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.TaskCompleted_;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.express.service.processing.jaxrs.process.ProcessNameValueCountPair;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -180,9 +181,10 @@ class ActionFilterAttribute extends BaseAction {
 				if (null != process) {
 					String key = StringUtils.isBlank(process.getEdition()) ? process.getId() : process.getEdition();
 					if (!map.containsKey(key)) {
-						NameValueCountPair pair = new NameValueCountPair();
+						ProcessNameValueCountPair pair = new ProcessNameValueCountPair();
 						pair.setValue(process.getId());
 						pair.setName(process.getName());
+						pair.setApplication(process.getApplication());
 						map.put(key, pair);
 					}
 				}
