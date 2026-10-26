@@ -204,6 +204,7 @@ export default content({
             await hideLoading(this);
         }
         if (importSuccess) {
+            this.closeHolidayImport();
             await this.refreshByImportPayload(payload);
         }
     },
