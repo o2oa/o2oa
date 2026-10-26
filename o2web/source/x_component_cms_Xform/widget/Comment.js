@@ -421,6 +421,9 @@ O2CMSComment.Editor = new Class({
                     this.fireEvent("postOk", json.data.id);
                 }
             }.bind(this))
+        }else{
+            this.comment.app.notice( this.comment.lp.noText, "error");
+
         }
     }
 });
@@ -743,19 +746,27 @@ O2CMSComment.Form = new Class({
 
     },
     ok: function (e) {
+
         this.fireEvent("queryOk");
         var data = this.form.getResult(true, ",", true, false, true);
-        if (data) {
+        if (data && data.content!=="") {
             this._ok(data, function (json) {
+                debugger
                 if (json.type == "error") {
                     this.app.notice(json.message, "error");
                 } else {
                     if(this.formMaskNode)this.formMaskNode.destroy();
                     this.formAreaNode.destroy();
                     this.app.notice(this.isNew ? this.lp.createCommentSuccess : this.lp.updateSuccess, "success");
+                    this.app.reload();
                     this.fireEvent("postOk", json.data.id);
+
                 }
             }.bind(this))
+        }else{
+
+            this.app.notice( this.lp.noText, "error")
+
         }
     },
     _ok: function (data, callback) {
@@ -767,6 +778,7 @@ O2CMSComment.Form = new Class({
         }
         MWF.Actions.get("x_cms_assemble_control").saveComment( data, function(json){
             if( callback )callback(json);
+
         }.bind(this));
     }
 });
