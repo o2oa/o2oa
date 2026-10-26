@@ -445,6 +445,8 @@ MWF.xApplication.cms.Xform.LP={
 	"createCommentSuccess": "Comment created successfully",
 	"updateSuccess": "Update successful",
 	"save": "Save",
+	"noText" : "Comment cannot be empty.",
+
 	"setTopTitle": "Put Top Confirmation",
 	"setTopText": "Are you sure to put the current document on top?",
 	"setTopSuccess": "Put Top Success",

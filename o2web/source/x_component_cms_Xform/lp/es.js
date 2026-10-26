@@ -442,6 +442,7 @@ MWF.xApplication.cms.Xform.LP={
 	"commentFormTitle": "Editar comentario",
 	"createCommentSuccess": "Comentario creado con éxito",
 	"updateSuccess": "Actualización exitosa",
+	"noText" : "El comentario no puede estar vacío.",
 	"save": "Guardar",
 	"setTopTitle": "Confirmación de fijar en la parte superior",
 	"setTopText": "¿Está seguro de que desea fijar este documento en la parte superior?",
