@@ -237,6 +237,30 @@
     color: #bbbbbb;
 }
 
+.leave-account-table-scroll {
+    clear: both;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+.leave-account-table {
+    width: auto;
+    min-width: 100%;
+}
+
+.leave-account-table th:first-child,
+.leave-account-table td:first-child {
+    min-width: 160px;
+    white-space: nowrap;
+}
+
+.leave-account-table th:not(:first-child),
+.leave-account-table td:not(:first-child) {
+    min-width: 240px;
+}
+
 .leave-account-balance {
     display: inline-flex;
     align-items: center;

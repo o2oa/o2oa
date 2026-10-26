@@ -31,11 +31,11 @@
             <span class="leave-account-legend-item">{{$.lp.leaveManagerV2.account.balance}}</span>
         </div>
         <!-- Table data -->
-        <div style="clear: both; overflow-x: auto;">
-            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table" oo-if="$.personList.length > 0">
+        <div class="leave-account-table-scroll">
+            <table border="0" cellpadding="5" cellspacing="0" class="att_table leave-account-table" oo-if="$.personList.length > 0">
                 <thead>
-                    <th style="min-width: 160px;">{{$.lp.leaveManagerV2.account.person}}</th>
-                    <th oo-each="$.leaveTypeList" oo-item="leaveType" style="min-width: 120px;">{{leaveType.value.name}}</th>
+                    <th>{{$.lp.leaveManagerV2.account.person}}</th>
+                    <th oo-each="$.leaveTypeList" oo-item="leaveType">{{leaveType.value.name}}</th>
                 </thead>
                 <tr oo-each="$.accountTableList" oo-item="row">
                     <td>{{row.value.personName}}</td>
