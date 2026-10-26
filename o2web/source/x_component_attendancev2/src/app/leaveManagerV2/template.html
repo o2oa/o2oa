@@ -1,6 +1,6 @@
 <div class="manager-box white-bg">
     <!-- Leave type -->
-    <div class="l-display-block"  id="leaveTypeListView">
+    <div class="l-display-block"  id="leaveTypeListView" style="height: 100%;">
         <div class="index_page_header_container leave-page-header">
             <div class="index_page_header_title">{{$.lp.leaveManagerV2Title}}</div>
             <!-- <span class="operator_link_underline" @click="gotoOld">{{$.lp.leaveManagerV2.gotoOld}}</span> -->
@@ -59,7 +59,7 @@
 
 
     <!-- Leave type policy -->
-    <div  class="l-display-none"  id="otherListView"></div>
+    <div  class="l-display-none"  id="otherListView"  style="height: 100%;"></div>
 
     <div class="leave-import-mask" oo-if="$.importFormShow">
         <div class="o2-form leave-import-form">
