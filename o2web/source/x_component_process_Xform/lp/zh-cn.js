@@ -493,7 +493,8 @@ MWF.xApplication.process.Xform.LP = {
 
     "editDatatable": "编辑数据表格",
     "addLine": "添加",
-    "editOk": "编辑完成"
+    "editOk": "编辑完成",
+    "total": "合计"
 
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

@@ -1345,7 +1345,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
         styleSelNodes.each(function (node) {
             debugger;
             if (this.module.stylesList) {
-                if (!this.data.data.viewStyleType) this.data.data.viewStyleType = "default";
+                if (!this.data.data.viewStyleType) this.data.data.viewStyleType = "v10";
                 // var mode = ( this.form.options.mode || "" ).toLowerCase() === "mobile" ? "mobile" : "pc";
                 Object.each(this.module.stylesList, function (s, key) {
                     // if( s.mode.contains( mode ) ){

@@ -829,6 +829,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         editInActivex: '在控件中编辑',
         activexId: '控件标识',
         showType: '显示方式',
+        showTypeV10Mobile: 'v10移动端显示方式',
+        card: '卡片',
         switchStyle: '切换样式',
         allow: '允许',
         notAllow: '不允许',

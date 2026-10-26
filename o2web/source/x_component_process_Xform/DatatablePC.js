@@ -69,7 +69,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
  */
-MWF.xApplication.process.Xform.DatatablePC = new Class(
+MWF.xApplication.process.Xform.DatatablePC = MWF.APPDatatablePC = new Class(
 	/** @lends MWF.xApplication.process.Xform.DatatablePC# */
 	{
 		Implements: [Events],
@@ -2657,7 +2657,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		}
 	});
 
-MWF.xApplication.process.Xform.DatatablePC$Title = new Class({
+MWF.xApplication.process.Xform.DatatablePC$Title = MWF.APPDatatablePC$Title = new Class({
 	Extends: MWF.APP$Module,
 	_loadUserInterface: function(){
 		if (!this.isReadable){
@@ -2715,7 +2715,7 @@ MWF.xApplication.process.Xform.DatatablePC$Title = new Class({
 	}
 });
 
-MWF.xApplication.process.Xform.DatatablePC$Data =  new Class({
+MWF.xApplication.process.Xform.DatatablePC$Data = MWF.APPDatatablePC$Data =  new Class({
 	Extends: MWF.APP$Module,
 	_loadUserInterface: function(){
 		if(this.json.recoveryStyles){

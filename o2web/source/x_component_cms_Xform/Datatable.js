@@ -117,15 +117,29 @@ MWF.CMSDatatableFeature = {
         return true;
     }
 };
-MWF.xApplication.cms.Xform.Datatable = MWF.CMSDatatable =  new Class({
-    Extends: MWF.APPDatatable
+MWF.xApplication.cms.Xform.DatatablePC = MWF.CMSDatatablePC =  new Class({
+    Extends: MWF.APPDatatablePC
 });
-MWF.CMSDatatable.implement(MWF.CMSDatatableFeature);
+MWF.CMSDatatablePC.implement(MWF.CMSDatatableFeature);
+MWF.xApplication.cms.Xform.DatatablePC$Title = MWF.CMSDatatablePC$Title =  new Class({
+    Extends: MWF.APPDatatablePC$Title
+});
+MWF.xApplication.cms.Xform.DatatablePC$Data = MWF.CMSDatatablePC$Data =  new Class({
+    Extends: MWF.APPDatatablePC$Data
+});
 
-MWF.xApplication.cms.Xform.Datatable$Title = MWF.CMSDatatable$Title =  new Class({
-    Extends: MWF.APPDatatable$Title
+MWF.xApplication.cms.Xform.DatatableMobile = MWF.CMSDatatableMobile =  new Class({
+    Extends: MWF.APPDatatableMobile
+});
+MWF.CMSDatatableMobile.implement(MWF.CMSDatatableFeature);
+MWF.xApplication.cms.Xform.DatatableMobile$Title = MWF.CMSDatatableMobile$Title =  new Class({
+    Extends: MWF.APPDatatableMobile$Title
+});
+MWF.xApplication.cms.Xform.DatatableMobile$Data = MWF.CMSDatatableMobile$Data =  new Class({
+    Extends: MWF.APPDatatableMobile$Data
 });
 
-MWF.xApplication.cms.Xform.Datatable$Data = MWF.CMSDatatable$Data =  new Class({
-    Extends: MWF.APPDatatable$Data
+MWF.xApplication.cms.Xform.DatatableV10 = MWF.CMSDatatableV10 =  new Class({
+    Extends: MWF.APPDatatableV10
 });
+MWF.CMSDatatableV10.implement(MWF.CMSDatatableFeature);

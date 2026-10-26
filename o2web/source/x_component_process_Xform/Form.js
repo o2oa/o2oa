@@ -455,7 +455,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
     load: function (callback) {
-        this.checkDatatableClass();
+        //this.checkDatatableClass();
         this.loadMacro(function () {
             this.loadLanguage(function(flag){
                 this.isParseLanguage = flag;
@@ -572,13 +572,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             }.bind(this));
         }.bind(this));
     },
-    checkDatatableClass: function (){
-        if( (layout.mobile || COMMON.Browser.Platform.isMobile) && this.json.formStyleType === 'v10' ){
-            MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = MWF.xApplication.process.Xform.DatatableV10;
-            MWF.xApplication.process.Xform.Datatable$Title = MWF.APPDatatable$Title = MWF.xApplication.process.Xform.DatatablePC$Title;
-            MWF.xApplication.process.Xform.Datatable$Data = MWF.APPDatatable$Data = MWF.xApplication.process.Xform.DatatablePC$Data;
-        }
-    },
+    // checkDatatableClass: function (){
+    //     if( (layout.mobile || COMMON.Browser.Platform.isMobile) && this.json.formStyleType === 'v10' ){
+    //         MWF.xApplication.process.Xform.Datatable = MWF.APPDatatable = MWF.xApplication.process.Xform.DatatableV10;
+    //         MWF.xApplication.process.Xform.Datatable$Title = MWF.APPDatatable$Title = MWF.xApplication.process.Xform.DatatablePC$Title;
+    //         MWF.xApplication.process.Xform.Datatable$Data = MWF.APPDatatable$Data = MWF.xApplication.process.Xform.DatatablePC$Data;
+    //     }
+    // },
     loadLanguage: function(callback){
         if (this.json.languageType!=="script" && this.json.languageType!=="default" && this.json.languageType!=="lib" && this.json.languageType!=="dict"){
             if (callback) callback();
@@ -1407,16 +1407,18 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     },
     _loadModule: function (json, node, beforeLoad, replace) {
         if( !json )return null;
-        if (json.type === "Subform" || json.moduleName === "subform") this.subformCount++;
 
-        if (json.type === "Subpage" || json.moduleName === "subpage") this.subpageCount++;
-        if (json.type === "Widget" || json.moduleName === "widget") this.widgetCount++;
-        if (!MWF["APP" + json.type]) {
-            var moduleType = json.type;
-            if(moduleType === "AttachmentDg")moduleType = "Attachment";
+        var moduleType = this._getModuleType(json);
+
+        if (moduleType === "Subform" || json.moduleName === "subform") this.subformCount++;
+
+        if (moduleType === "Subpage" || json.moduleName === "subpage") this.subpageCount++;
+        if (moduleType === "Widget" || json.moduleName === "widget") this.widgetCount++;
+
+        if (!MWF["APP" + moduleType]) {
             MWF.xDesktop.requireApp("process.Xform", moduleType, null, false);
         }
-        var module = new MWF["APP" + json.type](node, json, this);
+        var module = new MWF["APP" + moduleType](node, json, this);
         if (beforeLoad) beforeLoad.apply(module);
         if (replace || !this.all[json.id]) this.all[json.id] = module;
 
@@ -1436,6 +1438,29 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         module.downloading = this.options.downloading;
         module.load();
         return module;
+    },
+    _getModuleType: function (json) {
+        var moduleType = json?.type || '';
+        if(moduleType === "AttachmentDg"){
+            return "Attachment";
+        }
+        if(!moduleType.includes('Datatable')){
+            return moduleType;
+        }
+        //PC端
+        if( !(layout.mobile || COMMON.Browser.Platform.isMobile) ){
+            return moduleType.replace("Datatable", "DatatablePC");
+        }
+        //老版本或者设置了平铺
+        if( this.json.formStyleType !== 'v10' || json.showType === 'card' ){ //移动端卡片方式
+            return moduleType.replace("Datatable", "DatatableMobile");
+        }
+        //v10移动端表格形式
+        switch (moduleType) {
+            case 'Datatable$Title': return 'DatatablePC$Title';
+            case 'Datatable$Data': return 'DatatablePC$Data';
+            default: return 'DatatableV10';
+        }
     },
     saveOpinion: function (module) {
         var op = module._getBusinessSectionDataByPerson();

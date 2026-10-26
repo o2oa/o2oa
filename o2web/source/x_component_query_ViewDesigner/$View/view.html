@@ -239,6 +239,7 @@
                 </tr>
             </table>
         </div>
+        <div style="padding: 5px;color:#999;">导出样式仅在范围导出中有效。</div>
         <div class="MWFFormulaArea" name="data.exportHeadText" title="{{$.lp.headText}}"></div>
         <div class="MWFFormulaArea" name="data.exportHeadStyle" title="{{$.lp.headStyle}}"></div>
         <div class="MWFFormulaArea" name="data.exportColumnTitleStyle" title="{{$.lp.columnTitleStyle}}"></div>
@@ -448,6 +449,7 @@
                         $('text{$.id}dateRangeType_process').setStyle('display', 'block');
                         $('text{$.id}dateRangeType_cms').setStyle('display', 'none');
                         $$('.text{$.id}dataPathSelectedProcessArea').setStyle('display', '');
+                        $$('.text{$.id}cmsAuthorityInfo').setStyle('display', 'none');
                         $$('.text{$.id}dataPathSelectedCMSArea').setStyle('display', 'none');
                     }" name="text{$.id}*type" text{($.type!='cms')?'checked':''} type="radio" value="process"/>{{$.lp.processPlatform}}
                     <input class="editTableRadio" onclick="
@@ -455,6 +457,7 @@
                         $('text{$.id}dateRangeType_process').setStyle('display', 'none');
                         $('text{$.id}dateRangeType_cms').setStyle('display', 'block');
                         $$('.text{$.id}dataPathSelectedProcessArea').setStyle('display', 'none');
+                        $$('.text{$.id}cmsAuthorityInfo').setStyle('display', '');
                         $$('.text{$.id}dataPathSelectedCMSArea').setStyle('display', '');
                      }" name="text{$.id}*type" text{($.type=='cms')?'checked':''} type="radio" value="cms"/>{{$.lp.cmsPlatform}}
                 </td>
@@ -465,6 +468,9 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.authority}}:</td>
                 <td class="editTableValue">
+                    <div class="text{$.id}cmsAuthorityInfo" style="line-height:18px;padding: 5px;color:#999;display: text{($.type==='cms')?'':'none'}">
+                        数据类型为‘信息类’时‘带权限’才有效，否则都为忽略权限。
+                    </div>
                     <input class="editTableRadio" name="text{$.id}*data.where.accessible" text{($.data.where.accessible)?'checked':''} type="radio" value="true"/>{{$.lp.check}}
                     <input class="editTableRadio" name="text{$.id}*data.where.accessible" text{(!$.data.where.accessible)?'checked':''} type="radio" value="false"/>{{$.lp.ignore}}
                 </td>
@@ -504,7 +510,7 @@
                     <td class="editTableValue">
                         <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope!='cms_data' && $.data.where.scope!='all' && $.data.where.scope!='workCompleted' && $.data.where.scope!='work')?'checked':''} type="radio" value="cms_info"/>{{$.lp.dataTypeValue[0]}}
                         <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='cms_data')?'checked':''} type="radio" value="cms_data"/>{{$.lp.dataTypeValue[1]}}
-                        <!--                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='all')?'checked':''} type="radio" value="all"/>全部-->
+                        <input class="editTableRadio" name="text{$.id}*data.where.scope" text{($.data.where.scope=='all')?'checked':''} type="radio" value="all"/>全部
                     </td>
                 </tr>
                 <tr>

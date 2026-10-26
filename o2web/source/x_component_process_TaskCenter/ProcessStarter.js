@@ -177,7 +177,7 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
             this.lp.start+" - "+o2.txt(this.data.name)+"</td></tr>" +
             "<tr><td style=\"height: 60px; color: #0044cc; line-height: 80px; text-align: left; font-size: 16px; color:#333333; display: block; overflow: hidden\"><div style='padding-left:30px; line-height:80px'>" +
             this.lp.selectStartIdentity+"</div></td></tr>" +
-            "<tr><td id=\"form_startIdentity\"></td></tr>" +
+            "<tr><td><div id=\"form_startIdentity\" style='display: grid;grid-template-columns: 1fr 1fr;'></div></td></tr>" +
             "</table>";
         this.formNode.set("html", html);
 

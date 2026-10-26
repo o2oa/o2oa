@@ -1,5 +1,5 @@
 MWF.xDesktop.requireApp('process.Xform', 'DatatablePC', null, false);
-MWF.xApplication.process.Xform.DatatableV10 = new Class({
+MWF.xApplication.process.Xform.DatatableV10 = MWF.APPDatatableV10 = new Class({
     Implements: [Events],
     Extends: MWF.xApplication.process.Xform.DatatablePC,
     isEdit: false,
@@ -141,6 +141,9 @@ MWF.xApplication.process.Xform.DatatableV10 = new Class({
         const isTotal = tr.hasClass('mwf_totaltr');
 
         for (let n = 0; n < tds.length; n++) {
+            if(isTotal && this.totalFlag && ths[n].hasClass('mwf_addlineaction')) {
+                tds[n].setStyle('display', '');
+            }
             if (tds[n].hasClass('mwf_sequence') || ths[n].hasClass('mwf_sequence')){
                 ths[n].addClass('mwf_sequence');
                 tds[n].addClass('mwf_sequence');
@@ -154,7 +157,7 @@ MWF.xApplication.process.Xform.DatatableV10 = new Class({
             } else if (ths[n].hasClass('mwf_moveaction')) {
                 tds[n].addClass('mwf_moveaction');
                 const icon = tds[n].querySelector('div');
-                if (icon){
+                if (icon) {
                     icon.textContent = '';
                     icon.addClass('ooicon-up');
                 }
@@ -163,6 +166,13 @@ MWF.xApplication.process.Xform.DatatableV10 = new Class({
                 tNode.addClass('mwf_mobile_edit_th');
                 tds[n].insertAdjacentElement('beforebegin', tNode);
                 tds[n].addClass('mwf_origional');
+                if(isTotal){
+                    const text = tds[n].get('text');
+                    if(!text || text === '\u00A0'){
+                        tNode.style.setProperty('display', 'none', 'important');
+                        tds[n].style.setProperty('display', 'none', 'important');
+                    }
+                }
             }
         }
     }, 

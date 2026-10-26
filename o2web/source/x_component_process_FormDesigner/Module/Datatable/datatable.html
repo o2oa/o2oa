@@ -38,6 +38,13 @@
                            }" />{{$.lp.datatableEditModeValue[1]}}
                 </td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.showTypeV10Mobile}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="showType" value="table" text{($.showType!=='card')?'checked':''}/>{{$.lp.table}}
+                    <input type="radio" name="showType" value="card" text{($.showType==='card')?'checked':''}/>{{$.lp.card}}
+                </td>
+            </tr>
         </table>
         <div class="MWFFormulaArea" name="defaultData" title="{{$.lp.defaultData}} (S)"></div>
 
