@@ -284,6 +284,8 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		// var value = node.dataset.value;
 		// var category = node.dataset.category;
 
+		console.log({name, value, category, e});
+
 		if (!this.currentList.filterList) this.currentList.filterList = {};
 		if (!this.currentList.filterList[category]) this.currentList.filterList[category] = [];
 		if (!this.currentList.filterNameList) this.currentList.filterNameList = {};
@@ -293,12 +295,36 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		if (findedIdx===-1){
 			node.addClass("mainColor_bg");
 			this.currentList.filterList[category].push(value);
-			this.currentList.filterNameList[category].push(name)
+			this.currentList.filterNameList[category].push(name);
+			this.checkProcessNodeWithApp(value, category, e);
 		}else{
 			node.removeClass("mainColor_bg");
 			this.currentList.filterList[category].splice(findedIdx, 1);
 			this.currentList.filterNameList[category].splice(findedIdx, 1);
+			this.checkProcessNodeWithApp(value, category, e);
 		}
+	},
+	checkProcessNodeWithApp: function(value, category, e){
+		if( category !== "applicationList" ){
+			return;
+		}
+		var node = e.target.getParent(".ft_content").querySelector("[data-o2-filter-category='processList']");
+		var selectedApps = this.currentList.filterList['applicationList'] || [];
+		var selectedProcess = this.currentList.filterList['processList'] || [];
+		node.querySelectorAll('.ft_itemNode ').forEach(function(itemNode){
+			if(selectedProcess.includes(itemNode.dataset.value)){
+				return;
+			}
+			if(!selectedApps.length){
+				itemNode.show();
+			}else{
+				if(selectedApps.includes(itemNode.dataset['app'])){
+					itemNode.show();
+				}else{
+					itemNode.hide();
+				}
+			}
+		});
 	},
 	resetFilter: function(){
 		this.currentList.page = 1;
