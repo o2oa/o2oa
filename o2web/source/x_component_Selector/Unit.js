@@ -78,6 +78,9 @@ MWF.xApplication.Selector.Unit = new Class({
             o2.Actions.load("x_organization_assemble_express").UnitAction.listObject( {"unitList" : unitList} , function (json) {
                 if (json.data.length){
                     json.data.each( function(data){
+                        if( this.isExcluded( data ) ) {
+                            return;
+                        }
                         var item;
                         if( this.options.expandSubEnable ) {
                             if( this.options.firstLevelSelectable ){
@@ -441,7 +444,8 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                 _title: this._getTtiteText(),
                 _selectType: this.selector.selectType,
                 _icon: this._getOOIcon(),
-                _hasAvatar: false
+                _hasAvatar: false,
+                _hideExpand: !this.selector.options.expandSubEnable
             }
         });
         this.node = node.getFirst();

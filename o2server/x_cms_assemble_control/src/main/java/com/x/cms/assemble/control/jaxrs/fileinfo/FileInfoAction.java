@@ -37,24 +37,6 @@ public class FileInfoAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(FileInfoAction.class);
 
-	@JaxrsMethodDescribe(value = "获取全部的文件或者附件列表.", action = ActionListAll.class)
-	@GET
-	@Path("list/all")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void listAllFileInfo(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		ActionResult<List<ActionListAll.Wo>> result = new ActionResult<>();
-		try {
-			result = new ActionListAll().execute(request, effectivePerson);
-		} catch (Exception e) {
-			result = new ActionResult<>();
-			result.error(e);
-			logger.error(e, effectivePerson, request, null);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
 	@JaxrsMethodDescribe(value = "获取指定文档的全部附件信息列表.", action = ActionListByDocId.class)
 	@GET
 	@Path("list/document/{documentId}")

@@ -70,11 +70,26 @@ public class MobileAction extends StandardJaxrsAction {
 
     @JaxrsMethodDescribe(value = "来自外部的打卡，比如门禁系统。系统调用的接口", action = ActionCheckInRecordFromOut.class)
     @POST
-    @Path("check/ from/out")
+    @Path("check/from/out")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
     public void checkInRecordFromOut(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
                                      JsonElement jsonElement) {
+        executeCheckInRecordFromOut(asyncResponse, request, jsonElement);
+    }
+
+    @JaxrsMethodDescribe(value = "来自外部的打卡，比如门禁系统。系统调用的接口，兼容旧路径.", action = ActionCheckInRecordFromOut.class)
+    @POST
+    @Path("check/ from/out")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void checkInRecordFromOutOldPath(@Suspended final AsyncResponse asyncResponse,
+                                            @Context HttpServletRequest request, JsonElement jsonElement) {
+        executeCheckInRecordFromOut(asyncResponse, request, jsonElement);
+    }
+
+    private void executeCheckInRecordFromOut(final AsyncResponse asyncResponse, HttpServletRequest request,
+                                             JsonElement jsonElement) {
         ActionResult<ActionCheckInRecordFromOut.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {

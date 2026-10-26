@@ -72,7 +72,7 @@ export default content({
   },
   // 默认打开地图 一个固定值
   initDefaultNumberMapView() {
-    const point = new AMap.LngLat(120.135431, 30.27412);
+    const point = new AMap.LngLat(109.173571, 18.328807);
     this.createMap(point);
   },
   // 加载百度地图
@@ -148,6 +148,25 @@ export default content({
     });
 
     this.map.add(marker);
+    this.addCircle(point, this.bind.form.errorRange || 200);
+  },
+  // 添加范围 circle
+  addCircle(point, radius) {
+    //创建圆形 Circle 实例
+    const circle = new AMap.Circle({
+        center: point, //圆心
+        radius: radius, //半径
+        bubble: true, //允许覆盖物点击事件冒泡到地图，避免拦截地图 click
+        // borderWeight: 3, //描边的宽度
+        strokeColor: "#1791fc", //轮廓线颜色
+        strokeOpacity: 1, //轮廓线透明度
+        strokeWeight: 1, //轮廓线宽度
+        fillOpacity: 0.4, //圆形填充透明度
+        // strokeStyle: "dashed", //轮廓线样式
+        fillColor: "#1791fc", //圆形填充颜色
+        zIndex: 50, //圆形的叠加顺序
+    });
+    this.map.add(circle); //在地图上添加圆形
   },
   // 地图放大缩小
   mapMaxOrMini() {

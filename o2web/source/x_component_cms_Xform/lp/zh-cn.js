@@ -63,6 +63,7 @@ MWF.xApplication.cms.Xform.LP = Object.merge({}, MWF.xApplication.process.Xform.
     "createCommentSuccess" : "创建评论成功",
     "updateSuccess" : "更新成功",
     "save" : "保存",
+    "noText" : "评论内容不能为空",
 
     "setTopTitle": "置顶确认",
     "setTopText": "确定将当前文档置顶？",

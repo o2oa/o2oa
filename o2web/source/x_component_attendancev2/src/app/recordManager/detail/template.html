@@ -68,9 +68,7 @@
         </div>
         <div class="form-item-line-content" style="text-align: right;">
           <span class="{{this.formatRecordResultClass($.record)}}">{{ $m.formatRecordResult($.record) }}</span>
-          <!-- <span class="color-fieldWork  margin-left" oo-if="$.record.fieldWork">({{$.lp.myFieldWork}})</span> -->
-          <span class="color-holiday  margin-left"
-              oo-if="$.record.leaveData">({{$.record.leaveData.leaveType}})</span>
+          <span class="color-holiday  margin-left" oo-if="$.record.leaveData">({{$.record.leaveData.leaveType}})</span>
         </div>
       </div>
       <div class="form-item-line">
@@ -78,7 +76,7 @@
           {{$.lp.record.fieldWork}}
         </div>
         <div class="form-item-line-content" style="text-align: right;">
-           {{$.record.fieldWork ?  $.lp.yes : $.lp.no }}
+          {{$.record.fieldWork ? $.lp.yes : $.lp.no }}
         </div>
       </div>
       <div class="form-item-line" oo-if="$.record.fieldWork">
@@ -86,7 +84,7 @@
           {{$.lp.record.fieldWorkDesc}}
         </div>
         <div class="form-item-line-content" style="text-align: right;">
-           {{$.record.signDescription }}
+          {{$.record.signDescription }}
         </div>
       </div>
       <div class="form-item-line" oo-if="$.record.fieldWork">
@@ -94,7 +92,21 @@
           {{$.lp.record.fieldWorkAddress}}
         </div>
         <div class="form-item-line-content" style="text-align: right;">
-           {{$.record.recordAddress }}
+          {{$.record.recordAddress }}
+        </div>
+      </div>
+      <div class="form-item-line"
+        oo-if="$.record.fieldWorkPhotoFileIdList && $.record.fieldWorkPhotoFileIdList.length > 0">
+        <div class="form-item-line-label">
+          {{$.lp.record.fieldWorkPhoto}}
+        </div>
+        <div class="form-item-line-content" style="text-align: right;">
+          <div style="display: flex;justify-content: flex-end;gap: 10px;">
+            <img oo-each="$.record.fieldWorkPhotoFileIdList" oo-item="photoFile"
+              src="{{$m.getFileDownloadUrl(photoFile.value)}}"
+              style="width: 80px;height: 80px;object-fit: cover;border-radius: 4px;cursor: pointer;"
+              onclick="window.open('{{$m.getFileDownloadUrl(photoFile.value)}}', '_blank')" />
+          </div>
         </div>
       </div>
     </div>

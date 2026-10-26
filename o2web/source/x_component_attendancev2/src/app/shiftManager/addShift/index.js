@@ -36,7 +36,10 @@ export default content({
                 offDutyTime: "",
                 offDutyTimeBeforeLimit: "",
                 offDutyTimeAfterLimit: "",
-                offDutyNextDay: false
+                offDutyNextDay: false,
+                restPeriod: "", // 休息时间段，格式为 "HH:mm-HH:mm"，例如 "12:00-13:00" 表示中午休息时间为 12:00 到 13:00
+                restPeriodStart: "",
+                restPeriodEnd: ""
             },
             time2: {
                 onDutyTime: "",
@@ -45,7 +48,10 @@ export default content({
                 offDutyTime: "",
                 offDutyTimeBeforeLimit: "",
                 offDutyTimeAfterLimit: "",
-                offDutyNextDay: false
+                offDutyNextDay: false,
+                restPeriod: "", // 休息时间段，格式为 "HH:mm-HH:mm"，例如 "12:00-13:00" 表示中午休息时间为 12:00 到 13:00
+                restPeriodStart: "",
+                restPeriodEnd: ""
             },
             time3: {
                 onDutyTime: "",
@@ -54,7 +60,10 @@ export default content({
                 offDutyTime: "",
                 offDutyTimeBeforeLimit: "",
                 offDutyTimeAfterLimit: "",
-                offDutyNextDay: false
+                offDutyNextDay: false,
+                restPeriod: "", // 休息时间段，格式为 "HH:mm-HH:mm"，例如 "12:00-13:00" 表示中午休息时间为 12:00 到 13:00
+                restPeriodStart: "",
+                restPeriodEnd: ""
             },
             typeList: [
                 {
@@ -75,6 +84,9 @@ export default content({
         if (this.bind.form && this.bind.form.id && this.bind.form.id !== '') {
             this.bind.fTitle = lp.editShift;
         }
+        this.initRestPeriodFields(this.bind.time1);
+        this.initRestPeriodFields(this.bind.time2);
+        this.initRestPeriodFields(this.bind.time3);
         this.calWorkTime();
         console.log(this.bind)
     },
@@ -136,9 +148,50 @@ export default content({
         }
         return workTime;
     },
+    initRestPeriodFields(time) {
+        if (!time) {
+            return;
+        }
+        const restPeriod = this.parseRestPeriod(time.restPeriod);
+        time.restPeriodStart = time.restPeriodStart || restPeriod.start;
+        time.restPeriodEnd = time.restPeriodEnd || restPeriod.end;
+    },
+    parseRestPeriod(restPeriod) {
+        if (!restPeriod || !restPeriod.includes("-")) {
+            return {start: "", end: ""};
+        }
+        const list = restPeriod.split("-");
+        return {
+            start: list[0] || "",
+            end: list[1] || ""
+        };
+    },
+    setRestPeriodValue(key, value) {
+        setJSONValue(key, value, this.bind);
+        const keyList = key.split(".");
+        const time = this.bind[keyList[0]];
+        if (!time) {
+            return;
+        }
+        time.restPeriod = time.restPeriodStart && time.restPeriodEnd ? `${time.restPeriodStart}-${time.restPeriodEnd}` : "";
+    },
+    restPeriodNeedComplete(time) {
+        return time && ((time.restPeriodStart && !time.restPeriodEnd) || (!time.restPeriodStart && time.restPeriodEnd));
+    },
+    buildTimeForSubmit(time) {
+        const result = Object.assign({}, time);
+        result.restPeriod = result.restPeriodStart && result.restPeriodEnd ? `${result.restPeriodStart}-${result.restPeriodEnd}` : "";
+        delete result.restPeriodStart;
+        delete result.restPeriodEnd;
+        return result;
+    },
     // o time picker 控件使用
     setTimeValue(key, value) {
-        setJSONValue(key, value, this.bind);
+        if (key && (key.endsWith(".restPeriodStart") || key.endsWith(".restPeriodEnd"))) {
+            this.setRestPeriodValue(key, value);
+        } else {
+            setJSONValue(key, value, this.bind);
+        }
         this.calWorkTime();
     },
     // o time minute selector 控件返回结果使用
@@ -167,7 +220,11 @@ export default content({
                 o2.api.page.notice(lp.shiftForm.offDutyTimeNotEmpty, 'error');
                 return ;
             }
-            myForm.properties.timeList.push(this.bind.time1);
+            if (this.restPeriodNeedComplete(this.bind.time1)) {
+                o2.api.page.notice(lp.shiftForm.restPeriodNeedComplete, 'error');
+                return ;
+            }
+            myForm.properties.timeList.push(this.buildTimeForSubmit(this.bind.time1));
         } else if (this.bind.timeType === 2) {
             if (isEmpty(this.bind.time1.onDutyTime) || isEmpty(this.bind.time2.onDutyTime)) {
                 o2.api.page.notice(lp.shiftForm.onDutyTimeNotEmpty, 'error');
@@ -177,9 +234,13 @@ export default content({
                 o2.api.page.notice(lp.shiftForm.offDutyTimeNotEmpty, 'error');
                 return ;
             }
+            if (this.restPeriodNeedComplete(this.bind.time1) || this.restPeriodNeedComplete(this.bind.time2)) {
+                o2.api.page.notice(lp.shiftForm.restPeriodNeedComplete, 'error');
+                return ;
+            }
             this.bind.time1.offDutyNextDay = false; // 最后一个下班才能是跨天的
-            myForm.properties.timeList.push(this.bind.time1);
-            myForm.properties.timeList.push(this.bind.time2);
+            myForm.properties.timeList.push(this.buildTimeForSubmit(this.bind.time1));
+            myForm.properties.timeList.push(this.buildTimeForSubmit(this.bind.time2));
         } else if (this.bind.timeType === 3) {
             if (isEmpty(this.bind.time1.onDutyTime) || isEmpty(this.bind.time2.onDutyTime) || isEmpty(this.bind.time3.onDutyTime)) {
                 o2.api.page.notice(lp.shiftForm.onDutyTimeNotEmpty, 'error');
@@ -189,11 +250,15 @@ export default content({
                 o2.api.page.notice(lp.shiftForm.offDutyTimeNotEmpty, 'error');
                 return ;
             }
+            if (this.restPeriodNeedComplete(this.bind.time1) || this.restPeriodNeedComplete(this.bind.time2) || this.restPeriodNeedComplete(this.bind.time3)) {
+                o2.api.page.notice(lp.shiftForm.restPeriodNeedComplete, 'error');
+                return ;
+            }
             this.bind.time1.offDutyNextDay = false;// 最后一个下班才能是跨天的
             this.bind.time2.offDutyNextDay = false;// 最后一个下班才能是跨天的
-            myForm.properties.timeList.push(this.bind.time1);
-            myForm.properties.timeList.push(this.bind.time2);
-            myForm.properties.timeList.push(this.bind.time3);
+            myForm.properties.timeList.push(this.buildTimeForSubmit(this.bind.time1));
+            myForm.properties.timeList.push(this.buildTimeForSubmit(this.bind.time2));
+            myForm.properties.timeList.push(this.buildTimeForSubmit(this.bind.time3));
         }
         debugger
         if (myForm.seriousTardinessLateMinutes !== "0" && !isPositiveInt(myForm.seriousTardinessLateMinutes)) {

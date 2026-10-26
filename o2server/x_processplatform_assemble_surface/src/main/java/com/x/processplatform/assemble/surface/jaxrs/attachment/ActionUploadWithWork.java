@@ -39,6 +39,9 @@ class ActionUploadWithWork extends BaseAction {
 			Draft draft = emc.find(workId, Draft.class);
 			if (null != draft) {
 				attachment = createByDraft(business, effectivePerson, site, fileName, bytes, disposition, draft);
+				if(!effectivePerson.getDistinguishedName().equals(draft.getPerson())){
+					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName(), workId);
+				}
 			} else {
 				Work work = emc.find(workId, Work.class);
 				if (null == work) {

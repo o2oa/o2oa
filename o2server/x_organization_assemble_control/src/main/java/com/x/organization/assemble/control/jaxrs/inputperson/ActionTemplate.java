@@ -17,9 +17,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 
 public class ActionTemplate extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionTemplate.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActionTemplate.class);
 
-	private static String name = "input_person_template.xlsx";
+	private static final String name = "input_person_template.xlsx";
 
 	protected ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		try (XSSFWorkbook workbook = new XSSFWorkbook(); ByteArrayOutputStream os = new ByteArrayOutputStream()) {
@@ -31,6 +31,7 @@ public class ActionTemplate extends BaseAction {
 			this.templateIdentity(workbook);
 			this.templateDuty(workbook);
 			this.templateGroup(workbook);
+			this.templateRole(workbook);
 
 			workbook.write(os);
 			Wo wo = new Wo(os.toByteArray(), this.contentType(true, name), this.contentDisposition(true, name));
@@ -39,7 +40,7 @@ public class ActionTemplate extends BaseAction {
 		}
 	}
 
-	private void templateRemark(XSSFWorkbook workbook) throws Exception {
+	private void templateRemark(XSSFWorkbook workbook) {
 		XSSFSheet sheet = workbook.createSheet("注意事项");
 		Row row = sheet.createRow(0);
 		// 先创建表头
@@ -63,12 +64,10 @@ public class ActionTemplate extends BaseAction {
 
 		CellStyle cellStyle = workbook.createCellStyle();
 		cellStyle.setWrapText(true);
-		IntStream.rangeClosed(0, 6).forEach(i -> {
-			sheet.setDefaultColumnStyle(i, cellStyle);
-		});
+		IntStream.rangeClosed(0, 6).forEach(i -> sheet.setDefaultColumnStyle(i, cellStyle));
 	}
 
-	private void templateUnit(XSSFWorkbook workbook) throws Exception {
+	private void templateUnit(XSSFWorkbook workbook) {
 		XSSFSheet sheet = workbook.createSheet("组织信息");
 		sheet.setDefaultColumnWidth(25);
 		Row row = sheet.createRow(0);
@@ -91,7 +90,7 @@ public class ActionTemplate extends BaseAction {
 		});
 	}
 
-	private void templatePerson(XSSFWorkbook workbook) throws Exception {
+	private void templatePerson(XSSFWorkbook workbook) {
 		XSSFSheet sheet = workbook.createSheet("人员基本信息");
 		sheet.setDefaultColumnWidth(25);
 		Row row = sheet.createRow(0);
@@ -111,12 +110,10 @@ public class ActionTemplate extends BaseAction {
 		cell.setCellValue("邮件");
 		CellStyle cellStyle = workbook.createCellStyle();
 		cellStyle.setWrapText(true);
-		IntStream.rangeClosed(0, 6).forEach(i -> {
-			sheet.setDefaultColumnStyle(i, cellStyle);
-		});
+		IntStream.rangeClosed(0, 6).forEach(i -> sheet.setDefaultColumnStyle(i, cellStyle));
 	}
 
-	private void templateIdentity(XSSFWorkbook workbook) throws Exception {
+	private void templateIdentity(XSSFWorkbook workbook) {
 		XSSFSheet sheet = workbook.createSheet("人员身份信息");
 		sheet.setDefaultColumnWidth(25);
 		Row row = sheet.createRow(0);
@@ -130,12 +127,10 @@ public class ActionTemplate extends BaseAction {
 		cell.setCellValue("主兼职");
 		CellStyle cellStyle = workbook.createCellStyle();
 		cellStyle.setWrapText(true);
-		IntStream.rangeClosed(0, 6).forEach(i -> {
-			sheet.setDefaultColumnStyle(i, cellStyle);
-		});
+		IntStream.rangeClosed(0, 6).forEach(i -> sheet.setDefaultColumnStyle(i, cellStyle));
 	}
 
-	private void templateDuty(XSSFWorkbook workbook) throws Exception {
+	private void templateDuty(XSSFWorkbook workbook) {
 		XSSFSheet sheet = workbook.createSheet("职务信息");
 		sheet.setDefaultColumnWidth(45);
 		Row row = sheet.createRow(0);
@@ -153,12 +148,10 @@ public class ActionTemplate extends BaseAction {
 		cell.setCellValue("职务所含人员所在组织唯一编码");
 		CellStyle cellStyle = workbook.createCellStyle();
 		cellStyle.setWrapText(true);
-		IntStream.rangeClosed(0, 6).forEach(i -> {
-			sheet.setDefaultColumnStyle(i, cellStyle);
-		});
+		IntStream.rangeClosed(0, 6).forEach(i -> sheet.setDefaultColumnStyle(i, cellStyle));
 	}
 
-	private void templateGroup(XSSFWorkbook workbook) throws Exception {
+	private void templateGroup(XSSFWorkbook workbook) {
 		XSSFSheet sheet = workbook.createSheet("群组信息");
 		sheet.setDefaultColumnWidth(25);
 		Row row = sheet.createRow(0);
@@ -178,9 +171,26 @@ public class ActionTemplate extends BaseAction {
 		cell.setCellValue("描述");
 		CellStyle cellStyle = workbook.createCellStyle();
 		cellStyle.setWrapText(true);
-		IntStream.rangeClosed(0, 7).forEach(i -> {
-			sheet.setDefaultColumnStyle(i, cellStyle);
-		});
+		IntStream.rangeClosed(0, 7).forEach(i -> sheet.setDefaultColumnStyle(i, cellStyle));
+	}
+
+	private void templateRole(XSSFWorkbook workbook) {
+		XSSFSheet sheet = workbook.createSheet("角色信息");
+		sheet.setDefaultColumnWidth(25);
+		Row row = sheet.createRow(0);
+		Cell cell = row.createCell(0);
+		cell.setCellValue("角色名称 *");
+		cell = row.createCell(1);
+		cell.setCellValue("角色编码 *");
+		cell = row.createCell(2);
+		cell.setCellValue("人员唯一编码");
+		cell = row.createCell(3);
+		cell.setCellValue("群组唯一编码");
+		cell = row.createCell(4);
+		cell.setCellValue("描述");
+		CellStyle cellStyle = workbook.createCellStyle();
+		cellStyle.setWrapText(true);
+		IntStream.rangeClosed(0, 5).forEach(i -> sheet.setDefaultColumnStyle(i, cellStyle));
 	}
 
 	public static class Wo extends WoFile {

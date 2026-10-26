@@ -105,11 +105,12 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class(
 
         this.combox.addEvent("change", function(){
             this.validationMode();
-            if (this.validation()){
-                var v = this.getInputData("change");
-                this._setBusinessData(v);
-                //this._setEnvironmentData(v);
-            }
+            o2.promiseAll(this.validation()).then(flag=>{
+                if(String(flag) === "true"){
+                    var v = this.getInputData("change");
+                    this._setBusinessData(v);
+                }
+            })
         }.bind(this));
 
         this.loadVal();

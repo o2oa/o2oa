@@ -1,38 +1,9 @@
 package com.x.organization.assemble.control.jaxrs.inputperson;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.util.CellUtil;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.type.GenderType;
-import com.x.base.core.project.x_organization_assemble_control;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
@@ -45,6 +16,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.UnitAttribute;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_organization_assemble_control;
 import com.x.general.core.entity.GeneralFile;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.assemble.control.ThisApplication;
@@ -57,6 +29,31 @@ import com.x.organization.core.entity.Role;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellUtil;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 class ActionInputAll extends BaseAction {
 
@@ -65,16 +62,18 @@ class ActionInputAll extends BaseAction {
 
 	private boolean wholeFlag = false;
 
-	List<UnitItem> unit = new ArrayList<>();
-	List<PersonItem> person = new ArrayList<>();
-	List<IdentityItem> identity = new ArrayList<>();
-	List<DutyItem> duty = new ArrayList<>();
-	List<GroupItem> group = new ArrayList<>();
+	List<UnitItem> unitItemList = new ArrayList<>();
+	List<PersonItem> personItemList = new ArrayList<>();
+	List<IdentityItem> identityItemList = new ArrayList<>();
+	List<DutyItem> dutyItemList = new ArrayList<>();
+	List<GroupItem> groupItemList = new ArrayList<>();
+	List<RoleItem> roleItemList = new ArrayList<>();
 	UnitSheetConfigurator configuratorUnit = null;
 	PersonSheetConfigurator configuratorPerson = null;
 	IdentitySheetConfigurator configuratorIdentity = null;
 	DutySheetConfigurator configuratorDuty = null;
 	GroupSheetConfigurator configuratorGroup = null;
+	RoleSheetConfigurator configuratorRole = null;
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, byte[] bytes, FormDataContentDisposition disposition)
 			throws Exception {
@@ -110,8 +109,8 @@ class ActionInputAll extends BaseAction {
 		logger.info("开始导入人员组织所有数据--------start");
 		Sheet sheet = workbook.getSheetAt(1);
 		configuratorUnit = new UnitSheetConfigurator(workbook, sheet);
-		unit = this.scanUnitList(configuratorUnit, sheet);
-		wholeFlag = this.checkUnit(business, workbook, configuratorUnit, unit);
+		unitItemList = this.scanUnitList(configuratorUnit, sheet);
+		wholeFlag = this.checkUnit(business, workbook, configuratorUnit, unitItemList);
 		if (wholeFlag) {
 			this.scanPerson(business, workbook);
 		}
@@ -122,11 +121,11 @@ class ActionInputAll extends BaseAction {
 		logger.info("--------scanPerson");
 		Sheet sheet = workbook.getSheetAt(2);
 		configuratorPerson = new PersonSheetConfigurator(workbook, sheet);
-		person = this.scanPersonList(configuratorPerson, sheet);
-		logger.info("person=" + person.size());
-		wholeFlag = this.checkPerson(business, workbook, configuratorPerson, person);
+		personItemList = this.scanPersonList(configuratorPerson, sheet);
+		logger.info("person=" + personItemList.size());
+		wholeFlag = this.checkPerson(business, workbook, configuratorPerson, personItemList);
 		if (wholeFlag) {
-			this.scanIdentity(business, workbook, person, unit);
+			this.scanIdentity(business, workbook, personItemList, unitItemList);
 		}
 	}
 
@@ -153,34 +152,42 @@ class ActionInputAll extends BaseAction {
 		if (wholeFlag) {
 			// 保存组织，人员
 			logger.info("开始导入组织信息--------");
-			this.persistUnit(business, workbook, configuratorUnit, unit);
+			this.persistUnit(business, workbook, configuratorUnit, unitItemList);
 			logger.info("开始导入人员信息--------");
-			this.persistPerson(business, workbook, configuratorPerson, person);
+			this.persistPerson(business, workbook, configuratorPerson, personItemList);
 			logger.info("开始导入身份信息--------");
-			identity = this.scanIdentityList(business, configuratorIdentity, identitySheet);
-			this.persistIdentity(workbook, configuratorIdentity, identity);
+			identityItemList = this.scanIdentityList(business, configuratorIdentity, identitySheet);
+			this.persistIdentity(workbook, configuratorIdentity, identityItemList);
 
 			logger.info("开始导入职务信息--------");
-			duty = this.scanDutyList(business, configuratorDuty, dutySheet);
-			this.persistDuty(workbook, configuratorDuty, duty, business);
+			dutyItemList = this.scanDutyList(business, configuratorDuty, dutySheet);
+			this.persistDuty(workbook, configuratorDuty, dutyItemList, business);
 
-			// 保存群组
-			// 校验群组
-			wholeFlag = this.checkGroup(business, workbook, person, unit);
+			wholeFlag = this.checkGroup(business, workbook);
 			logger.info("开始导入群组信息--------");
-			this.scanGroup(business, workbook, person, unit);
-			this.persistGroup(business, workbook, configuratorGroup, group);
-			logger.info("开始导入人员组织所有数据--------end");
+			this.scanGroup(business, workbook);
+			this.persistGroup(business, workbook, configuratorGroup, groupItemList);
+
+			wholeFlag = this.checkRole(business, workbook);
+			logger.info("开始导入角色信息--------");
+			this.scanRole(business, workbook);
+			this.persistRole(business, workbook, configuratorRole, roleItemList);
+			logger.info("导入人员组织所有数据--------end");
 		}
 	}
 
-	private void scanGroup(Business business, XSSFWorkbook workbook, List<PersonItem> persons, List<UnitItem> units)
-			throws Exception {
+	private void scanGroup(Business business, XSSFWorkbook workbook) throws Exception {
 		// 导入群组信息
 		Sheet sheet = workbook.getSheetAt(5);
 		configuratorGroup = new GroupSheetConfigurator(workbook, sheet);
-		group = this.scanGroupList(business, configuratorGroup, sheet);
+		groupItemList = this.scanGroupList(business, configuratorGroup, sheet);
+	}
 
+	private void scanRole(Business business, XSSFWorkbook workbook) throws Exception {
+		// 导入角色信息
+		Sheet sheet = workbook.getSheetAt(6);
+		configuratorRole = new RoleSheetConfigurator(workbook, sheet);
+		roleItemList = this.scanRoleList(business, configuratorRole, sheet);
 	}
 
 	private List<UnitItem> scanUnitList(UnitSheetConfigurator configurator, Sheet sheet) throws Exception {
@@ -469,6 +476,54 @@ class ActionInputAll extends BaseAction {
 		return groups;
 	}
 
+	private List<RoleItem> scanRoleList(Business business, RoleSheetConfigurator configurator, Sheet sheet)
+			throws Exception {
+		EntityManagerContainer emc = business.entityManagerContainer();
+		List<RoleItem> roles = new ArrayList<>();
+		for (int i = configurator.getFirstRow(); i <= configurator.getLastRow(); i++) {
+			Row row = sheet.getRow(i);
+			if (null != row) {
+				String name = configurator.getCellStringValue(row.getCell(configurator.getNameColumn()));
+				String unique = configurator.getCellStringValue(row.getCell(configurator.getUniqueColumn()));
+				String personCode = configurator.getCellStringValue(row.getCell(configurator.getPersonCodeColumn()));
+				String groupCode = configurator.getCellStringValue(row.getCell(configurator.getGroupCodeColumn()));
+				String description = configurator.getCellStringValue(row.getCell(configurator.getDescriptionColumn()));
+
+				RoleItem roleItem = new RoleItem();
+				roleItem.setRow(i);
+				roleItem.setName(name);
+				roleItem.setUnique(unique);
+
+				if(StringUtils.isNotBlank(personCode)) {
+					roleItem.setPersonCode(personCode);
+					Person personObj = emc.flag(personCode, Person.class);
+					if (personObj != null) {
+						List<String> personList = new ArrayList<>();
+						personList.add(personObj.getId());
+						roleItem.setPersonList(personList);
+					}
+				}
+
+				if (StringUtils.isNotEmpty(groupCode)) {
+					roleItem.setGroupCode(groupCode);
+					Group groupObj = emc.flag(groupCode, Group.class);
+					if (groupObj != null) {
+						List<String> groupList = new ArrayList<>();
+						groupList.add(groupObj.getId());
+						roleItem.setGroupList(groupList);
+					}
+				}
+				if (StringUtils.isNotEmpty(description)) {
+					roleItem.setDescription(description);
+				}
+
+				roles.add(roleItem);
+				logger.debug("scan role:{}.", roleItem);
+			}
+		}
+		return roles;
+	}
+
 	private List<DutyItem> scanDutyList(Business business, DutySheetConfigurator configurator, Sheet sheet)
 			throws Exception {
 		if (null == configurator.getNameColumn()) {
@@ -728,7 +783,7 @@ class ActionInputAll extends BaseAction {
 		return validate;
 	}
 
-	private boolean checkGroup(Business business, XSSFWorkbook workbook, List<PersonItem> persons, List<UnitItem> units)
+	private boolean checkGroup(Business business, XSSFWorkbook workbook)
 			throws Exception {
 		// 校验导入的群组
 		Sheet sheet = workbook.getSheetAt(5);
@@ -742,7 +797,6 @@ class ActionInputAll extends BaseAction {
 			throw new ExceptionGroupCodeColumnEmpty();
 		}
 
-		List<GroupItem> groups = new ArrayList<>();
 		EntityManagerContainer emc = business.entityManagerContainer();
 		boolean validate = true;
 		for (int i = configurator.getFirstRow(); i <= configurator.getLastRow(); i++) {
@@ -758,7 +812,6 @@ class ActionInputAll extends BaseAction {
 				boolean unitcheck = false;
 				GroupItem groupItem = new GroupItem();
 				groupItem.setRow(i);
-				groups.add(groupItem);
 				if (StringUtils.isEmpty(name)) {
 					this.setGroupMemo(workbook, configurator, groupItem, "群组名称不能为空.");
 					validate = false;
@@ -805,17 +858,81 @@ class ActionInputAll extends BaseAction {
 					continue;
 				}
 
-				// if (validate) {
 				this.setGroupMemo(workbook, configurator, groupItem, "校验通过.");
-				// }
 
 			}
 		}
+		return validate;
+	}
 
-		/*
-		 * if (validate) { for (GroupItem o : groups){ this.setGroupMemo(workbook,
-		 * configurator, o, "校验通过."); } }
-		 */
+	private boolean checkRole(Business business, XSSFWorkbook workbook)
+			throws Exception {
+		// 校验导入的角色
+		Sheet sheet = workbook.getSheetAt(6);
+		configuratorRole = new RoleSheetConfigurator(workbook, sheet);
+		RoleSheetConfigurator configurator = configuratorRole;
+
+		if (null == configurator.getNameColumn()) {
+			throw new ExceptionRoleNameColumnEmpty();
+		}
+		if (null == configurator.getUniqueColumn()) {
+			throw new ExceptionRoleNameColumnEmpty();
+		}
+
+		EntityManagerContainer emc = business.entityManagerContainer();
+		boolean validate = true;
+		for (int i = configurator.getFirstRow(); i <= configurator.getLastRow(); i++) {
+			Row row = sheet.getRow(i);
+			if (null != row) {
+				String name = configurator.getCellStringValue(row.getCell(configurator.getNameColumn()));
+				String unique = configurator.getCellStringValue(row.getCell(configurator.getUniqueColumn()));
+				String personCode = configurator.getCellStringValue(row.getCell(configurator.getPersonCodeColumn()));
+				String groupCode = configurator.getCellStringValue(row.getCell(configurator.getGroupCodeColumn()));
+
+				boolean personCheck = true;
+				boolean groupCheck = true;
+				RoleItem roleItem = new RoleItem();
+				roleItem.setRow(i);
+				if (StringUtils.isEmpty(name)) {
+					this.setRoleMemo(workbook, configurator, roleItem, "角色名称不能为空.");
+					validate = false;
+					continue;
+				}
+				if (StringUtils.isEmpty(unique)) {
+					this.setRoleMemo(workbook, configurator, roleItem, "角色编号不能为空.");
+					validate = false;
+					continue;
+				}
+
+				if(StringUtils.isNotBlank(personCode)) {
+					Person person = emc.flag(personCode, Person.class);
+					if (person == null) {
+						personCheck = false;
+					}
+				}
+
+				if(StringUtils.isNotBlank(groupCode)) {
+					Group group = emc.flag(groupCode, Group.class);
+					if (group == null) {
+						groupCheck = false;
+					}
+				}
+
+				if (!personCheck) {
+					this.setRoleMemo(workbook, configurator, roleItem, "系统不存在该人员.");
+					validate = false;
+					continue;
+				}
+				if (!groupCheck) {
+					this.setRoleMemo(workbook, configurator, roleItem, "系统不存在该群组.");
+					validate = false;
+					continue;
+				}
+
+				this.setRoleMemo(workbook, configurator, roleItem, "校验通过.");
+
+			}
+		}
 		return validate;
 	}
 
@@ -1020,10 +1137,56 @@ class ActionInputAll extends BaseAction {
 
 			}
 		}
-		/*
-		 * for(List<Group> unitlist : ListTools.batch(group, 200)){ for (Group uo :
-		 * unitlist) { this.editGroup("group/"+uo.getId(),uo); } }
-		 */
+	}
+
+	private void persistRole(Business business, XSSFWorkbook workbook, RoleSheetConfigurator configurator,
+			List<RoleItem> roleItems) throws Exception {
+		EntityManagerContainer emc = business.entityManagerContainer();
+		for (List<RoleItem> list : ListTools.batch(roleItems, 200)) {
+			for (RoleItem o : list) {
+				Role role = emc.flag(o.getUnique(), Role.class);
+				if (role != null) {
+					List<String> personList = role.getPersonList();
+					List<String> groupList = role.getGroupList();
+					if (ListTools.isNotEmpty(o.getPersonList())) {
+						personList.addAll(o.getPersonList());
+						personList = personList.stream().distinct().collect(Collectors.toList());
+					}
+					if (ListTools.isNotEmpty(o.getGroupList())) {
+						groupList.addAll(o.getGroupList());
+						groupList = groupList.stream().distinct().collect(Collectors.toList());
+					}
+
+					role.setPersonList(personList);
+					role.setGroupList(groupList);
+
+					String respEdit = this.editRole("role/" + role.getId(), role);
+
+					if ("".equals(respEdit)) {
+						this.setRoleMemo(workbook, configurator, o, "已导入.");
+					} else {
+						logger.info("respEditMass=" + respEdit);
+						this.setRoleMemo(workbook, configurator, o, respEdit);
+					}
+
+				} else {
+					logger.debug("正在保存角色:{}.", o.getName());
+
+					Role roleObject = new Role();
+					o.copyTo(roleObject);
+
+					String resp = this.saveRole("role", roleObject);
+
+					if ("".equals(resp)) {
+						this.setRoleMemo(workbook, configurator, o, "已导入.");
+					} else {
+						logger.info("respMass=" + resp);
+						this.setRoleMemo(workbook, configurator, o, resp);
+					}
+				}
+
+			}
+		}
 	}
 
 	private void setUnitMemo(XSSFWorkbook workbook, UnitSheetConfigurator configurator, UnitItem unitItem,
@@ -1062,6 +1225,14 @@ class ActionInputAll extends BaseAction {
 			String memo) {
 		Sheet sheet = workbook.getSheetAt(configurator.getSheetIndex());
 		Row row = sheet.getRow(groupItem.getRow());
+		Cell cell = CellUtil.getCell(row, configurator.getMemoColumn());
+		cell.setCellValue(memo);
+	}
+
+	private void setRoleMemo(XSSFWorkbook workbook, RoleSheetConfigurator configurator, RoleItem roleItem,
+			String memo) {
+		Sheet sheet = workbook.getSheetAt(configurator.getSheetIndex());
+		Row row = sheet.getRow(roleItem.getRow());
 		Cell cell = CellUtil.getCell(row, configurator.getMemoColumn());
 		cell.setCellValue(memo);
 	}
@@ -1114,9 +1285,21 @@ class ActionInputAll extends BaseAction {
 		return resp.getMessage();
 	}
 
+	private String saveRole(String path, Role roleObj) throws Exception {
+		ActionResponse resp = ThisApplication.context().applications().postQuery(x_organization_assemble_control.class,
+				path, roleObj);
+		return resp.getMessage();
+	}
+
 	private String editGroup(String path, Group groupObj) throws Exception {
 		ActionResponse resp = ThisApplication.context().applications().putQuery(x_organization_assemble_control.class,
 				path, groupObj);
+		return resp.getMessage();
+	}
+
+	private String editRole(String path, Role roleObj) throws Exception {
+		ActionResponse resp = ThisApplication.context().applications().putQuery(x_organization_assemble_control.class,
+				path, roleObj);
 		return resp.getMessage();
 	}
 

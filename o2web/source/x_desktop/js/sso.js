@@ -46,35 +46,35 @@ function getServiceAddressConfigArray(config, callback) {
     }.bind(this));
 }
 function getServiceAddressConfigObject(callback, center){
-    var centerConfig = center;
-    var host = centerConfig.host || window.location.hostname;
-    var port = centerConfig.port;
-    var uri = "";
-    var locate = window.location;
-    var protocol = locate.protocol;
-    if (!port || port=="80"){
-        uri = protocol+"//"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
-    }else{
-        uri = protocol+"//"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
-    }
-    var currenthost = window.location.hostname;
-    uri = uri.replace(/{source}/g, currenthost);
-    //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
-    return MWF.restful("get", uri, null, function(json){
+    // var centerConfig = center;
+    // var host = centerConfig.host || window.location.hostname;
+    // var port = centerConfig.port;
+    // var uri = "";
+    // var locate = window.location;
+    // var protocol = locate.protocol;
+    // if (!port || port=="80"){
+    //     uri = protocol+"//"+host+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+    // }else{
+    //     uri = protocol+"//"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
+    // }
+    // var currenthost = window.location.hostname;
+    // uri = uri.replace(/{source}/g, currenthost);
+    // return MWF.restful("get", uri, null, function(json){
+    //
+    //     var serviceAddressList = json.data;
+    //     if (layout.config.proxyApplicationEnable){
+    //         Object.keys(serviceAddressList).forEach(function(k){
+    //             if (k!=="x_message_assemble_communicate") serviceAddressList[k].port = window.location.port || 80;
+    //         });
+    //     }
+    //     window.layout.serviceAddressList = serviceAddressList;
+    //     window.layout.centerServer = center;
+    //
+    //     if (callback) callback();
+    // }.bind(this));
 
-        var serviceAddressList = json.data;
-        if (layout.config.proxyApplicationEnable){
-            Object.keys(serviceAddressList).forEach(function(k){
-                if (k!=="x_message_assemble_communicate") serviceAddressList[k].port = window.location.port || 80;
-            });
-        }
-        window.layout.serviceAddressList = serviceAddressList;
-        window.layout.centerServer = center;
+    window.layout.serviceAddressList = {};
+    window.layout.centerServer = center;
 
-        // var serviceAddressList = json.data;
-        // var addressObj = serviceAddressList["x_organization_assemble_authentication"];
-        // var address = protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+"/z_sso_control/jaxrs/sso/smplogin";
-
-        if (callback) callback();
-    }.bind(this));
+    if (callback) callback();
 }

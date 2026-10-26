@@ -28,7 +28,7 @@ public class DingdingAttendanceStatisticPersonScheduleTask extends AbstractJob {
             //前一天 0点到23点
             Date from = new Date();
             from = DateTools.addDay(from, -1);//前面一天
-            ThisApplication.personStatisticQueue.send(from);
+//            ThisApplication.personStatisticQueue.send(from);
         }
     }
 

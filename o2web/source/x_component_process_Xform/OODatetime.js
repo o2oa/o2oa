@@ -240,6 +240,7 @@ MWF.xApplication.process.Xform.OODatetime = MWF.APPOODatetime = new Class({
     notValidationMode: function (text) {
         if(!this.isNotValidationMode){
             this.isNotValidationMode = true;
+            this.showNotValidationMode(this.node);
             this.validationText = text;
             this.node.checkValidity();
         }

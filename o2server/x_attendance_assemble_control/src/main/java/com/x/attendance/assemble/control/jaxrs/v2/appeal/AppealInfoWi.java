@@ -12,6 +12,10 @@ public class AppealInfoWi extends GsonPropertyObject {
     private String recordId;
     @FieldDescribe("用户标识")
     private List<String> users;
+    @FieldDescribe("过滤人员或组织，组织默认递归: 用户或组织的DN，如xxx@xxx@P、xxx@xxx@U")
+    private List<String> filterList;
+    @FieldDescribe("过滤组织是否递归查询下级组织人员，默认true，false时仅查询当前组织直属人员")
+    private Boolean recursive;
     @FieldDescribe("开始日期")
     private String startDate;
     @FieldDescribe("结束日期")
@@ -37,6 +41,22 @@ public class AppealInfoWi extends GsonPropertyObject {
 
     public void setUsers(List<String> users) {
         this.users = users;
+    }
+
+    public List<String> getFilterList() {
+        return filterList;
+    }
+
+    public void setFilterList(List<String> filterList) {
+        this.filterList = filterList;
+    }
+
+    public Boolean getRecursive() {
+        return recursive;
+    }
+
+    public void setRecursive(Boolean recursive) {
+        this.recursive = recursive;
     }
 
     public String getStartDate() {

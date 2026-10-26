@@ -8,6 +8,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.Document;
+import java.util.Date;
 
 class ActionDeleteWithDocumentPath4 extends BaseAction {
 
@@ -21,13 +22,15 @@ class ActionDeleteWithDocumentPath4 extends BaseAction {
 				throw new ExceptionDocumentNotExists(id);
 			}
 			this.deleteData(business, document, path0, path1, path2, path3, path4);
+			emc.beginTransaction(Document.class);
+			document.setModifyTime(new Date());
 			emc.commit();
 			Wo wo = new Wo();
 			wo.setId(document.getId());
 			result.setData(wo);
 
 			CacheManager.notify( Document.class );
-			
+
 			return result;
 		}
 	}

@@ -312,7 +312,7 @@ MWF.xApplication.process.Xform.LP = {
     "attachmentArea": "附件区域",
     "intelligentCorrection" : "智能纠错",
 
-    "requiredHint": "请填写{label}字段",
+    "requiredHint": "请填写{label}",
     "requiredHintField": "此字段",
 
     "maxItemCountNotice": "最多允许添加{n}项",
@@ -493,7 +493,8 @@ MWF.xApplication.process.Xform.LP = {
 
     "editDatatable": "编辑数据表格",
     "addLine": "添加",
-    "editOk": "编辑完成"
+    "editOk": "编辑完成",
+    "total": "合计"
 
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

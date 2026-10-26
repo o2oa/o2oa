@@ -1,24 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.taskcompleted;
 
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -27,12 +8,29 @@ import com.x.base.core.project.bean.NameValueCountPair;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.TaskCompleted_;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.express.service.processing.jaxrs.process.ProcessNameValueCountPair;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionFilterAttributeFilter extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionFilterAttributeFilter.class);
@@ -301,9 +299,10 @@ class ActionFilterAttributeFilter extends BaseAction {
 				if (null != process) {
 					String key = StringUtils.isBlank(process.getEdition()) ? process.getId() : process.getEdition();
 					if (!map.containsKey(key)) {
-						NameValueCountPair pair = new NameValueCountPair();
+						ProcessNameValueCountPair pair = new ProcessNameValueCountPair();
 						pair.setValue(process.getId());
 						pair.setName(process.getName());
+						pair.setApplication(process.getApplication());
 						map.put(key, pair);
 					}
 				}

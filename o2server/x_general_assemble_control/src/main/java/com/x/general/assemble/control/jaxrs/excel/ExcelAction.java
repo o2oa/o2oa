@@ -25,7 +25,25 @@ import javax.ws.rs.core.MediaType;
 @JaxrsDescribe("生成excel")
 public class ExcelAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ExcelAction.class);
+	private static final Logger logger = LoggerFactory.getLogger(ExcelAction.class);
+
+	@JaxrsMethodDescribe(value = "根据模板将内容生成Excel", action = ActionExcelExportWithTemplate.class)
+	@POST
+	@Path("excel/with/template")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void excelWithDataListTemplate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		ActionResult<ActionExcelExportWithTemplate.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionExcelExportWithTemplate().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 
 	@JaxrsMethodDescribe(value = "将内容生成Excel", action = ActionExcelExport.class)
 	@POST

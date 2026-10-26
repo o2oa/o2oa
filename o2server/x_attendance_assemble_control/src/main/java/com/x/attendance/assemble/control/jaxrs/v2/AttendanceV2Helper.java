@@ -1,12 +1,19 @@
 package com.x.attendance.assemble.control.jaxrs.v2;
 
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.ExceptionDateError;
 import com.x.attendance.entity.v2.AttendanceV2CheckInRecord;
 import com.x.attendance.entity.v2.AttendanceV2Group;
+import com.x.attendance.entity.v2.AttendanceV2Holiday;
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.x_attendance_assemble_control;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -27,15 +34,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 新版考勤 部分共用业务逻辑工具类
- * Created by fancyLou on 2023/4/24.
- * Copyright © 2023 O2. All rights reserved.
+ * 新版考勤 部分共用业务逻辑工具类 Created by fancyLou on 2023/4/24. Copyright © 2023 O2. All rights reserved.
  */
 public class AttendanceV2Helper {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AttendanceV2Helper.class);
+
+
     /**
      * 是否是今天之前的日期
-     * 
+     *
      * @param date
      * @return
      * @throws Exception
@@ -52,7 +60,7 @@ public class AttendanceV2Helper {
 
     /**
      * 字符串是不是 月份格式yyyy-MM
-     * 
+     *
      * @param dateString
      * @return
      */
@@ -76,7 +84,7 @@ public class AttendanceV2Helper {
 
     /**
      * 字符串是不是 日期格式 yyyy-MM-dd
-     * 
+     *
      * @param dateString
      * @return
      */
@@ -100,34 +108,35 @@ public class AttendanceV2Helper {
 
     /**
      * 当前打卡对象是否是属于出勤
-     *
+     * <p>
      * != CHECKIN_RESULT_NotSigned !=CHECKIN_RESULT_PreCheckIn 没有请假数据
-     * 
+     *
      * @param r 打卡对象
      * @return
      */
     public static boolean isRecordAttendance(AttendanceV2CheckInRecord r) {
         return (!r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned)
-                && !r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn))
-                || StringUtils.isNotEmpty(r.getLeaveDataId());
+                && !r.getCheckInResult()
+                .equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn))
+               || r.hasLeaveOrRequest();
     }
 
     /**
      * 当前打卡对象是否属于未打卡数据
-     *
+     * <p>
      * result = CHECKIN_RESULT_NotSigned 并且 没有请假数据
-     * 
+     *
      * @param r
      * @return
      */
     public static boolean isRecordNotSign(AttendanceV2CheckInRecord r) {
         return r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned)
-                && StringUtils.isEmpty(r.getLeaveDataId());
+               && !r.hasLeaveOrRequest();
     }
 
     /**
      * 处理考勤组 考勤人员 将人员、组织全部换成人员DN
-     * 
+     *
      * @param emc
      * @param business
      * @param groupId
@@ -136,7 +145,8 @@ public class AttendanceV2Helper {
      * @return
      * @throws Exception
      */
-    public static List<String> calTruePersonFromMixList(EntityManagerContainer emc, Business business, String groupId,
+    public static List<String> calTruePersonFromMixList(EntityManagerContainer emc,
+            Business business, String groupId,
             List<String> participateList, List<String> unParticipateList) throws Exception {
         // 处理考勤组
         List<String> peopleList = new ArrayList<>();
@@ -171,6 +181,11 @@ public class AttendanceV2Helper {
                     if (oldG.getId().equals(groupId)) {
                         continue;
                     }
+                    // 跳过自动保存的数据
+                    if (oldG.getStatus() != null
+                        && oldG.getStatus() == AttendanceV2Group.status_auto) {
+                        continue;
+                    }
                     if (oldG.getTrueParticipantList().contains(person)) {
                         conflictPersonInOtherGroup.add(person);
                         break;
@@ -181,16 +196,74 @@ public class AttendanceV2Helper {
         if (!conflictPersonInOtherGroup.isEmpty()) {
             throw new ExceptionParticipateConflict(conflictPersonInOtherGroup);
         }
-        // if (LOGGER.isDebugEnabled()) {
-        // LOGGER.debug("最终考勤组人员数：" + peopleSet.size());
-        // }
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("考勤组 {} 最终考勤组人员数：{}", groupId, peopleSet.size());
+        }
 
         return new ArrayList<>(peopleSet);
     }
 
     /**
+     * 解析人员/组织过滤条件，把组织转换为人员DN。
+     */
+    public static void analysisFilterToPersonList(List<String> userList, String filter, Business business,
+            Boolean recursive) throws Exception {
+        if (StringUtils.isEmpty(filter)) {
+            return;
+        }
+        if (filter.endsWith("@U")) {
+            List<String> users = BooleanUtils.isNotFalse(recursive)
+                    ? business.organization().person().listWithUnitSubNested(filter)
+                    : business.organization().person().listWithUnitSubDirect(filter);
+            if (users != null && !users.isEmpty()) {
+                userList.addAll(users);
+            }
+        } else if (filter.endsWith("@P")) {
+            userList.add(filter);
+        }
+    }
+
+    /**
+     * 是否是中国节假日
+     *
+     * @param date yyyy-MM-dd
+     */
+    public static boolean checkIsChineseHoliday(String date) throws Exception {
+        boolean isHoliday = false;
+        HolidayGetWithDateWo wo = ThisApplication.context().applications()
+                .getQuery(x_attendance_assemble_control.class,
+                        "v2/leavemanager/holiday/date/" + date).getData(HolidayGetWithDateWo.class);
+        if (wo != null && BooleanUtils.isTrue(wo.getOffDay())) {
+            isHoliday = true;
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("日期 {} 是节假日，节假日名称：{}", date, wo.getName());
+            }
+        }
+        return isHoliday;
+    }
+
+    /**
+     * 是否中国节假日调休的工作日
+     *
+     * @param date yyyy-MM-dd
+     */
+    public static boolean checkIsChineseWorkday(String date) throws Exception {
+        boolean isWorkday = false;
+        HolidayGetWithDateWo wo = ThisApplication.context().applications()
+                .getQuery(x_attendance_assemble_control.class,
+                        "v2/leavemanager/holiday/date/" + date).getData(HolidayGetWithDateWo.class);
+        if (wo != null && BooleanUtils.isTrue(wo.getWorkDay())) {
+            isWorkday = true;
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("日期 {} 是节假日调休的工作日，节假日名称：{}", date, wo.getName());
+            }
+        }
+        return isWorkday;
+    }
+
+    /**
      * 是否特殊节假日
-     * 
+     *
      * @param date  yyyy-MM-dd
      * @param group
      * @return
@@ -203,8 +276,12 @@ public class AttendanceV2Helper {
         if (Config.workTime() != null && Config.workTime().inDefinedHoliday(myDate)) {
             isRestDay = true;
         }
+        if (checkIsChineseHoliday(date)) {
+            isRestDay = true;
+        }
         // 考勤组的无需打卡日
-        if (group.getNoNeedCheckInDateList() != null && !group.getNoNeedCheckInDateList().isEmpty()) {
+        if (group.getNoNeedCheckInDateList() != null && !group.getNoNeedCheckInDateList()
+                .isEmpty()) {
             for (String d : group.getNoNeedCheckInDateList()) { // 包含日期 ｜ 是否循环
                 String[] dArray = d.split("\\|");
                 if (dArray.length < 2) {
@@ -216,20 +293,23 @@ public class AttendanceV2Helper {
                     break;
                 }
                 if (dArray[1].equals("week")
-                        && DateTools.dateIsInWeekCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd),
-                                DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
+                    && DateTools.dateIsInWeekCycle(
+                        DateTools.parse(dArray[0], DateTools.format_yyyyMMdd),
+                        DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
                     isRestDay = true;// 无需打卡就是休息日
                     break;
                 }
                 if (dArray[1].equals("twoWeek")
-                        && DateTools.dateIsInTwoWeekCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd),
-                                DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
+                    && DateTools.dateIsInTwoWeekCycle(
+                        DateTools.parse(dArray[0], DateTools.format_yyyyMMdd),
+                        DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
                     isRestDay = true;// 无需打卡就是休息日
                     break;
                 }
                 if (dArray[1].equals("month")
-                        && DateTools.dateIsInMonthCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd),
-                                DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
+                    && DateTools.dateIsInMonthCycle(
+                        DateTools.parse(dArray[0], DateTools.format_yyyyMMdd),
+                        DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
                     isRestDay = true;// 无需打卡就是休息日
                     break;
                 }
@@ -241,21 +321,26 @@ public class AttendanceV2Helper {
 
     /**
      * 是否特殊工作日 并返回工作日的班次id
-     * 
+     *
      * @param date  yyyy-MM-dd
      * @param group
      * @return
      * @throws Exception
      */
-    public static String specialWorkDayShift(String date, AttendanceV2Group group) throws Exception {
+    public static String specialWorkDayShift(String date, AttendanceV2Group group)
+            throws Exception {
         String shiftId = null;
         // 工作日
         Date myDate = DateTools.parse(date, DateTools.format_yyyyMMdd);
         if (Config.workTime() != null && Config.workTime().inDefinedWorkday(myDate)) {
             shiftId = group.getShiftId();
         }
+        if (checkIsChineseWorkday(date)) {
+            shiftId = group.getShiftId();
+        }
         // 考勤组的必须打卡日
-        if (group.getRequiredCheckInDateList() != null && !group.getRequiredCheckInDateList().isEmpty()) {
+        if (group.getRequiredCheckInDateList() != null && !group.getRequiredCheckInDateList()
+                .isEmpty()) {
             for (String d : group.getRequiredCheckInDateList()) { // 包含日期 ｜ 班次id ｜ 是否循环
                 String[] dArray = d.split("\\|");
                 if (dArray.length < 3) {
@@ -267,20 +352,23 @@ public class AttendanceV2Helper {
                     break;
                 }
                 if (dArray[2].equals("week")
-                        && DateTools.dateIsInWeekCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd),
-                                DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
+                    && DateTools.dateIsInWeekCycle(
+                        DateTools.parse(dArray[0], DateTools.format_yyyyMMdd),
+                        DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
                     shiftId = dArray[1];
                     break;
                 }
                 if (dArray[2].equals("twoWeek")
-                        && DateTools.dateIsInTwoWeekCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd),
-                                DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
+                    && DateTools.dateIsInTwoWeekCycle(
+                        DateTools.parse(dArray[0], DateTools.format_yyyyMMdd),
+                        DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
                     shiftId = dArray[1];
                     break;
                 }
                 if (dArray[2].equals("month")
-                        && DateTools.dateIsInMonthCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd),
-                                DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
+                    && DateTools.dateIsInMonthCycle(
+                        DateTools.parse(dArray[0], DateTools.format_yyyyMMdd),
+                        DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
                     shiftId = dArray[1];
                     break;
                 }
@@ -300,7 +388,8 @@ public class AttendanceV2Helper {
                 case BLANK:
                     return "";
                 case BOOLEAN:
-                    return BooleanUtils.toString(cell.getBooleanCellValue(), "true", "false", "false");
+                    return BooleanUtils.toString(cell.getBooleanCellValue(), "true", "false",
+                            "false");
                 case ERROR:
                     return "";
                 case FORMULA:
@@ -343,6 +432,80 @@ public class AttendanceV2Helper {
 
     private static Date parseDate(String dateString) throws ParseException {
         return DateUtils.parseDate(dateString,
-                new String[] { DateTools.format_yyyyMMdd, DateTools.format_yyyyMMddHHmmss, DateTools.format_HHmmss, DateTools.format_HHmm, DateTools.format_yyyyMMddHHmm });
+                new String[]{DateTools.format_yyyyMMdd, DateTools.format_yyyyMMddHHmmss,
+                        DateTools.format_HHmmss, DateTools.format_HHmm,
+                        DateTools.format_yyyyMMddHHmm});
+    }
+
+
+    private static class HolidayGetWithDateWo extends GsonPropertyObject {
+
+
+        private static final long serialVersionUID = -2684730459120409608L;
+        @FieldDescribe("查询日期，格式 yyyy-MM-dd")
+        private String dateString;
+
+        @FieldDescribe("判断结果：WORKDAY 工作日，OFFDAY 放假日，NOT_FOUND 未找到")
+        private String result;
+
+        @FieldDescribe("节假日名称")
+        private String name;
+
+        @FieldDescribe("是否工作日")
+        private Boolean workDay;
+
+        @FieldDescribe("是否放假日")
+        private Boolean offDay;
+
+        @FieldDescribe("节假日数据")
+        private AttendanceV2Holiday holiday;
+
+        public String getDateString() {
+            return dateString;
+        }
+
+        public void setDateString(String dateString) {
+            this.dateString = dateString;
+        }
+
+        public String getResult() {
+            return result;
+        }
+
+        public void setResult(String result) {
+            this.result = result;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Boolean getWorkDay() {
+            return workDay;
+        }
+
+        public void setWorkDay(Boolean workDay) {
+            this.workDay = workDay;
+        }
+
+        public Boolean getOffDay() {
+            return offDay;
+        }
+
+        public void setOffDay(Boolean offDay) {
+            this.offDay = offDay;
+        }
+
+        public AttendanceV2Holiday getHoliday() {
+            return holiday;
+        }
+
+        public void setHoliday(AttendanceV2Holiday holiday) {
+            this.holiday = holiday;
+        }
     }
 }

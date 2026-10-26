@@ -119,8 +119,8 @@ public class QueueQywxAttendanceSync extends AbstractQueue<DingdingQywxSyncRecor
         Date statisticDate = fromDate;
         while (hasNextDate) {
             logger.info("发起企业微信考勤数据统计， date:"+ DateTools.format(statisticDate));
-            ThisApplication.personQywxStatisticQueue.send(statisticDate);
-            ThisApplication.unitQywxStatisticQueue.send(statisticDate);
+            // ThisApplication.personQywxStatisticQueue.send(statisticDate);
+            // ThisApplication.unitQywxStatisticQueue.send(statisticDate);
             if (!isSameDay(statisticDate, toDate)) {
                 statisticDate = DateTools.addDay(statisticDate, 1);
             }else {

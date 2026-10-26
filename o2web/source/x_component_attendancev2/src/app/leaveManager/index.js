@@ -14,11 +14,12 @@ export default content({
   bind() {
     return {
       lp,
+      self: true,  // 默认显示自己的外出记录
       // 搜索表单
       form: {
-        person: "",
         startDate: "",
         endDate: "",
+        recursive: true,
       },
       filterList: [],
       leaveList: [],
@@ -30,12 +31,30 @@ export default content({
       },
     };
   },
+  beforeRender() {
+    if (!this.bind.self) {
+      const today = new Date();
+      const start = new Date(today);
+      start.setDate(start.getDate() - 30);
+      this.bind.form.startDate = this.formatDate(start);
+      this.bind.form.endDate = this.formatDate(today);
+    }
+  },
   afterRender() {
-    this.search();
+    if (this.bind.self) {
+      this.bind.filterList = [layout.session.user.distinguishedName];
+      this.search();
+    }
+  },
+  clickBackTypeList() {
+    this.$parent.clickBackTypeList();
   },
   search() {
     this.bind.pagerData.page = 1;
     this.loadLeaveList();
+  },
+  toggleRecursive() {
+    this.bind.form.recursive = !this.bind.form.recursive;
   },
   loadData(e) {
     if (e && e.detail && e.detail.module && e.detail.module.bind) {
@@ -44,27 +63,31 @@ export default content({
     }
   },
   async loadLeaveList() {
-    let form = this.bind.form;
-    if (this.bind.menu.id === "3-4") {
-      /// 管理员
-      if (this.bind.filterList && this.bind.filterList.length > 0) {
-        form.person = this.bind.filterList[0];
-      } else {
-        form.person = "";
-      }
-    } else {
-      form.person = layout.session.user.distinguishedName;
+    if (this.bind.filterList.length < 1) {
+      o2.api.page.notice(lp.leaveManagerV2.request.filterEmptyPlaceholder, "error");
+      return;
     }
     const json = await leaveActionListByPaging(
       this.bind.pagerData.page,
       this.bind.pagerData.size,
-      form
+      {
+        filterList: this.bind.filterList,
+        startDate: this.bind.form.startDate,
+        endDate: this.bind.form.endDate,
+        recursive: this.bind.form.recursive,
+      }
     );
     if (json) {
       this.bind.leaveList = json.data || [];
       const count = json.count || 0;
       this.bind.pagerData.totalCount = count;
     }
+  },
+  formatDate(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${year}-${month > 9 ? month : `0${month}`}-${day > 9 ? day : `0${day}`}`;
   },
   formatName(person) {
     if (person && person.indexOf("@") > -1) {
@@ -97,15 +120,15 @@ export default content({
   },
   // excel导入请假数据
   importExcel() {
-    chooseSingleFile((file)=>this._uploadExcel(file))
+    chooseSingleFile((file) => this._uploadExcel(file))
   },
 
   async _uploadExcel(file) {
     const fileExt = file.name.substring(file.name.lastIndexOf("."));
     console.debug("文件名", file.name, fileExt);
     if (
-        fileExt.toLowerCase() !== ".xls" &&
-        fileExt.toLowerCase() !== ".xlsx"
+      fileExt.toLowerCase() !== ".xls" &&
+      fileExt.toLowerCase() !== ".xlsx"
     ) {
       o2.api.page.notice(lp.leave.importExcelFileError, "error");
       return;
@@ -114,13 +137,13 @@ export default content({
     formData.append("file", file);
     formData.append("fileName", file.name);
     o2.Actions.load("x_attendance_assemble_control").LeaveAction.input(
-        formData,
-        "",
-        (json)=> {
-          if (json && json.data) {
-            this.downloadConfirm(json.data);
-          }
+      formData,
+      "",
+      (json) => {
+        if (json && json.data) {
+          this.downloadConfirm(json.data);
         }
+      }
     );
   },
   downloadConfirm(result) {

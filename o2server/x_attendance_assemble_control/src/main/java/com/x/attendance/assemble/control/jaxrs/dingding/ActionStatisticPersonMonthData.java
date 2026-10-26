@@ -27,7 +27,7 @@ public class ActionStatisticPersonMonthData extends BaseAction {
         }
         logger.info("开始执行全部人员考勤信息统计 year:"+year+", month:"+month);
         Date date = DateTools.parse(year+"-"+month+"-01");
-        ThisApplication.personStatisticQueue.send(date);
+//        ThisApplication.personStatisticQueue.send(date);
         result.setData(new WrapBoolean(true));
         return result;
     }

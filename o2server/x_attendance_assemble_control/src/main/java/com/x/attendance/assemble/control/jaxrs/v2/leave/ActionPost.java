@@ -1,11 +1,15 @@
 package com.x.attendance.assemble.control.jaxrs.v2.leave;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.entity.v2.AttendanceV2LeaveData;
-import com.x.attendance.entity.v2.AttendanceV2Shift;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -15,12 +19,6 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.organization.Person;
-import com.x.base.core.project.tools.DateTools;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 /**
  * Created by fancyLou on 2023/3/29.
@@ -36,7 +34,7 @@ public class ActionPost extends BaseAction {
                 throw new ExceptionEmptyParameter("人员标识");
             }
             if (StringUtils.isEmpty(wi.getLeaveType())) {
-                throw new ExceptionEmptyParameter("请假类型");
+                throw new ExceptionEmptyParameter("外出类型");
             }
             if (null == wi.getStartTime()) {
                 throw new ExceptionEmptyParameter("开始时间");

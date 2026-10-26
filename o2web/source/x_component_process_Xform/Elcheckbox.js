@@ -318,10 +318,12 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
             methods: {
                 change: function(v){
                     _self.validationMode();
-                    if (_self.validation()) {
-                        _self._setBusinessData(v || []);
-                        _self.fireEvent("change");
-                    }
+                    o2.promiseAll(_self.validation()).then(flag=>{
+                        if(String(flag) === "true"){
+                            _self._setBusinessData(v || []);
+                            _self.fireEvent("change");
+                        }
+                    });
                 }
             }
         };

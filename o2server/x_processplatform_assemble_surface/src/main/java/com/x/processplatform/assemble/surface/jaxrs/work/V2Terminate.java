@@ -53,8 +53,12 @@ class V2Terminate extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
+			String person = effectivePerson.getDistinguishedName();
+			if(effectivePerson.isManager() && StringUtils.isNotBlank(wi.getOperator())){
+				person = wi.getOperator();
+			}
 			String identity = business.organization().identity()
-					.getMajorWithPerson(effectivePerson.getDistinguishedName());
+					.getMajorWithPerson(person);
 			if (StringUtils.isEmpty(identity)) {
 				// 如果直接报错,那么管理员和cipher无法进行终止.
 				if (effectivePerson.isManager()) {

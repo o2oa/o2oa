@@ -195,10 +195,12 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
 
                     radio.addEvent("click", function(){
                         this.validationMode();
-                        if (this.validation()) {
-                            this._setBusinessData(this.getInputData("change"));
-                            this.fireEvent("change", [radio]);
-                        }
+                        o2.promiseAll(this.validation()).then(flag=>{
+                            if(String(flag) === "true"){
+                                this._setBusinessData(this.getInputData("change"));
+                                this.fireEvent("change", [radio]);
+                            }
+                        });
                     }.bind(this));
 
                     Object.each(this.json.events, function(e, key){

@@ -123,7 +123,7 @@ MWF.xApplication.process.Xform.OOInput = MWF.APPOOInput = new Class({
         this.node.addEvent('change', function () {
             var v = this.getInputData('change');
             this.validationMode();
-            this.validation()
+            this.validation();
             this._setBusinessData(v);
             this.fireEvent('change');
         }.bind(this));
@@ -205,6 +205,7 @@ MWF.xApplication.process.Xform.OOInput = MWF.APPOOInput = new Class({
     notValidationMode: function (text) {
         if(!this.isNotValidationMode){
             this.isNotValidationMode = true;
+            this.showNotValidationMode(this.node);
             this.validationText = text;
             this.node.checkValidity();
 

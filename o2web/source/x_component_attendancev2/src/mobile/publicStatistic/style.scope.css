@@ -1,0 +1,519 @@
+.public-statistic-page {
+    --public-main-color: var(--oo-color-main, #2f86ed);
+    min-height: 100vh;
+    background: #eef8f6;
+    color: #333333;
+    box-sizing: border-box;
+}
+
+.public-statistic-shell {
+    width: 100%;
+    max-width: 920px;
+    min-height: 100vh;
+    margin: 0 auto;
+    background: #ffffff;
+    box-shadow: 0 8px 28px rgba(24, 62, 91, 0.08);
+}
+
+.public-statistic-header {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--public-main-color);
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.public-statistic-content {
+    position: relative;
+}
+
+.public-statistic-grid {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 24px 28px 22px;
+}
+
+.public-statistic-item {
+    flex: 0 0 33.333333%;
+    min-width: 0;
+    margin-bottom: 26px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.public-statistic-number {
+    font-size: 34px;
+    line-height: 1.1;
+    font-weight: 600;
+    color: #2d2d2d;
+}
+
+.public-statistic-label {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    margin-top: 14px;
+    color: #666666;
+    font-size: 17px;
+    line-height: 1.4;
+    white-space: normal;
+}
+
+.public-statistic-dot {
+    width: 10px;
+    height: 10px;
+    flex: 0 0 10px;
+    margin-right: 8px;
+    border-radius: 50%;
+}
+
+.record-status-normal {
+    background-color: var(--att-record-status-normal-color, #4a90e2);
+}
+
+.record-status-nosign {
+    background-color: var(--att-record-status-nosign-color, #fb4747);
+}
+
+.record-status-late {
+    background-color: var(--att-record-status-late-color, #f5a623);
+}
+
+.record-status-early {
+    background-color: var(--att-record-status-early-color, #8b572a);
+}
+
+.record-status-leave {
+    background-color: var(--att-record-status-leave-color, #78c06e);
+}
+
+.record-status-absenteeism {
+    background-color: var(--att-record-status-absenteeism-color, #ff8080);
+}
+
+.public-calendar-panel {
+    border-top: 1px solid #eeeeee;
+}
+
+.public-calendar-toolbar {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid #dddddd;
+}
+
+.public-calendar-month {
+    color: #333333;
+    font-size: 19px;
+    font-weight: 600;
+}
+
+.public-calendar-actions {
+    display: flex;
+    align-items: center;
+}
+
+.public-calendar-today {
+    min-width: 52px;
+    height: 36px;
+    border: 0;
+    background: transparent;
+    color: var(--public-main-color);
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.public-calendar-icon-btn {
+    width: 36px;
+    height: 36px;
+    margin-left: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    background: transparent;
+    color: #111111;
+    font-size: 19px;
+    cursor: pointer;
+}
+
+.public-calendar-weekdays,
+.public-calendar-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.public-calendar-weekdays {
+    height: 58px;
+    align-items: center;
+    padding: 0 18px;
+    color: #333333;
+    font-size: 18px;
+    font-weight: 600;
+    box-sizing: border-box;
+}
+
+.public-calendar-weekday {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+}
+
+.public-calendar-body {
+    padding: 0 18px 42px;
+}
+
+.public-calendar-row {
+    min-height: 76px;
+}
+
+.public-calendar-cell {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 8px;
+    color: #333333;
+    box-sizing: border-box;
+}
+
+.public-calendar-cell.has-record {
+    cursor: pointer;
+}
+
+.public-calendar-cell.blank {
+    visibility: hidden;
+}
+
+.public-calendar-date {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    color: #333333;
+    font-size: 18px;
+    line-height: 1;
+    box-sizing: border-box;
+}
+
+.public-calendar-date.today {
+    border-color: var(--public-main-color);
+    color: var(--public-main-color);
+}
+
+.public-calendar-marker {
+    margin-top: 6px;
+    color: var(--att-record-status-nosign-color, #fb4747);
+    font-size: 9px;
+    line-height: 1;
+}
+
+.public-statistic-loading {
+    position: absolute;
+    top: 56px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.6);
+    color: #666666;
+    font-size: 14px;
+}
+
+.public-record-drawer {
+    position: fixed;
+    z-index: 20;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.public-record-mask {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.32);
+}
+
+.public-record-sheet {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    max-height: 72vh;
+    overflow: auto;
+    padding: 10px 16px 18px;
+    background: #eef1f6;
+    border-radius: 14px 14px 0 0;
+    box-sizing: border-box;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.public-record-sheet-handle {
+    width: 42px;
+    height: 4px;
+    margin: 0 auto 12px;
+    border-radius: 2px;
+    background: #d7d9dd;
+}
+
+.record-card {
+    border-radius: 8px;
+    background: #ffffff;
+    padding: 20px 16px 18px;
+}
+
+.record-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eceef2;
+}
+
+.record-card-title {
+    min-width: 0;
+    color: #111111;
+    font-size: 22px;
+    line-height: 30px;
+    font-weight: 700;
+}
+
+.record-close {
+    flex: 0 0 auto;
+    height: 30px;
+    margin-left: 12px;
+    border: 0;
+    background: transparent;
+    color: var(--public-main-color);
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.record-list {
+    padding-top: 8px;
+}
+
+.record-line {
+    display: flex;
+    min-height: 82px;
+    color: #111111;
+}
+
+.record-line.muted {
+    color: #9a9fa6;
+}
+
+.record-time-column {
+    width: 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.record-plan-time {
+    padding-top: 20px;
+    font-size: 26px;
+    line-height: 34px;
+    font-weight: 700;
+}
+
+.record-axis {
+    width: 2px;
+    flex: 1;
+    margin: 8px 0 0 34px;
+    border-radius: 1px;
+    background: #e5e7eb;
+}
+
+.record-content {
+    min-width: 0;
+    flex: 1;
+    padding: 18px 0 18px 10px;
+    border-bottom: 1px solid #eceef2;
+}
+
+.record-line:last-child .record-content {
+    border-bottom: 0;
+}
+
+.record-main {
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 700;
+}
+
+.record-status {
+    margin-top: 7px;
+    color: #8c929b;
+    font-size: 17px;
+    line-height: 24px;
+    word-break: break-word;
+}
+
+.record-status.normal {
+    color: #8c929b;
+}
+
+.record-status.abnormal {
+    color: #e34d59;
+}
+
+.record-status.muted {
+    color: #a8adb5;
+}
+
+@media (min-width: 768px) {
+    .public-statistic-page {
+        padding: 24px;
+    }
+
+    .public-statistic-shell {
+        min-height: calc(100vh - 48px);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .public-statistic-header {
+        height: 64px;
+        font-size: 22px;
+    }
+
+    .public-statistic-grid {
+        padding: 30px 54px 28px;
+    }
+
+    .public-calendar-body {
+        padding: 0 44px 48px;
+    }
+
+    .public-calendar-weekdays {
+        padding: 0 44px;
+    }
+
+    .public-calendar-row {
+        min-height: 82px;
+    }
+
+    .public-record-sheet {
+        bottom: 24px;
+        right: 50%;
+        left: auto;
+        width: 920px;
+        max-width: calc(100vw - 48px);
+        padding: 0;
+        background: transparent;
+        box-shadow: none;
+        transform: translateX(50%);
+    }
+
+    .public-record-sheet-handle {
+        display: none;
+    }
+
+    .record-card {
+        max-height: 70vh;
+        overflow: auto;
+        padding: 28px 30px 26px;
+        box-shadow: 0 14px 40px rgba(20, 35, 55, 0.22);
+    }
+
+    .record-card-title {
+        font-size: 20px;
+    }
+
+    .record-line {
+        min-height: 76px;
+    }
+
+    .record-plan-time {
+        font-size: 22px;
+    }
+
+    .record-main {
+        font-size: 18px;
+    }
+
+    .record-status {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 420px) {
+    .public-statistic-grid {
+        padding: 20px 12px 20px;
+    }
+
+    .public-statistic-item {
+        margin-bottom: 22px;
+    }
+
+    .public-statistic-number {
+        font-size: 30px;
+    }
+
+    .public-statistic-label {
+        font-size: 15px;
+    }
+
+    .public-calendar-toolbar {
+        padding: 0 12px;
+    }
+
+    .public-calendar-month,
+    .public-calendar-weekdays {
+        font-size: 16px;
+    }
+
+    .public-calendar-body {
+        padding: 0 8px 36px;
+    }
+
+    .public-calendar-weekdays {
+        padding: 0 8px;
+    }
+
+    .public-calendar-row {
+        min-height: 68px;
+    }
+
+    .public-calendar-date {
+        width: 32px;
+        height: 32px;
+        font-size: 17px;
+    }
+
+    .public-record-sheet {
+        padding: 10px 12px 16px;
+    }
+
+    .record-card {
+        padding: 18px 14px 16px;
+    }
+
+    .record-card-title {
+        font-size: 20px;
+    }
+
+    .record-plan-time {
+        font-size: 24px;
+    }
+}

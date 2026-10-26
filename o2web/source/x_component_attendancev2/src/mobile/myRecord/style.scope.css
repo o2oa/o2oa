@@ -1,0 +1,258 @@
+.my-record-page {
+  width: 100%;
+  height: 100vh;
+  background: #eef1f6;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.week-panel {
+  flex: 0 0 auto;
+  padding: 12px 18px 14px;
+  background: #ffffff;
+  color: #111111;
+  touch-action: pan-y;
+}
+
+.week-header {
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.week-title {
+  font-size: 21px;
+  line-height: 30px;
+  font-weight: 700;
+}
+
+.week-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.week-arrow {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 15px;
+  background: #f0f1f4;
+  color: #7b818a;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.week-days {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0;
+}
+
+.week-day {
+  min-width: 0;
+  height: 68px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  color: #111111;
+}
+
+.week-day-name {
+  height: 20px;
+  color: #9a9fa6;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.week-day-number {
+  width: 40px;
+  height: 40px;
+  margin-top: 7px;
+  border-radius: 50%;
+  font-size: 22px;
+  line-height: 40px;
+  text-align: center;
+}
+
+.week-day-dot {
+  width: 5px;
+  height: 5px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: var(--oo-color-main);
+}
+
+.week-day.active .week-day-number {
+  color: #ffffff;
+  background: var(--oo-color-main);
+}
+
+.week-day.today .week-day-number {
+  color: var(--oo-color-main);
+  background: rgb(45 126 235 / 14%);
+}
+
+.week-day.active .week-day-dot {
+  background: #ffffff;
+}
+
+.week-indicator {
+  width: 42px;
+  height: 4px;
+  margin: 12px auto 0;
+  border-radius: 2px;
+  background: #d7d9dd;
+}
+
+.record-scroll {
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+}
+
+.record-card {
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 20px 16px 18px;
+}
+
+.record-card-header {
+  padding-bottom: 16px;
+  border-bottom: 1px solid #eceef2;
+}
+
+.record-card-title {
+  color: #111111;
+  font-size: 22px;
+  line-height: 30px;
+  font-weight: 700;
+}
+
+.record-list {
+  padding-top: 8px;
+}
+
+.record-line {
+  display: flex;
+  min-height: 82px;
+  color: #111111;
+}
+
+.record-line.muted {
+  color: #9a9fa6;
+}
+
+.record-time-column {
+  width: 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.record-plan-time {
+  padding-top: 20px;
+  font-size: 26px;
+  line-height: 34px;
+  font-weight: 700;
+}
+
+.record-axis {
+  width: 2px;
+  flex: 1;
+  margin: 8px 0 0 34px;
+  border-radius: 1px;
+  background: #e5e7eb;
+}
+
+.record-content {
+  min-width: 0;
+  flex: 1;
+  padding: 18px 0 18px 10px;
+  border-bottom: 1px solid #eceef2;
+}
+
+.record-line:last-child .record-content {
+  border-bottom: 0;
+}
+
+.record-main {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 700;
+}
+
+.record-status {
+  margin-top: 7px;
+  font-size: 17px;
+  line-height: 24px;
+  color: #8c929b;
+  word-break: break-word;
+}
+
+.record-status.normal {
+  color: #8c929b;
+}
+
+.record-status.abnormal {
+  color: #e34d59;
+}
+
+.record-status.muted {
+  color: #a8adb5;
+}
+
+.record-empty {
+  min-height: 160px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #9a9fa6;
+  font-size: 16px;
+  line-height: 160px;
+  text-align: center;
+}
+
+.appeal-manager-link {
+  margin: 16px 0 4px;
+  color: var(--oo-color-main);
+  font-size: 15px;
+  line-height: 24px;
+  text-align: center;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@media (max-width: 360px) {
+  .week-panel {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .week-title {
+    font-size: 20px;
+  }
+
+  .week-day-number {
+    width: 34px;
+    height: 34px;
+    font-size: 20px;
+    line-height: 34px;
+  }
+
+  .record-scroll {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .record-plan-time {
+    font-size: 24px;
+  }
+}

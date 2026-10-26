@@ -291,7 +291,17 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
             const parameterList = data.filterList.filter( function(d){ return d.filterType === "parameter"; });
             if(parameterList && parameterList.length){
                 parameterList.forEach( (d)=>{
-                    this.parameter[d.parameter] = this._parseFilterValue(d, true);
+                    const value = d.isParseParameter === false ? d.value : this._parseFilterValue(d, true);
+                    if(this.parameter.hasOwnProperty(d.parameter)){
+                        if(Array.isArray(this.parameter[d.parameter])){
+                            this.parameter[d.parameter].push(value);
+                        }else{
+                            this.parameter[d.parameter] = [this.parameter[d.parameter], value];
+                        }
+                        this.parameter[d.parameter] = this.parameter[d.parameter];
+                    }else{
+                        this.parameter[d.parameter] = value;
+                    }
                 });
             }
         }
@@ -550,6 +560,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
 
     //v10的搜索
     _filterData: function(data, value, comparison, logic='and'){
+        debugger;
         const filterData = value ? {
             "filterType": data.filterType,
             "parameter": data.parameter,
@@ -557,6 +568,7 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
             "path": data.path,
             "title": data.title,
             "comparison": comparison,
+            "isParseParameter": data.isParseParameter,
             "comparisonTitle": '',
             "value": value,
             "formatType": (data.formatType=="datetimeValue") ? "dateTimeValue": data.formatType
@@ -818,404 +830,34 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class(
         }
     },
 
-    getExportTotalCount: function(){
-        return this.count || 100000;
-    },
-    // getExportMaxCount: function(){
-    //     return 2000;
-    // },
     exportView: function(){
-        var _self = this;
-        var total = this.getExportTotalCount();
-
-        var lp = this.lp.viewExport;
-        var node = this.exportExcelDlgNode = new Element("div");
-            var html = "<div style=\"color: #333333; overflow: hidden;margin-top:20px;\">"+
-                `   <oo-input label='${lp.fileName}' class='filename' value='' style='margin-left: 14px;width: ${layout.mobile?"340px":"435px"};'></oo-input><span>`+
-            "</div>";
-            html += `<div style="color: #333333; overflow: hidden;margin-top:20px;">`+
-                `   <oo-input style="width:${layout.mobile?'200px':'auto'}" label='${lp.exportRange}' class='start' value='${this.exportExcelStart || 1}'></oo-input>` +
-                `   <oo-input style="width:${layout.mobile?'150px':'auto'}" label='${lp.to}' class='end' value='${this.exportExcelEnd || total}'></oo-input><span>${lp.item}</span>` +
-            "</div>";
-        html += "<div style=\"clear:both; max-height: 300px; margin-bottom:10px; margin-top:10px; overflow-y:auto;\">"+( lp.description.replace("{count}", total ))+"</div>";
-        node.set("html", html);
-        var check = function () {
-            if(this.value.length == 1){
-                this.value = this.value.replace(/[^1-9]/g,'');
-            }else{
-                this.value = this.value.replace(/\D/g,'');
-            }
-            if( this.value.toInt() > total ){
-                this.value = total;
-            }
-        }
-        node.getElement(".start").addEvent( "keyup", function(){ check.call(this) } );
-        node.getElement(".end").addEvent( "keyup", function(){ check.call(this) } );
-
-
-        var dlg = o2.DL.open({
-            "title": this.lp.exportExcel,
-            "style": layout.mobile ? 'v10_mobile' : "user",
-            "isResize": false,
-            "content": node,
-            "width": layout.mobile ? '100%' : 600,
-            "height" : layout.mobile ? '100%' : 260,
-            "buttonList": [
-                {
-                    "type": "ok",
-                    "text": MWF.LP.process.button.ok,
-                    "action": function (d, e) {
-                        var start = node.getElement(".start").get("value");
-                        var end = node.getElement(".end").get("value");
-                        var filename = node.getElement(".filename").get("value");
-                        if( !start || !end ){
-                            MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.inputIntegerNotice, node, {"x": 0, "y": 85});
-                            return false;
-                        }
-                        start = Math.max(start.toInt(), 1);
-                        end = end.toInt();
-                        if( end < start ){
-                            MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.startLargetThanEndNotice, node, {"x": 0, "y": 85});
-                            return false;
-                        }
-                        this.exportExcelStart = start;
-                        this.exportExcelEnd = end;
-                        this._exportView(start, end, filename);
-                        dlg.close();
-                    }.bind(this)
-                },
-                {
-                    "type": "cancel",
-                    "text": MWF.LP.process.button.cancel,
-                    "action": function () { dlg.close(); }
-                }
-            ]
-        });
+        const flag = this.options.statementId || this.options.statementName || this.options.statementAlias
+            || this.json.statementId || this.json.statementName || this.json.statementAlias;
+        const exporter = new MWF.xApplication.query.Query.Statement.Exporter({
+            statementFlag: this.viewJson.exportStatement?.id || flag,
+            filterList: this.filterList || [],
+            parameter: this.parameter || {},
+            allowSelectColumn: this.viewJson.allowSelectColumn
+        }, this)
+        exporter.exportView();
     },
-    // exportView: function(){
-    //     var excelName = this.statementJson.name;
-    //
-    //     var p = this.currentPage;
-    //     var d = {
-    //         "filterList": this.filterList,
-    //         "parameter": this.parameter
-    //     };
-    //
-    //     this.createLoadding();
-    //
-    //     debugger;
-    //
-    //     var exportArray = [];
-    //
-    //     var titleArray = [];
-    //     var colWidthArr = [];
-    //     var dateIndexArray = [];
-    //     var numberIndexArray = [];
-    //     var idx = 0;
-    //     Object.each(this.entries, function (c, k) {
-    //         if (this.hideColumns.indexOf(k) === -1 && c.exportEnable !== false) {
-    //             titleArray.push(c.displayName);
-    //             colWidthArr.push(c.exportWidth || 200);
-    //             if( c.isTime )dateIndexArray.push(idx);
-    //             if( c.isNumber )numberIndexArray.push(idx);
-    //             idx++;
+    // getDataByPath: function (obj, path) {
+    //     var pathList = path.split(".");
+    //     for (var i = 0; i < pathList.length; i++) {
+    //         var p = pathList[i];
+    //         if ((/(^[1-9]\d*$)/.test(p))) p = p.toInt();
+    //         if (obj[p]) {
+    //             obj = obj[p];
+    //         } else if(obj[p] === undefined || obj[p] === null) {
+    //             obj = "";
+    //             break;
+    //         } else {
+    //             obj = obj[p];
+    //             break;
     //         }
-    //     }.bind(this));
-    //     exportArray.push(titleArray);
-    //
-    //     o2.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
-    //         this.options.statementId || this.options.statementName || this.options.statementAlias ||
-    //         this.json.statementId || this.json.statementName || this.json.statementAlias,
-    //         "data", 1, 100000, d, function (json) {
-    //
-    //             json.data.each(function (d, i) {
-    //                 var dataArray = [];
-    //                 Object.each(this.entries, function (c, k) {
-    //                     if (this.hideColumns.indexOf(k) === -1 && c.exportEnable !== false) {
-    //                         var text = this.getExportText(c, k, d);
-    //                         // if( c.isNumber && typeOf(text) === "string" && (parseFloat(text).toString() !== "NaN") ){
-    //                         //     text = parseFloat(text);
-    //                         // }
-    //                         dataArray.push( text );
-    //                     }
-    //                 }.bind(this));
-    //                 //exportRow事件
-    //                 var argu = {"index":i, "source": d, "data":dataArray};
-    //                 this.fireEvent("exportRow", [argu]);
-    //                 exportArray.push( argu.data || dataArray );
-    //             }.bind(this));
-    //
-    //             //export事件
-    //             var arg = {
-    //                 data : exportArray,
-    //                 colWidthArray : colWidthArr,
-    //                 title : excelName
-    //             };
-    //             this.fireEvent("export", [arg]);
-    //
-    //             if (this.loadingAreaNode) {
-    //                 this.loadingAreaNode.destroy();
-    //                 this.loadingAreaNode = null;
-    //             }
-    //
-    //             new MWF.xApplication.query.Query.Statement.ExcelUtils().exportToExcel(
-    //                 arg.data || exportArray,
-    //                 arg.title || excelName,
-    //                 arg.colWidthArray || colWidthArr,
-    //                 dateIndexArray,  //日期格式列下标
-    //                 numberIndexArray  //数字格式列下标
-    //             );
-    //
-    //         }.bind(this));
-    // },
-    _exportView: function(start, end, filename){
-        var excelName = filename || this.statementJson.name;
-
-        var p = this.currentPage;
-        var d = {
-            "filterList": this.filterList,
-            "parameter": this.parameter
-        };
-
-        this.createLoadding();
-
-        var exportArray = [];
-
-        var titleArray = [];
-        var colWidthArr = [];
-        var dateIndexArray = [];
-        var numberIndexArray = [];
-        var totalArray = [];
-        var idx = 0;
-
-        if (this.viewJson.isSequence === "yes") {
-            titleArray.push( this.lp.sequence );
-            colWidthArr.push(100);
-            totalArray.push('');
-            idx = idx + 1;
-        }
-
-        Object.each(this.entries, function (c, k) {
-            if (this.hideColumns.indexOf(k) === -1 && c.exportEnable !== false) {
-                titleArray.push(c.displayName);
-                colWidthArr.push(c.exportWidth || 200);
-                if( c.isTime )dateIndexArray.push(idx);
-                if( c.isNumber )numberIndexArray.push(idx);
-                totalArray.push( ['number', 'count'].contains(c.total) ? new Decimal(0) : '' );
-                idx++;
-            }
-        }.bind(this));
-        exportArray.push(titleArray);
-
-        this.loadExportData(start, end, d, function (dataList) {
-            var rowIndex = 0;
-            dataList.each(function (data, j) {
-                data.each(function (d, i) {
-                    rowIndex = rowIndex + 1;
-
-                    var columnIndex = 0;
-
-                    var dataArray = [];
-                    if (this.viewJson.isSequence === "yes") {
-                        dataArray.push( rowIndex );
-                        columnIndex++;
-                    }
-                    Object.each(this.entries, function (c, k) {
-                        if (this.hideColumns.indexOf(k) === -1 && c.exportEnable !== false) {
-                            var text = this.getExportText(c, k, d);
-
-                            dataArray.push( text );
-
-                            switch (c.total){
-                                case 'number':
-                                    if( parseFloat(text).toString() !== "NaN" ) { //可以转成数字
-                                        totalArray[columnIndex] = totalArray[columnIndex].plus(text.toString());
-                                    }
-                                    break;
-                                case 'count':
-                                    totalArray[columnIndex] = totalArray[columnIndex].plus(1);
-                                    break;
-                            }
-
-                            columnIndex++;
-                        }
-                    }.bind(this));
-                    //exportRow事件
-                    var argu = {"index":rowIndex, "source": d, "data":dataArray};
-                    this.fireEvent("exportRow", [argu]);
-                    exportArray.push( argu.data || dataArray );
-                }.bind(this));
-            }.bind(this));
-
-            var hasTotal = false;
-            totalArray = totalArray.map(function (d){
-                if( d ){
-                    hasTotal = true;
-                    return d.toString();
-                }else{
-                    return '';
-                }
-            });
-
-            if( hasTotal ){
-                totalArray[0] = this.lp.total + " " + totalArray[0];
-                exportArray.push( totalArray );
-            }
-
-            var headTextScript = this.viewJson.exportHeadText;
-            var headText = headTextScript ? this.Macro.exec(headTextScript, this) : '';
-
-            var headStyleScript = this.viewJson.exportHeadStyle;
-            var headStyle = headStyleScript ? this.Macro.exec(headStyleScript, this) : null;
-
-            var titleStyleScript = this.viewJson.exportColumnTitleStyle;
-            var titleStyle = titleStyleScript ? this.Macro.exec(titleStyleScript, this) : null;
-
-            var contentStyleScript = this.viewJson.exportColumnContentStyle;
-            var contentStyle = contentStyleScript ? this.Macro.exec(contentStyleScript, this) : null;
-
-            //export事件
-            var arg = {
-                headText: headText,
-                headStyle: headStyle,
-                titleStyle: titleStyle,
-                contentStyle: contentStyle,
-                data : exportArray,
-                colWidthArray : colWidthArr,
-                title : excelName
-            };
-            this.fireEvent("export", [arg]);
-
-            if (this.loadingAreaNode) {
-                this.loadingAreaNode.destroy();
-                this.loadingAreaNode = null;
-            }
-
-            var options = {};
-            if( arg.headText )options.headText = arg.headText;
-            if( arg.headStyle )options.headStyle = arg.headStyle;
-            if( arg.titleStyle )options.columnTitleStyle = arg.titleStyle;
-            if( arg.contentStyle )options.columnContentStyle = arg.contentStyle;
-
-            new MWF.xApplication.query.Query.Statement.ExcelUtils(
-                options
-            ).exportToExcel(
-                arg.data || exportArray,
-                arg.title || excelName,
-                arg.colWidthArray || colWidthArr,
-                dateIndexArray,  //日期格式列下标
-                numberIndexArray  //数字格式列下标
-            );
-
-        }.bind(this))
-    },
-    loadExportData: function(start, end, body, callback){
-        start = start - 1;
-        var differ = end - start;
-        var count;
-        if( differ < 10000 ){
-            count = differ;
-        }else{
-            count = 10000;
-        }
-        var page = Math.floor( start / count ) + 1;
-        var startIndex = start % count;
-        var endIndex = end % count;
-        var loaded = (page - 1)*count;
-        var list = [];
-        do{
-            var promise = o2.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
-                this.options.statementId || this.options.statementName || this.options.statementAlias ||
-                this.json.statementId || this.json.statementName || this.json.statementAlias,
-                "data", page, count, body);
-            list.push(promise);
-            loaded = loaded + count;
-            page = page + 1;
-        }while( end > loaded );
-        var result = [];
-        Promise.all( list ).then(function (arr) {
-            arr.each(function (json, i) {
-                var data = json.data;
-                var length = json.data.length;
-                if( i === 0 && i === list.length - 1 ){
-                    data.splice( 0, startIndex );
-                    if( length > endIndex && endIndex > 0 ){
-                        data.splice( endIndex - startIndex , length - endIndex );
-                    }
-                }else if( i === 0 ){
-                    data.splice( 0, startIndex );
-                }else if( i=== list.length - 1 ){
-                    if( length > endIndex && endIndex > 0 )data.splice( endIndex, length - endIndex );
-                }
-                result.push(data);
-            });
-            if( callback )callback(result);
-        });
-
-    },
-    getDataByPath: function (obj, path) {
-        var pathList = path.split(".");
-        for (var i = 0; i < pathList.length; i++) {
-            var p = pathList[i];
-            if ((/(^[1-9]\d*$)/.test(p))) p = p.toInt();
-            if (obj[p]) {
-                obj = obj[p];
-            } else if(obj[p] === undefined || obj[p] === null) {
-                obj = "";
-                break;
-            } else {
-                obj = obj[p];
-                break;
-            }
-        }
-        return obj
-    },
-    getExportText: function (c, k, data) {
-        var path = c.path, code = c.code, obj = data;
-        if (!path) {
-        } else if (path === "$all") {
-        } else {
-            obj = this.getDataByPath(obj, path);
-        }
-
-        try{
-            if (code && code.trim()) obj = this.Macro.exec(code, {
-                "value": obj,
-                "data": data,
-                "entry": c,
-                "json": c
-            });
-        }catch (e) {}
-
-        if( !obj )return "";
-
-        var toName = function (value) {
-            if (typeOf(value) === "array") {
-                Array.each(value, function (v, idx) {
-                    value[idx] = toName(v)
-                })
-            } else if (typeOf(value) === "object") {
-                Object.each(value, function (v, key) {
-                    value[key] = toName(v);
-                })
-            } else if (typeOf(value) === "string") {
-                value = o2.name.cn(value)
-            }
-            return value;
-        };
-
-        var d;
-        if (obj != undefined && obj != null) {
-            if (typeOf(obj) === "array") {
-                d = c.isName ? JSON.stringify(toName(Array.clone(obj))) : JSON.stringify(obj);
-            } else if (typeOf(obj) === "object") {
-                d = c.isName ? JSON.stringify(toName(Object.clone(obj))) : JSON.stringify(obj);
-            } else {
-                d = c.isName ? o2.name.cn(obj.toString()) : obj;
-            }
-        }
-        return d;
-    }
+    //     }
+    //     return obj
+    // }
 });
 
 /** @classdesc StatementItem 数据中心的查询视图的条目。本章节的脚本上下文请看<b>{@link module:queryStatement|queryStatement}。</b>
@@ -1886,7 +1528,461 @@ MWF.xApplication.query.Query.Statement.Paging = new Class({
     Extends: MWF.xApplication.query.Query.Viewer.Paging
 });
 
-MWF.xDesktop.requireApp("Template", "utils.ExcelUtils", null, false);
-MWF.xApplication.query.Query.Statement.ExcelUtils = new Class({
-    Extends: MWF.xApplication.Template.utils.ExcelUtils
-});
+
+MWF.xApplication.query.Query.Statement.Exporter = new Class({
+    Implements: [Options, Events],
+    options: {
+        statementFlag: '',
+        filterList: [],
+        parameter: {},
+        ignoreDialog: false,
+        allowSelectColumn: false
+    },
+    initialize: function (options, viewer) {
+        this.setOptions(options);
+        this.viewer = viewer;
+        this.lp = MWF.xApplication.query.Query.LP;
+        this.Macro = viewer ? viewer.Macro : new MWF.Macro.ViewContext(this);
+    },
+    exportView: function(){
+        this._getView().then(()=>{
+            this.lookup( function(){
+                if(this.options.ignoreDialog){
+                    var total = this.getExportTotalCount();
+                    var max = this.getExportMaxCount();
+                    var end = Math.min( total, max );
+                    this._doExportView(1, end);
+                }else{
+                    this.showDialog();
+                }
+            }.bind(this))
+        })
+    },
+    getExportTotalCount: function(){
+        return this.count || 100000;
+    },
+    getExportMaxCount: function(){
+        return 2000;
+    },
+    showDialog: function(){
+        var _self = this;
+        var total = this.getExportTotalCount();
+
+        var lp = this.lp.viewExport;
+
+        var node = this.exportExcelDlgNode = new Element("div");
+        const labelStyle = 'label-style="width:3.2vw;"';
+
+        var html = `
+        <div style="display: flex; flex-direction: column; gap: 10px;padding: 20px">
+            <div>
+                <oo-input ${labelStyle} label='${lp.fileName}' class='filename' value='' style='width:100%'></oo-input><span>
+            </div>
+            <div>
+                <oo-input ${labelStyle} type="number" label='${lp.exportRange}' class='start' value='${this.exportExcelStart || 1}'></oo-input>
+                <oo-input type="number" label='${lp.to}' class='end' value='${this.exportExcelEnd || total}'></oo-input>
+                <span>${lp.item}</span>
+            </div>
+            <div style="color: #666;">${ lp.description.replace("{count}", total )}</div>
+            <div>
+                <div style="padding: 0.8em 1em; font-size: 1.14286rem; display: ${this.options.allowSelectColumn?'block':'none'};">选择列</div>
+                <div class="selector"></div>
+            </div>
+        </div>
+       `;
+        node.set("html", html);
+        if(this.options.allowSelectColumn){
+            this.loadSelector(node.querySelector('.selector'));
+        }
+
+        var check = function () {
+            if(this.value.length == 1){
+                this.value = this.value.replace(/[^1-9]/g,'')
+            }else{
+                this.value = this.value.replace(/\D/g,'')
+            }
+            if( this.value.toInt() > total ){
+                this.value = total;
+            }
+        }
+        node.getElement(".start")?.addEvent( "keyup", function(){ check.call(this) } );
+        node.getElement(".end")?.addEvent( "keyup", function(){ check.call(this) } );
+
+
+        const _setSelectedColumn = ()=>{
+            const selectedIds = this.selector.selectedItems.map(item=>item.data.id);
+            this.selectedColumns = this.viewJson.selectList.filter(d=>{
+                return selectedIds.includes(d.id);
+            })
+        }
+
+        let widthPc = this.options.allowSelectColumn ? '840' : '600';
+        let heightPc = this.options.allowSelectColumn ? '750' : '300';
+
+        var dlg = o2.DL.open({
+            "title": this.lp.exportExcel,
+            "style": layout.mobile ? 'v10_mobile' : "v10",
+            "isResize": false,
+            "content": node,
+            "width": layout.mobile ? '100%' : widthPc,
+            "height" : layout.mobile ? '100%' : heightPc,
+            "buttonList": [
+                {
+                    "type": "ok",
+                    "text": MWF.LP.process.button.ok,
+                    "action": function (d, e) {
+                        var start = node.getElement(".start").get("value");
+                        var end = node.getElement(".end").get("value");
+                        var filename = node.getElement(".filename").get("value");
+                        if( !start || !end ){
+                            MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.inputIntegerNotice, node, {"x": 0, "y": 85});
+                            return false;
+                        }
+                        start = Math.max(start.toInt(), 1);
+                        end = end.toInt();
+                        if( end < start ){
+                            MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.startLargetThanEndNotice, node, {"x": 0, "y": 85});
+                            return false;
+                        }
+                        if(this.selector){
+                            if(!this.selector.selectedItems.length){
+                                MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.selectColumnNotice, node, {"x": 0, "y": 85});
+                                return false;
+                            }else{
+                                _setSelectedColumn();
+                            }
+                        }
+                        this.exportExcelStart = start;
+                        this.exportExcelEnd = end;
+
+                        this._doExportView(start, end, filename);
+                        dlg.close();
+                    }.bind(this)
+                },
+                {
+                    "type": "cancel",
+                    "text": MWF.LP.process.button.cancel,
+                    "action": function () { dlg.close(); }
+                }
+            ]
+        });
+    },
+    loadSelector: function (node) {
+        const selectList = this.viewJson.selectList.filter(c=>{
+            return c.hideColumn !== true && c.exportEnable !== false
+        })
+        o2.xDesktop.requireApp('Template', 'Selector.Custom', null, false);
+        var selector = new MWF.xApplication.Template.Selector.Custom(node, {
+            "style": layout.mobile ? "v10_mobile" : "v10_flow",
+            "embedded" : true,
+            "hasTop": true,
+            "selectableItems": selectList.map(d=>{
+                return {
+                    name: d.displayName, id: d.id,
+                    isItem: true, column: d
+                }
+            }),
+            "values": selectList.map(d=>d.id)
+        });
+        selector.load();
+        this.selector = selector;
+    },
+    _getView: function () {
+        if(!this.getViewRes)this.getViewRes = o2.Actions.load("x_query_assemble_surface").StatementAction.get(
+            this.options.statementFlag,
+            function (json) {
+                var viewData = JSON.decode(json.data.view);
+                this.viewJson = viewData.data;
+                this.statementJson = json.data;
+                this.statementJson.viewJson = this.viewJson;
+
+                this.entries = {};
+                this.viewJson.selectList.each(function(column){
+                    this.entries[column.column] = column;
+                }.bind(this));
+
+            }.bind(this)
+        );
+        return this.getViewRes;
+    },
+    _doExportView: function(start, end, filename){
+        Promise.resolve(this.loadExportData(start, end)).then(function (data) {
+            var excelName;
+            debugger;
+            if( this.options.ignoreDialog ){
+                excelName = this.statementJson.name;
+            }else{
+                excelName = filename || (this.statementJson.name + "(" + start + "-" + end + ")");
+            }
+
+            this.viewer.createLoadding();
+
+            var exportArray = [];
+
+            var titleArray = [];
+            var colWidthArr = [];
+            var dateIndexArray = [];
+            var numberIndexArray = [];
+            var totalArray = [];
+            var idx = 0;
+
+            if (this.viewJson.isSequence === "yes") {
+                titleArray.push( this.lp.sequence );
+                colWidthArr.push(100);
+                totalArray.push('');
+                idx = idx + 1;
+            }
+
+            const selectList = this.selectedColumns || this.viewJson.selectList;
+
+            selectList.each(function (c, k) {
+                if ( c.hideColumn !== true && c.exportEnable !== false) {
+                    titleArray.push(c.displayName);
+                    colWidthArr.push(c.exportWidth || 200);
+                    //var column = c.column.toLowerCase();
+                    //if( column.contains('date') || column.contains('time') )dateIndexArray.push(idx);
+                    if( c.isTime )dateIndexArray.push(idx);
+                    if( c.isNumber )numberIndexArray.push(idx);
+                    totalArray.push( ['number', 'count'].contains(c.total) ? new Decimal(0) : '' );
+                    idx++;
+                }
+            }.bind(this));
+            exportArray.push(titleArray);
+
+            var rowIndex = 0;
+            data.forEach(function (d, i) {
+                rowIndex = rowIndex + 1;
+
+                var columnIndex = 0;
+                var dataArray = [];
+                if (this.viewJson.isSequence === "yes") {
+                    dataArray.push( (start-1)+rowIndex );
+                    columnIndex++;
+                }
+                selectList.each(function (c, i) {
+                    if ( c.hideColumn !== true && c.exportEnable !== false) {
+                        var text = this.getExportText(c, c.column, d);
+                        dataArray.push( text );
+                        switch (c.total){
+                            case 'number':
+                                if( parseFloat(text).toString() !== "NaN" ) { //可以转成数字
+                                    totalArray[columnIndex] = totalArray[columnIndex].plus(text);
+                                }
+                                break;
+                            case 'count':
+                                totalArray[columnIndex] = totalArray[columnIndex].plus(1);
+                                break;
+                        }
+                        columnIndex++;
+                    }
+                }.bind(this));
+                //exportRow事件
+                var argu = {"index":rowIndex, "source": d, "data":dataArray};
+                this.viewer?.fireEvent("exportRow", [argu]);
+                this.fireEvent("exportRow", [argu]);
+                exportArray.push( argu.data || dataArray );
+            }.bind(this));
+
+            var hasTotal = false;
+            totalArray = totalArray.map(function (d){
+                if( d ){
+                    hasTotal = true;
+                    return d.toString();
+                }else{
+                    return '';
+                }
+            });
+
+            if( hasTotal ){
+                totalArray[0] = MWF.xApplication.query.Query.LP.total + " " + totalArray[0];
+                exportArray.push( totalArray );
+            }
+
+
+            var headTextScript = this.viewJson.exportHeadText;
+            var headText = headTextScript ? this.Macro.exec(headTextScript, this) : '';
+
+            var headStyleScript = this.viewJson.exportHeadStyle;
+            var headStyle = headStyleScript ? this.Macro.exec(headStyleScript, this) : null;
+
+            var titleStyleScript = this.viewJson.exportColumnTitleStyle;
+            var titleStyle = titleStyleScript ? this.Macro.exec(titleStyleScript, this) : null;
+
+            var contentStyleScript = this.viewJson.exportColumnContentStyle;
+            var contentStyle = contentStyleScript ? this.Macro.exec(contentStyleScript, this) : null;
+
+
+            //export事件
+            var arg = {
+                headText: headText,
+                headStyle: headStyle,
+                titleStyle: titleStyle,
+                contentStyle: contentStyle,
+                data : exportArray,
+                colWidthArray : colWidthArr,
+                title : excelName
+            };
+            this.viewer?.fireEvent("export", [arg]);
+            this.fireEvent("export", [arg]);
+
+            if (this.viewer?.loadingAreaNode) {
+                this.viewer.loadingAreaNode.destroy();
+                this.viewer.loadingAreaNode = null;
+            }
+
+            const options = {
+                hasTitle: true,
+                headText: arg.headText,
+                sheetName: "",
+                colWidthArr: arg.colWidthArray || colWidthArr,
+                dateIndexArray: dateIndexArray,
+                numberIndexArray: numberIndexArray,
+                offsetRowIndex: 0,
+                offsetColumnIndex: 0,
+                startAddress: '' //如 H12
+            };
+            if(arg.headStyle)options.headStyle = arg.headStyle;
+            if(arg.columnTitleStyle)options.columnTitleStyle = arg.titleStyle;
+            if(arg.columnContentStyle)options.columnContentStyle = arg.contentStyle;
+
+            new MWF.ExcelExporter({
+                fileName: excelName,
+                worksheet: [options]
+            }).execute([arg.data || exportArray]);
+
+        }.bind(this))
+    },
+    lookup: function( callback ){
+        var p = o2.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
+            this.options.statementFlag,
+            'count', 1, 1, {
+                filterList: this.options.filterList,
+                parameter: this.options.parameter
+            });
+        return Promise.resolve( p ).then(function (json) {
+            this.count = json.count;
+            if(callback)callback();
+        }.bind(this));
+    },
+    loadExportData: function(start, end, callback){
+        start = start - 1;
+        var differ = end - start;
+        var count;
+        if( differ < 10000 ){
+            count = differ;
+        }else{
+            count = 10000;
+        }
+        var page = Math.floor( start / count ) + 1;
+        var startIndex = start % count;
+        var endIndex = end % count;
+        var loaded = (page - 1)*count;
+        var list = [];
+        do{
+            var promise = o2.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
+                this.options.statementFlag,
+                "data", page, count, {
+                    "filterList": this.options.filterList,
+                    "parameter": this.options.parameters
+                });
+            list.push(promise);
+            loaded = loaded + count;
+            page = page + 1;
+        }while( end > loaded );
+        var result = [];
+        return Promise.all( list ).then(function (arr) {
+            arr.each(function (json, i) {
+                var data = json.data;
+                var length = json.data.length;
+                if( i === 0 && i === list.length - 1 ){
+                    data.splice( 0, startIndex );
+                    if( length > endIndex && endIndex > 0 ){
+                        data.splice( endIndex - startIndex , length - endIndex );
+                    }
+                }else if( i === 0 ){
+                    data.splice( 0, startIndex );
+                }else if( i=== list.length - 1 ){
+                    if( length > endIndex && endIndex > 0 )data.splice( endIndex, length - endIndex );
+                }
+                result.push(...data);
+            });
+            if( callback )callback(result);
+            return result;
+        });
+
+    },
+    getDataByPath: function (obj, path) {
+        var pathList = path.split(".");
+        for (var i = 0; i < pathList.length; i++) {
+            var p = pathList[i];
+            if ((/(^[1-9]\d*$)/.test(p))) p = p.toInt();
+            if (obj[p]) {
+                obj = obj[p];
+            } else if(obj[p] === undefined || obj[p] === null) {
+                obj = "";
+                break;
+            } else {
+                obj = obj[p];
+                break;
+            }
+        }
+        return obj
+    },
+    getExportText: function (c, k, data) {
+        var path = c.path, code = c.code, obj = data;
+        if (!path) {
+        } else if (path === "$all") {
+        } else {
+            obj = this.getDataByPath(obj, path);
+        }
+
+        try{
+            if (code && code.trim()) obj = this.Macro.exec(code, {
+                "value": obj,
+                "data": data,
+                "entry": c,
+                "json": c
+            });
+        }catch (e) {}
+
+        if( !obj )return "";
+
+        var toName = function (value) {
+            if (typeOf(value) === "array") {
+                Array.each(value, function (v, idx) {
+                    value[idx] = toName(v)
+                })
+            } else if (typeOf(value) === "object") {
+                Object.each(value, function (v, key) {
+                    value[key] = toName(v);
+                })
+            } else if (typeOf(value) === "string") {
+                value = o2.name.cn(value)
+            }
+            return value;
+        };
+
+        var d;
+        if (obj != undefined && obj != null) {
+            if (typeOf(obj) === "array") {
+                d = c.isName ? JSON.stringify(toName(Array.clone(obj))) : JSON.stringify(obj);
+            } else if (typeOf(obj) === "object") {
+                d = c.isName ? JSON.stringify(toName(Object.clone(obj))) : JSON.stringify(obj);
+            } else {
+                d = c.isName ? o2.name.cn(obj.toString()) : obj;
+            }
+        }
+
+        if( typeOf( d ) === "number" ){
+            d = Math.round(d, 2);
+        }
+
+        return d;
+    }
+})
+
+
+// MWF.xDesktop.requireApp("Template", "utils.ExcelUtils", null, false);
+// MWF.xApplication.query.Query.Statement.ExcelUtils = new Class({
+//     Extends: MWF.xApplication.Template.utils.ExcelUtils
+// });

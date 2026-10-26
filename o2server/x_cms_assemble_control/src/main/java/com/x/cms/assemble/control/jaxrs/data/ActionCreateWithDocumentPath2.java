@@ -9,6 +9,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.Document;
+import java.util.Date;
 
 class ActionCreateWithDocumentPath2 extends BaseAction {
 
@@ -22,6 +23,8 @@ class ActionCreateWithDocumentPath2 extends BaseAction {
 				throw new ExceptionDocumentNotExists(id);
 			}
 			this.createData(business, document, jsonElement, path0, path1, path2);
+			emc.beginTransaction(Document.class);
+			document.setModifyTime(new Date());
 			emc.commit();
 			Wo wo = new Wo();
 			wo.setId(document.getId());

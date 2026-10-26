@@ -4,6 +4,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -12,6 +13,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.ThisApplication;
+import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.FormProperties;
 import com.x.cms.core.entity.element.Script;
@@ -39,13 +41,21 @@ class V2GetMobile extends BaseAction {
 		if (optional.isPresent()) {
 			result.setData((Wo) optional.get());
 		} else {
-			Form form = null;
+			Form form;
+			AppInfo appInfo;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
 				form = business.getFormFactory().pick(id);
+				if (null == form) {
+					throw new ExceptionEntityNotExist(id, Form.class);
+				}
+				appInfo = business.getAppInfoFactory().pick(form.getAppId());
+				if(appInfo == null){
+					throw new ExceptionAppInfoNotExist(form.getAppId());
+				}
 			}
-			if (null == form) {
-				throw new ExceptionEntityNotExist(id, Form.class);
+			if( effectivePerson.isAnonymous() && BooleanUtils.isNotTrue(appInfo.getAllowAnonymousAccessDoc())) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			Wo wo = new Wo();
 			final List<String> list = new CopyOnWriteArrayList<>();

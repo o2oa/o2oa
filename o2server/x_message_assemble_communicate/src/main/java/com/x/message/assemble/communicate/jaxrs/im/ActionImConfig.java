@@ -53,6 +53,8 @@ public class ActionImConfig extends BaseAction {
 		private Boolean enableRevokeMsg;
 		@FieldDescribe("是否使用onlyOffice预览文件(需要先安装onlyOffice扩展应用).")
 		private Boolean enableOnlyOfficePreview;
+		@FieldDescribe("是否显示所有顶级单位.")
+		private Boolean showAllTopUnit;
 		@FieldDescribe("撤回时效（分钟数）")
 		private Integer revokeOutMinute;
 		@FieldDescribe("会话检查脚本.")
@@ -61,6 +63,14 @@ public class ActionImConfig extends BaseAction {
 		private int versionNo;
 		@FieldDescribe("更新内容.")
 		private String changelog;
+
+		public Boolean getShowAllTopUnit() {
+			return showAllTopUnit;
+		}
+
+		public void setShowAllTopUnit(Boolean showAllTopUnit) {
+			this.showAllTopUnit = showAllTopUnit;
+		}
 
 		public Boolean getEnableGroupMemberQuitSelf() {
 			return enableGroupMemberQuitSelf;

@@ -1,5 +1,7 @@
 package com.x.organization.assemble.control.jaxrs.export;
 
+import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.organization.core.entity.Role;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,65 +59,58 @@ public class ActionExportAll extends BaseAction {
 	List<Identity> allIdentityList = new ArrayList<>();
 	List<UnitDuty> allDutyList = new ArrayList<>();
 	List<Group> allGroupList = new ArrayList<>();
+	List<Role> allRoleList = new ArrayList<>();
 	Workbook wb = new XSSFWorkbook();
 
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, Boolean stream ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = null;
-		String fileName = null;
-		Business business = null;
-
+		String fileName = "person_export_" + DateTools.formatDate(new Date()) + ".xlsx";
+		//创建说明sheet
+		this.createNoticeSheet();
 
 		// 先获取需要导出的数据
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			 business = new Business(emc);
+			Business business = new Business(emc);
 			this.listUnit(business);
 			this.listPerson(business);
 			this.listIdentity(business);
 			this.listDuty(business);
 			this.listGroup(business);
-		} catch (Exception e) {
-			logger.info("系统在查询所有组织人员信息时发生异常。" );
-			e.printStackTrace();
+			this.listRole(business);
+
+			// 将组织信息结果组织成EXCEL
+			this.composeUnit( business, "组织信息", allUnitList );
+
+			// 将人员基础信息结果组织成EXCEL
+			this.composePerson( business, "人员基本信息", allPersonList );
+
+			// 将人员身份信息结果组织成EXCEL
+			this.composeIdentity( business, "人员身份信息", allIdentityList );
+
+			// 将职务信息结果组织成EXCEL
+			this.composeDuty( business, "职务信息", allDutyList );
+
+			// 将群组信息结果组织成EXCEL
+			this.composeGroup( business, "群组信息", allGroupList );
+
+			this.composeRole( business, "角色信息", allRoleList );
 		}
 
-		fileName = "person_export_" + DateTools.formatDate(new Date()) + ".xlsx";
-		//创建说明sheet
-		this.createNoticeSheet();
-
-		// 将组织信息结果组织成EXCEL
-		this.composeUnit( business, "组织信息", allUnitList );
-
-		// 将人员基础信息结果组织成EXCEL
-		this.composePerson( business, "人员基本信息", allPersonList );
-
-		// 将人员身份信息结果组织成EXCEL
-		this.composeIdentity( business, "人员身份信息", allIdentityList );
-
-		// 将职务信息结果组织成EXCEL
-		this.composeDuty( business, "职务信息", allDutyList );
-
-		// 将群组信息结果组织成EXCEL
-		this.composeGroup( business, "群组信息", allGroupList );
-
 		if( wb != null ) {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			try {
-			    wb.write(bos);
-			    wo = new Wo(bos.toByteArray(),
-						this.contentType(stream, fileName),
-						this.contentDisposition(stream, fileName));
-			} finally {
-			    bos.close();
-			}
+            try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+                wb.write(bos);
+                wo = new Wo(bos.toByteArray(),
+                        this.contentType(stream, fileName),
+                        this.contentDisposition(stream, fileName));
+            }
 		}
 		result.setData(wo);
 		return result;
 	}
 
 	private void listUnit(Business business) throws Exception {
-		List<Unit> topUnitList = new ArrayList<>();
-		topUnitList = this.listTopUnit(business);
+		List<Unit> topUnitList = this.listTopUnit(business);
 		if(ListTools.isNotEmpty(topUnitList)){
 			allUnitList.addAll(topUnitList);
 			for (Unit unitItem : topUnitList) {
@@ -183,6 +178,14 @@ public class ActionExportAll extends BaseAction {
 		CriteriaQuery<Group> cq = cb.createQuery(Group.class);
 		Root<Group> root = cq.from(Group.class);
 		allGroupList = em.createQuery(cq.select(root)).getResultList();
+	}
+
+	private void listRole(Business business) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(Role.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Role> cq = cb.createQuery(Role.class);
+		Root<Role> root = cq.from(Role.class);
+		allRoleList = em.createQuery(cq.select(root)).getResultList();
 	}
 
 	private List<Unit> listTopUnit(Business business) throws Exception {
@@ -545,6 +548,72 @@ public class ActionExportAll extends BaseAction {
 								row.createCell(4).setCellValue("");
 								row.createCell(5).setCellValue(subGroup.getUnique());
 								row.createCell(6).setCellValue(group.getDescription());
+							}
+						}
+					}
+				}
+
+			}
+		}
+	}
+
+	private void composeRole(Business business, String sheetName, List<Role> roleList) throws Exception {
+		Role role = null;
+		Row row = null;
+		EntityManagerContainer emc = business.entityManagerContainer();
+		// 创建新的表格
+		Sheet sheet = wb.createSheet(sheetName);
+		sheet.setDefaultColumnWidth(25);
+		// 先创建表头
+		row = sheet.createRow(0);
+		row.createCell(0).setCellValue("角色名称 *");
+		row.createCell(1).setCellValue("角色编码 *");
+		row.createCell(2).setCellValue("人员唯一编码");
+		row.createCell(3).setCellValue("群组唯一编码");
+		row.createCell(4).setCellValue("描述");
+		if (ListTools.isNotEmpty(roleList) ) {
+			int forNumber = 0;
+			for (int i = 0; i < roleList.size(); i++) {
+				role = roleList.get(i);
+				List<String> personList = role.getPersonList();
+				List<String> groupsList = role.getGroupList();
+
+				if(ListTools.isEmpty(personList) && ListTools.isEmpty(groupsList)){
+					if(!OrganizationDefinition.DEFAULTROLES.contains(role.getName())) {
+						forNumber = forNumber + 1;
+						row = sheet.createRow(forNumber);
+						row.createCell(0).setCellValue(role.getName());
+						row.createCell(1).setCellValue(role.getUnique());
+						row.createCell(2).setCellValue("");
+						row.createCell(3).setCellValue("");
+						row.createCell(4).setCellValue(role.getDescription());
+					}
+				}else{
+					if(ListTools.isNotEmpty(personList)){
+						for(String personId : personList){
+							Person person = emc.flag(personId, Person.class);
+							if(person != null){
+								forNumber = forNumber+1;
+								row = sheet.createRow(forNumber);
+								row.createCell(0).setCellValue(role.getName());
+								row.createCell(1).setCellValue(role.getUnique());
+								row.createCell(2).setCellValue(person.getUnique());
+								row.createCell(3).setCellValue("");
+								row.createCell(4).setCellValue(role.getDescription());
+							}
+						}
+					}
+					if(ListTools.isNotEmpty(groupsList)){
+						for(String groupId : groupsList){
+							Group group = emc.flag(groupId, Group.class);
+							if(group != null){
+								forNumber = forNumber+1;
+								row = sheet.createRow(forNumber);
+								row.createCell(0).setCellValue(role.getName());
+								row.createCell(1).setCellValue(role.getUnique());
+								row.createCell(2).setCellValue("");
+								row.createCell(3).setCellValue(group.getUnique());
+								row.createCell(4).setCellValue(role.getDescription());
 							}
 						}
 					}

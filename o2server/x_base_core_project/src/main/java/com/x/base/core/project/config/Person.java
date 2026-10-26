@@ -1,20 +1,17 @@
 package com.x.base.core.project.config;
 
-import com.x.base.core.project.gson.GsonPropertyObject;
-import java.io.File;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.BaseTools;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.NumberTools;
 import com.x.base.core.project.tools.StringTools;
+import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class Person extends ConfigObject {
 
@@ -24,7 +21,7 @@ public class Person extends ConfigObject {
 	public static final Boolean DEFAULT_CODELOGIN = true;
 	public static final Boolean DEFAULT_BINDLOGIN = true;
 	public static final Boolean DEFAULT_FACELOGIN = false;
-	public static final Boolean DEFAULT_SUPERPERMISSION = true;
+	public static final Boolean DEFAULT_SUPERPERMISSION = false;
 	public static final Boolean DEFAULT_PERSONUNITORDERBYASC = true;
 
 	public static final String REGISTER_TYPE_DISABLE = "disable";

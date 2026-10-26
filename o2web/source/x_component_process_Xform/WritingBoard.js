@@ -225,6 +225,17 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
                 var h = this.handwritingActionNode.getSize().y + this.handwritingActionNode.getStyle("margin-top").toInt() + this.handwritingActionNode.getStyle("margin-bottom").toInt();
                 h = y - h;
                 this.handwritingAreaNode.setStyle("height", "" + h + "px");
+
+                this.isCollectNode = new Element('oo-checkbox-group', {styles:{
+                        position: "absolute",
+                        bottom: "3px",
+                        right: "5px"
+                    }}).inject(this.handwritingAreaNode);
+                new Element('oo-checkbox', {
+                    text: MWF.xApplication.process.Work.LP.collect,
+                    value: "yes"
+                }).inject(this.isCollectNode);
+
             }else{
                 this.handwritingAreaNode.setStyle("height", "" + y + "px");
             }
@@ -238,6 +249,24 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
                     "toolHidden": this.json.toolHidden || [],
                     "contentWidth": this.json.tabletWidth || 0,
                     "contentHeight": this.json.tabletHeight || 0,
+                    tools: [
+                        "save", "|",
+                        "undo",
+                        "redo", "|",
+                        "eraser", //橡皮
+                        "input", //输入法
+                        "pen", "|", //笔画
+                        "eraserRadius",
+                        "size",
+                        "color",
+                        "fontSize", "|",
+                        // "fontFamily",
+                        "image",
+                        "imageClipper", "|",
+                        "collect", "|",
+                        "reset",
+                        "cancel"
+                    ],
                     "onSave": function (base64code, base64Image, imageFile) {
                         this.handwritingNode.hide();
 
@@ -246,12 +275,20 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
                             this.validation();
                             this.fireEvent("change");
                         }else{
-                            this.upload(function (json) {
-                                var data = json.data;
-                                this.setData(data ? data.id : "");
-                                this.validation();
-                                this.fireEvent("change");
-                            }.bind(this));
+                            const callback = ()=>{
+                                this.upload(function (json) {
+                                    var data = json.data;
+                                    this.setData(data ? data.id : "");
+                                    this.validation();
+                                    this.fireEvent("change");
+                                }.bind(this));
+                            };
+                            if( !!this.isCollectNode?.value?.length ){
+                                this.tablet.saveToCollection(callback);
+                                this.isCollectNode.value = [];
+                            }else{
+                                callback();
+                            }
                         }
 
 
@@ -448,21 +485,14 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
             return true;
         },
         validation: function (routeName, opinion) {
-            if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
+            //if (this.isReadonly() || this.json.showMode!=="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
+            this.moduleValidationAG = null;
+            if (this.isReadonly() || this.json.showMode==="disabled" || !this.isEditable) return true;
             
             if( !this.isReadonly() ){
                 if (!this.validationConfig(routeName, opinion)) return false;
 
-                if (!this.json.validation) return true;
-                if (!this.json.validation.code) return true;
-                this.currentRouteName = routeName;
-                var flag = this.form.Macro.exec(this.json.validation.code, this);
-                this.currentRouteName = "";
-                if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
-                if (flag.toString() != "true") {
-                    this.notValidationMode(flag);
-                    return false;
-                }
+                return this._validation(routeName);
             }
             return true;
         },

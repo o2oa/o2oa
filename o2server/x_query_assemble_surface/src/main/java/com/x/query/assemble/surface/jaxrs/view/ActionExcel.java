@@ -1,5 +1,6 @@
 package com.x.query.assemble.surface.jaxrs.view;
 
+import com.x.query.core.express.plan.SelectEntries;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,9 +65,17 @@ class ActionExcel extends BaseAction {
 			if (!business.readable(effectivePerson, view)) {
 				throw new ExceptionAccessDenied(effectivePerson, view);
 			}
+			if(wi.getCount() == null || wi.getCount() < 1){
+				wi.setCount(65535);
+			}
 			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getOrderList(),
 					wi.getParameter(), wi.getCount(), true);
 			runtime.bundleList = wi.getBundleList();
+			runtime.selectList = wi.getSelectList();
+		}
+		if(ListTools.isEmpty(runtime.bundleList)){
+			runtime.bundleList = this.fetchBundleV3(view, runtime, ThisApplication.forkJoinPool());
+			runtime.hasBundle = true;
 		}
 		Plan plan = this.accessPlan(business, view, runtime, ThisApplication.forkJoinPool());
 		String excelFlag = this.writeExcel(effectivePerson, business, plan, view, wi.getExcelName());
@@ -103,7 +112,10 @@ class ActionExcel extends BaseAction {
 		private String excelName;
 
 		@FieldDescribe("限定结果集")
-		public List<String> bundleList = new TreeList<>();
+		private List<String> bundleList = new TreeList<>();
+
+		@FieldDescribe("指定字段列表")
+		private SelectEntries selectList;
 
 		@FieldDescribe("秘钥串，结果集不为空时必须传.")
 		private String key;
@@ -162,6 +174,14 @@ class ActionExcel extends BaseAction {
 
 		public void setKey(String key) {
 			this.key = key;
+		}
+
+		public SelectEntries getSelectList() {
+			return selectList;
+		}
+
+		public void setSelectList(SelectEntries selectList) {
+			this.selectList = selectList;
 		}
 	}
 

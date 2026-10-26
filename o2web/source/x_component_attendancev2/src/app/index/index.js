@@ -36,9 +36,29 @@ export default content({
       this.bind.menu.currentMenu = menu[0].children[0];
     }
     this._initEventBus()
+    console.debug('attendancev2 beforeRender .......');
   },
   async afterRender() {
     this._initOONav()
+  },
+  startOpenMenu(action) {
+    if (!action) return;
+    for (let index = 0; index < this.bind.menu.menuData.length; index++) {
+      const element = this.bind.menu.menuData[index];
+      for (let j = 0; j < element.children.length; j++) {
+        const child = element.children[j];
+        if (child.action === action) {
+          this.bind.menu.currentMenu = child;
+          break;
+        }
+      }
+    }
+    setTimeout(() => {
+      const ooNav = document.querySelector('#app-attendance-v2-menu');
+      const item = ooNav.getItem(this.bind.menu.currentMenu.name);
+      item.select();
+    });
+    console.debug('attendancev2 startOpenMenu .......');
   },
   // 初始化 EventBus
   _initEventBus() {
@@ -47,13 +67,34 @@ export default content({
   _initOONav() {
     const ooNav = document.querySelector('#app-attendance-v2-menu')
     ooNav.addEventListener('select', (e) => {
-      this.bind.menu.currentMenu = e.detail.data
+      this.bind.menu.currentMenu = e.detail.data;
+      this.closeFormVm(); // 关闭 form 窗口
     })
     ooNav.setMenu(this.bind.menu.menuData)
+
   },
   // 添加监听
   listenEventBus(eventName, callback) {
     this.eventBus.subscribe(eventName, callback);
+  },
+  // 原来的请假数据查询页面
+  openOldLeaveManager() {
+    const menu = {
+      "name": "3-4",
+      "text": lp.menu.leavemanager,
+      "action": "leaveManager",
+      "icon": "ooicon-clock"
+    };
+    this.bind.menu.currentMenu = menu;
+  },
+  openLeaveManagerV2() {
+    const menu = {
+      "name": "3-42",
+      "text": lp.menu.leavemanagerv2,
+      "action": "leaveManagerV2",
+      "icon": "ooicon-clock"
+    };
+    this.bind.menu.currentMenu = menu;
   },
   // 发送事件
   publishEvent(eventName, data) {
@@ -106,6 +147,20 @@ export default content({
     this.formVm = await c.generate("#form", bindData, this);
     this.dom.querySelector("#form").classList.add("index_page_form_container");
   },
+  // 打开请假类型表单
+  async openLeaveTypeForm(bind) {
+    this.closeFormVm();
+    const bindData = bind || {};
+    const c = (await import('../leaveManagerV2/editLeaveType/index.js')).default;
+    this.openFomVm(c, bindData);
+  },
+  // 打开请假类型规则表单
+  async openLeaveTypePolicyForm(bind) {
+    this.closeFormVm();
+    const bindData = bind || {};
+    const c = (await import('../leaveManagerV2/editLeaveTypePolicy/index.js')).default;
+    this.openFomVm(c, bindData);
+  },
   // 关闭表单
   closeFormVm() {
     if (this.formVm) {
@@ -113,7 +168,7 @@ export default content({
     }
     this.dom.querySelector("#form").classList.remove("index_page_form_container");
   },
-  
+
   async loadCurrentPersonInfo() {
     content.myDutyList = [];
     this.bind.admin = "";
@@ -128,7 +183,7 @@ export default content({
         }
         if (controls.assistAdmin) { // 考勤组协助管理员
           this.bind.assistAdmin = true;
-        } 
+        }
       }
     }
   },
@@ -143,7 +198,7 @@ export default content({
     }
     let accessMenus = menus.filter((menu) => menu.access <= access);
     if (this.bind.assistAdmin) { // 协助管理员 添加考勤组管理菜单
-      if ( !accessMenus.some((m)=> m.access === 2) ) {
+      if (!accessMenus.some((m) => m.access === 2)) {
         accessMenus.push(
           {
             "title": lp.menu.config,
@@ -188,9 +243,15 @@ export default content({
           },
           {
             "name": "1-3",
-            "text": lp.menu.leavemanager,
+            "text": lp.menu.leave1,
             "action": "leaveManager",
-            "icon": "ooicon-clock"
+            "icon": "ooicon-zaotui"
+          },
+          {
+            "name": "1-4",
+            "text": lp.menu.leave2,
+            "action": "leaveManagerV2/requestList",
+            "icon": "ooicon-working_hours"
           }
         ]
       },
@@ -251,9 +312,9 @@ export default content({
             "icon": "ooicon-workcenter"
           },
           {
-            "name": "3-4",
-            "text": lp.menu.leavemanager,
-            "action": "leaveManager",
+            "name": "3-42",
+            "text": lp.menu.leavemanagerv2,
+            "action": "leaveManagerV2",
             "icon": "ooicon-clock"
           },
           {

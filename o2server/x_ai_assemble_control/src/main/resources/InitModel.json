@@ -25,9 +25,9 @@
     },
     {
       "id": "ed9afc12-7604-4ea1-858d-5d48a01792c1",
-      "name": "deepSeek-V3",
+      "name": "deepseek快速模式",
       "type": "deepSeek",
-      "model": "deepseek-chat",
+      "model": "deepseek-v4-flash",
       "completionUrl": "https://api.deepseek.com/v1/chat/completions",
       "apiKey": "",
       "enable": true,

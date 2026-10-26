@@ -1,17 +1,11 @@
 package com.x.organization.assemble.personal.jaxrs.reset;
 
-import java.util.Date;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -22,6 +16,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
 import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.Person;
+import java.util.Date;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionReset extends BaseAction {
 
@@ -54,16 +51,11 @@ class ActionReset extends BaseAction {
 				throw new ExceptionPersonNotExistOrInvalidAnswer();
 			}
 			person = emc.find(person.getId(), Person.class, ExceptionWhen.not_found);
-			if (BooleanUtils.isTrue(Config.person().getSuperPermission())
-					&& StringUtils.equals(Config.token().getPassword(), codeAnswer)) {
-				logger.info("user:{} use superPermission.", credential);
-			} else {
-				if (!password.matches(Config.person().getPasswordRegex())) {
-					throw new ExceptionInvalidPassword(Config.person().getPasswordRegexHint());
-				}
-				if (BooleanUtils.isFalse(business.instrument().code().validate(person.getMobile(), codeAnswer))) {
-					throw new ExceptionPersonNotExistOrInvalidAnswer();
-				}
+			if (!password.matches(Config.person().getPasswordRegex())) {
+				throw new ExceptionInvalidPassword(Config.person().getPasswordRegexHint());
+			}
+			if (BooleanUtils.isFalse(business.instrument().code().validate(person.getMobile(), codeAnswer))) {
+				throw new ExceptionPersonNotExistOrInvalidAnswer();
 			}
 			emc.beginTransaction(Person.class);
 			person.setPassword(Crypto.encrypt(password, Config.token().getKey(), Config.person().getEncryptType()));

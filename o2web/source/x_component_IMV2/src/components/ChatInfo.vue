@@ -69,6 +69,7 @@ const conversationName = (conversation) => {
 
 // 成员
 const clickAddMember = () => {
+  const topUnitList = imConfigInstance.showAllTopUnit ? [] : layout.session.user.topUnitList || []
   o2.requireApp("Selector","package", () => {
     const container = document.querySelector('.im-container')
     new o2.O2Selector(container,  {
@@ -76,6 +77,7 @@ const clickAddMember = () => {
       "count": 0,
       "style": "v10",
       "title": '通讯录',
+      "units": topUnitList,
       "firstLevelSelectable": true,
       "resultType": "person",
       "onPostLoadContent": function () {

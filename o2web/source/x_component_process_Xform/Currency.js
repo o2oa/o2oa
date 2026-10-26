@@ -115,12 +115,14 @@ MWF.xApplication.process.Xform.Currency = MWF.APPCurrency =  new Class({
         input = this.node.getElement('input');
         input.addEvent("change", function(){
             this.validationMode();
-            if (this.validation()) {
-                var value = this.getInputData("change");
-                this._setBusinessData(value);
-                input.set("value", this.formatNumber( value.toString() ));
-                this.fireEvent("change");
-            }
+            o2.promiseAll(this.validation()).then(flag=>{
+                if(String(flag) === "true"){
+                    var value = this.getInputData("change");
+                    this._setBusinessData(value);
+                    input.set("value", this.formatNumber( value.toString() ));
+                    this.fireEvent("change");
+                }
+            });
         }.bind(this));
 
         input.addEvent("blur", function(){

@@ -348,7 +348,7 @@ public class AttendanceDetailServiceAdv {
 
 				//分析保存好的考勤数据
 				try {
-					ThisApplication.detailAnalyseQueue.send( detail_old.getId() );
+//					ThisApplication.detailAnalyseQueue.send( detail_old.getId() );
 				} catch ( Exception e1 ) {
 					e1.printStackTrace();
 				}

@@ -1,0 +1,44 @@
+<div class="check-in-container">
+  <div class="check-in-person">
+    <div class="person-avatar">
+      <img src="{{$.person.iconUrl}}" alt="{{$.person.name}}">
+    </div>
+    <div class="person-info">
+      <div class="person-info-name">
+        {{$.person.name}}
+      </div>
+      <div class="person-info-unit">{{$.person.unit}}</div>
+    </div>
+  </div>
+  <div class="check-in-business">
+    <!-- 打卡记录列表 -->
+    <div class="check-in-record">
+      <div class="check-in-record-child" oo-each="$.recordItemList" oo-item="record" @click="this.updateCheckIn(record.value)">
+        <div class="item check-in-type">{{record.value.checkInTypeString}}</div>
+        <div class="item check-in-time" >{{record.value.preDutyTime}}</div>
+        <div class="item check-in-status">{{ record.value.isRecord ? record.value.recordTime : $.lp.mobile.unCheckIn }}</div>
+        <div class="item check-in-update">{{record.value.isLastRecord ?  $.lp.mobile.updateCheckInBtn : ''}}</div>
+      </div>
+    </div>
+    <!-- 打卡按钮 -->
+    <div class="{{ $.checkInCycle.canCheckIn ?  'check-in-click-cycle':'check-in-click-cycle check-disable'  }}" @click="actionCheckIn">
+      <div class="check-in-type">{{$.checkInCycle.title}}</div>
+      <div class="check-in-time">{{$.checkInCycle.time}}</div>
+    </div>
+    <!-- 定位地址 -->
+    <div class="check-in-address">
+      <div class="o2-icon-14 checked" oo-if="$.location.status">
+        <i class="o2icon-true"></i>
+      </div>
+      <div class="o2-icon-14 noChecked" oo-else>
+        <i class="o2icon-icon_close"></i>
+      </div>
+      <div class="label">{{$.location.title}}</div>
+    </div>
+    <!-- 刷新定位按钮 -->
+    <div class="check-in-refresh-location" oo-if="$.bMapV2ApiLoaded" @click="location">
+      <span>{{$.lp.mobile.refreshLocation}}</span>
+    </div>
+  </div>
+  <div class="bmap"></div>
+</div>

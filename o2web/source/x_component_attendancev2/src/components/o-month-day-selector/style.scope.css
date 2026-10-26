@@ -1,0 +1,82 @@
+.o-time-picker {
+  box-sizing: border-box;
+  margin: 0;
+  list-style: none;
+  position: relative;
+  display: inline-block;
+  padding: 2px 10px;
+  height: 26px;
+  line-height: 26px;
+  font-size: 14px;
+  background-color: #fff;
+  background-image: none;
+  border-radius: var(--att-default-radius);
+  border: 1px solid #dedede;
+  transition: all 0.3s;
+  align-items: center;
+}
+.o-time-picker-input {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.o-time-picker-input .input {
+  width: 96px;
+  text-align: center;
+}
+.o-time-picker-input .input {
+  position: relative;
+  margin-right: 10px;
+  display: inline-block;
+  color: #666666;
+  font-size: 12px;
+  line-height: 1.5715;
+  transition: all 0.3s;
+  flex: auto;
+  min-width: 1px;
+  height: auto;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.placeholder {
+  color: #999999 !important;
+}
+.o-time-picker-input .icon {
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  color: #999999;
+  cursor: pointer;
+}
+
+.o-time-minutes-selctor {
+  position: absolute;
+  z-index: 1050;
+  font-size: 14px;
+  white-space: nowrap;
+  background: #fff;
+  border-radius: var(--att-default-radius);
+  box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%),
+    0 9px 28px 8px rgb(0 0 0 / 5%);
+}
+.o-time-minutes-selector-ul {
+  margin: 0;
+  list-style: none;
+  display: inline-block;
+  min-width: 111px;
+  height: 180px;
+  padding: 4px 0;
+  overflow: auto;
+  vertical-align: top;
+  border-right: 1px solid #f0f0f0;
+}
+.o-time-minutes-selector-li {
+  padding: 5px 12px;
+  overflow: hidden;
+  line-height: 22px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: all 0.3s;
+}

@@ -1,5 +1,6 @@
 package com.x.program.center.jaxrs.agent;
 
+import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -41,6 +42,7 @@ class ActionCreate extends BaseAction {
 					throw new ExceptionDuplicateAlias(agent.getAlias());
 				}
 			}
+			agent.setLastStartTime(new Date());
 			emc.beginTransaction(Agent.class);
 			emc.persist(agent, CheckPersistType.all);
 			emc.commit();

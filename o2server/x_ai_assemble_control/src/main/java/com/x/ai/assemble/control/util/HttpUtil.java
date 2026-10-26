@@ -15,10 +15,9 @@ import com.x.base.core.project.http.ActionResult.Type;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
-import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -35,6 +34,10 @@ import org.apache.commons.lang3.StringUtils;
  **/
 public class HttpUtil {
 
+    private HttpUtil() {
+        throw new IllegalStateException("Utility class");
+    }
+
     private static final Gson gson = XGsonBuilder.instance();
 
     private static final int DEFAULT_CONNECT_TIMEOUT = 2000;
@@ -47,7 +50,7 @@ public class HttpUtil {
                 formFields, fileParts);
     }
 
-    private static ActionResponse postMultiPartBinary(int connectTimeout, int readTimeout, String address, String method,
+    public static ActionResponse postMultiPartBinary(int connectTimeout, int readTimeout, String address, String method,
             List<NameValuePair> heads, List<FormField> formFields, List<FilePart> fileParts)
             throws Exception {
         HttpURLConnection connection = null;
@@ -55,24 +58,9 @@ public class HttpUtil {
         try {
             URL url = new URL(address);
             connection = (HttpURLConnection) url.openConnection();
-            byte[] bytes = null;
-            try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-                if (null != fileParts) {
-                    for (FilePart filePart : fileParts) {
-                        ConnectionAction.writeFilePart(byteArrayOutputStream, filePart, boundary);
-                    }
-                }
-                if (null != formFields) {
-                    for (FormField formField : formFields) {
-                        writeFormField(byteArrayOutputStream, formField, boundary);
-                    }
-                }
-                IOUtils.write(StringTools.TWO_HYPHENS + boundary + StringTools.TWO_HYPHENS, byteArrayOutputStream,
-                        DefaultCharset.charset_utf_8);
-                bytes = byteArrayOutputStream.toByteArray();
-            }
             addHeadsMultiPart(connection, heads, boundary);
-            connection.setRequestProperty(ConnectionAction.CONTENT_LENGTH, bytes.length + "");
+
+
             connection.setRequestMethod(method);
             connection.setUseCaches(false);
             connection.setDoOutput(true);
@@ -80,8 +68,19 @@ public class HttpUtil {
             connection.setConnectTimeout(connectTimeout);
             connection.setReadTimeout(readTimeout);
             connection.connect();
-            try (OutputStream output = connection.getOutputStream()) {
-                IOUtils.write(bytes, output);
+            try (DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream())) {
+                if (null != fileParts) {
+                    for (FilePart filePart : fileParts) {
+                        writeFilePart(outputStream, filePart, boundary);
+                    }
+                }
+                if (null != formFields) {
+                    for (FormField formField : formFields) {
+                        writeFormField(outputStream, formField, boundary);
+                    }
+                }
+                outputStream.writeBytes(StringTools.TWO_HYPHENS + boundary + StringTools.TWO_HYPHENS + StringTools.CRLF);
+                outputStream.flush();
             }
             ActionResponse response = new ActionResponse();
             return read(response, connection);
@@ -121,21 +120,28 @@ public class HttpUtil {
         return response;
     }
 
-    private static void writeFormField(OutputStream output, FormField formField, String boundary) throws IOException {
-        IOUtils.write(StringTools.TWO_HYPHENS + boundary, output, StandardCharsets.UTF_8);
-        IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
-        IOUtils.write("Content-Disposition: form-data; name=\"" + formField.getName() + "\"", output,
-                StandardCharsets.UTF_8);
-        IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
-        IOUtils.write("Content-Length: " + formField.getValue().getBytes(StandardCharsets.UTF_8).length, output,
-                StandardCharsets.UTF_8);
-        IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
-        IOUtils.write("Content-Type: text/plain; charset=" + StandardCharsets.UTF_8.name(), output,
-                StandardCharsets.UTF_8);
-        IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
-        IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
-        IOUtils.write(formField.getValue().getBytes(StandardCharsets.UTF_8), output);
-        IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
+    private static void writeFilePart(DataOutputStream output, FilePart filePart, String boundary) throws IOException {
+        String fileName = filePart.getFileName();
+        // 对中文文件名进行 URL 编码
+        String convertedFileName = new String(fileName.getBytes(StandardCharsets.UTF_8),StandardCharsets.ISO_8859_1);
+        output.writeBytes(StringTools.TWO_HYPHENS + boundary + StringTools.CRLF);
+
+        output.writeBytes("Content-Disposition: form-data; name=\"" + filePart.getName() + "\"; ");
+        output.writeBytes("filename=\"" + convertedFileName + "\"" + StringTools.CRLF);
+
+        output.writeBytes("Content-Type: " + filePart.getContentType() + StringTools.CRLF);
+        output.writeBytes(StringTools.CRLF);
+        output.write(filePart.getBytes());
+        output.writeBytes(StringTools.CRLF);
+    }
+
+    private static void writeFormField(DataOutputStream output, FormField formField, String boundary) throws IOException {
+        output.writeBytes(StringTools.TWO_HYPHENS + boundary + StringTools.CRLF);
+        output.writeBytes("Content-Disposition: form-data; name=\"" + formField.getName() + "\"" + StringTools.CRLF);
+        output.writeBytes("Content-Type: text/plain; charset=" + StandardCharsets.UTF_8.name() + StringTools.CRLF);
+        output.writeBytes(StringTools.CRLF);
+        output.write(formField.getValue().getBytes(StandardCharsets.UTF_8));
+        output.writeBytes(StringTools.CRLF);
     }
 
     private static void addHeadsMultiPart(HttpURLConnection connection, List<NameValuePair> heads, String boundary)

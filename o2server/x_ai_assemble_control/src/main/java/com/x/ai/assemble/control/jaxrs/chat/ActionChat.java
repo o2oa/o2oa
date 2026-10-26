@@ -86,6 +86,12 @@ public class ActionChat extends BaseAction {
                 Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
                 wi.setPerson(effectivePerson.getUnique());
                 wi.setToken(effectivePerson.getToken());
+                if (!checkFilePermission(effectivePerson, wi)) {
+                    logger.warn("文件权限不足");
+                    actionResult.setMessage("文件权限不足");
+                    this.sendMsg(sse, eventSink, EVENT_NAME_MESSAGE, gson.toJson(actionResult));
+                    return;
+                }
                 if (StringUtils.isNotBlank(wi.getInput())) {
                     AiConfig aiConfig = Business.getConfig();
                     if (BooleanUtils.isTrue(aiConfig.getO2AiEnable())
@@ -99,20 +105,31 @@ public class ActionChat extends BaseAction {
                         } else {
                             logger.warn("未配置可用的模型");
                             actionResult.setMessage("请联系管理员配置可用的模型");
-                            if (!eventSink.isClosed()) {
-                                this.sendMsg(sse, eventSink, EVENT_NAME_MESSAGE, gson.toJson(actionResult));
-                            }
+                            this.sendMsg(sse, eventSink, EVENT_NAME_MESSAGE, gson.toJson(actionResult));
                         }
                     }
                 }
             } catch (Exception e) {
                 logger.error(e);
                 actionResult.setMessage("系统异常：" + e.getMessage());
-                if (!eventSink.isClosed()) {
-                    this.sendMsg(sse, eventSink, EVENT_NAME_MESSAGE, gson.toJson(actionResult));
+                this.sendMsg(sse, eventSink, EVENT_NAME_MESSAGE, gson.toJson(actionResult));
+            }
+        }
+    }
+
+    private boolean checkFilePermission(EffectivePerson effectivePerson, Wi wi) throws Exception {
+        if(effectivePerson.isManager() || ListTools.isEmpty(wi.getReferenceIdList())){
+            return true;
+        }
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            for (String id : wi.getReferenceIdList()){
+                File file = emc.flag(id, File.class);
+                if(file!=null && !file.getCreator().equals(effectivePerson.getDistinguishedName())){
+                    return false;
                 }
             }
         }
+        return true;
     }
 
     private AiModel getActiveModel(String name) throws Exception {
@@ -297,6 +314,9 @@ public class ActionChat extends BaseAction {
     }
 
     private void sendMsg(Sse sse, SseEventSink eventSink, String eventName, String eventData) {
+        if (eventSink.isClosed()) {
+            return;
+        }
         final OutboundSseEvent sseEvent = sse.newEventBuilder()
                 .name(eventName)
                 .mediaType(MediaType.TEXT_PLAIN_TYPE)

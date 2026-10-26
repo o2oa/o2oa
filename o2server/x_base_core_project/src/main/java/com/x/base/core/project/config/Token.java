@@ -749,6 +749,13 @@ public class Token extends ConfigObject {
 			this.key = key;
 		}
 
+		public Boolean getEnable() {
+			return enable;
+		}
+
+		public void setEnable(Boolean enable) {
+			this.enable = enable;
+		}
 	}
 
 	public static class LdapAuth extends ConfigObject {

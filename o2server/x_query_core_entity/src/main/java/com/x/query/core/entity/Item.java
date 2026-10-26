@@ -99,28 +99,28 @@ public class Item extends DataItem {
 	@CheckPersist(allowEmpty = false)
 	private String bundle;
 
-	@Column(length = Item.pathLength, name = ColumnNamePrefix + path0_FIELDNAME)
+	@Column(length = JpaObject.length_128B, name = ColumnNamePrefix + path0_FIELDNAME)
 	private String path0 = "";
 
-	@Column(length = Item.pathLength, name = ColumnNamePrefix + path1_FIELDNAME)
+	@Column(length = JpaObject.length_128B, name = ColumnNamePrefix + path1_FIELDNAME)
 	private String path1 = "";
 
-	@Column(length = Item.pathLength, name = ColumnNamePrefix + path2_FIELDNAME)
+	@Column(length = JpaObject.length_128B, name = ColumnNamePrefix + path2_FIELDNAME)
 	private String path2 = "";
 
-	@Column(length = Item.pathLength, name = ColumnNamePrefix + path3_FIELDNAME)
+	@Column(length = JpaObject.length_128B, name = ColumnNamePrefix + path3_FIELDNAME)
 	private String path3 = "";
 
-	@Column(length = Item.pathLength, name = ColumnNamePrefix + path4_FIELDNAME)
+	@Column(length = JpaObject.length_128B, name = ColumnNamePrefix + path4_FIELDNAME)
 	private String path4 = "";
 
-	@Column(length = Item.pathLength, name = ColumnNamePrefix + path5_FIELDNAME)
+	@Column(length = JpaObject.length_128B, name = ColumnNamePrefix + path5_FIELDNAME)
 	private String path5 = "";
 
-	@Column(length = Item.pathLength, name = ColumnNamePrefix + path6_FIELDNAME)
+	@Column(length = JpaObject.length_128B, name = ColumnNamePrefix + path6_FIELDNAME)
 	private String path6 = "";
 
-	@Column(length = Item.pathLength, name = ColumnNamePrefix + path7_FIELDNAME)
+	@Column(length = JpaObject.length_128B, name = ColumnNamePrefix + path7_FIELDNAME)
 	private String path7 = "";
 
 	@Column(name = ColumnNamePrefix + path0Location_FIELDNAME)

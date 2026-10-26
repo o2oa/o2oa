@@ -1036,6 +1036,9 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         flag = typeOf(this.config.saveDraftOnClose) === "boolean" ? this.config.saveDraftOnClose : true;
         html += "<tr><td class='formTitle'>"+this.app.lp.application.saveDraftOnClose+"</td><td id='saveDraftOnClose' class='formValue'>"+(flag ? lp.saveDraftOnClose[0] : lp.saveDraftOnClose[1] )+"</td></tr>";
 
+        flag = typeOf(this.data.allowAnonymousAccessDoc) === "boolean" ? this.data.allowAnonymousAccessDoc : false;
+        html += "<tr><td class='formTitle'>"+this.app.lp.application.anonymousAccess+"</td><td id='anonymousAccess' class='formValue'>"+(flag ? this.app.lp.application.anonymousAccessEnabled : this.app.lp.application.anonymousAccessDisabled  )+"</td></tr>";
+
         // html += "<tr><td class='formTitle'>"+this.app.lp.application.type+"</td><td id='formApplicationType'></td></tr>";
         //     html += "<tr><td class='formTitle'>"+this.app.lp.application.icon+"</td><td id='formApplicationIcon'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.defaultEditForm+"</td><td class='formValue'><div id='formDefaultEditForm'></div><span style='color: #aaaaaa;'>"+this.app.lp.application.editformNote+"</span></td></tr>";
@@ -1101,6 +1104,14 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
             value : ( typeOf(this.config.saveDraftOnClose) === "boolean" ? this.config.saveDraftOnClose : true ).toString(),
             selectValue : [ "true", "false" ],
             selectText : lp.saveDraftOnClose
+        });
+
+        this.anonymousAccessSelect = new MDomItem( this.propertyContentNode.getElement("#anonymousAccess"), {
+            type : "select",
+            defaultValue : "false",
+            value : ( typeOf(this.data.allowAnonymousAccessDoc) === "boolean" ? this.data.allowAnonymousAccessDoc : false ).toString(),
+            selectValue : [ "true", "false" ],
+            selectText : [this.app.lp.application.anonymousAccessEnabled, this.app.lp.application.anonymousAccessDisabled]
         });
 
         this.app.restActions.listForm(this.data.id, function(json){
@@ -1175,6 +1186,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.ignoreTitleSelect.editMode();
         this.allDocumentViewSelect.editMode();
         this.saveDraftOnCloseSelect.editMode();
+        this.anonymousAccessSelect.editMode();
         this.defaultEditForm.editMode();
         this.defaultReadForm.editMode();
         //this.typeInput.editMode();
@@ -1192,6 +1204,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.ignoreTitleSelect.readMode();
         this.allDocumentViewSelect.readMode();
         this.saveDraftOnCloseSelect.readMode();
+        this.anonymousAccessSelect.readMode();
         this.defaultEditForm.readMode();
         this.defaultReadForm.readMode();
         //this.typeInput.readMode();
@@ -1256,6 +1269,8 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.config.latest = this.latestSelect.getValue() !== "false";
         this.config.saveDraftOnClose = this.saveDraftOnCloseSelect.getValue() !== "false";
 
+        this.data.allowAnonymousAccessDoc = this.anonymousAccessSelect.getValue() === "true";
+
         this.data.allowWaitPublish = this.delaySelect.getValue() === "true";
 
         this.data.config = JSON.stringify( this.config );
@@ -1276,6 +1291,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
             this.ignoreTitleSelect.save();
             this.allDocumentViewSelect.save();
             this.saveDraftOnCloseSelect.save();
+            this.anonymousAccessSelect.save();
             this.defaultEditForm.save();
             this.defaultReadForm.save();
             //this.typeInput.save();

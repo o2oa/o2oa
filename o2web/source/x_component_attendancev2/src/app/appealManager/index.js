@@ -1,6 +1,7 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, component as app } from "@o2oa/component";
 import { appealInfoActionListByPaging, configAction, appealInfoAction, processAction, jobAction } from "../../utils/actions";
+import { fieldWorkFormat } from "../../utils/common";
 import oPager from "../../components/o-pager";
 import template from "./template.html";
 
@@ -80,7 +81,7 @@ export default content({
   formatRecordResult(record) {
     let span = "";
     if (record.fieldWork) {
-      span = lp.appeal.fieldWork;
+      span = fieldWorkFormat(record);
     } else {
       const result = record.checkInResult;
       if (result === 'PreCheckIn') {
@@ -117,7 +118,9 @@ export default content({
           name =  name.split("@")[0];
         }
         return lp.appeal.status4 + " ["+ name + "]";
-      }  
+      } else if (appeal.status === 5) {
+        return lp.appeal.status5;
+      }
     }
     return "";
   },

@@ -10,6 +10,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
+import java.util.Objects;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,10 +19,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by fancyLou on 2023/4/6.
- * Copyright © 2023 O2. All rights reserved.
+ * Created by fancyLou on 2023/4/6. Copyright © 2023 O2. All rights reserved.
  */
-public class ActionCheckCanStartAppeal  extends BaseAction {
+public class ActionCheckCanStartAppeal extends BaseAction {
 
     ActionResult<Wo> execute(EffectivePerson person, String id) throws Exception {
         if (StringUtils.isEmpty(id)) {
@@ -35,7 +35,10 @@ public class ActionCheckCanStartAppeal  extends BaseAction {
             if (!person.getDistinguishedName().equals(info.getUserId())) {
                 throw new ExceptionPersonNotEqual();
             }
-            // 申诉次数限制查询
+            if (Objects.equals(info.getStatus(), AttendanceV2AppealInfo.status_TYPE_LOCK)) {
+                throw new ExceptionAppealLocked();
+            }
+
             List<AttendanceV2Config> list = emc.listAll(AttendanceV2Config.class);
             AttendanceV2Config config;
             if (list != null && !list.isEmpty()) {
@@ -43,18 +46,23 @@ public class ActionCheckCanStartAppeal  extends BaseAction {
             } else {
                 config = new AttendanceV2Config();
             }
+            // 申诉功能开关查询
             if (BooleanUtils.isNotTrue(config.getAppealEnable())) {
                 throw new ExceptionAppealNotEnable();
             }
+            // 申诉次数限制查询
             if (config.getAppealMaxTimes() > 0) { // 大于0才算有限制
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(info.getRecordDate()); // 当前申诉数据的日期
                 calendar.set(Calendar.DAY_OF_MONTH, 1);
                 Date beginDate = calendar.getTime(); // 计算所在月的开始日期
-                calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+                calendar.set(Calendar.DAY_OF_MONTH,
+                        calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
                 Date endDate = calendar.getTime(); // 计算所在月的结束日期
                 Business business = new Business(emc);
-                List<AttendanceV2AppealInfo> appealInfoList = business.getAttendanceV2ManagerFactory().listAppealInfoByDateNotInit(beginDate, endDate, person.getDistinguishedName());
+                List<AttendanceV2AppealInfo> appealInfoList = business.getAttendanceV2ManagerFactory()
+                        .listAppealInfoByDateNotInit(beginDate, endDate,
+                                person.getDistinguishedName());
                 if (appealInfoList != null && appealInfoList.size() >= config.getAppealMaxTimes()) {
                     throw new ExceptionOverAppealMaxTimes();
                 }

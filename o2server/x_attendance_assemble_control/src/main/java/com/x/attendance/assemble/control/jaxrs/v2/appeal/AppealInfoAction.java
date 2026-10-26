@@ -71,6 +71,25 @@ public class AppealInfoAction extends StandardJaxrsAction {
     }
 
 
+    @JaxrsMethodDescribe(value = "考勤信息确认，锁定指定日期范围内待处理和审批中的申诉数据.", action = ActionConfirm.class)
+    @POST
+    @Path("confirm")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void confirm(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                        JsonElement jsonElement) {
+        ActionResult<ActionConfirm.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionConfirm().execute(effectivePerson, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+
 
     @JaxrsMethodDescribe(value = "管理员处理异常数据为正常.", action = ActionUpdateStatusByAdmin.class)
     @GET

@@ -1,24 +1,6 @@
 package com.x.processplatform.assemble.surface;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
+import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.config.Config;
@@ -38,6 +20,22 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 import com.x.processplatform.core.entity.ticket.Ticket;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class WorkControlBuilder {
 
@@ -319,6 +317,21 @@ public class WorkControlBuilder {
 		});
 	}
 
+	private TaskCompleted getLastTaskCompletedWithActivityToken(EffectivePerson effectivePerson, Business business,
+			String activityToken) throws Exception {
+		EntityManagerContainer emc = business.entityManagerContainer();
+		EntityManager em = emc.get(TaskCompleted.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<TaskCompleted> cq = cb.createQuery(TaskCompleted.class);
+		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
+		Predicate p = cb.equal(root.get(TaskCompleted_.person), effectivePerson.getDistinguishedName());
+		p = cb.and(p, cb.equal(root.get(TaskCompleted_.job), work.getJob()));
+		p = cb.and(p, cb.equal(root.get(TaskCompleted_.activityToken), activityToken));
+		List<TaskCompleted> list = em.createQuery(cq.where(p).orderBy(cb.desc(root.get(JpaObject_.createTime))))
+				.setMaxResults(1).getResultList();
+		return list.isEmpty() ? null : list.get(0);
+	}
+
 	public Control build() {
 		Control control = new Control();
 		if (null == work) {
@@ -489,35 +502,56 @@ public class WorkControlBuilder {
 
 	/**
 	 * 是否可以召回有三个判断点 1.活动环节设置允许召回 2.多人活动(串并行)中没有人已经处理过,也就是没有当前活动的已办
-	 * 3.回溯活动如果经过一些非人工环节那么也可以召回.
+	 * 3.回溯活动如果经过一些非人工环节那么也可以召回 4.送拆分后任一工作有处理过都不能召回
+	 * 5.流转经过合并环节则不能撤回.
 	 *
-	 * @param business
-	 * @param effectivePerson
-	 * @param work
-	 * @param wo
-	 * @param activity
-	 * @throws Exception
+	 * @param control 控制器
 	 */
 	private void computeAllowRetract(Control control) {
 		try {
 			control.setAllowRetract(false);
+			TaskCompleted taskCompleted = null;
+			EntityManagerContainer emc = business.entityManagerContainer();
 			if (Objects.nonNull(activity())
 					&& BooleanUtils.isTrue(
-							PropertyTools.getOrElse(activity(), Manual.allowRetract_FIELDNAME, Boolean.class, false))
-					&& (business.entityManagerContainer().countEqualAndEqual(TaskCompleted.class,
-							TaskCompleted.job_FIELDNAME, work.getJob(), TaskCompleted.activityToken_FIELDNAME,
-							work.getActivityToken()) == 0)) {
+					PropertyTools.getOrElse(activity(), Manual.allowRetract_FIELDNAME, Boolean.class, false))
+					&& (emc.countEqualAndEqual(TaskCompleted.class,
+					TaskCompleted.job_FIELDNAME, work.getJob(), TaskCompleted.activityToken_FIELDNAME,
+					work.getActivityToken()) == 0)) {
 				Node node = this.workLogTree().location(work);
 				if (null != node) {
 					Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice,
 							ActivityType.delay, ActivityType.embed, ActivityType.invoke, ActivityType.parallel,
 							ActivityType.split, ActivityType.publish);
 					for (Node o : ups) {
-						if (this.hasTaskCompletedWithActivityToken(effectivePerson, business,
-								o.getWorkLog().getFromActivityToken())) {
-							control.setAllowRetract(true);
+						taskCompleted = this.getLastTaskCompletedWithActivityToken(effectivePerson, business, o.getWorkLog().getFromActivityToken());
+						if (taskCompleted != null) {
 							break;
 						}
+					}
+				}
+			}
+			if(taskCompleted != null){
+				final TaskCompleted lastTaskCompleted = taskCompleted;
+				List<WorkLog> workLogs = emc.listEqual(WorkLog.class,
+						WorkLog.JOB_FIELDNAME, taskCompleted.getJob());
+				List<WorkLog> down = WorkLog.downTo(workLogs,
+						workLogs.stream()
+								.filter(o -> Objects.equals(o.getFromActivityToken(), lastTaskCompleted.getActivityToken()))
+								.collect(Collectors.toList()),
+						ActivityType.manual);
+				if(!down.isEmpty() && down.stream().noneMatch(o -> BooleanUtils.isTrue(o.getConnected()))) {
+					List<String> activityTokens = down.stream()
+							.map(WorkLog::getFromActivityToken).filter(StringUtils::isNotBlank)
+							.distinct()
+							.collect(Collectors.toList());
+					Long count = emc.countEqualAndIn(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
+							taskCompleted.getJob(), TaskCompleted.activityToken_FIELDNAME,
+							activityTokens);
+					if (count == 0 && emc.countEqualAndIn(Work.class, Work.job_FIELDNAME,
+							taskCompleted.getJob(), Work.activityToken_FIELDNAME,
+							activityTokens) > 0) {
+						control.setAllowRetract(true);
 					}
 				}
 			}

@@ -180,7 +180,7 @@ o2.widget.ImageLazyLoader = o2.ImageLazyLoader = new Class({
                 for (var i = 0; i < as.length; i++) {
                     var a = as[i];
                     var src = this.getAttributeValue(a, "src");
-                    if (src.toLowerCase().indexOf('javascript:') > -1) {
+                    if (src.toLowerCase().indexOf('javascript:') > -1 || src.toLowerCase().startsWith('data:')) {
                         var a1 = this.removeAttribute(a, "src");
                         html = html.replace(a, a1);
                     }

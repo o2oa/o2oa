@@ -16,12 +16,18 @@
                 var defaultPort = layout.config.app_protocol==='https' ? "443" : "80";
                 if( root === "x_program_center" ){
                     addressObj = layout.centerServer;
-                    var appPort = addressObj.port || window.location.port;
-                    address = protocol+"//"+(addressObj.host || window.location.hostname)+((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort)+ "/x_program_center";
+                    var appPort = addressObj ? (addressObj.port || window.location.port) : window.location.port;
+                    var host = (addressObj && addressObj.host) ? addressObj.host : window.location.hostname;
+                    address = protocol+"//"+host+((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort)+ "/x_program_center";
                 }else{
                     addressObj = layout.serviceAddressList[root];
-                    var appPort = addressObj.port || window.location.port;
-                    address = protocol+"//"+(addressObj.host || window.location.hostname)+((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort)+addressObj.context;
+                    //var appPort = addressObj.port || window.location.port;
+                    //address = protocol+"//"+(addressObj.host || window.location.hostname)+((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort)+addressObj.context;
+
+                    var appPort = addressObj ? (addressObj.port || window.location.port) : window.location.port;
+                    var host = (addressObj && addressObj.host) ? addressObj.host : window.location.hostname;
+                    var context = addressObj ? (addressObj.context || root) : root;
+                    address = protocol+"//"+host+((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort)+context;
                 }
 
                 var res = new Request.JSON({

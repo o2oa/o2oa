@@ -17,9 +17,17 @@ public class AttendanceV2ShiftCheckTime  extends GsonPropertyObject {
     private String offDutyTimeBeforeLimit; // offDutyTime前打卡限制
     private String offDutyTimeAfterLimit; // offDutyTime后打卡限制
     private Boolean offDutyNextDay = false; // 下班打卡是否是次日 下班打卡可跨天
+    // 休息时间段，格式为 "HH:mm-HH:mm"，例如 "12:00-13:00" 表示中午休息时间为 12:00 到 13:00
+    private String restPeriod;
 
+    public String getRestPeriod() {
+        return restPeriod;
+    }
 
-    
+    public void setRestPeriod(String restPeriod) {
+        this.restPeriod = restPeriod;
+    }
+
     public String getOnDutyTime() {
         return onDutyTime;
     }

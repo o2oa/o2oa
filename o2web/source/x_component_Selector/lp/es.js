@@ -9,6 +9,7 @@ MWF.xApplication.Selector.LP={
 	"selectGroup": "Grupo",
 	"selectRole": "Rol",
 	"selectDuty": "Trabajo",
+	"selectPage": "Página",
 	"selectField": "Campo",
 	"selectFile": "Archivo de recursos",
 	"selectAppliction": "Aplicación de flujo de trabajo",

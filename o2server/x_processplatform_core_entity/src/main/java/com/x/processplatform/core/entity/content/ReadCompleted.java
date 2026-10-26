@@ -37,7 +37,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * 没有多值字段
- * 
+ *
  * @author zhour
  *
  */
@@ -112,6 +112,9 @@ public class ReadCompleted extends SliceJpaObject implements ProjectionInterface
 
 	public void setTitle(String title) {
 		this.title = title;
+		if (StringTools.utf8Length(title) > length_255B) {
+			this.title = StringTools.utf8SubString(title, length_255B - 3) + "...";
+		}
 		this.getProperties().setTitle(title);
 	}
 

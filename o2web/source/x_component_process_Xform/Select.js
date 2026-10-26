@@ -191,12 +191,13 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		this.setOptions();
         this.node.addEvent("change", function( ev ){
 			var v = this.getInputData("change");
-			this._setBusinessData(v);
             this.validationMode();
-            if (this.validation()) {
-				//this._setEnvironmentData(v);
-				this.fireEvent("change", [this._getSelectedOption()]);
-			}
+			o2.promiseAll(this.validation()).then(flag=>{
+				if(String(flag) === "true"){
+					this._setBusinessData(v);
+					this.fireEvent("change", [this._getSelectedOption()]);
+				}
+			})
         }.bind(this));
 
 	},

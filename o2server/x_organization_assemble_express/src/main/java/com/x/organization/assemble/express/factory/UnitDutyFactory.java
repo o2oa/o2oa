@@ -115,4 +115,13 @@ public class UnitDutyFactory extends AbstractFactory {
 		Predicate p = cb.equal(root.get(UnitDuty_.unit), unitId);
 		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
 	}
+
+	public Long countByUnitIds(List<String> unitIds) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(UnitDuty.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<UnitDuty> root = cq.from(UnitDuty.class);
+		Predicate p = root.get(UnitDuty_.unit).in(unitIds);
+		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
+	}
 }

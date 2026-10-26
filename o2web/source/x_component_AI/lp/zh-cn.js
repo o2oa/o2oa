@@ -52,7 +52,7 @@ MWF.xApplication.AI.LP = {
 	"thinking" : "正在努力思考中",
 	"types" : {
 		"auto" : "自动",
-		"auto_text" : "AI根据你的问题自动挑最合适的答案",
+		"auto_text" : "根据你的问题自动挑最合适的答案",
 		"chat" : "聊天",
 		"chat_text" : "直接跟AI聊天，有问有答",
 		"task" : "任务",

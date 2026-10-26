@@ -1,10 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.BooleanUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -18,8 +13,11 @@ import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.JobControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
-
+import com.x.processplatform.core.entity.content.Draft;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.Date;
+import java.util.List;
+import org.apache.commons.lang3.BooleanUtils;
 
 class ActionOnlineInfo extends BaseAction {
 
@@ -35,24 +33,33 @@ class ActionOnlineInfo extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			if(effectivePerson.isManager()){
-				wo.setCanEdit(true);
-				wo.setCanRead(true);
+			Draft draft = emc.find(attachment.getJob(), Draft.class);
+			if (draft != null){
+				if(effectivePerson.isManager() || effectivePerson.getDistinguishedName().equals(draft.getPerson())){
+					wo.setCanEdit(true);
+					wo.setCanRead(true);
+				}
 			}else {
-				if (business.ifPersonHasTaskReadTaskCompletedReadCompletedReviewWithJob(
-						effectivePerson.getDistinguishedName(), attachment.getJob())
-						|| business.ifPersonCanManageApplicationOrProcess(effectivePerson,
-						attachment.getApplication(), attachment.getProcess())) {
-					List<String> identities = business.organization().identity()
-							.listWithPerson(effectivePerson);
-					List<String> units = business.organization().unit()
-							.listWithPerson(effectivePerson);
-					boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
-					wo.setCanEdit(canEdit);
+				if (effectivePerson.isManager()) {
+					wo.setCanEdit(true);
 					wo.setCanRead(true);
 				} else {
-					wo.setCanRead(new JobControlBuilder(effectivePerson, business,
-							attachment.getJob()).enableAllowVisit().build().getAllowVisit());
+					if (business.ifPersonHasTaskReadTaskCompletedReadCompletedReviewWithJob(
+							effectivePerson.getDistinguishedName(), attachment.getJob())
+							|| business.ifPersonCanManageApplicationOrProcess(effectivePerson,
+							attachment.getApplication(), attachment.getProcess())) {
+						List<String> identities = business.organization().identity()
+								.listWithPerson(effectivePerson);
+						List<String> units = business.organization().unit()
+								.listWithPerson(effectivePerson);
+						boolean canEdit = this.edit(attachment, effectivePerson, identities, units,
+								business);
+						wo.setCanEdit(canEdit);
+						wo.setCanRead(true);
+					} else {
+						wo.setCanRead(new JobControlBuilder(effectivePerson, business,
+								attachment.getJob()).enableAllowVisit().build().getAllowVisit());
+					}
 				}
 			}
 			if (BooleanUtils.isTrue(wo.getCanRead())) {
@@ -97,9 +104,9 @@ class ActionOnlineInfo extends BaseAction {
 		@FieldDescribe("最后更新时间.")
 		private Date lastUpdateTime;
 		@FieldDescribe("当前用户是否可编辑.")
-		private Boolean canEdit;
+		private Boolean canEdit = false;
 		@FieldDescribe("当前用户是否可阅读.")
-		private Boolean canRead;
+		private Boolean canRead = false;
 
 		public String getId() {
 			return id;

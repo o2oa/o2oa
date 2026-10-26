@@ -8,7 +8,7 @@
         <div data-o2-element="textNode" class="MWF_selector_categoryitem_textNode">{{$._text}}</div>
         <div data-o2-element="descriptionNode" class="MWF_selector_categoryitem_descriptionNode">{{$._description}}</div>
     </div>
-    {{if $._hasChild && ($._clazz !== 'SearchItem')}}
+    {{if $._hasChild && !$._hideExpand && ($._clazz !== 'SearchItem')}}
     <div data-o2-element="expandNode"
          class="MWF_selector_categoryitem_expandNode
           ooicon-arrow_forward"

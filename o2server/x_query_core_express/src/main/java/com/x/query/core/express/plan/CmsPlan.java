@@ -102,6 +102,32 @@ public class CmsPlan extends Plan {
     }
 
     @Override
+    public List<String> listBundleV2() throws Exception {
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            EntityManager em = emc.get(ApplicationBaseEntity.class);
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<String> cq = cb.createQuery(String.class);
+            Root<Document> root = cq.from(Document.class);
+            cq.select(root.get(Document_.id))
+                    .where(this.where.documentPredicateV2(cb, root, cq, this.runtime, this.filterList));
+            List<Order> orderList = new TreeList<>();
+            this.joinPagingOrder(orderList, cb, root, cq, JpaObject.id_FIELDNAME);
+            if(orderList.isEmpty()) {
+                Order order = cb.desc(root.get(Document_.publishTime));
+                if (BooleanUtils.isTrue(where.draft)) {
+                    order = cb.desc(root.get(JpaObject_.createTime));
+                }
+                orderList.add(order);
+            }
+            cq.orderBy(orderList.toArray(new Order[0]));
+            long start = System.currentTimeMillis();
+            List<String> docIdList = em.createQuery(cq).setMaxResults(this.runtime.count).getResultList();
+            logger.debug("listBundleV2 cost:{}", System.currentTimeMillis() - start);
+            return docIdList;
+        }
+    }
+
+    @Override
     public Pair<List<String>, Long> listBundlePaging() throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             EntityManager em = emc.get(ApplicationBaseEntity.class);
@@ -251,7 +277,7 @@ public class CmsPlan extends Plan {
                 os.addAll(future.get(300, TimeUnit.SECONDS));
             }
             // 不等于在这里单独通过等于处理
-            if (Comparison.isNotEquals(f.comparison)) {
+            if (Comparison.isNotEquals(f.comparison) || Comparison.isNotIn(f.comparison)) {
                 os = ListUtils.subtract(docIds, os);
             }
             if (i == 0) {
@@ -383,7 +409,7 @@ public class CmsPlan extends Plan {
                 subPredicate = f.toPredicate(cb, itemRoot, runtime, subPredicate);
                 subquery.select(cb.literal(1L)).where(subPredicate);
                 Predicate existsP = cb.exists(subquery);
-                if (Comparison.isNotEquals(f.comparison)) {
+                if (Comparison.isNotEquals(f.comparison) || Comparison.isNotIn(f.comparison)) {
                     existsP = cb.not(existsP);
                 }
                 if(p == null){

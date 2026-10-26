@@ -14,9 +14,10 @@ export default content({
         return {
             lp,
             mapConfig: {
-                mapType: "", //  amap baidu
+                mapType: "", //  amap baidu tx
                 baiduAccountKey: "",
                 aMapAccountKey: "",
+                txMapAccountKey: "",
             },
             mapTypeList: [
                 {
@@ -30,6 +31,10 @@ export default content({
                     name: "高德地图",
                     key: "amap"
                 },
+                {
+                    name: "腾讯地图",
+                    key: "tx"
+                }
             ]
         };
     },
@@ -49,6 +54,10 @@ export default content({
             return ;
         }
         if (this.bind.mapConfig.mapType === "amap" && isEmpty(this.bind.mapConfig.aMapAccountKey)) {
+            o2.api.page.notice(lp.workAddressBDSecretTitlePlaceholder, 'error');
+            return ;
+        }
+        if (this.bind.mapConfig.mapType === "tx" && isEmpty(this.bind.mapConfig.txMapAccountKey)) {
             o2.api.page.notice(lp.workAddressBDSecretTitlePlaceholder, 'error');
             return ;
         }

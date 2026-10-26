@@ -1,5 +1,6 @@
 package com.x.program.center.jaxrs.agent;
 
+import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -17,6 +18,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.program.center.Business;
 import com.x.program.center.core.entity.Agent;
+import org.apache.commons.lang3.Strings;
 
 class ActionEdit extends BaseAction {
 
@@ -41,9 +43,12 @@ class ActionEdit extends BaseAction {
 					throw new ExceptionDuplicateAlias(wi.getAlias());
 				}
 			}
+			boolean cronModified = Strings.CI.equals(wi.getCron(), agent.getCron());
 			emc.beginTransaction(Agent.class);
 			Wi.copier.copy(wi, agent);
-			//this.addComment(agent);
+			if(cronModified){
+				agent.setLastStartTime(new Date());
+			}
 			emc.check(agent, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(Agent.class);

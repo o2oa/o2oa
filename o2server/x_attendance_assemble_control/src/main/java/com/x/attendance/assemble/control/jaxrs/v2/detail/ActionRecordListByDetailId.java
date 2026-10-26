@@ -1,5 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.v2.detail;
 
+import com.x.attendance.entity.v2.AttendanceV2LeaveRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -47,6 +48,12 @@ public class ActionRecordListByDetailId  extends BaseAction {
                                 woRecord.setLeaveData(leaveData);
                             }
                         }
+                        if (StringUtils.isNotEmpty(woRecord.getRequestDataId())) {
+                            AttendanceV2LeaveRequest leaveRequest = emc.find(woRecord.getRequestDataId(), AttendanceV2LeaveRequest.class);
+                            if (leaveRequest != null) {
+                                woRecord.setLeaveRequest(leaveRequest);
+                            }
+                        }
                     } catch (Exception ignore) {}
                     recordList.add(woRecord);
                 }
@@ -61,8 +68,10 @@ public class ActionRecordListByDetailId  extends BaseAction {
     public static class WoRecord extends AttendanceV2CheckInRecord {
         private static final long serialVersionUID = -4639650669016226001L;
 
-        @FieldDescribe("外出请假记录")
+        @FieldDescribe("外出记录")
         private AttendanceV2LeaveData leaveData;
+        @FieldDescribe("请假记录")
+        private AttendanceV2LeaveRequest leaveRequest;
 
         static WrapCopier<AttendanceV2CheckInRecord, WoRecord> copier = WrapCopierFactory.wo(AttendanceV2CheckInRecord.class, WoRecord.class, null,
                 JpaObject.FieldsInvisible);
@@ -73,6 +82,14 @@ public class ActionRecordListByDetailId  extends BaseAction {
 
         public void setLeaveData(AttendanceV2LeaveData leaveData) {
             this.leaveData = leaveData;
+        }
+
+        public AttendanceV2LeaveRequest getLeaveRequest() {
+            return leaveRequest;
+        }
+
+        public void setLeaveRequest(AttendanceV2LeaveRequest leaveRequest) {
+            this.leaveRequest = leaveRequest;
         }
     }
   

@@ -1,15 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-
 import com.google.gson.JsonElement;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
@@ -39,10 +29,18 @@ import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 class ActionUploadWorkInfo extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionUploadWorkInfo.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActionUploadWorkInfo.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, String flag, JsonElement jsonElement)
 			throws Exception {
@@ -55,7 +53,7 @@ class ActionUploadWorkInfo extends BaseAction {
 			if (work == null) {
 				WorkCompleted workCompleted = emc.find(workId, WorkCompleted.class);
 				if (null == workCompleted) {
-					throw new Exception("workId: " + workId + " not exist in work or workCompleted");
+					throw new IllegalArgumentException("workId: " + workId + " not exist in work or workCompleted");
 				}
 				Control control = new WorkCompletedControlBuilder(effectivePerson, business, workCompleted)
 						.enableAllowVisit().build();
@@ -74,11 +72,11 @@ class ActionUploadWorkInfo extends BaseAction {
 			String workHtml = wi.getWorkHtml();
 			if (StringUtils.isNotBlank(workHtml)) {
 				try {
-					workHtml = URLDecoder.decode(workHtml, StandardCharsets.UTF_8.name());
+					workHtml = URLDecoder.decode(workHtml, StandardCharsets.UTF_8);
 				} catch (Exception e) {
 					logger.error(e);
 				}
-				if (workHtml.toLowerCase().indexOf("<html") == -1) {
+				if (!workHtml.toLowerCase().contains("<html")) {
 					workHtml = "<html><head></head><body>" + workHtml + "</body></html>";
 				}
 			}
@@ -95,58 +93,51 @@ class ActionUploadWorkInfo extends BaseAction {
 	}
 
 	private String saveHtml(String flag, String workHtml, String person, String title, Float pageWidth,
-			Business business) {
-		try {
-			String name = "";
-			byte[] bytes;
-			if (title.length() > 60) {
-				title = title.substring(0, 60);
-			}
-			if ("word".equals(flag)) {
-				try (POIFSFileSystem fs = new POIFSFileSystem();
-						InputStream is = new ByteArrayInputStream(workHtml.getBytes("UTF-8"));
-						ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-					fs.createDocument(is, "WordDocument");
-					fs.writeFilesystem(out);
-					bytes = out.toByteArray();
-					name = title + "-处理单.doc";
-				}
-			} else if ("pdf".equals(flag)) {
-				try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-					ConverterProperties props = new ConverterProperties();
-					DefaultFontProvider dfp = new DefaultFontProvider(false, false, false);
-					// dfp.addFont(Config.base()+"/commons/fonts/NotoSansCJKsc-Regular.otf");
-					dfp.addDirectory(Config.base() + "/commons/fonts");
-					props.setFontProvider(dfp);
-					PdfWriter writer = new PdfWriter(out);
-					PdfDocument pdf = new PdfDocument(writer);
-					float width = PageSize.A4.getWidth();
-					if (pageWidth != null && pageWidth > 100) {
-						width = pageWidth.floatValue();
-					}
-					pdf.setDefaultPageSize(new PageSize(width, PageSize.A4.getHeight()));
-					HtmlConverter.convertToPdf(workHtml, pdf, props);
-					bytes = out.toByteArray();
-					name = title + "-处理单.pdf";
-				}
-			} else {
-				bytes = workHtml.getBytes(DefaultCharset.charset);
-				name = title + "-处理单.html";
-			}
-			StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
-			GeneralFile generalFile = new GeneralFile(gfMapping.getName(), name, person);
-			generalFile.saveContent(gfMapping, bytes, name, Config.general().getStorageEncrypt());
-			EntityManagerContainer emc = business.entityManagerContainer();
-			emc.beginTransaction(GeneralFile.class);
-			emc.persist(generalFile, CheckPersistType.all);
-			emc.commit();
-
-			String key = generalFile.getId();
-			return key;
-		} catch (Exception e) {
-			logger.warn("写work信息异常" + e.getMessage());
+			Business business) throws Exception {
+		String name = "";
+		byte[] bytes;
+		if (title.length() > 60) {
+			title = title.substring(0, 60);
 		}
-		return "";
+		if ("word".equals(flag)) {
+			try (POIFSFileSystem fs = new POIFSFileSystem();
+					InputStream is = new ByteArrayInputStream(workHtml.getBytes("UTF-8"));
+					ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+				fs.createDocument(is, "WordDocument");
+				fs.writeFilesystem(out);
+				bytes = out.toByteArray();
+				name = title + "-处理单.doc";
+			}
+		} else if ("pdf".equals(flag)) {
+			try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+				ConverterProperties props = new ConverterProperties();
+				DefaultFontProvider dfp = new DefaultFontProvider(false, false, false);
+				dfp.addDirectory(Config.base() + "/commons/fonts");
+				props.setFontProvider(dfp);
+				PdfWriter writer = new PdfWriter(out);
+				PdfDocument pdf = new PdfDocument(writer);
+				float width = PageSize.A4.getWidth();
+				if (pageWidth != null && pageWidth > 100) {
+					width = pageWidth;
+				}
+				pdf.setDefaultPageSize(new PageSize(width, PageSize.A4.getHeight()));
+				HtmlConverter.convertToPdf(workHtml, pdf, props);
+				bytes = out.toByteArray();
+				name = title + "-处理单.pdf";
+			}
+		} else {
+			bytes = workHtml.getBytes(DefaultCharset.charset);
+			name = title + "-处理单.html";
+		}
+		StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
+		GeneralFile generalFile = new GeneralFile(gfMapping.getName(), name, person);
+		generalFile.saveContent(gfMapping, bytes, name, Config.general().getStorageEncrypt());
+		EntityManagerContainer emc = business.entityManagerContainer();
+		emc.beginTransaction(GeneralFile.class);
+		emc.persist(generalFile, CheckPersistType.all);
+		emc.commit();
+
+		return generalFile.getId();
 	}
 
 	public static class Wi extends GsonPropertyObject {

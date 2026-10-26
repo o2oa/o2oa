@@ -1,5 +1,10 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.cms.assemble.control.Business;
+import com.x.cms.core.entity.Document;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +28,9 @@ import com.x.cms.core.entity.FileInfo;
 
 class ActionPreviewPdf extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionPreviewPdf.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActionPreviewPdf.class);
 
-	private final static List<String> keys = Arrays.asList("doc", "docx", "ppt", "pptx", "xls", "xlsx");
+	private static final List<String> keys = Arrays.asList("doc", "docx", "ppt", "pptx", "xls", "xlsx");
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String fileName) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
@@ -38,8 +43,18 @@ class ActionPreviewPdf extends BaseAction {
 		} else {
 			FileInfo attachment = fileInfoServiceAdv.get(id);
 			if (null == attachment) {
-				throw new Exception("附件不存在。id:" + id);
+				throw new ExceptionFileInfoNotExists(id);
 			} else {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					Document document = emc.find(attachment.getDocumentId(), Document.class);
+					if (null == document) {
+						throw new ExceptionDocumentNotExists(attachment.getDocumentId());
+					}
+					Business business = new Business(emc);
+					if (!business.isDocumentReader(effectivePerson, document)) {
+						throw new ExceptionAccessDenied(effectivePerson);
+					}
+				}
 				String type = FilenameUtils.getExtension(attachment.getName());
 				if (!keys.contains(type.toLowerCase())) {
 					throw new ExceptionUnsupportedMediaType(type);

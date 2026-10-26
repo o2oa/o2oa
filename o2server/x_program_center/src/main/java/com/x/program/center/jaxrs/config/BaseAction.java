@@ -14,6 +14,9 @@ import com.x.program.center.ThisApplication;
 
 class BaseAction extends StandardJaxrsAction {
 
+	protected static final String TOKEN_CONFIG = "token.json";
+	protected static final String DATASOURCE_CONFIG = "externalDataSources.json";
+
 	protected static final String SLASH = "/";
 
 	public static class AbstractWoProxy extends GsonPropertyObject {

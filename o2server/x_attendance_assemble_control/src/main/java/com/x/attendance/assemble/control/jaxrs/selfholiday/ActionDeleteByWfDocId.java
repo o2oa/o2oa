@@ -60,7 +60,7 @@ public class ActionDeleteByWfDocId extends BaseAction {
 						if( ListTools.isNotEmpty( ids ) ){
 							for( String id : ids ){
 								try { //分析保存好的考勤数据
-									ThisApplication.detailAnalyseQueue.send( id );
+//									ThisApplication.detailAnalyseQueue.send( id );
 								} catch ( Exception e1 ) {
 									e1.printStackTrace();
 								}

@@ -210,12 +210,14 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
         }.bind(this));
     },
     loadCkeditor: function(config){
+        o2.require("o2.widget.ImageLazyLoader", null, null, false);
         COMMON.AjaxModule.loadDom("ckeditor", function(){
             CKEDITOR.disableAutoInline = true;
             var editorDiv = new Element("div").inject(this.node);
             var htmlData = this._getBusinessData();
             if (htmlData){
-                editorDiv.set("html", htmlData);
+                var loadder = new o2.widget.ImageLazyLoader(this.node, htmlData);
+                editorDiv.set("html", loadder.clearHtml());
             }else if (this.json.templateCode){
                 editorDiv.set("html", this.json.templateCode);
             }
@@ -761,24 +763,14 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
         }
         return true;
     },
-    validation: function(routeName, opinion){
-        if (this.isReadonly() || this.json.showMode==="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
+     validation: function(routeName, opinion){
+        this.moduleValidationAG = null;
+        //if (this.isReadonly() || this.json.showMode==="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
+        if (this.isReadonly() || this.json.showMode==="disabled" || !this.isEditable) return true;
 
         if (!this.validationConfig(routeName, opinion))  return false;
 
-        if (!this.json.validation) return true;
-        if (!this.json.validation.code) return true;
-
-        this.currentRouteName = routeName;
-        var flag = this.form.Macro.exec(this.json.validation.code, this);
-        this.currentRouteName = "";
-
-        if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
-        if (flag.toString()!="true"){
-            this.notValidationMode(flag);
-            return false;
-        }
-        return true;
+        return this._validation(routeName);
     },
 
 

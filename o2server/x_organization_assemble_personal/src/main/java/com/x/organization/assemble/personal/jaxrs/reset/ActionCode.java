@@ -10,18 +10,25 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.organization.assemble.personal.Business;
+import com.x.organization.assemble.personal.ThisApplication;
 import com.x.organization.core.entity.Person;
 import org.apache.commons.lang3.BooleanUtils;
 
 import java.net.URLDecoder;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionCode extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCode.class);
+	private static final String CUSTOM_SMS_APPLICATION = "x_sms_assemble_control";
+	private static final String CUSTOM_SMS_CONFIG_NAME = "custom_sms";
 	ActionResult<WrapOutBoolean> execute(String credential) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			if (BooleanUtils.isNotTrue(Config.collect().getEnable())) {
-				throw new ExceptionDisableCollect();
+			String customSms = ThisApplication.context().applications().findApplicationName(CUSTOM_SMS_APPLICATION);
+			if(StringUtils.isBlank(customSms) || Config.customConfig(CUSTOM_SMS_CONFIG_NAME) == null){
+				if (BooleanUtils.isNotTrue(Config.collect().getEnable())) {
+					throw new ExceptionDisableCollect();
+				}
 			}
 			credential =  BooleanUtils.isTrue(Config.token().getRsaEnable()) ? Crypto.rsaDecrypt(URLDecoder.decode(credential, DefaultCharset.charset),
 					Config.privateKey()) : credential;

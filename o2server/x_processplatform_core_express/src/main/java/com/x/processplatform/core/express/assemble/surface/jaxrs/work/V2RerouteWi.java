@@ -31,6 +31,9 @@ public class V2RerouteWi extends GsonPropertyObject {
 	@FieldDescribe("待办选择路由名称.")
 	private String routeName;
 
+	@FieldDescribe("调度人，默认当前登录人.")
+	private String operator;
+
 	@FieldDescribe("待办办理意见.")
 	private String opinion;
 
@@ -93,4 +96,11 @@ public class V2RerouteWi extends GsonPropertyObject {
 		this.activityType = activityType;
 	}
 
+	public String getOperator() {
+		return operator;
+	}
+
+	public void setOperator(String operator) {
+		this.operator = operator;
+	}
 }

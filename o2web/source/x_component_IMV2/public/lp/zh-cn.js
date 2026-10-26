@@ -111,6 +111,7 @@ MWF.xApplication.IMV2.LP = {
     "settingsRevokeOutMinuteMsg": "撤回时效(分钟数)， 回车保存数据",
     "settingsConversationCheckInvokeMsg": "会话创建、更新的检查接口，回车保存数据",
     "settingsEnableOnlyOfficePreviewMsg": "是否使用onlyOffice预览文件(需要先安装onlyOffice扩展应用)",
+    "settingsShowAllTopUnitMsg": "是否显示所有顶级单位",
     "msgSettingsSaveSuccess": "保存成功！",
 
     "enterMessage": "输入消息内容",

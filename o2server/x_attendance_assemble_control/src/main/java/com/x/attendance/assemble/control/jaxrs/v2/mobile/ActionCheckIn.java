@@ -2,7 +2,6 @@ package com.x.attendance.assemble.control.jaxrs.v2.mobile;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
-import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionWithMessage;
@@ -35,6 +34,7 @@ public class ActionCheckIn extends BaseAction {
             throw new ExceptionEmptyParameter("当前用户信息");
         }
         ActionResult<Wo> result = new ActionResult<>();
+        String detailDate = null;
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
             if (StringUtils.isEmpty(wi.getRecordId())) {
@@ -69,7 +69,8 @@ public class ActionCheckIn extends BaseAction {
             }
             // 打卡时间
             Date nowDate = new Date();
-            AttendanceV2CheckInRecord back = ThisApplication.checkInExecutor.submit(new CheckInCallableImpl(nowDate, record.getId(), CheckInWi.fromApp(wi))).get();
+            AttendanceV2CheckInRecord back = executeWithCheckLock("check:" + record.getId(),
+                    new CheckInCallableImpl(nowDate, record.getId(), CheckInWi.fromApp(wi)));
             if (back != null) {
                 // 异常数据
                 generateAppealInfo(back, groups.get(0).getFieldWorkMarkError(), emc, business);
@@ -78,11 +79,14 @@ public class ActionCheckIn extends BaseAction {
                 wo.setRecordDate(nowDate);
                 wo.setCheckInRecordId(back.getId());
                 result.setData(wo);
+                detailDate = back.getRecordDateString();
             }
         }
         if (result.getData() == null) {
             throw new ExceptionNoCheckInResult();
         }
+        checkAndSendV2DetailIfAllCheckInCompletedAsync(effectivePerson.getDistinguishedName(),
+                detailDate);
         return result;
     }
 
@@ -136,6 +140,9 @@ public class ActionCheckIn extends BaseAction {
 
         @FieldDescribe("外勤打卡说明")
         private String signDescription;
+
+        @FieldDescribe("外勤打卡拍照附件文件ID列表")
+        private List<String> fieldWorkPhotoFileIdList;
 
         @FieldDescribe("来源设备：Mac|Windows|IOS|Android|其他")
         private String sourceDevice;
@@ -201,6 +208,14 @@ public class ActionCheckIn extends BaseAction {
 
         public void setSignDescription(String signDescription) {
             this.signDescription = signDescription;
+        }
+
+        public List<String> getFieldWorkPhotoFileIdList() {
+            return fieldWorkPhotoFileIdList;
+        }
+
+        public void setFieldWorkPhotoFileIdList(List<String> fieldWorkPhotoFileIdList) {
+            this.fieldWorkPhotoFileIdList = fieldWorkPhotoFileIdList;
         }
 
         public String getSourceDevice() {

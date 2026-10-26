@@ -321,14 +321,14 @@ public class Business {
     }
 
     public boolean readable(EffectivePerson effectivePerson, Table o) throws Exception {
+        if (BooleanUtils.isTrue(effectivePerson.isManager() || (this.organization().person().hasRole(effectivePerson,
+                OrganizationDefinition.Manager, OrganizationDefinition.QueryManager)))) {
+            return true;
+        }
         if (null == o) {
             return false;
         }
         if (ListTools.isEmpty(o.getReadPersonList()) && ListTools.isEmpty(o.getReadUnitList())) {
-            return true;
-        }
-        if (BooleanUtils.isTrue(effectivePerson.isManager() || (this.organization().person().hasRole(effectivePerson,
-                OrganizationDefinition.Manager, OrganizationDefinition.QueryManager)))) {
             return true;
         }
         if (effectivePerson.isPerson(o.getEditPersonList()) || effectivePerson.isPerson(o.getReadPersonList())) {
@@ -377,7 +377,7 @@ public class Business {
                 OrganizationDefinition.Manager, OrganizationDefinition.QueryManager)))) {
             result = true;
         }
-        if (!result) {
+        if (!result && o != null) {
             if (ListTools.isEmpty(o.getEditPersonList()) && ListTools.isEmpty(o.getEditUnitList())) {
                 result = true;
             } else if (ListTools.isNotEmpty(o.getEditPersonList()) && effectivePerson.isPerson(o.getEditPersonList())) {

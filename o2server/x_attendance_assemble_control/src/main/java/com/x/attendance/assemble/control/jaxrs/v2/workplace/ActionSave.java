@@ -56,6 +56,10 @@ public class ActionSave extends BaseAction {
 			TransformPosition tp = BaiduLocationTransformHelper.bd09towgs84(dLng, dLat);
 			wrapIn.setGpsLng(String.valueOf(tp.getLng()));
 			wrapIn.setGpsLat(String.valueOf(tp.getLat()));
+		} else if (AttendanceV2WorkPlace.POSITION_TYPE_TX.equals(wrapIn.getPositionType())) {
+			TransformPosition tp = BaiduLocationTransformHelper.gcj02towgs84(dLng, dLat);
+			wrapIn.setGpsLng(String.valueOf(tp.getLng()));
+			wrapIn.setGpsLat(String.valueOf(tp.getLat()));
 		} else {
 			wrapIn.setGpsLng(wrapIn.getLongitude());
 			wrapIn.setGpsLat(wrapIn.getLatitude());

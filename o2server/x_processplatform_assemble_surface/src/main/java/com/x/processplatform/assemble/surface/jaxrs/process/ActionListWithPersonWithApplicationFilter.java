@@ -105,6 +105,13 @@ class ActionListWithPersonWithApplicationFilter extends BaseAction {
 							cb.equal(root.get(Process_.startableTerminal), ""),
 							cb.equal(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_MOBILE),
 							cb.equal(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_ALL)));
+		} else if (StringUtils.equals(wi.getStartableTerminal(), Process.STARTABLETERMINAL_ALL)) {
+			p = cb.and(p,
+					cb.or(cb.isNull(root.get(Process_.startableTerminal)),
+							cb.equal(root.get(Process_.startableTerminal), ""),
+							cb.equal(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_CLIENT),
+							cb.equal(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_MOBILE),
+							cb.equal(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_ALL)));
 		}
 
 		cq.select(root.get(Process_.id)).where(p);

@@ -1,5 +1,6 @@
 package com.x.program.center.jaxrs.config;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -9,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -39,9 +41,12 @@ public class ActionSave extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionSave.class);
 	private static final String MESSAGE_CONFIG = "messages.json";
 	private static final String FILE_NAME_TYPE = ".json";
+	private static final List<String> DENY_CONFIG_FILE = List.of("token.json", "general.json",
+			"collect.json", "ternaryManagement.json", "externalDataSources.json");
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement)
 			throws Exception {
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Wo wo = new Wo();
@@ -54,6 +59,10 @@ public class ActionSave extends BaseAction {
 
 		if(!StringTools.isFileName(fileName) || !fileName.toLowerCase().endsWith(FILE_NAME_TYPE)){
 			throw new ExceptionIllegalFileName(fileName);
+		}
+
+		if(effectivePerson.isCipher() && DENY_CONFIG_FILE.contains(fileName)){
+			throw new ExceptionAccessDenied(effectivePerson);
 		}
 
 		String data = wi.getFileContent();

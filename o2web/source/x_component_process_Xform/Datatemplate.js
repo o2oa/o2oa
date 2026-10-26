@@ -311,7 +311,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 */
 		reload: function( isReloadTemplate ){
 			this._loadReadEditAbeld();
-			
+
 			this.reloading = true;
 
 			// this.editModules = [];
@@ -1810,14 +1810,32 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		},
 		saveValidation: function () {
 			var flag = true;
+			const promiseList = [];
 			for (var i=0; i<this.lineList.length; i++){
-				if( this.lineList[i] && !this.lineList[i].saveValidation())flag = false;
+				//if( this.lineList[i] && !this.lineList[i].saveValidation())flag = false;
+				if( this.lineList[i] ){
+					const checkResult = this.lineList[i].saveValidation();
+					if(checkResult instanceof Promise){
+						promiseList.push(checkResult);
+					}else if(!checkResult){
+						flag = false;
+					}
+				}
+			}
+			if( flag === false ){
+				return false;
+			}
+			if(promiseList.length > 0){
+				return Promise.all( promiseList ).then( function( resultArr ){
+					return resultArr.every(res => String(res) === "true");
+				});
 			}
 			return flag;
 		},
 		validation: function(routeName, opinion){
-			if (this.isReadonly() || this.json.showMode==="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
-			
+			//if (this.isReadonly() || this.json.showMode==="disabled" || this.node?.isDisplayNone() || !this.isEditable) return true;
+			if (this.isReadonly() || this.json.showMode==="disabled" || !this.isEditable) return true;
+
 			// if (this.isEdit){
 			// 	if (!this.editValidation()){
 			// 		return false;
@@ -1825,26 +1843,14 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			// }
 			if (!this.validationConfig(routeName, opinion))  return false;
 
-			if (!this.json.validation) return true;
-			if (!this.json.validation.code) return true;
-
-			this.currentRouteName = routeName;
-			var flag = this.form.Macro.exec(this.json.validation.code, this);
-			this.currentRouteName = "";
-
-			if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
-			if (flag.toString()!=="true"){
-				this.notValidationMode(flag);
-				return false;
-			}
-			return true;
+			return this._validation(routeName);
 		},
 		getAttachmentRandomSite: function(){
 			var i = (new Date()).getTime();
 			return this.json.id+i;
 		},
 		saveArrayData: function(type, index, toIndex, data, sectionBy){
-			if(this.form.app.options.name !== 'process.Work' || this.form.isDraftWork()){
+			if(this.form.app.options.name !== 'process.Work' || this.form.isDraftWork() || !this.form.businessData.work.dataChanged){
 				return;
 			}
 			if( this.isMergeRead ){ //合并且只读，不处理
@@ -2597,12 +2603,28 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 	saveValidation: function(){
 		if( !this.options.isEdited )return true;
 		var flag = true;
+		const promiseList = [];
 		this.fields.each(function(field, key){
 			if (field.json.type!="sequence" && field.validationMode ){
 				field.validationMode();
-				if (!field.saveValidation()) flag = false;
+
+				const checkResult = field.saveValidation();
+
+				if(checkResult instanceof Promise){
+					promiseList.push(checkResult);
+				}else if(!checkResult){
+					flag = false
+				}
 			}
 		}.bind(this));
+		if( flag === false ){
+			return false;
+		}
+		if(promiseList.length > 0){
+			return Promise.all( promiseList ).then( function( resultArr ){
+				return resultArr.every(res => String(res) === "true");
+			});
+		}
 		return flag;
 	}
 });
@@ -3468,7 +3490,8 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		this.checkLineData(0, function () {
 			var arg = {
 				validted : this.isImportSuccess,
-				data : this.importedData
+				data : this.importedData,
+				parsedData: this.parsedData
 			};
 			this.template.fireEvent( "validImport", [arg] );
 			callback( arg.validted )

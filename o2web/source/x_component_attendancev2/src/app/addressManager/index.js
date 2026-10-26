@@ -17,9 +17,10 @@ export default content({
       workAddressList: [],
       // 地图配置
       mapConfig: {
-        mapType: "", //  amap baidu
+        mapType: "", //  amap baidu tx
         baiduAccountKey: "",
         aMapAccountKey: "",
+        txMapAccountKey: "",
       },
     };
   },
@@ -52,6 +53,10 @@ export default content({
       this.bind.mapConfig.mapType === "amap" &&
       isEmpty(this.bind.mapConfig.aMapAccountKey)
     ) {
+      o2.api.page.notice(lp.workAddressMapKeyConfigEmpty, "error");
+      return;
+    }
+    if (this.bind.mapConfig.mapType === "tx" && isEmpty(this.bind.mapConfig.txMapAccountKey)) {
       o2.api.page.notice(lp.workAddressMapKeyConfigEmpty, "error");
       return;
     }

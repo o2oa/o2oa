@@ -205,7 +205,7 @@ public class ActionReciveSingleAttendance extends BaseAction {
 		if (check) {
 			//分析保存好的考勤数据
 			try {
-				ThisApplication.detailAnalyseQueue.send( attendanceDetail.getId() );
+//				ThisApplication.detailAnalyseQueue.send( attendanceDetail.getId() );
 			} catch ( Exception e1 ) {
 				e1.printStackTrace();
 			}

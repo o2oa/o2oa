@@ -1,5 +1,6 @@
 package com.x.query.assemble.surface.jaxrs.view;
 
+import com.x.query.core.express.plan.SelectEntries;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ import com.x.query.core.express.plan.SelectEntry;
 
 class ActionExcelWithQuery extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionExcel.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionExcelWithQuery.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, String queryFlag, JsonElement jsonElement)
 			throws Exception {
@@ -66,9 +67,17 @@ class ActionExcelWithQuery extends BaseAction {
 			if (!business.readable(effectivePerson, view)) {
 				throw new ExceptionAccessDenied(effectivePerson, view);
 			}
+			if(wi.getCount() == null || wi.getCount() < 1){
+				wi.setCount(65535);
+			}
 			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getOrderList(),
 					wi.getParameter(), wi.getCount(), true);
 			runtime.bundleList = wi.getBundleList();
+			runtime.selectList = wi.getSelectList();
+		}
+		if(ListTools.isEmpty(runtime.bundleList)){
+			runtime.bundleList = this.fetchBundleV3(view, runtime, ThisApplication.forkJoinPool());
+			runtime.hasBundle = true;
 		}
 		Plan plan = this.accessPlan(business, view, runtime, ThisApplication.forkJoinPool());
 		String excelFlag = this.writeExcel(effectivePerson, business, plan, view, wi.getExcelName());
@@ -93,7 +102,6 @@ class ActionExcelWithQuery extends BaseAction {
 
 		@FieldDescribe("过滤")
 		@FieldTypeDescribe(fieldType = "class", fieldValue = "{value='',otherValue='',path='',formatType='',logic='',comparison=''}", fieldTypeName = "com.x.query.core.express.plan.FilterEntry", fieldSample = "{'logic':'逻辑运算:and|or','path':'data数据的路径:$work.title','comparison':'比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo|range','value':'7月','formatType':'textValue|numberValue|dateTimeValue|booleanValue'}")
-
 		private List<FilterEntry> filterList = new TreeList<>();
 
 		@FieldDescribe("参数")
@@ -106,7 +114,11 @@ class ActionExcelWithQuery extends BaseAction {
 		private String excelName;
 
 		@FieldDescribe("限定结果集")
-		public List<String> bundleList = new TreeList<>();
+		private List<String> bundleList = new TreeList<>();
+
+		@FieldDescribe("指定字段列表")
+		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "SelectEntry", fieldValue = "{\"orderType\": \"\",\"column\": \"\",\"displayName\": \"\",\"path\": \"\"}")
+		private SelectEntries selectList;
 
 		@FieldDescribe("秘钥串，结果集不为空时必须传.")
 		private String key;
@@ -165,6 +177,14 @@ class ActionExcelWithQuery extends BaseAction {
 
 		public void setKey(String key) {
 			this.key = key;
+		}
+
+		public SelectEntries getSelectList() {
+			return selectList;
+		}
+
+		public void setSelectList(SelectEntries selectList) {
+			this.selectList = selectList;
 		}
 	}
 

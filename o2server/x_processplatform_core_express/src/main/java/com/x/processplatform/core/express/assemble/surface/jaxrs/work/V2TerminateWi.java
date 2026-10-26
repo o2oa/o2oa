@@ -13,6 +13,9 @@ public class V2TerminateWi extends GsonPropertyObject {
 	@FieldDescribe("待办办理意见.")
 	private String opinion;
 
+	@FieldDescribe("操作人，默认当前登录人.")
+	private String operator;
+
 	public String getRouteName() {
 		return routeName;
 	}
@@ -29,4 +32,11 @@ public class V2TerminateWi extends GsonPropertyObject {
 		this.opinion = opinion;
 	}
 
+	public String getOperator() {
+		return operator;
+	}
+
+	public void setOperator(String operator) {
+		this.operator = operator;
+	}
 }

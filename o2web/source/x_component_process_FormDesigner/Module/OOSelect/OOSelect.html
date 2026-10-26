@@ -226,6 +226,56 @@
             <div class="MWFStatementFilterWithTemplate" data-statement="itemStatement"></div>
         </div>
 
+        <div>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.filterable}}:</td>
+                    <td class="editTableValue">
+                        <input onclick="if (this.checked){
+		    	     $('text{$.pid}searchScriptDiv').setStyle('display', 'block');
+		    	  }" type="radio" name="searchable" value="true" text{($.searchable==true)?'checked':''}/>{{$.lp.yes}}
+                        <input onclick="if (this.checked){
+		    	     $('text{$.pid}searchScriptDiv').setStyle('display', 'none');
+		    	  }" type="radio" name="searchable" value="false" text{($.searchable!==true)?'checked':''}/>{{$.lp.no}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="text{$.pid}searchScriptDiv" style="display: text{($.searchable===true) ? 'block' : 'none'}">
+            <div class="MWFScriptArea" name="searchScript" title="{{$.lp.filterMethod}} (S)"></div>
+            <div style="padding: 5px; color:dodgerblue;cursor: pointer;" onclick="this.nextElementSibling.showModal()">点击查看样例。</div>
+            <dialog style="border: 1px solid #ccc;border-radius: 8px;box-shadow: 0 2px 10px rgba(0,0,0,0.1);margin: auto;">
+                <h3>搜索说明</h3>
+                <p>需返回一个函数，参数为搜索关键字，该函数返回一个选项数组/Promise，如下：</p>
+                <pre>return function(key){
+    const options = [];
+    if(key.includes('语法')){
+        options.push({
+            text: "语法和数据类型",
+            value: "syntax"
+        });
+    }
+    return options
+}</pre>
+                <pre>return function(key){
+    return new Promise((resolve, reject)=>{
+        setTimeout(()=>{
+            const options = [];
+            if(key.includes('语法')){
+                options.push({
+                    text: "语法和数据类型",
+                    value: "syntax"
+                });
+            }
+            resolve(options);
+        }, 1000)
+    })
+}</pre>
+                <button onclick="this.parentElement.close()">关闭</button>
+            </dialog>
+        </div>
+
 		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
 <!--		<div class="MWFMaplist" name="buttonStyles" title="{{$.lp.buttonStyle}}"></div>-->
 		<div class="MWFMaplist" name="properties" title="{{$.lp.attribute}}"></div>

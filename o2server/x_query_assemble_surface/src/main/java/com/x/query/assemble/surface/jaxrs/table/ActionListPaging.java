@@ -30,7 +30,7 @@ class ActionListPaging extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			if (!business.editable(effectivePerson, new Table())) {
+			if (!business.editable(effectivePerson, null)) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 			EntityManager em = emc.get(Table.class);

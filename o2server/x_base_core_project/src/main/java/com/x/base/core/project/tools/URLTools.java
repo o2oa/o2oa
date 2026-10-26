@@ -64,7 +64,7 @@ public class URLTools {
 		}
 		String hex = MD5Tool.getMD5Str(url);
 		// 把加密字符按照 8 位一组 16 进制与 0x3FFFFFFF 进行位与运算
-		int i = random.nextInt(26);
+		int i = random.nextInt(25);
 		String sTempSubString = hex.substring(i, i + 8);
 		long lHexLong = 0x3FFFFFFF & Long.parseLong(sTempSubString, 16);
 		String outChars = "" ;

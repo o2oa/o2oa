@@ -43,10 +43,6 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 
         Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
-        if (StringUtils.isEmpty(wi.getDocumentType())) {
-            wi.setDocumentType("信息");
-        }
-
         if (StringUtils.isEmpty(wi.getOrderField())) {
             wi.setOrderField("publishTime");
         }

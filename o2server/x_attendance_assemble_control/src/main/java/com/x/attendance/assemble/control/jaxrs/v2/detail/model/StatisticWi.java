@@ -15,12 +15,15 @@ public class StatisticWi extends GsonPropertyObject {
     private static final long serialVersionUID = -4697552136228406338L;
 
 
-    @FieldDescribe("过滤人员或组织，组织只支持单层: 用户或组织的DN，如xxx@xxx@P、xxx@xxx@U")
+    @FieldDescribe("过滤人员或组织，组织默认递归: 用户或组织的DN，如xxx@xxx@P、xxx@xxx@U")
     private String filter;
 
     // 这个 filterList 字段为准 上面的 filter 字段已经弃用
-    @FieldDescribe("过滤人员或组织，组织只支持单层: 用户或组织的DN，如xxx@xxx@P、xxx@xxx@U")
+    @FieldDescribe("过滤人员或组织，组织默认递归: 用户或组织的DN，如xxx@xxx@P、xxx@xxx@U")
     private List<String> filterList;
+
+    @FieldDescribe("过滤组织是否递归查询下级组织人员，默认true，false时仅查询当前组织直属人员")
+    private Boolean recursive;
 
     @FieldDescribe("开始日期，包含")
     private String startDate;
@@ -58,6 +61,14 @@ public class StatisticWi extends GsonPropertyObject {
 
     public void setFilterList(List<String> filterList) {
       this.filterList = filterList;
+    }
+
+    public Boolean getRecursive() {
+      return recursive;
+    }
+
+    public void setRecursive(Boolean recursive) {
+      this.recursive = recursive;
     }
 
     

@@ -1,12 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -14,6 +7,7 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -21,7 +15,15 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.factory.FileInfoFactory;
+import com.x.cms.core.entity.AppInfo;
+import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ActionListByDocId extends BaseAction {
 
@@ -50,6 +52,17 @@ public class ActionListByDocId extends BaseAction {
 	private List<Wo> list(EffectivePerson effectivePerson, String docId) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
+			Document document = emc.find(docId, Document.class);
+			if (null == document) {
+				throw new ExceptionDocumentNotExists(docId);
+			}
+			AppInfo appInfo = emc.find(document.getAppId(), AppInfo.class);
+			if( appInfo == null ) {
+				throw new ExceptionAppInfoNotExists( document.getAppId() );
+			}
+			if (!business.isDocumentReader(effectivePerson, document, appInfo)) {
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
 			FileInfoFactory fileInfoFactory = business.getFileInfoFactory();
 			List<String> ids = fileInfoFactory.listAttachmentByDocument(docId);// 获取指定文档的所有附件列表
 			List<FileInfo> fileInfoList = emc.list(FileInfo.class, ids);// 查询ID IN ids 的所有文件或者附件信息列表

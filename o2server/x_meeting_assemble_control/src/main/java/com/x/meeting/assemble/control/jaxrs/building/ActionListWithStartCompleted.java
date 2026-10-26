@@ -23,8 +23,17 @@ class ActionListWithStartCompleted extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Date startTime = DateTools.parse(start, DateTools.format_yyyyMMdd + " " + DateTools.format_HHmm);
-			Date completedTime = DateTools.parse(completed, DateTools.format_yyyyMMdd + " " + DateTools.format_HHmm);
+			Date startTime = DateTools.parseDateTime(start);
+			if(startTime == null) {
+				startTime = DateTools.parse(start,
+						DateTools.format_yyyyMMdd + " " + DateTools.format_HHmm);
+			}
+
+			Date completedTime = DateTools.parseDateTime(completed);
+			if(completedTime == null) {
+				completedTime = DateTools.parse(completed,
+						DateTools.format_yyyyMMdd + " " + DateTools.format_HHmm);
+			}
 
 			startTime = DateTools.addSeconds(startTime,1);
 			completedTime = DateTools.addSeconds(completedTime,-1);

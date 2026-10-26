@@ -138,6 +138,8 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
         "parameter":"参数",
         "parameterNote":"注：对应查询语句和总数语句中的参数；\n如\":field\"的where条件，填写\"field\"；\n如\"?1\"的where条件，填写\"?1\"。",
         "pathNote":"注：路径的写法是\"表别名.字段名\"，如：o.title",
+        "isParse": "解析值",
+        "isParseNote": "注：如果解析值\n则比较操作为like时会解析成%值%。\n日期/时间/日期时间类型的会解析为类似{ts '2022-01-01 10:00:00'}。",
         "userInput":"用户输入",
 
         "export": "导出",

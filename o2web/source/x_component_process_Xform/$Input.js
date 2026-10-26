@@ -241,10 +241,12 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
 
         this.node.getFirst().addEvent("change", function(){
             this.validationMode();
-            if (this.validation()) {
-                this._setBusinessData(this.getInputData("change"));
-                this.fireEvent("change");
-            }
+            o2.promiseAll(this.validation()).then(flag=>{
+                if(String(flag) === 'true'){
+                    this._setBusinessData(this.getInputData("change"));
+                    this.fireEvent("change");
+                }
+            });
         }.bind(this));
         //
         // var inputNode = this.node.getFirst();

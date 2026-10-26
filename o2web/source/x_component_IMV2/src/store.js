@@ -42,6 +42,7 @@ export const imConfig = defineStore('imConfig', {
         enableRevokeMsg: false,
         enableOnlyOfficePreview: false,
         enableGroupMemberQuitSelf: false,
+        showAllTopUnit: false,
         revokeOutMinute: 2,
         conversationCheckInvoke: '',
     }),
@@ -51,6 +52,7 @@ export const imConfig = defineStore('imConfig', {
             this.enableRevokeMsg = config.enableRevokeMsg ?? false;
             this.enableOnlyOfficePreview= config.enableOnlyOfficePreview ?? false;
             this.enableGroupMemberQuitSelf= config.enableGroupMemberQuitSelf ?? false;
+            this.showAllTopUnit= config.showAllTopUnit ?? false;
             this.revokeOutMinute= config.revokeOutMinute ?? 2;
             this.conversationCheckInvoke= config.conversationCheckInvoke ?? '';
         }

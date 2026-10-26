@@ -52,7 +52,8 @@
 		"padding-left": "0.071em",
 		"padding-right": "0.071em",
 		"cursor": "pointer",
-		"margin-right": "3px"
+		"margin-right": "3px",
+		"color": "inherit"
 	},
 	"buttonImg": {
 		"height": "1em",
@@ -71,7 +72,8 @@
 		"padding-left": "0.142em",
 		"padding-right": "0.142em",
 		"line-height": "2.3em",
-		"cursor": "pointer"
+		"cursor": "pointer",
+		"color": "inherit"
 	},
 	"buttonDisable": {
 		"color": "#ffffff"

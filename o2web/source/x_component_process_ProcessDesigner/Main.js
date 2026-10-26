@@ -1,4 +1,4 @@
-MWF.APPPD = MWF.xApplication.process.ProcessDesigner;
+﻿MWF.APPPD = MWF.xApplication.process.ProcessDesigner;
 MWF.APPPD.options = {
     "multitask": true,
     "executable": false
@@ -112,19 +112,19 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
                     var routes = [];
                     this.process.selectedActivitys.each(function (activity) {
                         //if (activity.data.type.toLowerCase()!=="begin"){
-                            activitys.push(Object.clone(activity.data));
+                        activitys.push(Object.clone(activity.data));
 
-                            activity.routes.each(function (route) {
-                                if (route.toActivity) {
-                                    //if (this.process.selectedActivitys.indexOf(route.toActivity) != -1){
-                                    routes.push(Object.clone(route.data));
-                                    //}else{
-                                    //    activity.routes = null;
-                                    //}
-                                } else {
-                                    routes.push(Object.clone(route.data));
-                                }
-                            }.bind(this));
+                        activity.routes.each(function (route) {
+                            if (route.toActivity) {
+                                //if (this.process.selectedActivitys.indexOf(route.toActivity) != -1){
+                                routes.push(Object.clone(route.data));
+                                //}else{
+                                //    activity.routes = null;
+                                //}
+                            } else {
+                                routes.push(Object.clone(route.data));
+                            }
+                        }.bind(this));
                         //}
 
                         //activity.routes = activity.routes.clean();
@@ -139,14 +139,14 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
                 } else if (this.process.currentSelected) {
                     if (this.process.currentSelected.type) {
                         //if (this.process.currentSelected.data.type.toLowerCase()!=="begin"){
-                            var data = Object.clone(this.process.currentSelected.data);
-                            MWF.clipboard.data = {
-                                "type": "process",
-                                "data": {
-                                    "activitys": [data],
-                                    "routes": []
-                                }
-                            };
+                        var data = Object.clone(this.process.currentSelected.data);
+                        MWF.clipboard.data = {
+                            "type": "process",
+                            "data": {
+                                "activitys": [data],
+                                "routes": []
+                            }
+                        };
                         //}
                     } else {
                         MWF.clipboard.data = null;
@@ -685,14 +685,37 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
 
         if (this.process){
             if (this.process.panel){
-                this.process.panel.modulePanel.container.position({
-                    relativeTo: this.paperNode,
-                    position: 'upperRight',
-                    edge: 'upperRight'
-                });
+                var pSize = this.paperNode.getSize();
+
+                // 判断窗口大小是否真的改变了
+                var sizeChanged = true;
+                if (this._lastPaperSize &&
+                    this._lastPaperSize.x === pSize.x &&
+                    this._lastPaperSize.y === pSize.y) {
+                    sizeChanged = false;
+                }
+
+                // 记录当前尺寸
+                this._lastPaperSize = {x: pSize.x, y: pSize.y};
+
+                // 如果窗口大小改变了，重置面板位置到右上角
+                if (sizeChanged) {
+                    this.process.panel.modulePanel.container.position({
+                        relativeTo: this.paperNode,
+                        position: 'upperRight',
+                        edge: 'upperRight'
+                    });
+
+                    if (this.process.panel.propertyPanel) {
+                        this.process.panel.propertyPanel.container.position({
+                            relativeTo: this.paperNode,
+                            position: 'bottomRight',
+                            edge: 'bottomRight'
+                        });
+                    }
+                }
 
                 var size = this.process.panel.modulePanel.container.getSize();
-                var pSize = this.paperNode.getSize();
                 if (pSize.y<size.y){
                     var height = (this.paperNode.getSize().y.toFloat())-6;
                     this.process.panel.modulePanel.container.setStyle("height", ""+height+"px");
@@ -703,14 +726,9 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
                     this.process.panel.modulePanel.container.setStyle("width", ""+pSize.x+"px");
                 }
                 if (this.process.panel.propertyPanel){
-                    this.process.panel.propertyPanel.container.position({
-                        relativeTo: this.paperNode,
-                        position: 'bottomRight',
-                        edge: 'bottomRight'
-                    });
 
                     var size = this.process.panel.propertyPanel.container.getSize();
-                    var pSize = this.paperNode.getSize();
+
                     if (pSize.y<size.y){
                         var height = (this.paperNode.getSize().y.toFloat())-6;
                         this.process.panel.propertyPanel.container.setStyle("height", ""+height+"px");

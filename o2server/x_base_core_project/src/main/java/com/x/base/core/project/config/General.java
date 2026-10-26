@@ -38,7 +38,8 @@ public class General extends ConfigObject {
 	private static final String DEFAULT_REFERERHEADCHECKREGULAR = "";
 	private static final String DEFAULT_ACCESSCONTROLALLOWORIGIN = "";
 	private static final String DEFAULT_IDFORMATCHECKREGULAR = "";
-	private static final String DEFAULT_HTTP_WHITE = "*";
+	public static final String DEFAULT_HTTP_WHITE = "127.0.0.1";
+	private static final String ALL_HTTP_WHITE = "*";
 	private static final List<String> DEFAULT_HTTPWHITELIST = List.of(DEFAULT_HTTP_WHITE);
 	private static final List<String> DEFAULT_TRUSTPROXYIPLIST = List.of("127.0.0.1");
 	private static final Integer DEFAULT_STORAGEENCRYPT = 0;
@@ -264,7 +265,7 @@ public class General extends ConfigObject {
 	public List<String> getHttpWhiteList() {
 		Set<String> httpWhiteSet = httpWhiteList == null ? new HashSet<>(DEFAULT_HTTPWHITELIST)
 				: new HashSet<>(httpWhiteList);
-		if (httpWhiteSet.isEmpty() || httpWhiteSet.contains(DEFAULT_HTTP_WHITE)) {
+		if (httpWhiteSet.isEmpty() || httpWhiteSet.contains(ALL_HTTP_WHITE)) {
 			return new ArrayList<>();
 		}
 		httpWhiteSet.add(Host.ROLLBACK_IPV4);

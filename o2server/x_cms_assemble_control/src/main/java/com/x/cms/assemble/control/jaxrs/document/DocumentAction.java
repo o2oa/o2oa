@@ -31,7 +31,7 @@ import javax.ws.rs.core.MediaType;
 @JaxrsDescribe("信息发布信息文档管理")
 public class DocumentAction extends StandardJaxrsAction {
 
-    private static Logger logger = LoggerFactory.getLogger(DocumentAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(DocumentAction.class);
 
     @JaxrsMethodDescribe(value = "变更指定文档的分类信息.", action = ActionPersistChangeCategory.class)
     @PUT
@@ -42,18 +42,12 @@ public class DocumentAction extends StandardJaxrsAction {
             @Context HttpServletRequest request, JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionPersistChangeCategory.Wo> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            try {
-                result = new ActionPersistChangeCategory().execute(request, jsonElement, effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionPersistChangeCategory().execute(request, jsonElement, effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
-
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
 
@@ -66,18 +60,12 @@ public class DocumentAction extends StandardJaxrsAction {
             @Context HttpServletRequest request, JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionPersistChangeCategory.Wo> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            try {
-                result = new ActionPersistChangeCategory().execute(request, jsonElement, effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionPersistChangeCategory().execute(request, jsonElement, effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
-
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
 
@@ -90,15 +78,11 @@ public class DocumentAction extends StandardJaxrsAction {
             @Context HttpServletRequest request, JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionPersistBatchModifyData.Wo> result = new ActionResult<>();
-        Boolean check = true;
-        if (check) {
-            try {
-                result = new ActionPersistBatchModifyData().execute(request, jsonElement, effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionPersistBatchModifyData().execute(request, jsonElement, effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
@@ -112,15 +96,11 @@ public class DocumentAction extends StandardJaxrsAction {
             @Context HttpServletRequest request, JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionPersistBatchModifyData.Wo> result = new ActionResult<>();
-        Boolean check = true;
-        if (check) {
-            try {
-                result = new ActionPersistBatchModifyData().execute(request, jsonElement, effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionPersistBatchModifyData().execute(request, jsonElement, effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
@@ -138,7 +118,6 @@ public class DocumentAction extends StandardJaxrsAction {
         try {
             result = new ActionQueryImportStatusWithName().execute(request, effectivePerson, batchName);
         } catch (Exception e) {
-            result = new ActionResult<>();
             result.error(e);
             logger.error(e, effectivePerson, request, null);
         }
@@ -157,7 +136,6 @@ public class DocumentAction extends StandardJaxrsAction {
         try {
             result = new ActionQueryAllImportStatus().execute(request, effectivePerson);
         } catch (Exception e) {
-            result = new ActionResult<>();
             result.error(e);
             logger.error(e, effectivePerson, request, null);
         }
@@ -176,7 +154,6 @@ public class DocumentAction extends StandardJaxrsAction {
         try {
             result = new ActionQueryGetDocument().execute(request, id, effectivePerson);
         } catch (Exception e) {
-            result = new ActionResult<>();
             result.error(e);
             logger.error(e, effectivePerson, request, null);
         }
@@ -195,7 +172,6 @@ public class DocumentAction extends StandardJaxrsAction {
         try {
             result = new ActionQueryListDocumentFields().execute(request);
         } catch (Exception e) {
-            result = new ActionResult<>();
             result.error(e);
             logger.error(e, effectivePerson, request, null);
         }
@@ -214,7 +190,6 @@ public class DocumentAction extends StandardJaxrsAction {
         try {
             result = new ActionQueryViewDocument().execute(request, id, effectivePerson);
         } catch (Exception e) {
-            result = new ActionResult<>();
             result.error(e);
             logger.error(e, effectivePerson, request, null);
         }
@@ -233,7 +208,6 @@ public class DocumentAction extends StandardJaxrsAction {
         try {
             result = new ActionQueryCountViewTimes().execute(request, id, effectivePerson);
         } catch (Exception e) {
-            result = new ActionResult<>();
             result.error(e);
             logger.error(e, effectivePerson, request, null);
         }
@@ -249,16 +223,11 @@ public class DocumentAction extends StandardJaxrsAction {
             @Context HttpServletRequest request, JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionQueryCountWithFilter.Wo> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            try {
-                result = new ActionQueryCountWithFilter().execute(request, jsonElement, effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionQueryCountWithFilter().execute(request, jsonElement, effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
@@ -272,16 +241,11 @@ public class DocumentAction extends StandardJaxrsAction {
             @Context HttpServletRequest request, JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionQueryCountWithFilter.Wo> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            try {
-                result = new ActionQueryCountWithFilter().execute(request, jsonElement, effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionQueryCountWithFilter().execute(request, jsonElement, effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
@@ -298,7 +262,6 @@ public class DocumentAction extends StandardJaxrsAction {
         try {
             result = new ActionPersistDeleteDocument().execute(request, id, effectivePerson);
         } catch (Exception e) {
-            result = new ActionResult<>();
             result.error(e);
             logger.error(e, effectivePerson, request, null);
         }
@@ -318,7 +281,6 @@ public class DocumentAction extends StandardJaxrsAction {
         try {
             result = new ActionPersistDeleteDocument().execute(request, id, effectivePerson);
         } catch (Exception e) {
-            result = new ActionResult<>();
             result.error(e);
             logger.error(e, effectivePerson, request, null);
         }
@@ -338,7 +300,6 @@ public class DocumentAction extends StandardJaxrsAction {
         try {
             result = new ActionPersistDeleteWithBatch().execute(request, batchId, effectivePerson);
         } catch (Exception e) {
-            result = new ActionResult<>();
             result.error(e);
             logger.error(e, effectivePerson, request, null);
         }
@@ -358,7 +319,6 @@ public class DocumentAction extends StandardJaxrsAction {
         try {
             result = new ActionPersistDeleteWithBatch().execute(request, batchId, effectivePerson);
         } catch (Exception e) {
-            result = new ActionResult<>();
             result.error(e);
             logger.error(e, effectivePerson, request, null);
         }
@@ -377,7 +337,6 @@ public class DocumentAction extends StandardJaxrsAction {
         try {
             result = new ActionPersistArchive().execute(request, id, effectivePerson);
         } catch (Exception e) {
-            result = new ActionResult<>();
             result.error(e);
             logger.error(e, effectivePerson, request, null);
         }
@@ -394,18 +353,12 @@ public class DocumentAction extends StandardJaxrsAction {
             JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionPersistPublishAndNotify.Wo> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            try {
-                result = new ActionPersistPublishAndNotify().execute(request, id, effectivePerson, jsonElement);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionPersistPublishAndNotify().execute(request, id, effectivePerson, jsonElement);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
-
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
 
@@ -419,18 +372,12 @@ public class DocumentAction extends StandardJaxrsAction {
             JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionPersistPublishAndNotify.Wo> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            try {
-                result = new ActionPersistPublishAndNotify().execute(request, id, effectivePerson, jsonElement);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionPersistPublishAndNotify().execute(request, id, effectivePerson, jsonElement);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
-
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
 
@@ -443,18 +390,11 @@ public class DocumentAction extends StandardJaxrsAction {
             @Context HttpServletRequest request, JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionPersistPublishContent.Wo> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            System.out.println("please wait, system try to publish content......");
-            try {
-                result = new ActionPersistPublishContent().execute(request, jsonElement, effectivePerson);
-                System.out.println("system publish content successful!");
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionPersistPublishContent().execute(request, jsonElement, effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
@@ -468,18 +408,11 @@ public class DocumentAction extends StandardJaxrsAction {
             @Context HttpServletRequest request, JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionPersistPublishContent.Wo> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            System.out.println("please wait, system try to publish content......");
-            try {
-                result = new ActionPersistPublishContent().execute(request, jsonElement, effectivePerson);
-                System.out.println("system publish content successful!");
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionPersistPublishContent().execute(request, jsonElement, effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
@@ -496,7 +429,6 @@ public class DocumentAction extends StandardJaxrsAction {
         try {
             result = new ActionPersistPublishCancel().execute(request, id, effectivePerson);
         } catch (Exception e) {
-            result = new ActionResult<>();
             result.error(e);
             logger.error(e, effectivePerson, request, null);
         }
@@ -516,7 +448,6 @@ public class DocumentAction extends StandardJaxrsAction {
         try {
             result = new ActionPersistPublishCancel().execute(request, id, effectivePerson);
         } catch (Exception e) {
-            result = new ActionResult<>();
             result.error(e);
             logger.error(e, effectivePerson, request, null);
         }
@@ -534,16 +465,11 @@ public class DocumentAction extends StandardJaxrsAction {
             @JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<List<ActionQueryListNextWithFilter.Wo>> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            try {
-                result = new ActionQueryListNextWithFilter().execute(request, id, count, jsonElement, effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionQueryListNextWithFilter().execute(request, id, count, jsonElement, effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
@@ -559,16 +485,11 @@ public class DocumentAction extends StandardJaxrsAction {
             @JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<List<ActionQueryListNextWithFilter.Wo>> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            try {
-                result = new ActionQueryListNextWithFilter().execute(request, id, count, jsonElement, effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionQueryListNextWithFilter().execute(request, id, count, jsonElement, effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
@@ -584,16 +505,11 @@ public class DocumentAction extends StandardJaxrsAction {
             @JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<List<ActionQueryListPrevWithFilter.Wo>> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            try {
-                result = new ActionQueryListPrevWithFilter().execute(request, id, count, jsonElement, effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionQueryListPrevWithFilter().execute(request, id, count, jsonElement, effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
@@ -609,16 +525,11 @@ public class DocumentAction extends StandardJaxrsAction {
             @JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<List<ActionQueryListPrevWithFilter.Wo>> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            try {
-                result = new ActionQueryListPrevWithFilter().execute(request, id, count, jsonElement, effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionQueryListPrevWithFilter().execute(request, id, count, jsonElement, effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
@@ -634,17 +545,12 @@ public class DocumentAction extends StandardJaxrsAction {
             @JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<List<ActionQueryListDraftNextWithFilter.Wo>> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            try {
-                result = new ActionQueryListDraftNextWithFilter().execute(request, id, count, jsonElement,
-                        effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionQueryListDraftNextWithFilter().execute(request, id, count, jsonElement,
+                    effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
@@ -660,17 +566,12 @@ public class DocumentAction extends StandardJaxrsAction {
             @JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count, JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<List<ActionQueryListDraftNextWithFilter.Wo>> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            try {
-                result = new ActionQueryListDraftNextWithFilter().execute(request, id, count, jsonElement,
-                        effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionQueryListDraftNextWithFilter().execute(request, id, count, jsonElement,
+                    effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
@@ -683,18 +584,12 @@ public class DocumentAction extends StandardJaxrsAction {
             JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionPersistSaveDocument.Wo> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            try {
-                result = new ActionPersistSaveDocument().execute(request, jsonElement, effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, jsonElement);
-            }
+        try {
+            result = new ActionPersistSaveDocument().execute(request, jsonElement, effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, jsonElement);
         }
-
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
 
@@ -707,15 +602,11 @@ public class DocumentAction extends StandardJaxrsAction {
             @JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionPersistCommend.Wo> result = new ActionResult<>();
-        Boolean check = true;
-        if (check) {
-            try {
-                result = new ActionPersistCommend().execute(request, id, effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionPersistCommend().execute(request, id, effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
@@ -729,15 +620,11 @@ public class DocumentAction extends StandardJaxrsAction {
             @JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionPersistUnCommend.Wo> result = new ActionResult<>();
-        Boolean check = true;
-        if (check) {
-            try {
-                result = new ActionPersistUnCommend().execute(request, id, effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionPersistUnCommend().execute(request, id, effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
@@ -751,15 +638,11 @@ public class DocumentAction extends StandardJaxrsAction {
             @JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionPersistTopDocument.Wo> result = new ActionResult<>();
-        Boolean check = true;
-        if (check) {
-            try {
-                result = new ActionPersistTopDocument().execute(request, id, effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionPersistTopDocument().execute(request, id, effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
@@ -773,15 +656,11 @@ public class DocumentAction extends StandardJaxrsAction {
             @JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionPersistUnTopDocument.Wo> result = new ActionResult<>();
-        Boolean check = true;
-        if (check) {
-            try {
-                result = new ActionPersistUnTopDocument().execute(request, id, effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionPersistUnTopDocument().execute(request, id, effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
@@ -796,17 +675,12 @@ public class DocumentAction extends StandardJaxrsAction {
             @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<List<ActionQueryListWithFilterPaging.Wo>> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            try {
-                result = new ActionQueryListWithFilterPaging().execute(request, page, size, jsonElement,
-                        effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionQueryListWithFilterPaging().execute(request, page, size, jsonElement,
+                    effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
@@ -821,17 +695,12 @@ public class DocumentAction extends StandardJaxrsAction {
             @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<List<ActionQueryListWithFilterPaging.Wo>> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            try {
-                result = new ActionQueryListWithFilterPaging().execute(request, page, size, jsonElement,
-                        effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionQueryListWithFilterPaging().execute(request, page, size, jsonElement,
+                    effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
@@ -845,15 +714,11 @@ public class DocumentAction extends StandardJaxrsAction {
             @JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionQueryGetControl.Wo> result = new ActionResult<>();
-        Boolean check = true;
-        if (check) {
-            try {
-                result = new ActionQueryGetControl().execute(request, id, effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionQueryGetControl().execute(request, id, effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
@@ -867,15 +732,11 @@ public class DocumentAction extends StandardJaxrsAction {
             @Context HttpServletRequest request, @JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionQueryListVisiblePersons.Wo> result = new ActionResult<>();
-        Boolean check = true;
-        if (check) {
-            try {
-                result = new ActionQueryListVisiblePersons().execute(request, id, effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionQueryListVisiblePersons().execute(request, id, effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
@@ -889,16 +750,11 @@ public class DocumentAction extends StandardJaxrsAction {
             @Context HttpServletRequest request, @JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionQueryPermissionReadDocument.Wo> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            try {
-                result = new ActionQueryPermissionReadDocument().execute(effectivePerson, id, null);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionQueryPermissionReadDocument().execute(effectivePerson, id, null);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
@@ -912,14 +768,12 @@ public class DocumentAction extends StandardJaxrsAction {
             @Context HttpServletRequest request, JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<List<ActionQueryListDocumentData.Wo>> result = new ActionResult<>();
-
         try {
             result = new ActionQueryListDocumentData().execute(request, effectivePerson, jsonElement);
         } catch (Exception e) {
             result.error(e);
             logger.error(e, effectivePerson, request, jsonElement);
         }
-
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
 
@@ -932,14 +786,12 @@ public class DocumentAction extends StandardJaxrsAction {
             @Context HttpServletRequest request, JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<List<ActionQueryListDocument.Wo>> result = new ActionResult<>();
-
         try {
             result = new ActionQueryListDocument().execute(effectivePerson, jsonElement);
         } catch (Exception e) {
             result.error(e);
             logger.error(e, effectivePerson, request, jsonElement);
         }
-
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }
 
@@ -952,16 +804,11 @@ public class DocumentAction extends StandardJaxrsAction {
             @JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<ActionQueryGetDocumentData.Wo> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            try {
-                result = new ActionQueryGetDocumentData().execute(request, effectivePerson, id);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionQueryGetDocumentData().execute(request, effectivePerson, id);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
@@ -977,17 +824,12 @@ public class DocumentAction extends StandardJaxrsAction {
             @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         ActionResult<List<ActionQueryListWithFilterPagingAdmin.Wo>> result = new ActionResult<>();
-        Boolean check = true;
-
-        if (check) {
-            try {
-                result = new ActionQueryListWithFilterPagingAdmin().execute(request, page, size, jsonElement,
-                        effectivePerson);
-            } catch (Exception e) {
-                result = new ActionResult<>();
-                result.error(e);
-                logger.error(e, effectivePerson, request, null);
-            }
+        try {
+            result = new ActionQueryListWithFilterPagingAdmin().execute(request, page, size, jsonElement,
+                    effectivePerson);
+        } catch (Exception e) {
+            result.error(e);
+            logger.error(e, effectivePerson, request, null);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
     }

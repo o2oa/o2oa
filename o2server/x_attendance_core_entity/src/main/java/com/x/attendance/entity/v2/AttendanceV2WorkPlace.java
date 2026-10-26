@@ -1,7 +1,6 @@
 package com.x.attendance.entity.v2;
 
 import com.x.attendance.entity.PersistenceProperties;
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -55,29 +54,30 @@ public class AttendanceV2WorkPlace extends SliceJpaObject {
 	 */
 	public static final String placeName_FIELDNAME = "placeName";
 	@FieldDescribe("场所名称")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-			+ placeName_FIELDNAME)
+	@Column(name = ColumnNamePrefix
+                   + placeName_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String placeName = "";
 
 	public static final String placeAlias_FIELDNAME = "placeAlias";
 	@FieldDescribe("场所别名")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-			+ placeAlias_FIELDNAME)
+	@Column(name = ColumnNamePrefix
+                   + placeAlias_FIELDNAME)
 	private String placeAlias = "";
 
 	public static final String creator_FIELDNAME = "creator";
 	@FieldDescribe("创建人")
-	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
-			+ creator_FIELDNAME)
+	@Column(name = ColumnNamePrefix
+                   + creator_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String creator = "";
 
 
 	public static final String POSITION_TYPE_BAIDU = "baidu"; // 百度地图
 	public static final String POSITION_TYPE_AMAP = "amap"; // 高德地图
+	public static final String POSITION_TYPE_TX = "tx"; // 腾讯地图
 	public static final String positionType_FIELDNAME = "positionType";
-	@FieldDescribe("坐标类型，百度、高德")
+	@FieldDescribe("坐标类型，百度、高德、腾讯")
 	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + positionType_FIELDNAME)
 	private String positionType = POSITION_TYPE_BAIDU;
 
@@ -108,7 +108,7 @@ public class AttendanceV2WorkPlace extends SliceJpaObject {
 
 	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("说明备注")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
+	@Column(name = ColumnNamePrefix + description_FIELDNAME)
 	private String description = null;
 
 

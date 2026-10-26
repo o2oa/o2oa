@@ -49,7 +49,7 @@ public class ActionDelete extends BaseAction {
 				if( ListTools.isNotEmpty( ids ) ){
 					for( String _id : ids ){
 						try { //分析保存好的考勤数据
-							ThisApplication.detailAnalyseQueue.send( _id );
+//							ThisApplication.detailAnalyseQueue.send( _id );
 						} catch ( Exception e1 ) {
 							e1.printStackTrace();
 						}

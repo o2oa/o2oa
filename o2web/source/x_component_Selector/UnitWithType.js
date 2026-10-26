@@ -55,7 +55,7 @@ MWF.xApplication.Selector.UnitWithType = new Class({
             if (json.data.length){
                 json.data.each(function(data){
                     if( !this.isExcluded( data ) ) {
-                        if ( !this.options.expandSubEnable || (!this.options.unitType) || data.typeList.indexOf(this.options.unitType)!==-1){
+                        if ( !this.options.expandSubEnable || (!this.options.unitType) || data.typeList.indexOf(this.options.unitType)!==-1 || this.options.firstLevelSelectable){
                             var unit = this._newItem(data, this, this.itemAreaNode, 1);
                             this.items.push(unit);
                             this.subItems.push(unit);

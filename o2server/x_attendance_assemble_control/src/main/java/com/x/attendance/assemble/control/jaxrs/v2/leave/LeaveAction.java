@@ -27,7 +27,7 @@ import java.util.List;
  * Copyright © 2023 O2. All rights reserved.
  */
 @Path("v2/leave")
-@JaxrsDescribe("请假数据管理")
+@JaxrsDescribe("外出数据管理")
 public class LeaveAction extends StandardJaxrsAction {
 
     private static Logger logger = LoggerFactory.getLogger(LeaveAction.class);
@@ -35,7 +35,7 @@ public class LeaveAction extends StandardJaxrsAction {
 
 
 
-    @JaxrsMethodDescribe(value = "保存请假数据信息.", action = ActionPost.class)
+    @JaxrsMethodDescribe(value = "保存外出数据信息.", action = ActionPost.class)
     @POST
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -54,11 +54,11 @@ public class LeaveAction extends StandardJaxrsAction {
 
 
 
-    @JaxrsMethodDescribe(value = "删除请假数据信息.", action = ActionDelete.class)
+    @JaxrsMethodDescribe(value = "删除外出数据信息.", action = ActionDelete.class)
     @GET
     @Path("delete/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void  delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, @JaxrsParameterDescribe("请假数据Id") @PathParam("id") String id) {
+    public void  delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, @JaxrsParameterDescribe("外出数据Id") @PathParam("id") String id) {
         ActionResult<ActionDelete.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
@@ -71,7 +71,7 @@ public class LeaveAction extends StandardJaxrsAction {
     }
 
 
-    @JaxrsMethodDescribe(value = "分页查询请假数据列表.", action =  ActionListByPage.class)
+    @JaxrsMethodDescribe(value = "分页查询外出数据列表.", action =  ActionListByPage.class)
     @POST
     @Path("list/{page}/size/{size}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -91,7 +91,7 @@ public class LeaveAction extends StandardJaxrsAction {
     }
 
 
-    @JaxrsMethodDescribe(value = "获取导入请假数据的模版.", action = ActionExcelTemplate.class)
+    @JaxrsMethodDescribe(value = "获取导入外出数据的模版.", action = ActionExcelTemplate.class)
     @GET
     @Path("template")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -108,7 +108,7 @@ public class LeaveAction extends StandardJaxrsAction {
     }
 
 
-    @JaxrsMethodDescribe(value = "上传Excel导入请假数据.", action = ActionImportExcel.class)
+    @JaxrsMethodDescribe(value = "上传Excel导入外出数据.", action = ActionImportExcel.class)
     @POST
     @Path("import")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -128,7 +128,7 @@ public class LeaveAction extends StandardJaxrsAction {
     }
 
 
-    @JaxrsMethodDescribe(value = "获取导入人员结果.", action = ActionGetImportResult.class)
+    @JaxrsMethodDescribe(value = "获取导入结果.", action = ActionGetImportResult.class)
     @GET
     @Path("import/result/flag/{flag}")
     @Consumes(MediaType.APPLICATION_JSON)

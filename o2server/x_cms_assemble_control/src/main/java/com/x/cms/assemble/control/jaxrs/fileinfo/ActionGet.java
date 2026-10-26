@@ -1,5 +1,6 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
+import com.x.cms.core.entity.AppInfo;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +34,7 @@ public class ActionGet extends BaseAction {
 			result.setData(wo);
 		} else {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-
+				Business business = new Business(emc);
 				FileInfo fileInfo = emc.find(id, FileInfo.class);
 				if (null == fileInfo) {
 					throw new ExceptionFileInfoNotExists(id);
@@ -42,7 +43,13 @@ public class ActionGet extends BaseAction {
 				if (null == document) {
 					throw new ExceptionDocumentNotExists(fileInfo.getDocumentId());
 				}
-				Business business = new Business(emc);
+				AppInfo appInfo = emc.find(document.getAppId(), AppInfo.class);
+				if( appInfo == null ) {
+					throw new ExceptionAppInfoNotExists( document.getAppId() );
+				}
+				if (!business.isDocumentReader(effectivePerson, document, appInfo)) {
+					throw new ExceptionAccessDenied(effectivePerson);
+				}
 				List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 				List<String> units = business.organization().unit().listWithPerson(effectivePerson);
 				if (!business.isDocumentReader(effectivePerson, document)) {

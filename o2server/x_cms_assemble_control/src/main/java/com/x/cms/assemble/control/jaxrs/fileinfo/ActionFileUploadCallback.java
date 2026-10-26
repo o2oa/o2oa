@@ -1,8 +1,11 @@
 package com.x.cms.assemble.control.jaxrs.fileinfo;
 
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoCallback;
@@ -11,7 +14,10 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ExtractTextTools;
 import com.x.base.core.project.tools.FileTools;
+import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.ThisApplication;
+import com.x.cms.core.entity.AppInfo;
+import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 import org.apache.commons.io.FilenameUtils;
@@ -40,6 +46,15 @@ public class ActionFileUploadCallback extends BaseAction {
 		Document document = documentQueryService.get( docId );
 		if (null == document) {
 			throw  new ExceptionDocumentNotExistsCallback(callback, docId );
+		}
+		AppInfo appInfo = appInfoServiceAdv.get(document.getAppId());
+		CategoryInfo categoryInfo = categoryInfoServiceAdv.get(document.getCategoryId());
+
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			if(!business.isDocumentEditor(effectivePerson, appInfo, categoryInfo, document)){
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
 		}
 
 		StorageMapping mapping = ThisApplication.context().storageMappings().random( FileInfo.class );

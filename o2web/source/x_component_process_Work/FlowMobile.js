@@ -1441,10 +1441,18 @@ MWF.ProcessFlow.widget.OpinionMobile = new Class({
         this.options.tabletHeight = 0;
 
         var zidx = this.flow.node.getStyle("z-index");
+        var parentNode = this.flow.node;
+        while (parentNode && (!zidx || zidx === 'auto')){
+            parentNode = parentNode.getParent();
+            zidx = parentNode.getStyle("z-index");
+        }
+        if(!zidx || zidx === 'auto'){
+            zidx = 500;
+        }
         this.handwritingNode.setStyles({
             "height": "" + y + "px",
             "width": "" + x + "px",
-            "z-index": zidx + 1
+            "z-index": parseInt(zidx) + 1
         });
 
         this.handwritingNode.addEvent('touchmove', function (e) {

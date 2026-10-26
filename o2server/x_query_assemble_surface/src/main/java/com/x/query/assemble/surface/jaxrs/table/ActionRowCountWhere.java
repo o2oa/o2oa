@@ -1,5 +1,6 @@
 package com.x.query.assemble.surface.jaxrs.table;
 
+import com.x.query.core.express.statement.SqlSafetyChecker;
 import javax.persistence.EntityManager;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -51,6 +52,7 @@ class ActionRowCountWhere extends BaseAction {
 			if (StringUtils.isNotBlank(where) && (!StringUtils.equals(where, EMPTY_SYMBOL))) {
 				sql += " where (" + where + ")";
 			}
+			SqlSafetyChecker.check(sql);
 			Long count = (Long) em.createQuery(sql).getSingleResult();
 			Wo wo = new Wo();
 			wo.setValue(count);

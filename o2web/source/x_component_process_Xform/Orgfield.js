@@ -219,7 +219,11 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
 
         this.combox.addEvent("change", function(){
             this.validationMode();
-            if (this.validation()) this._setBusinessData(this.getInputData("change"));
+            o2.promiseAll(this.validation()).then(flag=>{
+                if(String(flag) === "true"){
+                    this._setBusinessData(this.getInputData("change"));
+                }
+            })
         }.bind(this));
     },
 

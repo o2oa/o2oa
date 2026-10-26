@@ -1,0 +1,552 @@
+import { component as content } from "@o2oa/oovm";
+import { lp, o2, layout } from "@o2oa/component";
+import ExcelJS from "exceljs";
+import { lpFormat, formatPersonName, chooseSingleFile, hideLoading, isEmpty, showLoading } from "../../utils/common";
+import { leaveManagerAction, definitionAction } from "../../utils/actions";
+import oPager from "../../components/o-pager";
+import oOrgPersonSelector from "../../components/o-org-person-selector";
+import oDatePicker from "../../components/o-date-picker";
+import template from "./template.html";
+import style from "./style.scope.css";
+
+
+const definitionHistoryKey = "leaveManagerV2LedgerImportHistory";
+const defaultLeaveTypeList = ["49448f7d-086e-4f05-8f2c-f64121588661",
+  "e9a3b632-1b12-4d9b-bc75-6e54c86d8a35",
+  "2f98e6c7-3a15-4e78-9041-3b562a4d9e12",
+  "9b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e",
+  "782a1b9c-d3e4-4f5a-bc6d-7e8f9a0b1c2d",
+  "a1b2c3d4-e5f6-47a8-b9c0-d1e2f3a4b5c6",
+  "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "550e8400-e29b-41d4-a716-446655440000",
+  "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+  "8d61239c-4f12-4e92-bc10-72a3b1c4d5e6"]
+
+export default content({
+  template,
+  style,
+  components: { oPager, oDatePicker, oOrgPersonSelector },
+  autoUpdate: true,
+  bind() {
+    return {
+      lp,
+      leaveTypeList: [],
+      leaveTypePolicyShow: false, // Whether to show the policy list for a leave type.
+      currentLeaveType: null, // Currently selected leave type.
+      importFormShow: false,
+      importSubmitting: false,
+      importHistoryDeleting: false,
+      importHistoryDeleteUnlocked: false,
+      importForm: {
+        grantPeriod: "",
+        fileName: "",
+      },
+      importHistoryList: [], // Import history.
+      currentImportHistoryList: [], // Import history for the current leave type.
+    };
+  },
+  afterRender() {
+    this.loadTypeList();
+    this.loadLedgerImportHistory();
+    this.listenEventBus();
+  },
+  listenEventBus() {
+    this.$topParent.listenEventBus("leaveType", (data) => {
+      console.log("received leaveType event", data);
+      this.loadTypeList();
+    });
+  },
+  gotoOld() {
+    this.$parent.openOldLeaveManager();
+  },
+  clickAddType() {
+    this.$parent.openLeaveTypeForm();
+  },
+  clickEditLeaveType(id) {
+    console.log("click edit leave type", id);
+    this.$parent.openLeaveTypeForm({ bind: { updateId: id } });
+  },
+  async clickCopyLeaveTypeId(id) {
+    if (isEmpty(id)) {
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportTypeIdEmpty, "error");
+      return;
+    }
+    try {
+      await this.copyText(id);
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportCopySuccess, "success");
+    } catch (e) {
+      console.error("copy leave type ID failed", e);
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportCopyFail, "error");
+    }
+  },
+  copyText(text) {
+    const fallbackCopy = () => new Promise((resolve, reject) => {
+      const input = document.createElement("textarea");
+      input.value = text;
+      input.setAttribute("readonly", "readonly");
+      input.style.position = "fixed";
+      input.style.left = "-9999px";
+      input.style.top = "-9999px";
+      document.body.appendChild(input);
+      input.select();
+      try {
+        const success = document.execCommand("copy");
+        document.body.removeChild(input);
+        success ? resolve() : reject(new Error("execCommand copy failed"));
+      } catch (e) {
+        document.body.removeChild(input);
+        reject(e);
+      }
+    });
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).catch(() => fallbackCopy());
+    }
+    return fallbackCopy();
+  },
+  clickOpenLedgerImport(type) {
+    if (!type || type.quotaType !== "QUOTA") {
+      return;
+    }
+    this.bind.currentLeaveType = type;
+    // grantPeriod default yyyyMMdd 
+    this.bind.importForm = {
+      grantPeriod: new Date().toISOString().split("T")[0].replace(/-/g, ""),
+      fileName: "",
+    };
+    this.ledgerImportFile = null;
+    this.lockLedgerImportHistoryDelete();
+    this.bind.currentImportHistoryList = this.getLedgerImportHistoryList(type.id);
+    this.bind.importFormShow = true;
+  },
+  closeLedgerImport(force) {
+    if ((this.bind.importSubmitting || this.bind.importHistoryDeleting) && force !== true) {
+      return;
+    }
+    this.bind.importFormShow = false;
+    this.bind.currentLeaveType = null;
+    this.lockLedgerImportHistoryDelete();
+    this.bind.importForm = {
+      grantPeriod: "",
+      fileName: "",
+    };
+    this.bind.currentImportHistoryList = [];
+    this.ledgerImportFile = null;
+  },
+  async downloadLedgerImportTemplate() {
+    const leaveType = this.bind.currentLeaveType || {};
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("sheet1");
+    worksheet.addRow([
+      lp.leaveManagerV2.ledgerImportTemplatePerson,
+      `${leaveType.name || ""}${lp.leaveManagerV2.ledgerImportTemplateAmountSuffix}`,
+      lp.leaveManagerV2.ledgerImportTemplateExpireDate,
+    ]);
+    worksheet.columns = [
+      { width: 28 },
+      { width: 18 },
+      { width: 18 },
+    ];
+    worksheet.getRow(1).eachCell((cell) => {
+      cell.font = { bold: true };
+      cell.alignment = { vertical: "middle", horizontal: "center" };
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FFE8F4FF" },
+      };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
+    const buffer = await workbook.xlsx.writeBuffer();
+    const excelLink = document.createElement("a");
+    const objectUrl = window.URL.createObjectURL(new Blob([buffer]));
+    excelLink.href = objectUrl;
+    excelLink.download = lpFormat(lp, "leaveManagerV2.ledgerImportTemplateFileName", {
+      name: leaveType.name || lp.leaveManagerV2.ledgerImportTemplateDefaultLeaveType,
+    });
+    excelLink.click();
+    setTimeout(() => window.URL.revokeObjectURL(objectUrl), 0);
+  },
+  selectLedgerImportFile() {
+    if (this.bind.importSubmitting || this.bind.importHistoryDeleting) {
+      return;
+    }
+    chooseSingleFile((file) => {
+      if (!this.checkExcelFile(file)) {
+        return;
+      }
+      this.ledgerImportFile = file;
+      this.bind.importForm.fileName = file.name;
+    });
+  },
+  checkExcelFile(file) {
+    if (!file || !file.name) {
+      return false;
+    }
+    const fileExt = file.name.substring(file.name.lastIndexOf("."));
+    if (fileExt.toLowerCase() !== ".xlsx") {
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportExcelFileError, "error");
+      return false;
+    }
+    return true;
+  },
+  async submitLedgerImport() {
+    if (this.bind.importSubmitting) {
+      return;
+    }
+    const leaveType = this.bind.currentLeaveType || {};
+    const form = this.bind.importForm || {};
+    if (!leaveType.id) {
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportTypeEmpty, "error");
+      return;
+    }
+    if (isEmpty(form.grantPeriod)) {
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportGrantPeriodPlaceholder, "error");
+      return;
+    }
+    const file = this.ledgerImportFile;
+    if (!file) {
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportFileEmpty, "error");
+      return;
+    }
+    if (!this.checkExcelFile(file)) {
+      return;
+    }
+    const formData = new FormData();
+    formData.append("grantPeriod", form.grantPeriod);
+    formData.append("leaveTypeId", leaveType.id);
+    formData.append("file", file, file.name);
+    formData.append("fileName", file.name);
+    this.bind.importSubmitting = true;
+    try {
+      await showLoading(this);
+      const result = await this.uploadLedgerImport(formData);
+      if (!this.isLedgerImportSuccess(result)) {
+        o2.api.page.notice(this.getLedgerImportResultMessage(result, lp.leaveManagerV2.ledgerImportFail), "error");
+        return;
+      }
+      try {
+        await this.addLedgerImportHistory(form.grantPeriod, leaveType.id);
+      } catch (e) {
+        console.error("save import history failed", e);
+        o2.api.page.notice(lp.leaveManagerV2.ledgerImportHistorySaveFail, "info");
+        this.closeLedgerImport(true);
+        return;
+      }
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportSuccess, "success");
+      this.closeLedgerImport(true);
+    } catch (e) {
+      console.error("ledger import failed", e);
+      o2.api.page.notice(this.getLedgerImportErrorMessage(e), "error");
+    } finally {
+      this.bind.importSubmitting = false;
+      await hideLoading(this);
+    }
+  },
+  uploadLedgerImport(formData) {
+    return new Promise((resolve, reject) => {
+      try {
+        const action = o2.Actions.load("x_attendance_assemble_control").LeaveManagerAction;
+        action.ledgerImport(
+          formData,
+          "",
+          (json) => {
+            console.debug("ledger import result", json);
+            resolve(json);
+          },
+          (error) => {
+            console.error("ledger import failed", error);
+            reject(this.normalizeLedgerImportError(error));
+          }
+        );
+        // if (result && typeof result.then === "function") {
+        //   result.then((json) => resolve(json && json.data ? json.data : json)).catch(reject);
+        // }
+      } catch (e) {
+        reject(e);
+      }
+    });
+  },
+  isLedgerImportSuccess(result) {
+    const response = result || {};
+    const data = response && response.data && typeof response.data === "object" ? response.data : {};
+    const type = `${response.type || data.type || ""}`.toLowerCase();
+    if (type && type !== "success" && type !== "warn") {
+      return false;
+    }
+    if (response.error || data.error || response.success === false || data.success === false || response.result === false || data.result === false) {
+      return false;
+    }
+    const status = `${response.status || data.status || ""}`.toLowerCase();
+    if (status && (status.indexOf("error") > -1 || status.indexOf("fail") > -1)) {
+      return false;
+    }
+    const code = response.code !== undefined ? response.code : data.code;
+    if (!type && code !== undefined && code !== null && code !== "" && !["0", "200", "success"].includes(`${code}`.toLowerCase())) {
+      return false;
+    }
+    const errorCount = data.errorCount !== undefined ? data.errorCount : data.failCount;
+    if (Number(errorCount) > 0) {
+      return false;
+    }
+    return true;
+  },
+  getLedgerImportResultMessage(result, defaultMessage) {
+    const response = result || {};
+    const data = response && response.data && typeof response.data === "object" ? response.data : {};
+    const message = response.message || response.errorMessage || data.message || data.errorMessage;
+    return Array.isArray(message) ? message.join("\n") : (message || defaultMessage);
+  },
+  normalizeLedgerImportError(error) {
+    if (!error || !error.responseText) {
+      return error;
+    }
+    try {
+      const json = JSON.parse(error.responseText);
+      return new Error(this.getLedgerImportResultMessage(json, lp.leaveManagerV2.ledgerImportFail));
+    } catch (e) {
+      return error;
+    }
+  },
+  getLedgerImportErrorMessage(error, defaultMessage) {
+    return error && error.message ? error.message : (defaultMessage || lp.leaveManagerV2.ledgerImportFail);
+  },
+  async loadTypeList() {
+    const list = await leaveManagerAction("typeListAll");
+    this.bind.leaveTypeList = list || [];
+  },
+  checkCanDeleteType(typeId) {
+    return defaultLeaveTypeList.indexOf(typeId) === -1;
+  },
+  clickDeleteType(typeId) {
+    const type = this.bind.leaveTypeList.find((g) => g.id === typeId);
+    var _self = this;
+    const c = lpFormat(lp, "leaveManagerV2.confirmDelete", { name: type.name });
+    o2.api.page.confirm(
+      "warn",
+      lp.alert,
+      c,
+      300,
+      100,
+      function () {
+        _self.deleteType(typeId);
+        this.close();
+      },
+      function () {
+        this.close();
+      }
+    );
+  },
+  async deleteType(id) {
+    this.$parent.closeFormVm();
+    const result = await leaveManagerAction("typeDelete", id)
+    console.debug(result);
+    this.loadTypeList();
+  },
+  // Open account search view.
+  async clickOpenAccountSearchView() {
+    const bindData = {};
+    const c = (await import('./accountList/index.js')).default;
+    this.openOtherListViewVm(c, bindData);
+  },
+  // Open request search view.
+  async clickOpenRequestSearchView() {
+    const bindData = { bind: { self: false } };
+    const c = (await import('./requestList/index.js')).default;
+    this.openOtherListViewVm(c, bindData);
+  },
+  // Open holiday calendar view.
+  async clickOpenHolidayCalendarView() {
+    const bindData = {};
+    const c = (await import('./calendar/index.js')).default;
+    this.openOtherListViewVm(c, bindData);
+  },
+  async clickOpenLeaveDataView() {
+    const bindData = { bind: { self: false } };
+    const c = (await import('../leaveManager/index.js')).default;
+    this.openOtherListViewVm(c, bindData);
+  },
+  // Open policy page for a leave type.
+  clickOpenPolicyForType(typeId) {
+    console.log("click open policy page", typeId);
+    if (this.clickOpenPolicyLoading === true) {
+      console.log("policy page is loading, skip duplicate click");
+      return;
+    }
+    this.clickOpenPolicyLoading = true;
+    this.queryPolicyForLeaveType(typeId);
+  },
+  // 获取规则配置
+  async queryPolicyForLeaveType(typeId) {
+    const list = await leaveManagerAction("policyListWithTypeId", typeId)
+    if (list && list.length > 0) {
+      const id = list[0].id;
+      // 修改配置
+      this.$topParent.openLeaveTypePolicyForm({ bind: { updateId: id } });
+    } else {
+      // 新增配置
+      this.$topParent.openLeaveTypePolicyForm({ bind: { form: { leaveTypeId: typeId } } });
+    }
+    this.clickOpenPolicyLoading = false;
+  },
+
+  clickBackTypeList() {
+    this.clickOpenPolicyLoading = false;
+    this.$parent.closeFormVm();
+    if (this.policyListVM) {
+      this.policyListVM.destroy();
+      this.policyListVM = null;
+    }
+    this.dom.querySelector("#otherListView").classList.remove("l-display-block");
+    this.dom.querySelector("#otherListView").classList.add("l-display-none");
+    this.dom.querySelector("#leaveTypeListView").classList.remove("l-display-none");
+    this.dom.querySelector("#leaveTypeListView").classList.add("l-display-block");
+  },
+
+  async openOtherListViewVm(c, bindData) {
+    this.policyListVM = await c.generate("#otherListView", bindData, this);
+    this.dom.querySelector("#leaveTypeListView").classList.remove("l-display-block");
+    this.dom.querySelector("#leaveTypeListView").classList.add("l-display-none");
+    this.dom.querySelector("#otherListView").classList.remove("l-display-none");
+    this.dom.querySelector("#otherListView").classList.add("l-display-block");
+
+  },
+  // Load import history.
+  async loadLedgerImportHistory() {
+    try {
+      const historyString = await definitionAction("get", definitionHistoryKey);
+      console.debug("import history", historyString);
+      debugger;
+      let historyList = [];
+      if (historyString) {
+        historyList = JSON.parse(historyString) || [];
+      }
+      this.bind.importHistoryList = Array.isArray(historyList) ? historyList : [];
+      if (this.bind.currentLeaveType && this.bind.currentLeaveType.id) {
+        this.bind.currentImportHistoryList = this.getLedgerImportHistoryList(this.bind.currentLeaveType.id);
+      }
+      console.debug(this.bind.importHistoryList);
+    } catch (e) {
+      console.error("load import history failed", e);
+      this.bind.importHistoryList = [];
+      this.bind.currentImportHistoryList = [];
+    }
+  },
+  getLedgerImportHistoryList(leaveTypeId) {
+    const historyItem = this.bind.importHistoryList.find((item) => item.leaveTypeId === leaveTypeId);
+    const list = historyItem && Array.isArray(historyItem.list) ? historyItem.list : [];
+    return list.slice().sort((a, b) => (b.time || 0) - (a.time || 0));
+  },
+  startUnlockLedgerImportHistoryDelete() {
+    if (this.bind.importHistoryDeleteUnlocked || this.bind.importHistoryDeleting) {
+      return;
+    }
+    this.clearLedgerImportHistoryDeleteUnlockTimer();
+    this.ledgerImportHistoryUnlockTimer = setTimeout(() => {
+      this.bind.importHistoryDeleteUnlocked = true;
+      this.ledgerImportHistoryUnlockTimer = null;
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportHistoryDeleteUnlocked, "info");
+    }, 2000);
+  },
+  stopUnlockLedgerImportHistoryDelete() {
+    this.clearLedgerImportHistoryDeleteUnlockTimer();
+  },
+  clearLedgerImportHistoryDeleteUnlockTimer() {
+    if (this.ledgerImportHistoryUnlockTimer) {
+      clearTimeout(this.ledgerImportHistoryUnlockTimer);
+      this.ledgerImportHistoryUnlockTimer = null;
+    }
+  },
+  lockLedgerImportHistoryDelete() {
+    this.clearLedgerImportHistoryDeleteUnlockTimer();
+    this.bind.importHistoryDeleteUnlocked = false;
+  },
+  // Add import history by leaveTypeId.
+  async addLedgerImportHistory(grantPeriod, leaveTypeId) {
+    const historyItem = this.bind.importHistoryList.find((item) => item.leaveTypeId === leaveTypeId);
+    if (historyItem) {
+      let list = historyItem.list || [];
+      list = list.filter((item) => item.grantPeriod !== grantPeriod);
+      list.unshift({ grantPeriod, time: new Date().getTime() });
+      historyItem.list = list;
+    } else {
+      const newHistoryItem = {
+        leaveTypeId,
+        list: [{ grantPeriod, time: new Date().getTime() }],
+      };
+      this.bind.importHistoryList.push(newHistoryItem);
+    }
+    await definitionAction("updateMockPutToPost", definitionHistoryKey, this.bind.importHistoryList);
+    this.bind.currentImportHistoryList = this.getLedgerImportHistoryList(leaveTypeId);
+  },
+  clickRemoveLedgerImportHistory(grantPeriod, leaveTypeId) {
+    if (this.bind.importHistoryDeleting || !this.bind.importHistoryDeleteUnlocked) {
+      return;
+    }
+    const _self = this;
+    o2.api.page.confirm(
+      "warn",
+      lp.alert,
+      lpFormat(lp, "leaveManagerV2.ledgerImportHistoryDeleteConfirm", { grantPeriod }),
+      360,
+      100,
+      function () {
+        _self.removeLedgerImportHistory(grantPeriod, leaveTypeId);
+        this.close();
+      },
+      function () {
+        this.close();
+      }
+    );
+  },
+  // Delete import history.
+  async removeLedgerImportHistory(grantPeriod, leaveTypeId) {
+    if (this.bind.importHistoryDeleting || !this.bind.importHistoryDeleteUnlocked) {
+      return;
+    }
+    if (isEmpty(grantPeriod) || isEmpty(leaveTypeId)) {
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportHistoryParamEmpty, "error");
+      return;
+    }
+    this.bind.importHistoryDeleting = true;
+    try {
+      await showLoading(this);
+      await leaveManagerAction("ledgerBatchDelete", { leaveTypeId, grantPeriod });
+      this.removeLedgerImportHistoryItem(grantPeriod, leaveTypeId);
+      await definitionAction("updateMockPutToPost", definitionHistoryKey, this.bind.importHistoryList);
+      this.bind.currentImportHistoryList = this.getLedgerImportHistoryList(leaveTypeId);
+      this.lockLedgerImportHistoryDelete();
+      o2.api.page.notice(lp.leaveManagerV2.ledgerImportHistoryDeleteSuccess, "success");
+    } catch (e) {
+      console.error("delete import data failed", e);
+      o2.api.page.notice(this.getLedgerImportErrorMessage(e, lp.leaveManagerV2.ledgerImportHistoryDeleteFail), "error");
+    } finally {
+      this.bind.importHistoryDeleting = false;
+      await hideLoading(this);
+    }
+  },
+  removeLedgerImportHistoryItem(grantPeriod, leaveTypeId) {
+    const historyItem = this.bind.importHistoryList.find((item) => item.leaveTypeId === leaveTypeId);
+    if (historyItem) {
+      historyItem.list = historyItem.list.filter((item) => item.grantPeriod !== grantPeriod);
+      if (historyItem.list.length === 0) {
+        this.bind.importHistoryList = this.bind.importHistoryList.filter((item) => item !== historyItem);
+      }
+    }
+  },
+  formatImportHistoryTime(time) {
+    if (!time) {
+      return "";
+    }
+    const date = new Date(time);
+    if (Number.isNaN(date.getTime())) {
+      return "";
+    }
+    const pad = (value) => value > 9 ? `${value}` : `0${value}`;
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  }
+});

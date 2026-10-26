@@ -161,10 +161,15 @@ public class AppInfo extends SliceJpaObject {
 	private String creatorTopUnitName;
 
 	public static final String anonymousAble_FIELDNAME = "anonymousAble";
-	@FieldDescribe("是否允许匿名访问.")
 	@Column(name = ColumnNamePrefix + anonymousAble_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean anonymousAble = true;
+
+	public static final String allowAnonymousAccessDoc_FIELDNAME = "allowAnonymousAccessDoc";
+	@FieldDescribe("是否允许匿名访问栏目下的文档.")
+	@Column(name = ColumnNamePrefix + allowAnonymousAccessDoc_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean allowAnonymousAccessDoc = false;
 
 	public static final String allPeopleView_FIELDNAME = "allPeopleView";
 	@FieldDescribe("可见范围为所有人可见.")
@@ -873,5 +878,13 @@ public class AppInfo extends SliceJpaObject {
 
 	public void setAllowWaitPublish(Boolean allowWaitPublish) {
 		this.allowWaitPublish = allowWaitPublish;
+	}
+
+	public Boolean getAllowAnonymousAccessDoc() {
+		return allowAnonymousAccessDoc;
+	}
+
+	public void setAllowAnonymousAccessDoc(Boolean allowAnonymousAccessDoc) {
+		this.allowAnonymousAccessDoc = allowAnonymousAccessDoc;
 	}
 }

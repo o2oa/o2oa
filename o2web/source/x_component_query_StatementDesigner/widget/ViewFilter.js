@@ -128,6 +128,28 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             this.parameterValueScriptArea.load(v);
         }.bind(this));
     },
+    createParameterOrgOptionScriptArea: function (node) {
+        var title = node.get("title");
+
+        MWF.require("MWF.widget.ScriptArea", function () {
+            this.parameterOrgOptionScriptArea = new MWF.widget.ScriptArea(node, {
+                "title": title,
+                //"isload": true,
+                "isbind": false,
+                //"forceType": "ace",
+                "maxObj": this.app.formContentNode || this.app.pageContentNode,
+                "onChange": function () {
+                    this.parameterOrgOptionScriptData = this.parameterOrgOptionScriptArea.toJson();
+                }.bind(this),
+                "onSave": function () {
+                    //this.app.saveForm();
+                }.bind(this),
+                "style": "formula"
+            });
+            var v = (this.parameterOrgOptionScriptData) ? this.parameterOrgOptionScriptData.code : "";
+            this.parameterOrgOptionScriptArea.load(v);
+        }.bind(this));
+    },
     createCustomFilterValueScriptArea: function (node) {
         var title = node.get("title");
 
@@ -148,6 +170,28 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             });
             var v = (this.customFilterValueScriptData) ? this.customFilterValueScriptData.code : "";
             this.customFilterValueScriptArea.load(v);
+        }.bind(this));
+    },
+    createCustomFilterOrgOptionScriptArea: function (node) {
+        var title = node.get("title");
+
+        MWF.require("MWF.widget.ScriptArea", function () {
+            this.customFilterOrgOptionScriptArea = new MWF.widget.ScriptArea(node, {
+                "title": title,
+                //"isload": true,
+                "isbind": false,
+                //"forceType": "ace",
+                "maxObj": this.app.formContentNode || this.app.pageContentNode,
+                "onChange": function () {
+                    this.customFilterOrgOptionScriptData = this.customFilterOrgOptionScriptArea.toJson();
+                }.bind(this),
+                "onSave": function () {
+                    //this.app.saveForm();
+                }.bind(this),
+                "style": "formula"
+            });
+            var v = (this.customFilterOrgOptionScriptData) ? this.customFilterOrgOptionScriptData.code : "";
+            this.customFilterOrgOptionScriptArea.load(v);
         }.bind(this));
     },
     setHtml: function(){},
@@ -186,10 +230,12 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 this.pathInputSelect?.getParent('tr').setStyle('display', '');
                 this.pathInput?.getParent('tr').setStyle('display', '');
                 this.parameterInput?.getParent('tr').setStyle('display', 'none');
+                this.parameterIsParseSelect?.getParent('tr').setStyle('display', 'none');
             }else if( v === 'parameter' ){
                 this.pathInputSelect?.getParent('tr').setStyle('display', 'none');
                 this.pathInput?.getParent('tr').setStyle('display', 'none');
                 this.parameterInput?.getParent('tr').setStyle('display', '');
+                this.parameterIsParseSelect?.getParent('tr').setStyle('display', '');
             }
         }.bind(this));
 
@@ -197,6 +243,8 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
         this.parameterInput = this.inputAreaNode.getElement(".parameterInput_vf");
         // this.parameterInputSelect = this.inputAreaNode.getElement(".parameterInputSelect_vf");
         this.datatypeInput = this.inputAreaNode.getElement(".datatypeInput_vf");
+        debugger;
+        this.parameterIsParseSelect = this.inputAreaNode.getElement(".parameterIsParseSelect_vf");
 
         this.restrictParameterInput = this.inputAreaNode.getElement(".restrictParameterInput_vf");
         if(this.restrictParameterInput && !this.restrictParameterInput.onclick){
@@ -253,6 +301,13 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 this.createParameterValueScriptArea(this.parameterValueScript);
             }
 
+            this.parameterValueType = this.inputAreaNode.getElements("[name='" + dataId + "viewParameterValueType']");
+            this.parameterOrgOptionScriptDiv = this.inputAreaNode.getElement("#" + dataId + "viewParameterOrgOptionScriptDiv");
+            this.parameterOrgOptionScript = this.inputAreaNode.getElement("[name='" + dataId + "viewParameterOrgOptionScript']");
+            if (this.parameterOrgOptionScript) {
+                this.createParameterOrgOptionScriptArea(this.parameterOrgOptionScript);
+            }
+
             this.customFilterValueTypes = this.inputAreaNode.getElements("[name='" + dataId + "viewCustomFilterValueType']");
             this.viewCustomFilterValueOrgTypes = this.inputAreaNode.getElements("[name='"+dataId+"viewCustomFilterValueOrgType']");
 
@@ -262,6 +317,12 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             this.customFilterValueScript = this.inputAreaNode.getElement("[name='" + dataId + "viewCustomFilterValueScript']");
             if (this.customFilterValueScript) {
                 this.createCustomFilterValueScriptArea(this.customFilterValueScript);
+            }
+
+            this.customFilterOrgOptionScriptDiv = this.inputAreaNode.getElement("#" + dataId + "viewCustomFilterOrgOptionScriptDiv");
+            this.customFilterOrgOptionScript = this.inputAreaNode.getElement("[name='" + dataId + "viewCustomFilterOrgOptionScript']");
+            if (this.customFilterOrgOptionScript) {
+                this.createCustomFilterOrgOptionScriptArea(this.customFilterOrgOptionScript);
             }
         }
 
@@ -675,10 +736,12 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             }
         }
         if( flag ){
+            debugger;
             this.setData({
                 "logic": "and",
                 "path": "",
                 "parameter" : "",
+                "isParseParameter": true,
                 "title": "",
                 "type": type,
                 "comparison": "equals",
@@ -963,6 +1026,11 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             comparison = this.comparisonInput.options[this.comparisonInput.selectedIndex].value;
         }
 
+        var isParseParameter = true;
+        if(this.parameterIsParseSelect){
+            isParseParameter = this.parameterIsParseSelect.options[this.parameterIsParseSelect.selectedIndex].value !== 'false';
+        }
+
         var formatType = this.datatypeInput.options[this.datatypeInput.selectedIndex].value;
         var value = "";
         var value2 = "";
@@ -1025,7 +1093,8 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 "value": value,
                 "code": this.scriptData,
                 "valueType": "script",
-                "valueScript": this.scriptData
+                "valueScript": this.scriptData,
+                "orgOptionScript": this.orgOptionScript
             };
         }else if (type === "parameter") {
             this.parameterValueType.each(function (radio) {
@@ -1042,7 +1111,8 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 //"otherValue": value2,
                 "code": this.scriptData,
                 "valueType": valueType,
-                "valueScript": this.parameterValueScriptData
+                "valueScript": this.parameterValueScriptData,
+                "orgOptionScript": this.parameterOrgOptionScriptData
             };
         } else {
             var valueType = "";
@@ -1060,6 +1130,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 "title": title,
                 "filterType": this.customFilterTypeSelect?.value || 'filter',
                 "parameter": parameter,
+                "isParseParameter": isParseParameter,
                 "type": type,
                 // "comparison": comparison,
                 "formatType": formatType,
@@ -1068,6 +1139,7 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
                 "code": this.scriptData,
                 "valueType": valueType,
                 "valueScript": this.customFilterValueScriptData,
+                "orgOptionScript": this.customFilterOrgOptionScriptData,
                 "orgTypes": orgTypes
             };
         }
@@ -1191,18 +1263,33 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             if (!data.valueType || data.valueType === "input") {
                 this.customFilterValueScriptDiv?.hide();
                 this.customFilterValueScriptData = "";
-                this.customFilterValueOrgArea?.hide();
                 this.customFilterValueScriptArea?.setData("", true);
+
+                this.customFilterValueOrgArea?.hide();
+
+                this.customFilterOrgOptionScriptDiv?.hide();
+                this.customFilterOrgOptionScriptData = "";
+                this.customFilterOrgOptionScriptArea?.setData( "" , true);
             } else if( data.valueType === "script" ){
                 this.customFilterValueScriptDiv?.show();
-                this.customFilterValueOrgArea?.hide();
                 this.customFilterValueScriptData = data.valueScript;
                 this.customFilterValueScriptArea?.setData(data.valueScript ? data.valueScript.code : "", true);
+
+                this.customFilterValueOrgArea?.hide();
+
+                this.customFilterOrgOptionScriptDiv?.hide();
+                this.customFilterOrgOptionScriptData = "";
+                this.customFilterOrgOptionScriptArea?.setData( "" , true);
             }else if( data.valueType === "org" ){
                 this.customFilterValueScriptDiv?.hide();
                 this.customFilterValueScriptData = "";
-                this.customFilterValueOrgArea?.show();
                 this.customFilterValueScriptArea?.setData("", true);
+
+                this.customFilterValueOrgArea?.show();
+
+                this.customFilterOrgOptionScriptDiv?.show();
+                this.customFilterOrgOptionScriptData = data.orgOptionScript;
+                this.customFilterOrgOptionScriptArea?.setData( data.orgOptionScript ? data.orgOptionScript.code : "", true);
             }
         }
 
@@ -1216,17 +1303,36 @@ MWF.xApplication.query.StatementDesigner.widget.ViewFilter = new Class({
             });
             if (this.parameterValueScriptArea) {
                 if (!data.valueType || data.valueType === "input") {
-                    this.parameterValueScriptDiv.hide();
+                    this.parameterValueScriptDiv?.hide();
                     this.parameterValueScriptData = "";
-                    this.parameterValueScriptArea.setData("", true);
+                    this.parameterValueScriptArea?.setData("", true);
                 } else {
-                    this.parameterValueScriptDiv.show();
+                    this.parameterValueScriptDiv?.show();
                     this.parameterValueScriptData = data.valueScript;
-                    this.parameterValueScriptArea.setData(data.valueScript ? data.valueScript.code : "", true);
+                    this.parameterValueScriptArea?.setData(data.valueScript ? data.valueScript.code : "", true);
+                }
+            }
+            if (this.parameterOrgOptionScriptArea) {
+                if (data.valueType === "org") {
+                    this.parameterOrgOptionScriptDiv?.hide();
+                    this.parameterOrgOptionScriptData = "";
+                    this.parameterOrgOptionScriptArea?.setData("", true);
+                } else {
+                    this.parameterOrgOptionScriptDiv?.show();
+                    this.parameterOrgOptionScriptData = data.orgOptionScript;
+                    this.parameterOrgOptionScriptArea?.setData(data.orgOptionScript ? data.orgOptionScript.code : "", true);
                 }
             }
         }
         this.switchInputDisplay();
+
+        if(this.parameterIsParseSelect){
+            if(data.isParseParameter !== false){
+                this.parameterIsParseSelect.set("value", 'true');
+            }else{
+                this.parameterIsParseSelect.set("value", 'false');
+            }
+        }
 
         if (this.datatypeInput.onchange) {
             this.datatypeInput.onchange();

@@ -11,6 +11,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.DocumentDataHelper;
 import com.x.cms.core.entity.Document;
+import java.util.Date;
 
 class ActionCreateWithDocument extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
@@ -30,6 +31,8 @@ class ActionCreateWithDocument extends BaseAction {
 
 			DocumentDataHelper documentDataHelper = new DocumentDataHelper( emc, document );
 			documentDataHelper.update(jsonElement);
+			emc.beginTransaction(Document.class);
+			document.setModifyTime(new Date());
 			emc.commit();
 
 			Wo wo = new Wo();

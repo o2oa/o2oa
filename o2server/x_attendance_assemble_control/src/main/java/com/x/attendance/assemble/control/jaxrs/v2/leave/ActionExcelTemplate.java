@@ -25,19 +25,19 @@ public class ActionExcelTemplate extends BaseAction {
         try (XSSFWorkbook workbook = new XSSFWorkbook(); ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             ActionResult<Wo> result = new ActionResult<>();
 
-            XSSFSheet sheet = workbook.createSheet("请假数据导入");
+            XSSFSheet sheet = workbook.createSheet("外出数据导入");
             sheet.setDefaultColumnWidth(25);
             Row row = sheet.createRow(0);
             Cell cell = row.createCell(0);
             cell.setCellValue("用户标识");
             cell = row.createCell(1);
-            cell.setCellValue("请假类型:带薪年休假|带薪病假|带薪福利假|扣薪事假|出差|培训|其他");
+            cell.setCellValue("外出类型: 出差|培训|其他");
             cell = row.createCell(2);
             cell.setCellValue("开始时间：yyyy-MM-dd HH:mm:ss");
             cell = row.createCell(3);
             cell.setCellValue("结束时间：yyyy-MM-dd HH:mm:ss");
             cell = row.createCell(4);
-            cell.setCellValue("请假说明");
+            cell.setCellValue("外出说明");
             cell = row.createCell(5);
             cell.setCellValue("流程的jobId,可为空");
             cell = row.createCell(7);

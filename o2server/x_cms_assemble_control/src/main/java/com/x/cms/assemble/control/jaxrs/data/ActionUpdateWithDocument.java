@@ -11,6 +11,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.Document;
+import java.util.Date;
 
 class ActionUpdateWithDocument extends BaseAction {
 
@@ -43,8 +44,9 @@ class ActionUpdateWithDocument extends BaseAction {
 			/** 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
 			this.updateTitleSerialObjectSecurityClearance(business, document, merge);
 			this.updateData(business, document, merge);
-			/** 在方法内进行了commit不需要再次进行commit */
-			// emc.commit();
+			emc.beginTransaction(Document.class);
+			document.setModifyTime(new Date());
+			emc.commit();
 			Wo wo = new Wo();
 			wo.setId(document.getId());
 			result.setData(wo);

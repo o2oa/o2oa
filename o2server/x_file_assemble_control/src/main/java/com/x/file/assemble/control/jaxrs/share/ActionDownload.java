@@ -1,5 +1,6 @@
 package com.x.file.assemble.control.jaxrs.share;
 
+import com.x.base.core.project.tools.ListTools;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Optional;
 
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -61,12 +63,20 @@ class ActionDownload extends BaseAction {
 			}
 			Attachment2 attachment = emc.find(fileId, Attachment2.class);
 			Folder2 folder = emc.find(fileId, Folder2.class);
+			List<String> idList = ListTools.toList(fileId);
 			if(attachment == null && folder==null){
 				throw new ExceptionAttachmentNotExist(shareId, fileId);
 			}if(attachment!=null){
 				if(!attachment.getPerson().equals(share.getPerson())){
 					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 				}
+				List<Folder2> supFolderList = new ArrayList<>();
+				business.folder2().listSuPNested(attachment.getFolder(), supFolderList);
+				idList.addAll(supFolderList.stream().map(Folder2::getId).collect(Collectors.toList()));
+				if(!idList.contains(share.getFileId())){
+					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+				}
+
 				OriginFile originFile = emc.find(attachment.getOriginFile(), OriginFile.class);
 				if (null == originFile) {
 					throw new ExceptionAttachmentNotExist(shareId, fileId);
@@ -103,6 +113,13 @@ class ActionDownload extends BaseAction {
 				if(!folder.getPerson().equals(share.getPerson())){
 					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 				}
+				List<Folder2> supFolderList = new ArrayList<>();
+				business.folder2().listSuPNested(folder.getSuperior(), supFolderList);
+				idList.addAll(supFolderList.stream().map(Folder2::getId).collect(Collectors.toList()));
+				if(!idList.contains(share.getFileId())){
+					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+				}
+
 				String zipName = folder.getName() + ".zip";
 				List<Folder2> folderList = new ArrayList<>();
 				folderList.add(folder);

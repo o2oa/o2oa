@@ -20,6 +20,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.Document;
+import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 
 class ActionUpdateArrayDataWithDocument extends BaseAction {
@@ -58,6 +59,9 @@ class ActionUpdateArrayDataWithDocument extends BaseAction {
 			JsonElement source = getData(business, id);
 			this.convert(source, wi);
 			this.updateData(business, document, source);
+			emc.beginTransaction(Document.class);
+			document.setModifyTime(new Date());
+			emc.commit();
 			Wo wo = new Wo();
 			wo.setId(document.getId());
 			result.setData(wo);

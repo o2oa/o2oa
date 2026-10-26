@@ -18,9 +18,15 @@ import java.util.Date;
 @Schema(name = "AttendanceV2AlertMessage", description = "考勤提醒消息对象.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
-@Table(name = PersistenceProperties.AttendanceV2AlertMessage.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceV2AlertMessage.table
-        + JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
-        JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }))
+@Table(name = PersistenceProperties.AttendanceV2AlertMessage.table, indexes = {
+        @Index(name = PersistenceProperties.AttendanceV2AlertMessage.table + JpaObject.IndexNameMiddle
+                + "status_time_IDX", columnList = JpaObject.ColumnNamePrefix
+                + AttendanceV2AlertMessage.sendStatus_FIELDNAME + "," + JpaObject.ColumnNamePrefix
+                + AttendanceV2AlertMessage.sendDateTime_FIELDNAME)},
+        uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceV2AlertMessage.table
+                + JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = {
+                JpaObject.IDCOLUMN, JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN,
+                JpaObject.SEQUENCECOLUMN }))
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AttendanceV2AlertMessage extends SliceJpaObject {
 

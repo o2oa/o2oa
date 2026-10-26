@@ -95,7 +95,7 @@ public class ActionReAnalyseWithFilter extends BaseAction {
 						int seq = 0;
 						for( String id : ids){
 							seq++;
-							ThisApplication.detailAnalyseQueue.send( id );
+//							ThisApplication.detailAnalyseQueue.send( id );
 						}
 					} catch (Exception e) {
 						Exception exception = new ExceptionAttendanceDetailProcess(e,"将需要重新分析的打卡记录发送到分析队列时发生异常！");

@@ -2,7 +2,6 @@ package com.x.attendance.assemble.control.jaxrs.v2.config;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
-import com.x.attendance.entity.v2.AttendanceV2Config;
 import com.x.attendance.entity.v2.AttendanceV2PersonConfig;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -42,7 +41,7 @@ public class ActionPersonConfigPost extends BaseAction {
             wi.setId(null);
             Wi.copier.copy(wi, config);
             config.setPerson(effectivePerson.getDistinguishedName());
-            emc.beginTransaction(AttendanceV2Config.class);
+            emc.beginTransaction(AttendanceV2PersonConfig.class);
             emc.persist(config, CheckPersistType.all);
             emc.commit();
             Wo wo = new Wo();

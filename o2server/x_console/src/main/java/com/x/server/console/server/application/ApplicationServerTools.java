@@ -201,7 +201,7 @@ public class ApplicationServerTools extends JettySeverTools {
     private static void setExposeJest(QuickStartWebApp webApp) {
         FilterHolder apiAccessFilterHolder = new FilterHolder(new ApiAccessFilter());
         webApp.addFilter(apiAccessFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
-        webApp.addFilter(apiAccessFilterHolder, "/describe/sources/*",
+        webApp.addFilter(apiAccessFilterHolder, "/describe/*",
                 EnumSet.of(DispatcherType.REQUEST));
 
         FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());

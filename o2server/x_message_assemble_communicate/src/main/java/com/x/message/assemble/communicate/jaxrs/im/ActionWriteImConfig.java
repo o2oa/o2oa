@@ -108,6 +108,17 @@ public class ActionWriteImConfig extends BaseAction {
 		private Boolean enableOnlyOfficePreview;
 		@FieldDescribe("是否开启群成员自主退出的功能.")
 		private Boolean enableGroupMemberQuitSelf;
+		@FieldDescribe("是否显示所有顶级单位.")
+		private Boolean showAllTopUnit;
+
+
+		public Boolean getShowAllTopUnit() {
+			return showAllTopUnit;
+		}
+
+		public void setShowAllTopUnit(Boolean showAllTopUnit) {
+			this.showAllTopUnit = showAllTopUnit;
+		}
 
 		public Boolean getEnableGroupMemberQuitSelf() {
 			return enableGroupMemberQuitSelf;

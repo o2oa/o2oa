@@ -13,13 +13,15 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
  * @o2range {Process|CMS|Portal}
  * @hideconstructor
  */
-MWF.xApplication.process.Xform.DatatableMobile = new Class(
+MWF.xApplication.process.Xform.DatatableMobile = MWF.APPDatatableMobile = new Class(
 	/** @lends MWF.xApplication.process.Xform.DatatablePC# */
 	{
 		Implements: [Events],
 		Extends: MWF.xApplication.process.Xform.DatatablePC,
 		loadDatatable: function(){
 			this.loading = true;
+
+			this.node.addClass('form-datatable-card');
 			this._loadStyles();
 
 			this._loadTitleTr();
@@ -123,8 +125,7 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 		_createTemplateTable: function(){
 			this.templateNode = new Element("div").inject(this.node);
 
-			var titleDiv = new Element("div", {"styles": this.json.itemTitleStyles}).inject(this.templateNode);
-			titleDiv.setStyle("overflow", "hidden");
+			var titleDiv = new Element("div.mwf_datatable_top", {"styles": this.json.itemTitleStyles}).inject(this.templateNode);
 			new Element("div.sequenceDiv", {
 				"styles": {"float": "left"},
 				"text": MWF.xApplication.process.Xform.LP.item
@@ -183,7 +184,8 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 			titleDiv.setStyle("overflow", "hidden");
 			new Element("div.sequenceDiv", {
 				"styles": {"float": "left"},
-				"text": MWF.xApplication.process.Xform.LP.amount
+				"text": this.form.json.formStyleType === 'v10' ?
+					MWF.xApplication.process.Xform.LP.total : MWF.xApplication.process.Xform.LP.amount
 			}).inject(titleDiv);
 
 			this.totalTable = new Element("table").inject(this.totalDiv);
@@ -373,7 +375,7 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 		}
 	});
 
-MWF.xApplication.process.Xform.DatatableMobile$Title = new Class({
+MWF.xApplication.process.Xform.DatatableMobile$Title = MWF.APPDatatableMobile$Title = new Class({
 	Extends: MWF.APP$Module,
 	_loadUserInterface: function(){
 		if (!this.isReadable){
@@ -425,7 +427,7 @@ MWF.xApplication.process.Xform.DatatableMobile$Title = new Class({
 	}
 });
 
-MWF.xApplication.process.Xform.DatatableMobile$Data =  new Class({
+MWF.xApplication.process.Xform.DatatableMobile$Data = MWF.APPDatatableMobile$Data =  new Class({
 	Extends: MWF.APP$Module
 });
 
@@ -642,17 +644,34 @@ MWF.xApplication.process.Xform.DatatableMobile.Line =  new Class({
 	},
 	createActions: function () {
 		//不允许编辑，直接返回
-		if(!this.options.isEditable)return;
 
 		var editActionTd = this.node.getElement(".mwf_editaction");
-		//this.moveActionTd = this.node.getElement(".moveAction");
+		if(!this.options.isEditable){
+			editActionTd.hide();
+			return;
+		}
+
+		debugger;
+
+		if( this.datatable.sortable )this.createMoveAction(editActionTd);
 
 		if(this.datatable.multiEditMode){ //多行编辑模式
 			if(this.options.isDeleteable)this.createDelAction(editActionTd);
 			if(this.options.isAddable)this.createAddAction(editActionTd);
 		}else{ //单行编辑模式
 			if(this.options.isDeleteable)this.createDelAction(editActionTd);
-			if(this.options.isEditable)this.createEditAction(editActionTd);
+			if(this.options.isEditable){
+				this.createEditAction(editActionTd);
+				var table = this.node.getElement("table.form-datatable");
+				if(table){
+					this.editFun = function(){
+						if( !this.options.isEdited ){
+							this.datatable._changeEditedLine(this);
+						}
+					}.bind(this);
+					table.addEvent("click", this.editFun);
+				}
+			}
 			if(this.options.isAddable)this.createAddAction(editActionTd);
 			this.createCancelEditAction(editActionTd);
 			this.createCompleteAction(editActionTd);
@@ -676,23 +695,26 @@ MWF.xApplication.process.Xform.DatatableMobile.Line =  new Class({
 		}
 	},
 	createEditAction: function(td){
-		this.editLineAction = new Element("div", {
+		this.editLineAction = new Element("div.editLineAction", {
 			"styles": this.form.css.mobileDatagridEditActionNode,
 			"text": MWF.xApplication.process.Xform.LP.edit,
 			"events": {
 				"click": function(ev){
 					if( !this.options.isEdited ){
-						this.datatable._changeEditedLine(this)
+						this.datatable._changeEditedLine(this);
 					}
 					ev.stopPropagation();
 				}.bind(this)
 			}
 		}).inject(td);
+		if(this.form.json.formStyleType === 'v10'){
+			this.editLineAction.addClass('ooicon-edit');
+		}
 	},
 	createAddAction: function(td){
-		this.addLineAction = new Element("div", {
+		this.addLineAction = new Element("div.addLineAction", {
 			"styles": this.form.css.mobileDatagridAddActionNode,
-			"text": MWF.xApplication.process.Xform.LP.add,
+			"text": MWF.xApplication.process.Xform.LP.addLine,
 			"events": {
 				"click": function(ev){
 					this.datatable._insertLine( ev, this );
@@ -700,9 +722,12 @@ MWF.xApplication.process.Xform.DatatableMobile.Line =  new Class({
 				}.bind(this)
 			}
 		}).inject(td);
+		if(this.form.json.formStyleType === 'v10'){
+			this.addLineAction.addClass('ooicon-create');
+		}
 	},
 	createCompleteAction: function(td){
-		this.completeLineAction = new Element("div", {
+		this.completeLineAction = new Element("div.completeLineAction", {
 			"styles": this.form.css.mobileDatagridCompleteActionNode,
 			"text": MWF.xApplication.process.Xform.LP.completedEdit,
 			"events": {
@@ -712,9 +737,12 @@ MWF.xApplication.process.Xform.DatatableMobile.Line =  new Class({
 				}.bind(this)
 			}
 		}).inject(td);
+		if(this.form.json.formStyleType === 'v10'){
+			this.completeLineAction.addClass('ooicon-checkmark');
+		}
 	},
 	createCancelEditAction: function(td){
-		this.cancelLineEditAction = new Element("div", {
+		this.cancelLineEditAction = new Element("div.cancelLineEditAction", {
 			"styles": this.form.css.mobileDatagridDelActionNode,
 			"text": MWF.xApplication.process.Xform.LP.cancelEdit,
 			"events": {
@@ -724,9 +752,12 @@ MWF.xApplication.process.Xform.DatatableMobile.Line =  new Class({
 				}.bind(this)
 			}
 		}).inject(td);
+		if(this.form.json.formStyleType === 'v10'){
+			this.cancelLineEditAction.addClass('ooicon-process-cancel');
+		}
 	},
 	createDelAction: function(td){
-		this.delLineAction = new Element("div", {
+		this.delLineAction = new Element("div.delLineAction", {
 			"styles": this.form.css.mobileDatagridCancelActionNode,
 			"text": MWF.xApplication.process.Xform.LP["delete"],
 			"events": {
@@ -737,6 +768,24 @@ MWF.xApplication.process.Xform.DatatableMobile.Line =  new Class({
 				}.bind(this)
 			}
 		}).inject(td);
-		this.delLineAction.show()
-	}
+		this.delLineAction.show();
+		if(this.form.json.formStyleType === 'v10'){
+			this.delLineAction.addClass('ooicon-delete');
+		}
+	},
+	createMoveAction: function(td){
+		if(this.form.json.formStyleType === 'v10'){
+			this.moveAction = new Element("div.moveLineAction", {
+				//"styles": this.form.css.mobileDatagridMoveLineActionNode,
+				"text": MWF.xApplication.process.Xform.LP["attachmentOrderUp"],
+				"events": {
+					"click": function(ev){
+						this.datatable._moveUpLine( ev, this );
+						ev.stopPropagation();
+					}.bind(this)
+				}
+			}).inject(td);
+			this.moveAction.addClass('ooicon-up');
+		}
+	},
 });

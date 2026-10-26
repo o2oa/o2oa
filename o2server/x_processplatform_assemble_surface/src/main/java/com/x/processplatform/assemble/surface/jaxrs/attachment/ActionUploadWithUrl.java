@@ -1,16 +1,10 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import com.x.base.core.project.annotation.FieldDescribe;
-import java.util.List;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.tika.Tika;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.connection.CipherConnectionAction;
@@ -30,13 +24,17 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkCompletedControlBuilder;
 import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.Draft;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.attachment.ActionUploadWithUrlWi;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.Tika;
 
 class ActionUploadWithUrl extends BaseAction {
 
@@ -69,33 +67,43 @@ class ActionUploadWithUrl extends BaseAction {
 				}
 			}
 			Attachment attachment = null;
-			/* 后面要重新保存 */
-			Work work = emc.find(wi.getWorkId(), Work.class);
-			/** 判断work是否存在 */
-			if (null == work) {
-				WorkCompleted workCompleted = emc.find(wi.getWorkId(), WorkCompleted.class);
-				if (workCompleted != null) {
-					Control control = new WorkCompletedControlBuilder(effectivePerson, business, workCompleted)
-							.enableAllowManage().build();
-					if (BooleanUtils.isNotTrue(control.getAllowManage())) {
-						throw new ExceptionAccessDenied(effectivePerson, workCompleted.getId());
-					}
-					Process process = business.process().pick(workCompleted.getProcess());
-					if (null == process) {
-						throw new ExceptionEntityNotExist(workCompleted.getProcess(), Process.class);
-					}
-					List<End> ends = business.end().listWithProcess(process);
-					if (ends.isEmpty()) {
-						throw new ExceptionEndNotExist(process.getId());
-					}
-					attachment = this.concreteAttachment(workCompleted, person, wi.getSite(), ends.get(0));
+			Draft draft = emc.find(wi.getWorkId(), Draft.class);
+			if (draft != null){
+				attachment = this.concreteAttachment(draft, effectivePerson, wi.getSite());
+				if(!effectivePerson.getDistinguishedName().equals(draft.getPerson())){
+					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName(), wi.getWorkId());
 				}
-			} else {
-				Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowSave().build();
-				if (BooleanUtils.isNotTrue(control.getAllowSave())) {
-					throw new ExceptionAccessDenied(effectivePerson, wi.getWorkId());
+			}else {
+				Work work = emc.find(wi.getWorkId(), Work.class);
+				if (null == work) {
+					WorkCompleted workCompleted = emc.find(wi.getWorkId(), WorkCompleted.class);
+					if (workCompleted != null) {
+						Control control = new WorkCompletedControlBuilder(effectivePerson, business,
+								workCompleted)
+								.enableAllowManage().build();
+						if (BooleanUtils.isNotTrue(control.getAllowManage())) {
+							throw new ExceptionAccessDenied(effectivePerson, workCompleted.getId());
+						}
+						Process process = business.process().pick(workCompleted.getProcess());
+						if (null == process) {
+							throw new ExceptionEntityNotExist(workCompleted.getProcess(),
+									Process.class);
+						}
+						List<End> ends = business.end().listWithProcess(process);
+						if (ends.isEmpty()) {
+							throw new ExceptionEndNotExist(process.getId());
+						}
+						attachment = this.concreteAttachment(workCompleted, person, wi.getSite(),
+								ends.get(0));
+					}
+				} else {
+					Control control = new WorkControlBuilder(effectivePerson, business,
+							work).enableAllowSave().build();
+					if (BooleanUtils.isNotTrue(control.getAllowSave())) {
+						throw new ExceptionAccessDenied(effectivePerson, wi.getWorkId());
+					}
+					attachment = this.concreteAttachment(work, person, wi.getSite());
 				}
-				attachment = this.concreteAttachment(work, person, wi.getSite());
 			}
 			if (attachment == null) {
 				throw new ExceptionEntityNotExist(wi.getWorkId());
@@ -190,6 +198,24 @@ class ActionUploadWithUrl extends BaseAction {
 		attachment.setActivityName(end.getName());
 		attachment.setActivityToken(end.getId());
 		attachment.setActivityType(end.getActivityType());
+		return attachment;
+	}
+
+	private Attachment concreteAttachment(Draft draft, EffectivePerson effectivePerson, String site) {
+		Attachment attachment = new Attachment();
+		attachment.setCompleted(false);
+		attachment.setPerson(effectivePerson.getDistinguishedName());
+		attachment.setLastUpdatePerson(effectivePerson.getDistinguishedName());
+		attachment.setSite(site);
+		/** 用于判断目录的值 */
+		attachment.setWorkCreateTime(draft.getCreateTime());
+		attachment.setApplication(draft.getApplication());
+		attachment.setProcess(draft.getProcess());
+		attachment.setJob(draft.getId());
+		attachment.setActivity("");
+		attachment.setActivityName("");
+		attachment.setActivityToken("");
+		attachment.setActivityType(null);
 		return attachment;
 	}
 

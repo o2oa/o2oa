@@ -13,14 +13,17 @@ export default content({
     },
     afterRender() {
         const loadingBar = this.dom.querySelector(".o2-mask-loadingBar");
-        const size = this.dom.getSize();
-        let tmpLeft = (size.x-160)/2;
+        const size = {
+            x: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
+            y: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+        };
+        let tmpLeft = (size.x - 160) / 2;
         if( tmpLeft < 0 ) {
             tmpLeft = 0;
         }
-        let tmpTop = (size.y-60)/2;
+        let tmpTop = (size.y - 60) / 2;
         if (tmpTop<=0) {
-            tmpTop = (window.screen.height-60)/2 - 100;
+            tmpTop = 0;
         }
         loadingBar.setStyle("left", ""+tmpLeft+"px");
         loadingBar.setStyle("top", ""+tmpTop+"px");

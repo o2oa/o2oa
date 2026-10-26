@@ -173,7 +173,8 @@ MWF.xApplication.query.Query.LP = {
         "to" : "到",
         "item" : "条",
         "inputIntegerNotice" : "开始和结束条目都请输入正整数",
-        "startLargetThanEndNotice" : "开始条目不能大于结束条目"
+        "startLargetThanEndNotice" : "开始条目不能大于结束条目",
+        "selectColumnNotice": "请先选择列"
     },
 
     "deleteConfirmContent" : "删除后不能恢复，你确定要删除该文档？",

@@ -985,10 +985,12 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
 
         this.combox.addEvent("change", function(){
             this.validationMode();
-            if (this.validation()){
-                this.node.store("data", this.getInputData());
-                this._setBusinessData(this.getInputData("change"));
-            }
+            o2.promiseAll(this.validation()).then(flag=>{
+                if(String(flag) === "true"){
+                    this.node.store("data", this.getInputData());
+                    this._setBusinessData(this.getInputData("change"));
+                }
+            })
         }.bind(this));
     },
 
@@ -1046,10 +1048,12 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         this.node.getFirst().setStyle("height", "auto");
         this.node.getFirst().addEvent("change", function(){
             this.validationMode();
-            if (this.validation()){
-                this.node.store("data", this.getInputData());
-                this._setBusinessData(this.getInputData("change"));
-            }
+            o2.promiseAll(this.validation()).then(flag=>{
+                if(String(flag) === "true"){
+                    this.node.store("data", this.getInputData());
+                    this._setBusinessData(this.getInputData("change"));
+                }
+            })
         }.bind(this));
     },
     getDataText: function(data){
@@ -1097,7 +1101,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         if (oldValues.length && (values && values.length)){
             if (oldValues.length === values.length){
                 for (var i=0; i<oldValues.length; i++){
-                    if ((oldValues[i].distinguishedName!==values[i].distinguishedName) || (oldValues[i].name!==values[i].name) || (oldValues[i].unique!==values[i].unique)){
+                    if ((typeOf(oldValues[i])==='string' && typeOf(values[i])==='string' && oldValues[i]!==values[i]) || (oldValues[i].distinguishedName!==values[i].distinguishedName) || (oldValues[i].name!==values[i].name) || (oldValues[i].unique!==values[i].unique)){
                         change = true;
                         break;
                     }

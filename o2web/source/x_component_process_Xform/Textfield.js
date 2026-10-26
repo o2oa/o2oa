@@ -169,10 +169,12 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
             var v = this.getInputData("change");
             //this._setBusinessData(v);
             this.validationMode();
-            if (this.validation()) {
-                this._setBusinessData(v);
-                this.fireEvent("change");
-            }
+            o2.promiseAll(this.validation()).then(flag=>{
+                if(String(flag) === "true"){
+                    this._setBusinessData(v);
+                    this.fireEvent("change");
+                }
+            });
         }.bind(this));
 
         var inputNode = this.node.getFirst();

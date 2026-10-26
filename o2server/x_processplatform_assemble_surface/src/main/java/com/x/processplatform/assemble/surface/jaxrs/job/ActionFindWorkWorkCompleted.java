@@ -1,16 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.job;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.BooleanUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -22,14 +11,25 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.SortTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.JobControlBuilder;
+import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkCompleted_;
 import com.x.processplatform.core.entity.content.Work_;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.apache.commons.lang3.BooleanUtils;
 
 class ActionFindWorkWorkCompleted extends BaseAction {
 
@@ -45,7 +45,22 @@ class ActionFindWorkWorkCompleted extends BaseAction {
 			Business business = new Business(emc);
 			if (BooleanUtils.isTrue(
 					new JobControlBuilder(effectivePerson, business, job).enableAllowVisit().build().getAllowVisit())) {
-				wo.setWorkList(this.listWork(business, job));
+				List<Task> taskList = new ArrayList<>(business.task().listWithPersonWithJob(effectivePerson.getDistinguishedName(), job));
+				SortTools.desc(taskList, JpaObject.createTime_FIELDNAME);
+
+				List<WoWork> workList = new ArrayList<>(this.listWork(business, job));
+				String topWorkId = null;
+				if (ListTools.isNotEmpty(taskList)) {
+					topWorkId = taskList.get(0).getWork();
+				}
+				final String finalTopWorkId = topWorkId;
+				List<WoWork> sortedWorkList = workList.stream()
+						.sorted((o1, o2) -> {
+							boolean isO1Top = finalTopWorkId != null && finalTopWorkId.equals(o1.getId());
+							boolean isO2Top = finalTopWorkId != null && finalTopWorkId.equals(o2.getId());
+							return Boolean.compare(isO2Top, isO1Top);
+						}).collect(Collectors.toList());
+				wo.setWorkList(sortedWorkList);
 				wo.setWorkCompletedList(this.listWorkCompleted(business, job));
 			}
 		}

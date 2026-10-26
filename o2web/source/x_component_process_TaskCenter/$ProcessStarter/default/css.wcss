@@ -191,8 +191,7 @@
         //"color": "#da7429"
     },
     "identityDepartmentNode": {
-        "height": "36px",
-        "line-height": "40px",
+        "line-height": "20px",
         "overflow": "hidden",
         "font-size": "14px",
         //"border-bottom": "1px solid #e6e6e6"
@@ -204,8 +203,7 @@
         "border-bottom": "1px solid #e6e6e6"
     },
     "identityDutyNode": {
-        "height": "36px",
-        "line-height": "40px",
+        "line-height": "20px",
         "overflow": "hidden",
         "font-size": "14px",
         //"border-bottom": "1px solid #e6e6e6"

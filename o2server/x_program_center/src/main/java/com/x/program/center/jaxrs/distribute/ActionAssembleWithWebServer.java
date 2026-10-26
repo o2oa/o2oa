@@ -1,32 +1,53 @@
 package com.x.program.center.jaxrs.distribute;
 
-import java.util.Map;
-import java.util.Objects;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.gson.JsonObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.tools.Crypto;
+import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.Map;
+import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
 
 class ActionAssembleWithWebServer extends BaseAction {
 
     ActionResult<Wo> execute(HttpServletRequest request, String source) throws Exception {
         ActionResult<Wo> result = new ActionResult<>();
-        Wo wo = new Wo();
-        wo.setWebServer(this.getRandomWebServer(request, source));
-        wo.setAssembles(this.getRandomAssembles(request, source));
-        wo.setTokenName(Config.person().getTokenName());
-        wo.setMockConfig(Config.mock());
-        wo.setStandalone(Objects.equals(Config.currentNode().getApplication().getPort(),
+        WoInfo woInfo = new WoInfo();
+        woInfo.setWebServer(this.getRandomWebServer(request, source));
+        woInfo.setAssembles(this.getRandomAssembles(request, source));
+        woInfo.setTokenName(Config.person().getTokenName());
+        woInfo.setMockConfig(Config.mock());
+        woInfo.setStandalone(Objects.equals(Config.currentNode().getApplication().getPort(),
                 Config.currentNode().getCenter().getPort()));
-        result.setData(wo);
+        result.setData(new Wo(Crypto.encodeAES(XGsonBuilder.toJson(woInfo), Crypto.DESCRIBE_AES_KEY)));
         return result;
     }
 
     public static class Wo extends GsonPropertyObject {
+
+        private static final long serialVersionUID = 6772463745917569315L;
+
+        public Wo (String data) {
+            this.data = data;
+        }
+
+        @Schema(description = "数据.")
+        private String data;
+
+        public String getData() {
+            return data;
+        }
+
+        public void setData(String data) {
+            this.data = data;
+        }
+    }
+
+    public static class WoInfo extends GsonPropertyObject {
 
         @FieldDescribe("webServer")
         public WoWebServer webServer;

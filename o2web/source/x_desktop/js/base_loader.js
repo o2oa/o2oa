@@ -30,13 +30,13 @@ if (!layout.isReady) {
         var _loadProgressBar = function (complete) {
             if (loadingNode) {
                 if (complete) {
-                    loadingNode.setStyles({"width": "" + size.x + "px"});
+                    loadingNode.setStyles({ "width": "" + size.x + "px" });
                     //loadingNode.set('morph', {duration: 100}).morph({"width": ""+size.x+"px"});
                     window.setTimeout(_closeLoadingNode, 500);
                 } else {
                     loadeds++;
                     var p = (loadeds / loadCount) * size.x;
-                    loadingNode.setStyles({"width": "" + p + "px"});
+                    loadingNode.setStyles({ "width": "" + p + "px" });
                     //loadingNode.set('morph', {duration: 100}).morph({"width": ""+p+"px"});
                     if (loadeds >= loadCount) window.setTimeout(_closeLoadingNode, 500);
                 }
@@ -135,11 +135,11 @@ if (!layout.isReady) {
                 if (layout.config && layout.config.sessionStorageEnable && window.sessionStorage) window.sessionStorage.setItem("o2LayoutSessionToken", options[o2.tokenName]);
             }
 
-            var recordUserData = (data, cb)=>{
+            var recordUserData = (data, cb) => {
                 layout.user = data;
                 layout.session = layout.session || {};
 
-                if(data.distinguishedName){
+                if (data.distinguishedName) {
                     o2.Actions.load("x_organization_assemble_express").PersonAction.detail(data.distinguishedName, null, function (json) {
                         layout.session.user = data;
                         layout.session.token = data.token;
@@ -156,7 +156,7 @@ if (!layout.isReady) {
                         )
                         if (cb) cb(json);
                     });
-                }else{
+                } else {
                     layout.session.user = data;
                     layout.session.token = data.token;
                     layout.desktop.session = layout.session;
@@ -171,7 +171,7 @@ if (!layout.isReady) {
                         unitList: []
                     };
 
-                    if (cb) cb({data: layout.session.userDetail});
+                    if (cb) cb({ data: layout.session.userDetail });
                 }
             }
 
@@ -180,8 +180,8 @@ if (!layout.isReady) {
                     if (json.data.language && (json.data.language !== o2.languageName)) {
                         o2.language = json.data.language.toLowerCase();
                         o2.languageName = json.data.language;
-                        var lp = "../x_desktop/js/base_lp_" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js?v="+o2.version.v;;
-                        o2.load(lp, {"reload": true}, function () {
+                        var lp = "../x_desktop/js/base_lp_" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js?v=" + o2.version.v;;
+                        o2.load(lp, { "reload": true }, function () {
                             recordUserData(json.data, resolve);
                             // if (resolve) resolve(json.data);
                         });
@@ -190,7 +190,7 @@ if (!layout.isReady) {
                         // if (resolve) resolve(json.data);
                     }
                 }.bind(this), function (xhr, text, error) {
-                    if (reject) reject({"xhr": xhr, "text": text, "error": error});
+                    if (reject) reject({ "xhr": xhr, "text": text, "error": error });
                 }.bind(this));
             });
 
@@ -217,7 +217,7 @@ if (!layout.isReady) {
             }, function () {
                 //允许匿名访问
                 if (layout.anonymous) {
-                    var data = {name: "anonymous", roleList: []};
+                    var data = { name: "anonymous", roleList: [] };
                     layout.user = data;
                     layout.session = layout.session || {};
                     layout.session.user = data;
@@ -256,13 +256,13 @@ if (!layout.isReady) {
                 //console.log("执行单点。。。。。。。。。。");
                 var action = new MWF.xDesktop.Actions.RestActions("", "x_organization_assemble_authentication", "");
                 action.getActions = function (actionCallback) {
-                    this.actions = {"sso": {"uri": "/jaxrs/qiyeweixin/code/{code}", "method": "GET"}};
+                    this.actions = { "sso": { "uri": "/jaxrs/qiyeweixin/code/{code}", "method": "GET" } };
                     if (actionCallback) actionCallback();
                 };
                 action.invoke({
                     "name": "sso",
                     "async": true,
-                    "parameter": {"code": uri.getData("code")},
+                    "parameter": { "code": uri.getData("code") },
                     "success": function (json) {
                         //console.log("单点成功。");
                         //console.log(json);
@@ -292,29 +292,29 @@ if (!layout.isReady) {
         // var lp = "../x_desktop/js/base_lp_" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js?v="+o2.version.v;;
 
         if (o2.session.isDebugger && (o2.session.isMobile || layout.mobile)) o2.load("../o2_lib/eruda/eruda.js");
-        var loadAllModules = function(error){
+        var loadAllModules = function (error) {
             _loadProgressBar();
             lpLoaded = true;
 
             var modules = ["o2.xDesktop.$all"];
             o2.require(modules, {
                 "onSuccess": function () {
-                    if (o2.xDesktop.getServiceAddress){
+                    if (o2.xDesktop.getServiceAddress) {
                         commonLoaded = true;
                         if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () {
                             _load();
                         });
-                    }else{
+                    } else {
                         if (error) error();
                     }
                 },
-                "onFailure": function(){ if (error) error();},
+                "onFailure": function () { if (error) error(); },
                 "onEvery": function () {
                     _loadProgressBar();
                 }
             });
         }
-        var loadO2Modules = function(){
+        var loadO2Modules = function () {
             _loadProgressBar();
             lpLoaded = true;
 
@@ -335,8 +335,8 @@ if (!layout.isReady) {
                 "onSuccess": function () {
                     var appmodules = [['Template', 'MPopupForm'], ['Common', 'Main']];
                     o2.requireApp(appmodules, "", {
-                        "onSuccess": function(){
-                            if (o2.xDesktop.getServiceAddress){
+                        "onSuccess": function () {
+                            if (o2.xDesktop.getServiceAddress) {
                                 commonLoaded = true;
                                 if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () {
                                     _load();
@@ -359,66 +359,71 @@ if (!layout.isReady) {
             loadAllModules(loadO2Modules);
         };
 
-        o2.load('../o2_lib/ooui/ooui.iife.js', {}, ()=>{
+        o2.load('../o2_lib/ooui/ooui.iife.js', {}, () => {
             $OOUI.defineComponent();
         });
-        o2.getJSON("../x_desktop/res/config/config.json", function (config) {
-            var supportedLanguages = Object.keys(config.supportedLanguages);
 
-            if (supportedLanguages.indexOf(o2.language) === -1){
-                o2.language = o2.language.substring(0, o2.language.indexOf('-'));
-            }
-            if (supportedLanguages.indexOf(o2.language) === -1) o2.language = "zh-cn";
+        o2.load('../o2_lib/sjcl.min.js', {}, () => {
 
-            if (!o2.LP) {
-                var lp = "../x_desktop/js/base_lp_" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js?v="+o2.version.v;
-                o2.load(lp, function(m){
-                    if (!m.length){
-                        var lp = "../o2_core/o2/lp/" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js?v="+o2.version.v;
-                        o2.load(lp,loadModuls);
-                    }else{
-                        loadModuls();
-                    }
-                });
-            } else {
-                loadModuls();
-            }
+            o2.getJSON("../x_desktop/res/config/config.json", function (config) {
+                var supportedLanguages = Object.keys(config.supportedLanguages);
 
-            _loadProgressBar();
-            if (config.proxyCenterEnable){
-                if (o2.typeOf(config.center)==="array"){
-                    config.center.forEach(function(c){
-                        c.port = window.location.port || 80;
-                    });
-                }else{
-                    config.port = window.location.port || 80;
+                if (supportedLanguages.indexOf(o2.language) === -1) {
+                    o2.language = o2.language.substring(0, o2.language.indexOf('-'));
                 }
-            }
-            layout.config = config;
-            o2.tokenName = config.tokenName || "x-token";
+                if (supportedLanguages.indexOf(o2.language) === -1) o2.language = "zh-cn";
 
-            if( !layout.mobile )document.title = layout.config.systemTitle || layout.config.title;
+                if (!o2.LP) {
+                    var lp = "../x_desktop/js/base_lp_" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js?v=" + o2.version.v;
+                    o2.load(lp, function (m) {
+                        if (!m.length) {
+                            var lp = "../o2_core/o2/lp/" + o2.language + ((o2.session.isDebugger) ? "" : ".min") + ".js?v=" + o2.version.v;
+                            o2.load(lp, loadModuls);
+                        } else {
+                            loadModuls();
+                        }
+                    });
+                } else {
+                    loadModuls();
+                }
 
-            configLoaded = true;
-            if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () {
-                _load();
+                _loadProgressBar();
+                if (config.proxyCenterEnable) {
+                    if (o2.typeOf(config.center) === "array") {
+                        config.center.forEach(function (c) {
+                            c.port = window.location.port || 80;
+                        });
+                    } else {
+                        config.port = window.location.port || 80;
+                    }
+                }
+                layout.config = config;
+                o2.tokenName = config.tokenName || "x-token";
+
+                if (!layout.mobile) document.title = layout.config.systemTitle || layout.config.title;
+
+                configLoaded = true;
+                if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () {
+                    _load();
+                });
             });
-        });
 
+        });
+        
         //每分钟检测token过期时间
         window.setInterval(function () {
             var tokenExpiresTime = localStorage.getItem("o2LayoutSessionTokenExpires");
             if (tokenExpiresTime) {
                 var now = new Date().getTime();
                 var n = tokenExpiresTime - now;
-                if (n>0 && n <= 1000 * 60 * 3.2) {
+                if (n > 0 && n <= 1000 * 60 * 3.2) {
                     //过期时间小于1分钟，重新获取token
-                    MWF.xDesktop.notice("notice", {x: "right", y:"top"}, o2.LP.desktop.login.tokenWillExpire, null, null, {delayClose: 40000});
+                    MWF.xDesktop.notice("notice", { x: "right", y: "top" }, o2.LP.desktop.login.tokenWillExpire, null, null, { delayClose: 40000 });
                 }
             }
         }, 1000 * 30);
 
-        layout.addReady(()=>{
+        layout.addReady(() => {
             //判断是否在微信内置浏览器，钉钉内置浏览器中打开，O2OA APP内置浏览器中打开
             //如果是，给body加上相应的class
             if (o2.thirdparty.isWeiXinMobile() || o2.thirdparty.isQywxMobile() || o2.thirdparty.isDingdingMobile() || window.o2android || window.flutter_inappwebview) {
