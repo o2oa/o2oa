@@ -240,9 +240,7 @@
 .leave-account-table-scroll {
     clear: both;
     width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
+    overflow: auto;
 }
 
 .leave-account-table {
@@ -259,6 +257,27 @@
 .leave-account-table th:not(:first-child),
 .leave-account-table td:not(:first-child) {
     min-width: 240px;
+}
+.leave-account-table .sticky-row {
+  position: sticky;
+  top: 0;
+  z-index: 2;                /* 层级高于普通单元格 */
+  background-color: #f4f4f4; /* 表头背景色 */
+}
+
+.leave-account-table .sticky-col {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background-color: #fff; /* 必须设置背景色，否则滚动时后面内容会透过来 */
+}
+
+/* 4. 如果第一列表头同时需要固定在最上层（左上角交汇处），z-index 设得更高 */
+.leave-account-table  thead th.sticky-row.sticky-col {
+  top: 0;
+  left: 0;
+  z-index: 3;                /* 层级最高！防止被滚动的首行或首列遮挡 */
+  background-color: #e0e0e0; /* 交叉点可以换个特殊颜色区分 */
 }
 
 .leave-account-balance {
