@@ -110,7 +110,7 @@ export default content({
         this.changeDate(year, month);
     },
     toggleMonthSelector() {
-         // Keep month selector styles in sync.
+        // Keep month selector styles in sync.
         if (!this.bind.monthSelectorOpen) {
             this.bind.monthList = this.buildMonthList();
         }
@@ -188,18 +188,24 @@ export default content({
             payload.overwrite = form.overwrite === true;
         }
         this.importLoading = true;
+        let importSuccess = false;
         try {
             await showLoading(this);
             const result = await leaveManagerAction("holidayImport", payload);
             this.bind.holidayImportResult = result || {};
             o2.api.page.notice(this.formatHolidayImportResult(result), "success");
-            await this.refreshByImportPayload(payload);
+            importSuccess = true;
         } catch (e) {
             console.error(e);
             o2.api.page.notice(lp.leaveManagerV2.calendar.importFail, "error");
+            importSuccess = false;
         } finally {
             this.importLoading = false;
             await hideLoading(this);
+        }
+        if (importSuccess) {
+            this.closeHolidayImport();
+            await this.refreshByImportPayload(payload);
         }
     },
     clickChangeHolidayType(offDay) {

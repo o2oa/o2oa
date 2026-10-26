@@ -4,9 +4,10 @@ import {ref, onMounted} from "vue";
 import {orgExpressUnitAction, orgIdentityAction, orgPersonAction, orgUnitAction} from "../utils/actions.js";
 import OrgNodeView from "./OrgNodeView.vue";
 import {debounce} from "../utils/common.js";
+import { imConfig } from '../store.js';
 
 const emit = defineEmits(['chatWithPerson'])
-
+const imConfigInstance = imConfig();
 const searchContent = ref('')
 const searchMode = ref(false)
 const searchPersonList = ref([])
@@ -102,7 +103,15 @@ const loadChildren = async (node) => {
   node.loaded = true
 }
 const listTop = async () => {
-  const topList = await orgUnitAction('listTop')
+  if (imConfigInstance.showAllTopUnit) {
+    const topList = await orgUnitAction('listTop')
+    return topList || []
+  }
+  const myTopUnitIds = layout.session.user.topUnitList || []
+  const body = {
+      unitList: myTopUnitIds
+  }
+  const topList = await orgExpressUnitAction('listObject', body)
   return topList || []
 }
 // 查询下级组织
