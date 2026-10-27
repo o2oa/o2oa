@@ -68,6 +68,7 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
+        "lodash.template": "4.5.0",
         "@o2oa/language-tools": "^1.0.27",
         "@o2oa/tidy-jsdoc-o2": "^0.0.26",
         "dateformat": "^3.0.3",
