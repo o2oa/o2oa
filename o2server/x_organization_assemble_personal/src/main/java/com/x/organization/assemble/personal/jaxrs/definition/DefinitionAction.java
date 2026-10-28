@@ -1,5 +1,15 @@
 package com.x.organization.assemble.personal.jaxrs.definition;
 
+import com.x.base.core.project.annotation.JaxrsDescribe;
+import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
+import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.http.HttpMediaType;
+import com.x.base.core.project.jaxrs.ResponseFactory;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -14,33 +24,12 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import com.x.base.core.project.annotation.JaxrsDescribe;
-import com.x.base.core.project.annotation.JaxrsMethodDescribe;
-import com.x.base.core.project.annotation.JaxrsParameterDescribe;
-import com.x.base.core.project.http.ActionResult;
-import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.http.HttpMediaType;
-import com.x.base.core.project.jaxrs.ResponseFactory;
-import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
-
-@Tag(name = "DefinitionAction", description = "用户自定义数据接口.")
 @Path("definition")
-@JaxrsDescribe("用户自定义数据接口.")
+@JaxrsDescribe("业务自定义数据接口.")
 public class DefinitionAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(DefinitionAction.class);
-	private static final String OPERATIONID_PREFIX = "DefinitionAction::";
+	private static final Logger logger = LoggerFactory.getLogger(DefinitionAction.class);
 
-	@Operation(summary = "访问当前用户指定名称的自定义数据.", operationId = OPERATIONID_PREFIX + "get", responses = {
-			@ApiResponse(content = { @Content(schema = @Schema(implementation = String.class)) }) })
 	@JaxrsMethodDescribe(value = "访问当前用户指定名称的自定义数据.", action = ActionGet.class)
 	@GET
 	@Path("{name}")
@@ -59,8 +48,6 @@ public class DefinitionAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@Operation(summary = "访问当前用户获取自定义数据.", operationId = OPERATIONID_PREFIX + "get", responses = {
-			@ApiResponse(content = { @Content(schema = @Schema(implementation = String.class)) }) })
 	@JaxrsMethodDescribe(value = "更新指定名称的Definition.", action = ActionEdit.class)
 	@PUT
 	@Path("{name}")

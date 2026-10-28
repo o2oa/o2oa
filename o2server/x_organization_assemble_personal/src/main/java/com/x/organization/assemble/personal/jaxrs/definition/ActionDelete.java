@@ -3,11 +3,13 @@ package com.x.organization.assemble.personal.jaxrs.definition;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.Definition;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,6 +23,10 @@ class ActionDelete extends BaseAction {
 		LOGGER.debug("execute:{}, name:{}.", effectivePerson::getDistinguishedName, () -> name);
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			if(!this.isManager(business, effectivePerson)){
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
 			ActionResult<Wo> result = new ActionResult<>();
 			Definition o = emc.flag(name, Definition.class);
 			Wo wo = new Wo();

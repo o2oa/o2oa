@@ -22,6 +22,7 @@ import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitAttribute;
 import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.accredit.Empower;
+import com.x.organization.core.express.Organization;
 
 public class Business {
 
@@ -38,6 +39,15 @@ public class Business {
 
 	public EntityManagerContainer entityManagerContainer() {
 		return this.emc;
+	}
+
+	private Organization organization;
+
+	public Organization organization() {
+		if (null == this.organization) {
+			this.organization = new Organization(ThisApplication.context());
+		}
+		return organization;
 	}
 
 	private PersonFactory person;
