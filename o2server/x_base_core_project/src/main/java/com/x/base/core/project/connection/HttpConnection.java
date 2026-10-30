@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -458,25 +460,42 @@ public class HttpConnection {
         }
     }
 
-    public static void checkAddress(String address) throws Exception {
-        final String addressLower = address.toLowerCase();
-        if (addressLower.startsWith(HTTP_PROTOCOL) || addressLower.startsWith(HTTPS_PROTOCOL)) {
-            List<String> httpWhiteList = null;
-            try {
-                httpWhiteList = Config.general().getHttpWhiteList();
-            } catch (Exception e) {
-                LOGGER.debug(e.getMessage());
-            }
-            if (ListTools.isNotEmpty(httpWhiteList)) {
-                Optional<String> optional = httpWhiteList.stream()
-                        .filter(o -> addressLower.indexOf("://" + o) > -1)
-                        .findFirst();
-                if (!optional.isPresent()) {
-                    throw new ExceptionUnlawfulAddress(address);
-                }
-            }
-        } else {
+    public static void checkAddress(String address) throws ExceptionNotSupportProtocol, ExceptionUnlawfulAddress {
+        if(StringUtils.isBlank(address)){
             throw new ExceptionNotSupportProtocol(address);
+        }
+        URL url;
+        try {
+            url = new URL(address);
+        } catch (MalformedURLException e) {
+            throw new ExceptionNotSupportProtocol(address);
+        }
+
+        String protocol = url.getProtocol().toLowerCase();
+        if (!HTTP_PROTOCOL.equals(protocol) && !HTTPS_PROTOCOL.equals(protocol)) {
+            throw new ExceptionNotSupportProtocol(address);
+        }
+
+        List<String> httpWhiteList = null;
+        try {
+            httpWhiteList = Config.general().getHttpWhiteList();
+        } catch (Exception e) {
+            LOGGER.debug(e.getMessage());
+        }
+
+        if(CollectionUtils.isNotEmpty(httpWhiteList)){
+            String host = url.getHost();
+            if (StringUtils.isBlank(host)) {
+                throw new ExceptionNotSupportProtocol(address);
+            }
+
+            String hostLower = host.toLowerCase();
+            boolean isAllowed = httpWhiteList.stream()
+                    .anyMatch(white -> hostLower.equals(white.toLowerCase()) || hostLower.endsWith("." + white.toLowerCase()));
+
+            if (!isAllowed) {
+                throw new ExceptionUnlawfulAddress(address);
+            }
         }
     }
 
