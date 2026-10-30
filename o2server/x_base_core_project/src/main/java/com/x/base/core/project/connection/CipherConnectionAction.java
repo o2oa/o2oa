@@ -56,6 +56,11 @@ public class CipherConnectionAction {
 		return get(xdebugger, connectTimeout, readTimeout, addr);
 	}
 
+	public static byte[] getBinary(String address, EffectivePerson effectivePerson) throws Exception {
+		List<NameValuePair> headers = ListTools.toList(new NameValuePair(Config.person().getTokenName(), effectivePerson.getToken()));
+		return ConnectionAction.getBinary(address, headers);
+	}
+
 	public static byte[] getBinary(Boolean xdebugger, String address) throws Exception {
 		List<NameValuePair> headers = cipher(address);
 		if (BooleanUtils.isTrue(xdebugger)) {

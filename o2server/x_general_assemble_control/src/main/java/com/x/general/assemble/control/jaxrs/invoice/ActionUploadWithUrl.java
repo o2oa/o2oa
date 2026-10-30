@@ -53,7 +53,7 @@ public class ActionUploadWithUrl extends BaseAction {
 		if (null == mapping) {
 			throw new ExceptionAllocateStorageMapping();
 		}
-		byte[] bytes = CipherConnectionAction.getBinary(false, wi.getFileUrl());
+		byte[] bytes = CipherConnectionAction.getBinary( wi.getFileUrl(), effectivePerson);
 		if(bytes==null || bytes.length==0){
 			throw new ExceptionEmptyExtension("bytes");
 		}
