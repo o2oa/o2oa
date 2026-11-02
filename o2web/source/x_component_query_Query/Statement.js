@@ -1596,10 +1596,12 @@ MWF.xApplication.query.Query.Statement.Exporter = new Class({
         }
 
         var check = function () {
-            if(this.value.length == 1){
-                this.value = this.value.replace(/[^1-9]/g,'')
-            }else{
-                this.value = this.value.replace(/\D/g,'')
+            if(typeof this.value == "string"){
+                if(this.value.length === 1){
+                    this.value = this.value.replace(/[^1-9]/g,'')
+                }else{
+                    this.value = this.value.replace(/\D/g,'')
+                }
             }
             if( this.value.toInt() > total ){
                 this.value = total;
