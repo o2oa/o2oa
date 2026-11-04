@@ -24,25 +24,7 @@ import javax.ws.rs.core.MediaType;
 @JaxrsDescribe("重置操作")
 public class ResetAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ResetAction.class);
-
-	@JaxrsMethodDescribe(value = "验证人员是否存在.", action = ActionCheckCredential.class)
-	@GET
-	@Path("check/credential/{credential}")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void checkCredential(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("用户标识") @PathParam("credential") String credential) {
-		ActionResult<WrapOutBoolean> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionCheckCredential().execute(credential);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
+	private static final Logger logger = LoggerFactory.getLogger(ResetAction.class);
 
 	@JaxrsMethodDescribe(value = "验证密码强度等级.", action = ActionCheckPassword.class)
 	@GET

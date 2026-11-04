@@ -1,5 +1,6 @@
 package com.x.organization.assemble.personal.jaxrs.regist;
 
+import com.x.base.core.project.config.Config;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -13,11 +14,15 @@ import com.x.base.core.project.tools.StringTools;
 
 class ActionCheckName extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCheckName.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActionCheckName.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String name) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			if (com.x.base.core.project.config.Person.REGISTER_TYPE_DISABLE.equals(
+					Config.person().getRegister())) {
+				throw new ExceptionDisableRegist();
+			}
 			if (StringUtils.isEmpty(name) || (!StringTools.isSimply(name))) {
 				throw new ExceptionInvalidName(name);
 			}
