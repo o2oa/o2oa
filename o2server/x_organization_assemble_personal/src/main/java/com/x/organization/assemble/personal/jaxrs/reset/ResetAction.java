@@ -12,9 +12,14 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
@@ -24,25 +29,7 @@ import javax.ws.rs.core.MediaType;
 @JaxrsDescribe("重置操作")
 public class ResetAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ResetAction.class);
-
-	@JaxrsMethodDescribe(value = "验证人员是否存在.", action = ActionCheckCredential.class)
-	@GET
-	@Path("check/credential/{credential}")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void checkCredential(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("用户标识") @PathParam("credential") String credential) {
-		ActionResult<WrapOutBoolean> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionCheckCredential().execute(credential);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
+	private static final Logger logger = LoggerFactory.getLogger(ResetAction.class);
 
 	@JaxrsMethodDescribe(value = "验证密码强度等级.", action = ActionCheckPassword.class)
 	@GET
