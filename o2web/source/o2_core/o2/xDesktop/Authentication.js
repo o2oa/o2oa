@@ -254,279 +254,279 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         //     }
         // }
     },
-    closeCamera: function () {
-        if (this.cameraLoginVideoNode) {
-            if (this.video) this.video.destroy();
-            if (this.canvas) this.canvas.destroy();
-            if (this.cameraLoginVideoNode) this.cameraLoginVideoNode.destroy();
-            this.video = null;
-            this.canvas = null;
-            this.cameraLoginVideoNode = null;
-        }
-        this.cameraLoginIcon.setStyles(this.explorer.css.cameraLoginIcon);
-    },
-    cameraLoginInit: function () {
-        this.cameraLoginConfig = {
-            "maxStep": 2,
-            "step": 0,
-            "count": 0,
-            "max": 2,
-            "errorCount": 0,
-            "errorMax": 3,
-            "user": "",
-            "tokens": []
-        };
-    },
-    cameraLoginReset: function (resetError) {
-        this.cameraLoginConfig.count = 0;
-        this.cameraLoginConfig.user = "";
-        if (resetError) this.cameraLoginConfig.errorCount = 0;
-    },
-    cameraLogin: function () {
-        this.cameraLoginInit();
-        this.cameraLoginIcon.setStyles(this.explorer.css.closeCameraLoginIcon);
-        this.createCameraLoginNode();
-        this.startCameraLogin();
-    },
-    createCameraLoginNode: function () {
-        this.cameraLoginVideoNode = new Element("div", { "styles": this.explorer.css.cameraLoginVideoNode }).inject(this.container);
-        var size = this.formNode.getSize();
-        var topSize = this.formTopNode.getSize();
-        var h = size.y - topSize.y;
-        this.cameraLoginVideoNode.setStyles({
-            "width": "" + size.x + "px",
-            "height": "" + h + "px"
-        });
-        this.cameraLoginVideoNode.position({
-            "relativeTo": this.formContentNode,
-            "position": "upperLeft",
-            "edge": "upperLeft"
-        });
-    },
-    startCameraLogin: function () {
-        this.cameraLoginVideoAreaNode = new Element("div").inject(this.cameraLoginVideoNode);
-        this.cameraLoginVideoInfoNode = new Element("div", { "styles": this.explorer.css.cameraLoginVideoInfoNode }).inject(this.cameraLoginVideoNode);
-        this.cameraLoginVideoInfoNode.set("text", MWF.LP.desktop.login.camera_logining);
-        var size = this.cameraLoginVideoNode.getSize();
-        var infoSize = this.cameraLoginVideoInfoNode.getSize();
-        var h = size.y - infoSize.y;
-        this.cameraLoginVideoAreaNode.setStyle("height", "" + h + "px");
-
-        this.cameraLoginVideoAreaNode.set("html", "<video autoplay></video>");
-        this.video = this.cameraLoginVideoAreaNode.getFirst().setStyles({
-            "background-color": "#000000",
-            "width": "" + size.x + "px",
-            "height": "" + h + "px"
-        });
-        this.videoStart();
-    },
-    videoStart: function () {
-        this.video.addEventListener("canplay", function () {
-            window.setTimeout(function () {
-                this.startCameraAuthentication();
-            }.bind(this), 500);
-        }.bind(this));
-
-        navigator.mediaDevices.getUserMedia({
-            audio: false,
-            video: true
-        }).then(function (stream) {
-            this.video.srcObject = stream;
-        }.bind(this))["catch"](function (error) {
-            console.log('navigator.getUserMedia error: ', error);
-            this.closeCamera();
-        }.bind(this));
-    },
-    getFormData: function () {
-        if (!this.canvas) {
-            this.canvas = new Element("canvas", { "styles": { "display": "none" } }).inject(this.cameraLoginVideoNode);
-            this.canvas.width = this.video.videoWidth;
-            this.canvas.height = this.video.videoHeight;
-        }
-        this.canvas.getContext('2d').drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
-
-        var blob = this.toBlob(this.canvas.toDataURL());
-        var formData = new FormData();
-        formData.append('file', blob);
-
-        this.canvas.destroy();
-        return { "data": formData, "size": blob.size };
-    },
+    // closeCamera: function () {
+    //     if (this.cameraLoginVideoNode) {
+    //         if (this.video) this.video.destroy();
+    //         if (this.canvas) this.canvas.destroy();
+    //         if (this.cameraLoginVideoNode) this.cameraLoginVideoNode.destroy();
+    //         this.video = null;
+    //         this.canvas = null;
+    //         this.cameraLoginVideoNode = null;
+    //     }
+    //     this.cameraLoginIcon.setStyles(this.explorer.css.cameraLoginIcon);
+    // },
+    // cameraLoginInit: function () {
+    //     this.cameraLoginConfig = {
+    //         "maxStep": 2,
+    //         "step": 0,
+    //         "count": 0,
+    //         "max": 2,
+    //         "errorCount": 0,
+    //         "errorMax": 3,
+    //         "user": "",
+    //         "tokens": []
+    //     };
+    // },
+    // cameraLoginReset: function (resetError) {
+    //     this.cameraLoginConfig.count = 0;
+    //     this.cameraLoginConfig.user = "";
+    //     if (resetError) this.cameraLoginConfig.errorCount = 0;
+    // },
+    // cameraLogin: function () {
+    //     this.cameraLoginInit();
+    //     this.cameraLoginIcon.setStyles(this.explorer.css.closeCameraLoginIcon);
+    //     this.createCameraLoginNode();
+    //     this.startCameraLogin();
+    // },
+    // createCameraLoginNode: function () {
+    //     this.cameraLoginVideoNode = new Element("div", { "styles": this.explorer.css.cameraLoginVideoNode }).inject(this.container);
+    //     var size = this.formNode.getSize();
+    //     var topSize = this.formTopNode.getSize();
+    //     var h = size.y - topSize.y;
+    //     this.cameraLoginVideoNode.setStyles({
+    //         "width": "" + size.x + "px",
+    //         "height": "" + h + "px"
+    //     });
+    //     this.cameraLoginVideoNode.position({
+    //         "relativeTo": this.formContentNode,
+    //         "position": "upperLeft",
+    //         "edge": "upperLeft"
+    //     });
+    // },
+    // startCameraLogin: function () {
+    //     this.cameraLoginVideoAreaNode = new Element("div").inject(this.cameraLoginVideoNode);
+    //     this.cameraLoginVideoInfoNode = new Element("div", { "styles": this.explorer.css.cameraLoginVideoInfoNode }).inject(this.cameraLoginVideoNode);
+    //     this.cameraLoginVideoInfoNode.set("text", MWF.LP.desktop.login.camera_logining);
+    //     var size = this.cameraLoginVideoNode.getSize();
+    //     var infoSize = this.cameraLoginVideoInfoNode.getSize();
+    //     var h = size.y - infoSize.y;
+    //     this.cameraLoginVideoAreaNode.setStyle("height", "" + h + "px");
+    //
+    //     this.cameraLoginVideoAreaNode.set("html", "<video autoplay></video>");
+    //     this.video = this.cameraLoginVideoAreaNode.getFirst().setStyles({
+    //         "background-color": "#000000",
+    //         "width": "" + size.x + "px",
+    //         "height": "" + h + "px"
+    //     });
+    //     this.videoStart();
+    // },
+    // videoStart: function () {
+    //     this.video.addEventListener("canplay", function () {
+    //         window.setTimeout(function () {
+    //             this.startCameraAuthentication();
+    //         }.bind(this), 500);
+    //     }.bind(this));
+    //
+    //     navigator.mediaDevices.getUserMedia({
+    //         audio: false,
+    //         video: true
+    //     }).then(function (stream) {
+    //         this.video.srcObject = stream;
+    //     }.bind(this))["catch"](function (error) {
+    //         console.log('navigator.getUserMedia error: ', error);
+    //         this.closeCamera();
+    //     }.bind(this));
+    // },
+    // getFormData: function () {
+    //     if (!this.canvas) {
+    //         this.canvas = new Element("canvas", { "styles": { "display": "none" } }).inject(this.cameraLoginVideoNode);
+    //         this.canvas.width = this.video.videoWidth;
+    //         this.canvas.height = this.video.videoHeight;
+    //     }
+    //     this.canvas.getContext('2d').drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+    //
+    //     var blob = this.toBlob(this.canvas.toDataURL());
+    //     var formData = new FormData();
+    //     formData.append('file', blob);
+    //
+    //     this.canvas.destroy();
+    //     return { "data": formData, "size": blob.size };
+    // },
     //检测出身份
-    checkUserFace: function (formData) {
-
-        var faceset = window.location.host;
-        faceset = faceset.replace(/\./g, "_");
-        this.faceAction.search(faceset, formData.data, { "name": "pic", "size": formData.size }, function (json) {
-            if (json.data.results && json.data.results.length) {
-                var hold = json.data.thresholds["1e-5"];
-                if (json.data.results[0].confidence > hold) {
-                    var token = json.data.faces[0].face_token;
-                    var user = json.data.results[0].user_id;
-                    if ((!this.cameraLoginConfig.user) || (this.cameraLoginConfig.user === user)) {
-                        this.cameraLoginConfig.count++;
-                        this.cameraLoginConfig.user = user;
-                        this.cameraLoginConfig.tokens.push(token);
-                        this.cameraLoginConfig.step++;
-                        this.cameraLoginConfig.errorCount = 0;
-                        this.cameraLoginVideoInfoNode.set("text", MWF.LP.desktop.login["camera_logining_" + this.cameraLoginConfig.step]);
-                    } else {
-                        this.cameraLoginReset();
-                        this.cameraLoginConfig.errorCount++;
-                    }
-                } else {
-                    this.cameraLoginReset();
-                    this.cameraLoginConfig.errorCount++;
-                }
-            } else {
-                this.cameraLoginReset();
-                this.cameraLoginConfig.errorCount++;
-            }
-            this.checkCameraLogin();
-        }.bind(this), function () {
-            window.setTimeout(function () { this.startCameraAuthentication(); }.bind(this), 500);
-        }.bind(this));
-    },
-    checkUserAlive: function (formData, attr, method) {
-        this.faceAction.detectattr(attr, formData.data, { "name": "pic", "size": formData.size }, function (json) {
-            if (json.data.faces && json.data.faces.length) {
-                if (this[method](json.data.faces[0].attributes)) {
-                    this.cameraLoginConfig.step++;
-                    this.cameraLoginConfig.errorCount = 0;
-                    this.cameraLoginVideoInfoNode.set("text", MWF.LP.desktop.login["camera_logining_" + this.cameraLoginConfig.step]);
-                } else {
-                    //可能是照片
-                    this.cameraLoginConfig.errorCount++;
-                }
-            } else {
-                this.cameraLoginConfig.errorCount++;
-            }
-            this.checkCameraLogin();
-        }.bind(this), function () {
-            this.cameraLoginConfig.errorCount++;
-            this.checkCameraLogin();
-        }.bind(this));
-    },
+    // checkUserFace: function (formData) {
+    //
+    //     var faceset = window.location.host;
+    //     faceset = faceset.replace(/\./g, "_");
+    //     this.faceAction.search(faceset, formData.data, { "name": "pic", "size": formData.size }, function (json) {
+    //         if (json.data.results && json.data.results.length) {
+    //             var hold = json.data.thresholds["1e-5"];
+    //             if (json.data.results[0].confidence > hold) {
+    //                 var token = json.data.faces[0].face_token;
+    //                 var user = json.data.results[0].user_id;
+    //                 if ((!this.cameraLoginConfig.user) || (this.cameraLoginConfig.user === user)) {
+    //                     this.cameraLoginConfig.count++;
+    //                     this.cameraLoginConfig.user = user;
+    //                     this.cameraLoginConfig.tokens.push(token);
+    //                     this.cameraLoginConfig.step++;
+    //                     this.cameraLoginConfig.errorCount = 0;
+    //                     this.cameraLoginVideoInfoNode.set("text", MWF.LP.desktop.login["camera_logining_" + this.cameraLoginConfig.step]);
+    //                 } else {
+    //                     this.cameraLoginReset();
+    //                     this.cameraLoginConfig.errorCount++;
+    //                 }
+    //             } else {
+    //                 this.cameraLoginReset();
+    //                 this.cameraLoginConfig.errorCount++;
+    //             }
+    //         } else {
+    //             this.cameraLoginReset();
+    //             this.cameraLoginConfig.errorCount++;
+    //         }
+    //         this.checkCameraLogin();
+    //     }.bind(this), function () {
+    //         window.setTimeout(function () { this.startCameraAuthentication(); }.bind(this), 500);
+    //     }.bind(this));
+    // },
+    // checkUserAlive: function (formData, attr, method) {
+    //     this.faceAction.detectattr(attr, formData.data, { "name": "pic", "size": formData.size }, function (json) {
+    //         if (json.data.faces && json.data.faces.length) {
+    //             if (this[method](json.data.faces[0].attributes)) {
+    //                 this.cameraLoginConfig.step++;
+    //                 this.cameraLoginConfig.errorCount = 0;
+    //                 this.cameraLoginVideoInfoNode.set("text", MWF.LP.desktop.login["camera_logining_" + this.cameraLoginConfig.step]);
+    //             } else {
+    //                 //可能是照片
+    //                 this.cameraLoginConfig.errorCount++;
+    //             }
+    //         } else {
+    //             this.cameraLoginConfig.errorCount++;
+    //         }
+    //         this.checkCameraLogin();
+    //     }.bind(this), function () {
+    //         this.cameraLoginConfig.errorCount++;
+    //         this.checkCameraLogin();
+    //     }.bind(this));
+    // },
     //检测微笑
-    checkUserSmile: function (attr) {
-        return attr.smile.value > attr.smile.threshold;
-    },
+    // checkUserSmile: function (attr) {
+    //     return attr.smile.value > attr.smile.threshold;
+    // },
     //检测抬头
-    checkUserPitch: function (attr) {
-        return attr.headpose.pitch_angle < -10;
-    },
-    startCameraAuthentication: function () {
-        if (this.video) {
-            var formData = this.getFormData();
-            if (!this.faceAction) this.faceAction = MWF.Actions.get("x_faceset_control");
+    // checkUserPitch: function (attr) {
+    //     return attr.headpose.pitch_angle < -10;
+    // },
+    // startCameraAuthentication: function () {
+    //     if (this.video) {
+    //         var formData = this.getFormData();
+    //         if (!this.faceAction) this.faceAction = MWF.Actions.get("x_faceset_control");
+    //
+    //         if (this.cameraLoginConfig.step === 0) {
+    //             this.checkUserFace(formData);
+    //         }
+    //         if (this.cameraLoginConfig.step === 1) {
+    //             this.checkUserAlive(formData, "smiling", "checkUserSmile");
+    //         }
+    //         if (this.cameraLoginConfig.step === 2) {
+    //             this.checkUserAlive(formData, "headpose", "checkUserPitch");
+    //         }
+    //     }
+    // },
 
-            if (this.cameraLoginConfig.step === 0) {
-                this.checkUserFace(formData);
-            }
-            if (this.cameraLoginConfig.step === 1) {
-                this.checkUserAlive(formData, "smiling", "checkUserSmile");
-            }
-            if (this.cameraLoginConfig.step === 2) {
-                this.checkUserAlive(formData, "headpose", "checkUserPitch");
-            }
-        }
-    },
+    // toBlob: function (base64) {
+    //     var bytes;
+    //     if (base64.substr(0, 10) === 'data:image') {
+    //         bytes = window.atob(base64.split(',')[1]);
+    //     } else {
+    //         bytes = window.atob(base64);
+    //     }
+    //     var ab = new ArrayBuffer(bytes.length);
+    //     var ia = new Uint8Array(ab);
+    //     for (var i = 0; i < bytes.length; i++) {
+    //         ia[i] = bytes.charCodeAt(i);
+    //     }
+    //     return new Blob([ab], { type: "image/png" });
+    // },
+    // getDIF: function (arr) {
+    //     var max = Math.max.apply(this, arr);
+    //     var min = Math.min.apply(this, arr);
+    //     return max - min;
+    // },
+    // checkCameraLogin: function () {
+    //
+    //     if (this.cameraLoginConfig.errorCount > this.cameraLoginConfig.errorMax) {
+    //         this.cameraLoginVideoInfoNode.set("text", MWF.LP.desktop.login.camera_loginError);
+    //     } else {
+    //         if (this.cameraLoginConfig.step >= this.cameraLoginConfig.maxStep) {
+    //             var text = MWF.LP.desktop.login.camera_loginSuccess.replace("{name}", this.cameraLoginConfig.user);
+    //             this.cameraLoginVideoInfoNode.set("text", text);
+    //             this.cameraLoginSuccess();
+    //         } else {
+    //             window.setTimeout(function () { this.startCameraAuthentication(); }.bind(this), 100);
+    //         }
+    //     }
+    // },
 
-    toBlob: function (base64) {
-        var bytes;
-        if (base64.substr(0, 10) === 'data:image') {
-            bytes = window.atob(base64.split(',')[1]);
-        } else {
-            bytes = window.atob(base64);
-        }
-        var ab = new ArrayBuffer(bytes.length);
-        var ia = new Uint8Array(ab);
-        for (var i = 0; i < bytes.length; i++) {
-            ia[i] = bytes.charCodeAt(i);
-        }
-        return new Blob([ab], { type: "image/png" });
-    },
-    getDIF: function (arr) {
-        var max = Math.max.apply(this, arr);
-        var min = Math.min.apply(this, arr);
-        return max - min;
-    },
-    checkCameraLogin: function () {
-
-        if (this.cameraLoginConfig.errorCount > this.cameraLoginConfig.errorMax) {
-            this.cameraLoginVideoInfoNode.set("text", MWF.LP.desktop.login.camera_loginError);
-        } else {
-            if (this.cameraLoginConfig.step >= this.cameraLoginConfig.maxStep) {
-                var text = MWF.LP.desktop.login.camera_loginSuccess.replace("{name}", this.cameraLoginConfig.user);
-                this.cameraLoginVideoInfoNode.set("text", text);
-                this.cameraLoginSuccess();
-            } else {
-                window.setTimeout(function () { this.startCameraAuthentication(); }.bind(this), 100);
-            }
-        }
-    },
-
-    cameraLoginSuccess: function () {
-        COMMON.AjaxModule.loadDom(["../o2_lib/CryptoJS/tripledes.js", "../o2_lib/CryptoJS/mode-ecb.js"], function () {
-            //COMMON.AjaxModule.loadDom(, function(){
-
-            var addressObj = layout.serviceAddressList["x_organization_assemble_authentication"];
-            var defaultPort = layout.config.app_protocol==='https' ? "443" : "80";
-            var appPort = addressObj.port || window.location.port;
-            var url = layout.config.app_protocol + "//" + (addressObj.host || window.location.hostname)+ ((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort) + addressObj.context;
-
-            var code = this.crypDES();
-            var json = { "client": "face", "token": code };
-            var _self = this;
-            var res = new Request.JSON({
-                "method": "POST",
-                "url": o2.filterUrl(url + "/jaxrs/sso"),
-                "data": JSON.stringify(json),
-                secure: false,
-                emulation: false,
-                noCache: true,
-                withCredentials: true,
-                "headers": {
-                    "Content-Type": "application/json; charset=utf-8"
-                },
-                onSuccess: function (responseJSON) {
-                    _self._close();
-                    _self.closeCamera();
-                    if (_self.formMaskNode) _self.formMaskNode.destroy();
-                    _self.formAreaNode.destroy();
-                    var xToken = this.getHeader(o2.tokenName);
-                    if (layout.config && layout.config.sessionStorageEnable) sessionStorage.setItem("o2LayoutSessionToken", xToken);
-                    if (_self.explorer && _self.explorer.view) _self.explorer.view.reload();
-                    if (_self.app) _self.app.notice(_self.lp.loginSuccess, "success");
-                    _self.fireEvent("postOk", responseJSON);
-                },
-                onError: function () {
-                    this.cameraLoginVideoInfoNode.set("text", MWF.LP.desktop.login.camera_loginError2);
-                }.bind(this)
-            });
-            res.send();
-
-            //}.bind(this));
-        }.bind(this));
-    },
-
-    crypDES: function () {
-        var key = "xplatform";
-        var userId = this.cameraLoginConfig.user;
-        var d = (new Date()).getTime();
-
-        var keyHex = CryptoJS.enc.Utf8.parse(key);
-
-        var xtoken = CryptoJS.DES.encrypt(userId + "#" + d, keyHex, {
-            mode: CryptoJS.mode.ECB,
-            padding: CryptoJS.pad.Pkcs7
-        });
-        var str = xtoken.ciphertext.toString(CryptoJS.enc.Base64);
-        str = str.replace(/=/g, "");
-        str = str.replace(/\+/g, "-");
-        str = str.replace(/\//g, "_");
-        return str;
-    },
+    // cameraLoginSuccess: function () {
+    //     COMMON.AjaxModule.loadDom(["../o2_lib/CryptoJS/tripledes.js", "../o2_lib/CryptoJS/mode-ecb.js"], function () {
+    //         //COMMON.AjaxModule.loadDom(, function(){
+    //
+    //         var addressObj = layout.serviceAddressList["x_organization_assemble_authentication"];
+    //         var defaultPort = layout.config.app_protocol==='https' ? "443" : "80";
+    //         var appPort = addressObj.port || window.location.port;
+    //         var url = layout.config.app_protocol + "//" + (addressObj.host || window.location.hostname)+ ((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort) + addressObj.context;
+    //
+    //         var code = this.crypDES();
+    //         var json = { "client": "face", "token": code };
+    //         var _self = this;
+    //         var res = new Request.JSON({
+    //             "method": "POST",
+    //             "url": o2.filterUrl(url + "/jaxrs/sso"),
+    //             "data": JSON.stringify(json),
+    //             secure: false,
+    //             emulation: false,
+    //             noCache: true,
+    //             withCredentials: true,
+    //             "headers": {
+    //                 "Content-Type": "application/json; charset=utf-8"
+    //             },
+    //             onSuccess: function (responseJSON) {
+    //                 _self._close();
+    //                 _self.closeCamera();
+    //                 if (_self.formMaskNode) _self.formMaskNode.destroy();
+    //                 _self.formAreaNode.destroy();
+    //                 var xToken = this.getHeader(o2.tokenName);
+    //                 if (layout.config && layout.config.sessionStorageEnable) sessionStorage.setItem("o2LayoutSessionToken", xToken);
+    //                 if (_self.explorer && _self.explorer.view) _self.explorer.view.reload();
+    //                 if (_self.app) _self.app.notice(_self.lp.loginSuccess, "success");
+    //                 _self.fireEvent("postOk", responseJSON);
+    //             },
+    //             onError: function () {
+    //                 this.cameraLoginVideoInfoNode.set("text", MWF.LP.desktop.login.camera_loginError2);
+    //             }.bind(this)
+    //         });
+    //         res.send();
+    //
+    //         //}.bind(this));
+    //     }.bind(this));
+    // },
+    //
+    // crypDES: function () {
+    //     var key = "xplatform";
+    //     var userId = this.cameraLoginConfig.user;
+    //     var d = (new Date()).getTime();
+    //
+    //     var keyHex = CryptoJS.enc.Utf8.parse(key);
+    //
+    //     var xtoken = CryptoJS.DES.encrypt(userId + "#" + d, keyHex, {
+    //         mode: CryptoJS.mode.ECB,
+    //         padding: CryptoJS.pad.Pkcs7
+    //     });
+    //     var str = xtoken.ciphertext.toString(CryptoJS.enc.Base64);
+    //     str = str.replace(/=/g, "");
+    //     str = str.replace(/\+/g, "-");
+    //     str = str.replace(/\//g, "_");
+    //     return str;
+    // },
     _createTableContent: function (){
 
         this.loginType = "captcha";
