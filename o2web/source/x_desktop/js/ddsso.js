@@ -8,7 +8,7 @@ layout.session = layout.session || {};
 layout.mobile = true;
 
 o2.addReady(function () {
-    o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js", "../o2_core/o2/widget/Common.js"], { "sequence": true }, function () {
+    o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js", "../o2_core/o2/widget/Common.js", '../o2_lib/sjcl.min.js'], { "sequence": true }, function () {
         //MWF.defaultPath = "../x_desktop"+MWF.defaultPath;
         MWF.loadLP("zh-cn");
         MWF.require("MWF.xDesktop.Layout", function () {

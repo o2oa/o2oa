@@ -19,6 +19,7 @@ o2.addReady(function(){
 
     o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], {"sequence": true}, function(){
         //MWF.defaultPath = "../x_desktop" + MWF.defaultPath;
+        MWF.require("MWF.widget.Common", null, false);
         MWF.loadLP("zh-cn");
 
         // MWF.require("MWF.widget.Mask", null, false);
@@ -28,7 +29,7 @@ o2.addReady(function(){
         MWF.require("MWF.xDesktop.Layout", function () {
             MWF.xDesktop.requireApp("Common", "", null, false);
             MWF.require("MWF.xDesktop.Authentication", null, false);
-
+            MWF.require("MWF.xDesktop.Common", null, false);
             (function () {
                 layout.requireApp = function(appNames, callback, clazzName){
                     var appPath = appNames.split(".");
@@ -261,26 +262,29 @@ o2.addReady(function(){
                     });
                 };
 
-                MWF.getJSON("res/config/config.json", function (config) {
-                    if (config.proxyCenterEnable){
-                        if (o2.typeOf(config.center)==="array"){
-                            config.center.forEach(function(c){
-                                c.port = window.location.port || 80;
-                            });
-                        }else{
-                            config.port = window.location.port || 80;
+                o2.load('../o2_lib/sjcl.min.js', {}, ()=>{
+                    MWF.getJSON("res/config/config.json", function (config) {
+                        if (config.proxyCenterEnable){
+                            if (o2.typeOf(config.center)==="array"){
+                                config.center.forEach(function(c){
+                                    c.port = window.location.port || 80;
+                                });
+                            }else{
+                                config.port = window.location.port || 80;
+                            }
                         }
-                    }
-                    layout.config = config;
-                    MWF.xDesktop.getServiceAddress(layout.config, function (service, center) {
-                        layout.serviceAddressList = service;
-                        layout.centerServer = center;
-                        layout.load();
-                    }.bind(this));
-                    //layout.getServiceAddress(function(){
-                    //    layout.load();
-                    //});
+                        layout.config = config;
+                        MWF.xDesktop.getServiceAddress(layout.config, function (service, center) {
+                            layout.serviceAddressList = service;
+                            layout.centerServer = center;
+                            layout.load();
+                        }.bind(this));
+                        //layout.getServiceAddress(function(){
+                        //    layout.load();
+                        //});
+                    });
                 });
+
 
             })();
 
