@@ -27,7 +27,7 @@
                     var appPort = addressObj ? (addressObj.port || window.location.port) : window.location.port;
                     var host = (addressObj && addressObj.host) ? addressObj.host : window.location.hostname;
                     var context = addressObj ? (addressObj.context || root) : root;
-                    address = protocol+"//"+host+((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort)+context;
+                    address = protocol+"//"+host+((!appPort || appPort.toString()===defaultPort) ? "" : ":"+appPort)+"/"+context;
                 }
 
                 var res = new Request.JSON({

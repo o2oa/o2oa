@@ -7,7 +7,8 @@ layout.desktop = layout;
 layout.session = layout.session || {};
 
 o2.addReady(function () {
-  o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], { "sequence": true }, function () {
+  o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js", '../o2_lib/sjcl.min.js'], { "sequence": true }, function () {
+    MWF.require("MWF.widget.Common", null, false);
     MWF.loadLP("zh-cn");
     MWF.require("MWF.xDesktop.Layout", function () {
       MWF.require("MWF.xDesktop.Authentication", null, false);
