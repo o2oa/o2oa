@@ -3671,7 +3671,7 @@ if (!window.o2) {
                 //fromx = fromx + 20;
                 x = fromx - parseFloat(width);
             }else{
-                fromx = x;
+                x = fromx;
                 //if (x < 0) x = 20;
             }
 
