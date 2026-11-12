@@ -246,8 +246,8 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 if (this.json.cssUrl) this.container.loadCss(this.json.cssUrl);
                 if (this.json.cssScript){
                     const actions = {
-                        'portal': o2.Actions.load("x_portal_assemble_designer").ScriptAction,
-                        'process': o2.Actions.load("x_processplatform_assemble_designer").ScriptAction,
+                        'portal': o2.Actions.load("x_portal_assemble_surface").ScriptAction,
+                        'process': o2.Actions.load("x_processplatform_assemble_surface").ScriptAction,
                         'cms': o2.Actions.load("x_cms_assemble_control").ScriptAction,
                         'service': o2.Actions.load("x_program_center").ScriptAction
                     }
