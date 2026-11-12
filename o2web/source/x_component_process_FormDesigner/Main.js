@@ -178,7 +178,6 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         });
 
         Object.each(json, function (moduleJson) {
-            console.log({classNames, moduleJson})
             if((classNames && !classNames.includes(moduleJson.type) && moduleJson.type.indexOf("$") === -1)) {
                 moduleJson.type = 'Div';
             }
