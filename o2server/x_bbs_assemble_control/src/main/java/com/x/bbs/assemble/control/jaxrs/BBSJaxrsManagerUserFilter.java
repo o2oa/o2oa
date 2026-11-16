@@ -9,6 +9,7 @@ import com.x.base.core.project.jaxrs.CipherManagerUserJaxrsFilter;
  */
 @WebFilter( urlPatterns = {
 		"/jaxrs/user/*",
+		"/jaxrs/userinfo/*",
 		"/servlet/*"
 } , asyncSupported = true)
 public class BBSJaxrsManagerUserFilter extends CipherManagerUserJaxrsFilter {}
