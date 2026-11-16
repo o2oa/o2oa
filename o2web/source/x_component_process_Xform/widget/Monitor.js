@@ -525,6 +525,9 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
             this.worklogToken[log.fromActivityToken] = log;
             var activityType = log.fromActivityType;
             var activity = (activityType.toLowerCase()=="begin") ? this.process.begin : this.process[activityType+"s"][log.fromActivity];
+            if( !activity ){
+                return;
+            }
             if (log.connected){
                 activity.shap.attr(this.css.passedActivityShap);
             }else{
@@ -565,6 +568,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         if (this.recordList){
             this.recordList.each(function (r, i){
                 var activity = activitys[r.fromActivity];
+                if(!activity)return;
                 if (!activity.recordCount) activity.recordCount = 0
                 activity.recordCount++;
             }.bind(this));
