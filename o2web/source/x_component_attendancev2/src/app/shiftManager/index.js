@@ -1,6 +1,6 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
-import { lpFormat } from "../../utils/common";
+import { getDutyUnitNames, lpFormat } from "../../utils/common";
 import { shiftActionListByPaging, attendanceShiftAction } from "../../utils/actions";
 import oPager from '../../components/o-pager';
 
@@ -9,7 +9,7 @@ import template from "./template.html";
 export default content({
   template,
   autoUpdate: true,
-  components: {oPager},
+  components: { oPager },
   bind() {
     return {
       lp,
@@ -20,8 +20,16 @@ export default content({
         totalPage: 1,
         size: 15, // 每页条目数
       },
-     
+      filter: {
+        belongs: [], //
+      }
     };
+  },
+  beforeRender() {
+    // 当前用户的管理范围
+    if (content.groupUnitDutyList && content.groupUnitDutyList.length > 0) {
+      this.bind.filter.belongs = getDutyUnitNames(content.groupUnitDutyList);
+    }
   },
   afterRender() {
     // let a = [...new Array(2).keys()];
@@ -52,12 +60,14 @@ export default content({
   },
   loadData(e) {
     if (e && e.detail && e.detail.module && e.detail.module.bind) {
-      this.bind.pagerData.page =  e.detail.module.bind.page || 1;
+      this.bind.pagerData.page = e.detail.module.bind.page || 1;
       this.loadShiftList();
     }
   },
   async loadShiftList() {
-    const json = await shiftActionListByPaging( this.bind.pagerData.page, this.bind.pagerData.size, {});
+    const json = await shiftActionListByPaging(this.bind.pagerData.page, this.bind.pagerData.size, {
+      belongs: this.bind.filter.belongs,
+    });
     if (json) {
       this.bind.shiftList = json.data || [];
       const count = json.count || 0;
@@ -67,7 +77,7 @@ export default content({
   // 修改
   async clickEditShift(id) {
     const shiftFilter = this.bind.shiftList.filter(s => s.id == id);
-    if (shiftFilter && shiftFilter.length>0) {
+    if (shiftFilter && shiftFilter.length > 0) {
       const shift = shiftFilter[0];
       let shiftData = {};
       // 这里不能直接赋值 会带 proxy 代理过去
@@ -77,7 +87,7 @@ export default content({
         shiftData.time1 = {
           onDutyTime: shift.properties.timeList[0].onDutyTime || "09:00",
           onDutyTimeBeforeLimit: shift.properties.timeList[0].onDutyTimeBeforeLimit || "",
-          onDutyTimeAfterLimit:shift.properties.timeList[0].onDutyTimeAfterLimit || "",
+          onDutyTimeAfterLimit: shift.properties.timeList[0].onDutyTimeAfterLimit || "",
           offDutyTime: shift.properties.timeList[0].offDutyTime || "18:00",
           offDutyTimeBeforeLimit: shift.properties.timeList[0].offDutyTimeBeforeLimit || "",
           offDutyTimeAfterLimit: shift.properties.timeList[0].offDutyTimeAfterLimit || "",
@@ -88,10 +98,10 @@ export default content({
         };
         if (shift.properties.timeList.length > 1) {
           const restPeriod2 = this.parseRestPeriod(shift.properties.timeList[1].restPeriod);
-          shiftData.time2  = {
+          shiftData.time2 = {
             onDutyTime: shift.properties.timeList[1].onDutyTime || "",
             onDutyTimeBeforeLimit: shift.properties.timeList[1].onDutyTimeBeforeLimit || "",
-            onDutyTimeAfterLimit:shift.properties.timeList[1].onDutyTimeAfterLimit || "",
+            onDutyTimeAfterLimit: shift.properties.timeList[1].onDutyTimeAfterLimit || "",
             offDutyTime: shift.properties.timeList[1].offDutyTime || "",
             offDutyTimeBeforeLimit: shift.properties.timeList[1].offDutyTimeBeforeLimit || "",
             offDutyTimeAfterLimit: shift.properties.timeList[1].offDutyTimeAfterLimit || "",
@@ -103,10 +113,10 @@ export default content({
         }
         if (shift.properties.timeList.length > 2) {
           const restPeriod3 = this.parseRestPeriod(shift.properties.timeList[2].restPeriod);
-          shiftData.time3  = {
+          shiftData.time3 = {
             onDutyTime: shift.properties.timeList[2].onDutyTime || "",
             onDutyTimeBeforeLimit: shift.properties.timeList[2].onDutyTimeBeforeLimit || "",
-            onDutyTimeAfterLimit:shift.properties.timeList[2].onDutyTimeAfterLimit || "",
+            onDutyTimeAfterLimit: shift.properties.timeList[2].onDutyTimeAfterLimit || "",
             offDutyTime: shift.properties.timeList[2].offDutyTime || "",
             offDutyTimeBeforeLimit: shift.properties.timeList[2].offDutyTimeBeforeLimit || "",
             offDutyTimeAfterLimit: shift.properties.timeList[2].offDutyTimeAfterLimit || "",
@@ -119,14 +129,15 @@ export default content({
         // 修改
         shiftData.form = {
           id: shift.id || "",
-          shiftName: shift.shiftName|| "", //班次名称
-          seriousTardinessLateMinutes: shift.seriousTardinessLateMinutes|| "0", // 严重迟到分钟数
-          absenteeismLateMinutes: shift.absenteeismLateMinutes|| "0", // 旷工迟到分钟数
-          lateAndEarlyOnTime: shift.lateAndEarlyOnTime|| "", // 上班最多可晚时间
-          lateAndEarlyOffTime: shift.lateAndEarlyOffTime|| "", // 下班最多可早走时间
+          shiftName: shift.shiftName || "", //班次名称
+          belongOrgDn: shift.belongOrgDn || "", // 所属组织
+          seriousTardinessLateMinutes: shift.seriousTardinessLateMinutes || "0", // 严重迟到分钟数
+          absenteeismLateMinutes: shift.absenteeismLateMinutes || "0", // 旷工迟到分钟数
+          lateAndEarlyOnTime: shift.lateAndEarlyOnTime || "", // 上班最多可晚时间
+          lateAndEarlyOffTime: shift.lateAndEarlyOffTime || "", // 下班最多可早走时间
           workTime: shift.workTime || 0, // 工作时长分钟数.
           needLimitWorkTime: shift.needLimitWorkTime || true, // 工作时长不足是否记为早退.
-      }; // 多一层的
+        }; // 多一层的
         // const content = (await import(`./addShift/index.js`)).default;
         // this.addShiftVm = await content.generate(".form", { bind: shiftData }, this);
         this.$parent.openShiftForm({ bind: shiftData });
@@ -139,7 +150,7 @@ export default content({
   },
   parseRestPeriod(restPeriod) {
     if (!restPeriod || !restPeriod.includes("-")) {
-      return {start: "", end: ""};
+      return { start: "", end: "" };
     }
     const list = restPeriod.split("-");
     return {
@@ -167,7 +178,10 @@ export default content({
   },
   async deleteShift(id) {
     this.$topParent.closeFormVm(); // 关闭表单
-    const json = await attendanceShiftAction("delete", id);
+    const json = await attendanceShiftAction("deleteByManager", {
+      id: id,
+      belongs: this.bind.filter.belongs,
+    });
     console.debug(json);
     this.loadShiftList();
   },

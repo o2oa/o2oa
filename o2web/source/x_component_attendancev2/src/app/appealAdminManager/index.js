@@ -1,7 +1,7 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, component as app } from "@o2oa/component";
 import { appealInfoActionManagerListByPaging, appealInfoAction } from "../../utils/actions";
-import { fieldWorkFormat } from "../../utils/common";
+import { getDutyUnitNames, fieldWorkFormat } from "../../utils/common";
 import oOrgPersonSelector from "../../components/o-org-person-selector";
 import oDatePicker from "../../components/o-date-picker";
 import oPager from "../../components/o-pager";
@@ -35,14 +35,7 @@ export default content({
   beforeRender() {
     // 当前用户的选择范围
     if (content.myDutyList && content.myDutyList.length > 0) {
-      let units = [];
-      for (let i = 0; i < content.myDutyList.length; i++) {
-        const duty = content.myDutyList[i];
-        if (duty.woUnit && duty.woUnit.distinguishedName) {
-          units.push(duty.woUnit.distinguishedName);
-        }
-      }
-      this.bind.units = units;
+      this.bind.units = getDutyUnitNames(content.myDutyList);
     }
   },
   afterRender() {

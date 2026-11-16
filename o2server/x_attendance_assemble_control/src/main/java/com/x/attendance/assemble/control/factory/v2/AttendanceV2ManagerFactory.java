@@ -14,6 +14,8 @@ import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.tools.DefaultCharset;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -42,18 +44,26 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
 
     /**
      * 查询组织下级单位列表
-     * @param belongOrg
+     * @param belongs
      * @param business
      * @return
      * @throws Exception
      */
-    public List<String> belongOrgs(String belongOrg, Business business) throws Exception {
-        List<String> unitDNList = business.organization().unit().listWithUnitSubNested(belongOrg);
-        if (unitDNList == null || unitDNList.isEmpty()) {
-            unitDNList = new ArrayList<>();
+    public List<String> belongOrgs(List<String> belongs, Business business) throws Exception {
+        List<String> unitDNList = new ArrayList<>();
+        if (belongs != null && !belongs.isEmpty()) {
+            for (String belongOrg : belongs) {
+                List<String> list = business.organization().unit()
+                        .listWithUnitSubNested(belongOrg);
+                if (list != null &&  !list.isEmpty()) {
+                    unitDNList.addAll(list);
+                }
+                unitDNList.add(belongOrg);
+            }
         }
-        unitDNList.add(belongOrg);
-        return unitDNList;
+        // 去重复
+        HashSet<String> peopleSet = new HashSet<>(unitDNList);
+        return new ArrayList<>(peopleSet);
     }
 
     /**

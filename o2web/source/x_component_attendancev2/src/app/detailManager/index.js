@@ -1,6 +1,6 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
-import { convertMinutesToHoursAndMinutes } from "../../utils/common";
+import { getDutyUnitNames, convertMinutesToHoursAndMinutes } from "../../utils/common";
 import { detailActionListByPaging } from "../../utils/actions";
 import oPager from "../../components/o-pager";
 import oOrgPersonSelector from "../../components/o-org-person-selector";
@@ -53,14 +53,7 @@ export default content({
     this.bind.form.endDate = chooseDate;
     // 当前用户的选择范围
     if (content.myDutyList && content.myDutyList.length > 0) {
-      let units = [];
-      for (let i = 0; i < content.myDutyList.length; i++) {
-        const duty = content.myDutyList[i];
-        if (duty.woUnit && duty.woUnit.distinguishedName) {
-          units.push(duty.woUnit.distinguishedName);
-        }
-      }
-      this.bind.units = units;
+      this.bind.units = getDutyUnitNames(content.myDutyList);
     }
   },
   afterRender() {

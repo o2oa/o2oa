@@ -8,6 +8,9 @@
         <div class="o2-form-content">
             <o-input oo-prop="{'isRequried': true, 'label':$.lp.shiftForm.shiftNameLabel,'placeholder':$.lp.shiftForm.shiftNameLabelPlaceholder, 'value': $.form.shiftName}"
                 oo-model="form.shiftName"></o-input>
+            <o-org-person-selector
+                oo-prop="{'selectorTitle': $.lp.groupForm.groupBelongs, 'label':$.lp.groupForm.groupBelongs, 'placeholder': $.lp.groupForm.groupBelongsPlaceholder, 'value': $.form.belongs, 'units': $.units, 'count': 1, 'types': ['unit']}"
+                oo-model="form.belongs"></o-org-person-selector>
             <div>
                 <div style="margin: 10px 0;">
                     <div class="form-item-line-label">

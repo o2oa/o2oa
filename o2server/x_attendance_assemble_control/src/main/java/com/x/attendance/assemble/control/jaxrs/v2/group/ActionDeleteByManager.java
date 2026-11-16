@@ -7,6 +7,7 @@ import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.entity.v2.AttendanceV2Group;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -31,7 +32,7 @@ public class ActionDeleteByManager extends BaseAction {
             }
             Business business = new Business(emc);
             boolean isManager = business.isManager(effectivePerson);
-            if (!isManager && StringUtils.isEmpty(wi.getBelongOrgDn())) {
+            if(!isManager && (wi.getBelongs() == null || wi.getBelongs().isEmpty())){
                 throw new ExceptionAccessDenied(effectivePerson.getName(), "您不是管理员.");
             }
             AttendanceV2Group group = emc.find(wi.getId(), AttendanceV2Group.class);
@@ -44,7 +45,7 @@ public class ActionDeleteByManager extends BaseAction {
                     throw new ExceptionAccessDenied(effectivePerson);
                 }
                 List<String> unitDNList = business.getAttendanceV2ManagerFactory()
-                        .belongOrgs(wi.getBelongOrgDn(), business);
+                        .belongOrgs(wi.getBelongs(), business);
                 if (!unitDNList.contains(group.getBelongOrgDn())) {
                     throw new ExceptionAccessDenied(effectivePerson);
                 }
@@ -64,7 +65,17 @@ public class ActionDeleteByManager extends BaseAction {
     public static class Wi extends GsonPropertyObject {
 
         private String id;
-        private String belongOrgDn;
+        @FieldDescribe("所属组织DN")
+        private List<String> belongs;
+
+
+        public List<String> getBelongs() {
+            return belongs;
+        }
+
+        public void setBelongs(List<String> belongs) {
+            this.belongs = belongs;
+        }
 
         public String getId() {
             return id;
@@ -74,13 +85,6 @@ public class ActionDeleteByManager extends BaseAction {
             this.id = id;
         }
 
-        public String getBelongOrgDn() {
-            return belongOrgDn;
-        }
-
-        public void setBelongOrgDn(String belongOrgDn) {
-            this.belongOrgDn = belongOrgDn;
-        }
     }
     public static class Wo extends WrapOutBoolean {
 

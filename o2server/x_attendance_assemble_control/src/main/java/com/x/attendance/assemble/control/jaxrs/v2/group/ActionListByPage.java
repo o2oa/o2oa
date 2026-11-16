@@ -43,12 +43,12 @@ public class ActionListByPage extends BaseAction {
                 wi = new Wi();
             }
             boolean isManager = business.isManager(effectivePerson);
-            if(!isManager && StringUtils.isEmpty(wi.getBelongOrgDn())){
+            if(!isManager && (wi.getBelongs() == null || wi.getBelongs().isEmpty())){
                 throw new ExceptionAccessDenied(effectivePerson.getName(), "您不是管理员.");
             }
             List<String> unitDNList = null;
             if (!isManager) {
-                unitDNList = business.getAttendanceV2ManagerFactory().belongOrgs(wi.getBelongOrgDn(), business);
+                unitDNList = business.getAttendanceV2ManagerFactory().belongOrgs(wi.getBelongs(), business);
             }
             Integer adjustPage = this.adjustPage(page);
             Integer adjustPageSize = this.adjustSize(size);
@@ -82,15 +82,15 @@ public class ActionListByPage extends BaseAction {
 
 
         @FieldDescribe("所属组织DN")
-        private String belongOrgDn;
+        private List<String> belongs;
 
 
-        public String getBelongOrgDn() {
-            return belongOrgDn;
+        public List<String> getBelongs() {
+            return belongs;
         }
 
-        public void setBelongOrgDn(String belongOrgDn) {
-            this.belongOrgDn = belongOrgDn;
+        public void setBelongs(List<String> belongs) {
+            this.belongs = belongs;
         }
 
         public String getName() {

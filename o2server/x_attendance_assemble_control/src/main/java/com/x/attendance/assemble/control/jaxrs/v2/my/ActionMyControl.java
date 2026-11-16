@@ -67,11 +67,11 @@ public class ActionMyControl extends BaseAction {
             if (StringUtils.isNotEmpty(config.getProperties().getAttendanceGroupDutyManager())) {
                 if (p != null && p.getWoIdentityList() != null && !p.getWoIdentityList()
                         .isEmpty()) {
-                    List<WoUnitDuty> woUnitDutyList = new ArrayList<>();
+                    List<WoUnitDuty> groupUnitDutyList = new ArrayList<>();
                     for (WoIdentity identity : p.getWoIdentityList()) {
                         if (identity.getWoUnitDutyList() != null && !identity.getWoUnitDutyList()
                                 .isEmpty()) {
-                            woUnitDutyList.addAll(identity.getWoUnitDutyList().stream()
+                            groupUnitDutyList.addAll(identity.getWoUnitDutyList().stream()
                                     .filter((d) ->
                                             config.getProperties().getAttendanceGroupDutyManager()
                                                     .equals(d.getName()) || config.getProperties()
@@ -80,8 +80,8 @@ public class ActionMyControl extends BaseAction {
                                     .collect(Collectors.toList()));
                         }
                     }
-                    if (!woUnitDutyList.isEmpty()) {
-                        wo.setGroupUnitDuty(woUnitDutyList.get(0));
+                    if (!groupUnitDutyList.isEmpty()) {
+                        wo.setGroupUnitDutyList(groupUnitDutyList);
                     }
                 }
             }
@@ -111,15 +111,16 @@ public class ActionMyControl extends BaseAction {
         @FieldDescribe("考勤管理员职务列表")
         private List<WoUnitDuty> unitDutyList;
         @FieldDescribe("考勤组管理员职务对象")
-        private WoUnitDuty groupUnitDuty;
+        private List<WoUnitDuty> groupUnitDutyList;
 
-        public WoUnitDuty getGroupUnitDuty() {
-            return groupUnitDuty;
+
+        public List<WoUnitDuty> getGroupUnitDutyList() {
+            return groupUnitDutyList;
         }
 
-        public void setGroupUnitDuty(
-                WoUnitDuty groupUnitDuty) {
-            this.groupUnitDuty = groupUnitDuty;
+        public void setGroupUnitDutyList(
+                List<WoUnitDuty> groupUnitDutyList) {
+            this.groupUnitDutyList = groupUnitDutyList;
         }
 
         public Boolean getAdmin() {

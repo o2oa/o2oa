@@ -35,6 +35,7 @@ export default content({
           statisticUnitDutyNameList:[], // 考勤统计管理员的职务名称
           statisticUnitDutyNameListInput: "", // 考勤统计管理员的职务名称输入框
           fieldWorkExecuteScript: "", // 外勤自动发起脚本
+          attendanceGroupDutyManager: "", // 考勤组负责人职务名称
         }
       },
       holidayList: [],

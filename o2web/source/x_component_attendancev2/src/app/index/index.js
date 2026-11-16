@@ -170,10 +170,13 @@ export default content({
   },
 
   async loadCurrentPersonInfo() {
+    content.controls = null
     content.myDutyList = [];
+    content.groupUnitDutyList = [];
     this.bind.admin = "";
     const controls = await myAction("controls");
     if (controls) {
+      content.controls = controls;
       if (controls.admin) { // 管理员
         this.bind.admin = "admin";
       } else {
@@ -181,8 +184,11 @@ export default content({
           this.bind.admin = "readAdmin";
           content.myDutyList = controls.unitDutyList || [];
         }
-        if (controls.assistAdmin) { // 考勤组协助管理员
-          this.bind.assistAdmin = true;
+        if (controls.groupUnitDutyList) {
+          content.groupUnitDutyList = controls.groupUnitDutyList || [];
+          if (content.groupUnitDutyList.length > 0) {
+            this.bind.groupAdmin = true;
+          }
         }
       }
     }
@@ -197,7 +203,7 @@ export default content({
       access = 2;
     }
     let accessMenus = menus.filter((menu) => menu.access <= access);
-    if (this.bind.assistAdmin) { // 协助管理员 添加考勤组管理菜单
+    if (this.bind.groupAdmin) { // 考勤组管理员 添加考勤组管理菜单
       if (!accessMenus.some((m) => m.access === 2)) {
         accessMenus.push(
           {
@@ -207,10 +213,22 @@ export default content({
             "access": 2,
             "children": [
               {
+                "name": "3-1",
+                "text": lp.menu.shiftManager,
+                "action": "shiftManager",
+                "icon": "ooicon-onduty"
+              },
+              {
                 "name": "3-2",
                 "text": lp.menu.groupmanager,
                 "action": "groupManager",
-                icon: "ooicon-group"
+                "icon": "ooicon-group"
+              },
+              {
+                "name": "3-3",
+                "text": lp.menu.addressmanger,
+                "action": "addressManager",
+                "icon": "ooicon-workcenter"
               }
             ],
           }

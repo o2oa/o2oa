@@ -1,6 +1,6 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
-import { lpFormat } from "../../utils/common";
+import { getDutyUnitNames, lpFormat } from "../../utils/common";
 import { groupActionListByPaging, groupAction } from "../../utils/actions";
 import oPager from "../../components/o-pager";
 import template from "./template.html";
@@ -19,7 +19,16 @@ export default content({
         totalPage: 1,
         size: 15, // 每页条目数
       },
+      filter:{
+        belongs: [], //
+      }
     };
+  },
+  beforeRender() {
+    // 当前用户的管理范围
+    if (content.groupUnitDutyList && content.groupUnitDutyList.length > 0) {
+      this.bind.filter.belongs = getDutyUnitNames(content.groupUnitDutyList);
+    }
   },
   afterRender() {
     this.loadGroupList();
@@ -135,7 +144,9 @@ export default content({
     const json = await groupActionListByPaging(
       this.bind.pagerData.page,
       this.bind.pagerData.size,
-      {}
+      {
+        belongs: this.bind.filter.belongs,
+      }
     );
     if (json) {
       this.bind.groupList = json.data || [];
@@ -179,7 +190,10 @@ export default content({
   },
   async deleteGroup(id) {
     this.$topParent.closeFormVm(); // 关闭表单
-    const json = await groupAction("delete", id);
+    const json = await groupAction("deleteByManager", {
+       id: id,
+      belongs: this.bind.filter.belongs,
+    });
     console.debug(json);
     this.loadGroupList();
   },

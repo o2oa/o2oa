@@ -4,7 +4,7 @@ import {
   attendanceWorkPlaceV2Action,
   getPublicData,
 } from "../../utils/actions";
-import { lpFormat, isEmpty } from "../../utils/common";
+import { getDutyUnitNames, lpFormat, isEmpty } from "../../utils/common";
 import template from "./temp.html";
 
 export default content({
@@ -14,6 +14,7 @@ export default content({
   bind() {
     return {
       lp,
+      showConfigBtn: false,
       workAddressList: [],
       // 地图配置
       mapConfig: {
@@ -22,7 +23,19 @@ export default content({
         aMapAccountKey: "",
         txMapAccountKey: "",
       },
+      filter:{
+        belongs: [], //
+      }
     };
+  },
+  beforeRender() {
+     // 当前用户的管理范围
+    if (content.groupUnitDutyList && content.groupUnitDutyList.length > 0) {
+      this.bind.filter.belongs = getDutyUnitNames(content.groupUnitDutyList);
+    }
+    if (content.controls && content.controls.admin) {
+      this.bind.showConfigBtn = true;
+    }
   },
   afterRender() {
     this.listenEventBus();
@@ -95,12 +108,18 @@ export default content({
     );
   },
   async deleteWorkplace(id) {
-    const data = await attendanceWorkPlaceV2Action("delete", id);
+    const data = await attendanceWorkPlaceV2Action("deleteByManager", {
+      id: id,
+      belongs: this.bind.filter.belongs,
+    });
     console.info(data);
     this.loadWorkAddressData();
   },
   async loadWorkAddressData() {
-    const data = await attendanceWorkPlaceV2Action("listAll");
+    const filter = {
+      belongs: this.bind.filter.belongs
+    }
+    const data = await attendanceWorkPlaceV2Action("listByManager", filter);
     this.bind.workAddressList = data || [];
   },
   closeAddForm() {

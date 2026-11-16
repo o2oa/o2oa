@@ -1,11 +1,12 @@
-import {component as content} from '@o2oa/oovm';
-import {lp, o2} from '@o2oa/component';
-import {isPositiveInt, isEmpty} from '../../../utils/common';
-import {attendanceWorkPlaceV2Action} from '../../../utils/actions';
+import { component as content } from '@o2oa/oovm';
+import { lp, o2 } from '@o2oa/component';
+import { getDutyUnitNames, isPositiveInt, isEmpty } from '../../../utils/common';
+import { attendanceWorkPlaceV2Action } from '../../../utils/actions';
 import template from './temp.html';
 import style from "./style.scope.css";
 import oInput from '../../../components/o-input';
 import oTextarea from '../../../components/o-textarea';
+import oOrgPersonSelector from "../../../components/o-org-person-selector";
 import baiduMap from './baidu-map'; // 百度地图
 import amap from './amap'; // 高德地图
 import tencentMap from './tencent-map'; // 腾讯地图
@@ -14,7 +15,7 @@ import tencentMap from './tencent-map'; // 腾讯地图
 export default content({
     style,
     template,
-    components: {oInput, oTextarea, baiduMap, amap, tencentMap},
+    components: { oInput, oTextarea, oOrgPersonSelector, baiduMap, amap, tencentMap },
     autoUpdate: true,
     bind() {
         return {
@@ -28,8 +29,11 @@ export default content({
                 description: "",
                 status: "a", // a 新增 ，u 更新， v 查看
                 isView: false,
-                positionType: "amap" // baidu amap tx 如果为空需要输入经纬度
+                positionType: "amap", // baidu amap tx 如果为空需要输入经纬度
+                belongOrgDn: "", // 所属组织
+                belongs: [], // 当前考勤组的管理范围
             },
+            units: []
         };
     },
     // 如果有数据过来
@@ -41,6 +45,12 @@ export default content({
             this.bind.fTitle = lp.workAddressView;
         } else if (this.bind.form.id && this.bind.form.status === 'u') {
             this.bind.fTitle = lp.workAddressAdd;
+            if (this.bind.form.belongOrgDn){
+                this.bind.form.belongs = [this.bind.form.belongOrgDn];
+            }
+        }
+        if (content.groupUnitDutyList && content.groupUnitDutyList.length > 0) {
+            this.bind.units = getDutyUnitNames(content.groupUnitDutyList);
         }
     },
     close() {
@@ -49,6 +59,9 @@ export default content({
     },
     async submitAdd() {
         let myForm = this.bind.form;
+        if (myForm.belongs.length > 0) {
+            myForm.belongOrgDn = myForm.belongs[0];
+        }
         if (isEmpty(myForm.longitude) || isEmpty(myForm.latitude)) {
             if (myForm.positionType === "") {
                 o2.api.page.notice(lp.workAddressForm.lnglatInputNotEmpty, 'error');
