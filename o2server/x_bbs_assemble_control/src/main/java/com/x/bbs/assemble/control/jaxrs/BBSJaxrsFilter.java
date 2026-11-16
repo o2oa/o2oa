@@ -30,7 +30,6 @@ import com.x.bbs.assemble.control.ThisApplication;
 		"/jaxrs/section/*",
 		"/jaxrs/subject/*",
 		"/jaxrs/reply/*",
-		"/jaxrs/userinfo/*",
 		"/jaxrs/login/*",
 		"/jaxrs/logout/*",
 		"/jaxrs/mobile/*",
