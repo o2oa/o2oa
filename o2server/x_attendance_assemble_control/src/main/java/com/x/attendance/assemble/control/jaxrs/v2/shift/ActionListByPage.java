@@ -1,5 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.v2.shift;
 
+ import com.x.base.core.project.exception.ExceptionAccessDenied;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.JsonElement;
@@ -16,6 +18,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by fancyLou on 2023/1/31.
@@ -39,13 +42,21 @@ public class ActionListByPage extends BaseAction {
             if (wi == null) {
                 wi = new Wi();
             }
+            boolean isManager = business.isManager(effectivePerson);
+            if(!isManager && StringUtils.isEmpty(wi.getBelongOrgDn())){
+                throw new ExceptionAccessDenied(effectivePerson.getName(), "您不是管理员.");
+            }
+            List<String> unitDNList = null;
+            if (!isManager) {
+                unitDNList = business.getAttendanceV2ManagerFactory().belongOrgs(wi.getBelongOrgDn(), business);
+            }
             Integer adjustPage = this.adjustPage(page);
             Integer adjustPageSize = this.adjustSize(size);
             List<AttendanceV2Shift> list = business.getAttendanceV2ManagerFactory().listShiftWithNameByPage(adjustPage,
-                    adjustPageSize, wi.getName());
+                    adjustPageSize, wi.getName(), unitDNList);
             List<Wo> wos = Wo.copier.copy(list);
             result.setData(wos);
-            result.setCount(business.getAttendanceV2ManagerFactory().shiftCountWithName(wi.getName()));
+            result.setCount(business.getAttendanceV2ManagerFactory().shiftCountWithName(wi.getName(), unitDNList));
             return result;
         }
     }
@@ -56,6 +67,17 @@ public class ActionListByPage extends BaseAction {
         private static final long serialVersionUID = -4138592167949224238L;
         @FieldDescribe("班次名称")
         private String name;
+
+        @FieldDescribe("所属组织DN")
+        private String belongOrgDn;
+
+        public String getBelongOrgDn() {
+            return belongOrgDn;
+        }
+
+        public void setBelongOrgDn(String belongOrgDn) {
+            this.belongOrgDn = belongOrgDn;
+        }
 
         public String getName() {
             return name;

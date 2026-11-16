@@ -19,11 +19,20 @@ public class AttendanceV2ConfigProperties extends JsonProperties {
     private Integer checkInAlertOnDutyBeforeMinutes = 10;
     @FieldDescribe("是否开启中国节假日数据同步")
     private Boolean chineseHolidaySyncEnable = true;
-    @FieldDescribe("考勤管理员职务名称")
+    @FieldDescribe("考勤统计管理员职务名称")
     private List<String> statisticUnitDutyNameList =  defaultList;
     @FieldDescribe("外勤打卡执行脚本")
     private String fieldWorkExecuteScript;
+    @FieldDescribe("考勤组管理员职务名称")
+    private String attendanceGroupDutyManager;
 
+    public String getAttendanceGroupDutyManager() {
+        return attendanceGroupDutyManager;
+    }
+
+    public void setAttendanceGroupDutyManager(String attendanceGroupDutyManager) {
+        this.attendanceGroupDutyManager = attendanceGroupDutyManager;
+    }
 
     public String getFieldWorkExecuteScript() {
         return fieldWorkExecuteScript;

@@ -112,6 +112,20 @@ public class AttendanceV2WorkPlace extends SliceJpaObject {
 	private String description = null;
 
 
+	public static final String belongOrgDn_FIELDNAME = "belongOrgDn";
+	@FieldDescribe("所属组织DN，用于数据权限控制.")
+	@Column(name = ColumnNamePrefix + belongOrgDn_FIELDNAME)
+	private String belongOrgDn;
+
+
+	public String getBelongOrgDn() {
+		return belongOrgDn;
+	}
+
+	public void setBelongOrgDn(String belongOrgDn) {
+		this.belongOrgDn = belongOrgDn;
+	}
+
 
 	public String getPlaceName() {
 		return placeName;

@@ -76,7 +76,8 @@ public class ActionSave extends BaseAction {
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			if(!business.isManager(effectivePerson)){
+			boolean isManager = business.isManager(effectivePerson);
+			if(!isManager && StringUtils.isEmpty(wrapIn.getBelongOrgDn())){
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			// 名称不能相同

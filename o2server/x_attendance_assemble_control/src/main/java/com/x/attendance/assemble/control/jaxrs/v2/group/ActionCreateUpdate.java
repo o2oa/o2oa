@@ -40,16 +40,9 @@ public class ActionCreateUpdate extends BaseAction {
             if (StringUtils.isEmpty(wi.getGroupName())) {
                 throw new ExceptionEmptyParameter("考勤组名称");
             }
-            if(!business.isManager(effectivePerson)){
-                 // 协助管理员只能修改 
-                 if(StringUtils.isEmpty(wi.getId())) {
-                    throw new ExceptionAccessDenied(effectivePerson);
-                } else {
-                    AttendanceV2Group group = emc.find(wi.getId(), AttendanceV2Group.class);
-                    if (group.getAssistAdminList() == null || !group.getAssistAdminList().contains(effectivePerson.getDistinguishedName())) {
-                        throw new ExceptionAccessDenied(effectivePerson);
-                    }
-                }
+            boolean isManager = business.isManager(effectivePerson);
+            if(!isManager && StringUtils.isEmpty(wi.getBelongOrgDn())){
+                throw new ExceptionAccessDenied(effectivePerson);
             }
             // 校验
             // 名称不能相同
@@ -86,9 +79,6 @@ public class ActionCreateUpdate extends BaseAction {
                 } else {
                     throw new ExceptionEmptyParameter("打卡类型");
                 }
-//                if (wi.getWorkPlaceIdList() == null || wi.getWorkPlaceIdList().isEmpty()) {
-//                    throw new ExceptionEmptyParameter("工作场所列表");
-//                }
             }
            
             // 新增或更新

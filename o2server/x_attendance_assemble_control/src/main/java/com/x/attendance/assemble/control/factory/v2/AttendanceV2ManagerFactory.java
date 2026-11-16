@@ -13,6 +13,7 @@ import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.tools.DefaultCharset;
 
+import java.util.ArrayList;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -36,6 +37,23 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
 
     public AttendanceV2ManagerFactory(Business business) throws Exception {
         super(business);
+    }
+
+
+    /**
+     * 查询组织下级单位列表
+     * @param belongOrg
+     * @param business
+     * @return
+     * @throws Exception
+     */
+    public List<String> belongOrgs(String belongOrg, Business business) throws Exception {
+        List<String> unitDNList = business.organization().unit().listWithUnitSubNested(belongOrg);
+        if (unitDNList == null || unitDNList.isEmpty()) {
+            unitDNList = new ArrayList<>();
+        }
+        unitDNList.add(belongOrg);
+        return unitDNList;
     }
 
     /**
@@ -87,13 +105,13 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
      * 
      * @param adjustPage
      * @param adjustPageSize
-     * @param assistAdmin    协助管理员
+     * @param belongOrgs    所属组织
      * @param name           可以为空
      * @return
      * @throws Exception
      */
     public List<AttendanceV2Group> listGroupWithNameByPage(Integer adjustPage,
-            Integer adjustPageSize, String assistAdmin, String name) throws Exception {
+            Integer adjustPageSize, List<String> belongOrgs, String name) throws Exception {
         EntityManager em = this.entityManagerContainer().get(AttendanceV2Group.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AttendanceV2Group> cq = cb.createQuery(AttendanceV2Group.class);
@@ -102,8 +120,8 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
         if (StringUtils.isNotEmpty(name)) {
             p = cb.and(p, cb.like(root.get(AttendanceV2Group_.groupName), "%" + name + "%"));
         }
-        if (StringUtils.isNotEmpty(assistAdmin)) {
-            p = cb.and(p, cb.isMember(assistAdmin, root.get(AttendanceV2Group_.assistAdminList)));
+        if (belongOrgs !=null && !belongOrgs.isEmpty()) {
+            p = cb.and(p,  root.get(AttendanceV2Group_.belongOrgDn).in(belongOrgs));
         }
         cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2Group_.createTime)));
         return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
@@ -115,11 +133,11 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
      * 分页查询需要
      * 
      * @param name        可以为空
-     * @param assistAdmin 协助管理员
+     * @param belongOrgs    所属组织
      * @return
      * @throws Exception
      */
-    public Long groupCountWithName(String assistAdmin, String name) throws Exception {
+    public Long groupCountWithName(List<String> belongOrgs, String name) throws Exception {
         EntityManager em = this.entityManagerContainer().get(AttendanceV2Group.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
@@ -128,8 +146,8 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
         if (StringUtils.isNotEmpty(name)) {
             p = cb.and(p, cb.like(root.get(AttendanceV2Group_.groupName), "%" + name + "%"));
         }
-        if (StringUtils.isNotEmpty(assistAdmin)) {
-            p = cb.and(p, cb.isMember(assistAdmin, root.get(AttendanceV2Group_.assistAdminList)));
+        if (belongOrgs !=null && !belongOrgs.isEmpty()) {
+            p = cb.and(p,  root.get(AttendanceV2Group_.belongOrgDn).in(belongOrgs));
         }
         return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
     }
@@ -145,17 +163,19 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
      * @throws Exception
      */
     public List<AttendanceV2Shift> listShiftWithNameByPage(Integer adjustPage,
-            Integer adjustPageSize, String name) throws Exception {
+            Integer adjustPageSize, String name, List<String> belongOrgs) throws Exception {
         EntityManager em = this.entityManagerContainer().get(AttendanceV2Shift.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AttendanceV2Shift> cq = cb.createQuery(AttendanceV2Shift.class);
         Root<AttendanceV2Shift> root = cq.from(AttendanceV2Shift.class);
+        Predicate p = cb.conjunction();
         if (StringUtils.isNotEmpty(name)) {
-            Predicate p = cb.like(root.get(AttendanceV2Shift_.shiftName), "%" + name + "%");
-            cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2Shift_.createTime)));
-        } else {
-            cq.select(root).orderBy(cb.desc(root.get(AttendanceV2Shift_.createTime)));
+             p = cb.and(p, cb.like(root.get(AttendanceV2Shift_.shiftName), "%" + name + "%"));
         }
+        if (belongOrgs != null && !belongOrgs.isEmpty()) {
+            p = cb.and(p, root.get(AttendanceV2Shift_.belongOrgDn).in(belongOrgs));
+        }
+        cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2Shift_.createTime)));
         return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
                 .getResultList();
     }
@@ -168,16 +188,19 @@ public class AttendanceV2ManagerFactory extends AbstractFactory {
      * @return
      * @throws Exception
      */
-    public Long shiftCountWithName(String name) throws Exception {
+    public Long shiftCountWithName(String name, List<String> belongOrgs) throws Exception {
         EntityManager em = this.entityManagerContainer().get(AttendanceV2Shift.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<AttendanceV2Shift> root = cq.from(AttendanceV2Shift.class);
+        Predicate p = cb.conjunction();
         if (StringUtils.isNotEmpty(name)) {
-            Predicate p = cb.like(root.get(AttendanceV2Shift_.shiftName), "%" + name + "%");
-            return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
+            p = cb.and(p, cb.like(root.get(AttendanceV2Shift_.shiftName), "%" + name + "%"));
         }
-        return em.createQuery(cq.select(cb.count(root))).getSingleResult();
+        if (belongOrgs != null && !belongOrgs.isEmpty()) {
+            p = cb.and(p, root.get(AttendanceV2Shift_.belongOrgDn).in(belongOrgs));
+        }
+        return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
     }
 
     /**

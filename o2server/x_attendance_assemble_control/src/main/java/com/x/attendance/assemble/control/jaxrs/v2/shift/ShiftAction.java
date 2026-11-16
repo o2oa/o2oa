@@ -108,6 +108,24 @@ public class ShiftAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "删除班次.", action = ActionDeleteByManager.class)
+    @POST
+    @Path("manager/delete")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void deleteByManager(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+            JsonElement jsonElement) {
+        ActionResult<ActionDeleteByManager.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionDeleteByManager().execute(effectivePerson, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "获取班次.", action = ActionGet.class)
     @GET
     @Path("{id}")

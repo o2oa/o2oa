@@ -70,6 +70,24 @@ public class WorkPlaceV2Action extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "删除工作地点.", action = ActionDeleteByManager.class)
+    @POST
+    @Path("delete/manager")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void deleteByManager(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+            JsonElement jsonElement) {
+        ActionResult<ActionDeleteByManager.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionDeleteByManager().execute(effectivePerson, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
 
 
     @JaxrsMethodDescribe(value = "全部的工作地点列表.", action = ActionListAll.class)
@@ -81,9 +99,27 @@ public class WorkPlaceV2Action extends StandardJaxrsAction {
         ActionResult<List<ActionListAll.Wo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionListAll().execute();
+            result = new ActionListAll().execute(effectivePerson);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "工作地点列表", action = ActionListByManager.class)
+    @POST
+    @Path("list/manager")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void listByManager(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+            JsonElement jsonElement) {
+        ActionResult<List<ActionListByManager.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionListByManager().execute(effectivePerson, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
             result.error(e);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
