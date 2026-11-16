@@ -145,6 +145,7 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
                     var leftDiv = new Element("div", {styles: this.form.css.logTaskIconNode_record}).inject(div);
                     var rightDiv = new Element("div", {styles: this.form.css.logTaskTextNode}).inject(div);
                     var html = text.replace(/{person}/g, o2.name.cn(log.person || ""))
+                        .replace(/{personDn}/g, o2.txt(log.person || ''))
                         .replace(/{datetime}/g, log.completedTime)
                         .replace(/{date}/g, log.completedTime.substring(0.10))
                         .replace(/{startDatetime}/g, log.startTime)
