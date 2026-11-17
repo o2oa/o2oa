@@ -6,7 +6,7 @@ if (href.indexOf("debugger") != -1) layout.debugger = true;
 layout.desktop = layout;
 layout.session = layout.session || {};
 o2.addReady(function () {
-
+        MWF.require("MWF.widget.Common", null, false);
         MWF.loadLP("zh-cn");
 
         MWF.require("MWF.xDesktop.Layout", function () {
@@ -74,26 +74,26 @@ o2.addReady(function () {
                     
                 };
 
-
-                MWF.getJSON("res/config/config.json", function (config) {
-                    if (config.proxyCenterEnable){
-                        if (o2.typeOf(config.center)==="array"){
-                            config.center.forEach(function(c){
-                                c.port = window.location.port || 80;
-                            });
-                        }else{
-                            config.port = window.location.port || 80;
+                o2.load('../o2_lib/sjcl.min.js', {}, () => {
+                    MWF.getJSON("res/config/config.json", function (config) {
+                        if (config.proxyCenterEnable){
+                            if (o2.typeOf(config.center)==="array"){
+                                config.center.forEach(function(c){
+                                    c.port = window.location.port || 80;
+                                });
+                            }else{
+                                config.port = window.location.port || 80;
+                            }
                         }
-                    }
-                    layout.config = config;
-                    MWF.xDesktop.getServiceAddress(layout.config, function (service, center) {
-                        layout.serviceAddressList = service;
-                        layout.centerServer = center;
-                        layout.load();
-                    }.bind(this));
+                        layout.config = config;
+                        MWF.xDesktop.getServiceAddress(layout.config, function (service, center) {
+                            layout.serviceAddressList = service;
+                            layout.centerServer = center;
+                            layout.load();
+                        }.bind(this));
 
+                    });
                 });
-
             })();
 
         });

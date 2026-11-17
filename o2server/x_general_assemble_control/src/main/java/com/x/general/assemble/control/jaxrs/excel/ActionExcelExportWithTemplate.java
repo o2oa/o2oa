@@ -50,7 +50,7 @@ class ActionExcelExportWithTemplate extends BaseAction {
 		if (ListTools.isEmpty(wi.getSheetDataList())) {
 			throw new ExceptionCustom("excel内容不能为空");
 		}
-		byte[] tempBytes = CipherConnectionAction.getBinary(false, wi.getTemplateUrl());
+		byte[] tempBytes = CipherConnectionAction.getBinary(wi.getTemplateUrl(), effectivePerson);
 		if (tempBytes == null || tempBytes.length == 0) {
 			throw new ExceptionCustom("模板文件下载失败.");
 		}

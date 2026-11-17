@@ -25,6 +25,16 @@ MWF.xApplication.process.FormDesigner.Module.OORadioGroup = MWF.FCOORadioGroup =
 
 		this._createNodeContent();
 	},
+	getHtml: function(){
+		var copy = this.node.clone(true, true);
+		copy.clearStyles();
+
+		this.form._clearNoId(copy);
+		var html = copy.outerHTML;
+		copy.destroy();
+
+		return html;
+	},
 	_createNodeContent: function( node ){
 		var radioNode = new Element(this.options.tag, {
 			styles:{"float": "left"},

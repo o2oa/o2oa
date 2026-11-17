@@ -83,7 +83,7 @@ public class ActionFileUploadWithUrl extends BaseAction {
 
 		StorageMapping mapping = ThisApplication.context().storageMappings().random( FileInfo.class );
 		FileInfo attachment = this.concreteAttachment( mapping, document, wi.getFileName(), person, wi.getSite() );
-		byte[] bytes = CipherConnectionAction.getBinary(false, wi.getFileUrl());
+		byte[] bytes = CipherConnectionAction.getBinary(wi.getFileUrl(), effectivePerson);
 		if(bytes==null || bytes.length==0){
 			throw new Exception("can not down file from url!");
 		}

@@ -229,7 +229,21 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
              * @event MWF.xApplication.process.Xform.Form#afterRollback
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
              */
-            "afterRollback"
+            "afterRollback",
+
+            /**
+             * 一键下载前执行。
+             * @event MWF.xApplication.process.Xform.Form#beforeDownloadAll
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeDownloadAll",
+
+            /**
+             * 一键下载后执行。
+             * @event MWF.xApplication.process.Xform.Form#afterDownloadAll
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterDownloadAll"
         ]
     },
     initialize: function (node, data, options) {
@@ -4864,11 +4878,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         var _download = ()=>{
             setTimeout(()=>{
+                this.fireEvent('beforeDownloadAll', [iframe]);
                 const html = iframeDoc.documentElement.outerHTML;
                 //const html = this.app.content.get("html");
                 this._downloadAll(html, ()=>{
-                    //iframe?.destroy();
+                    this.fireEvent('afterDownloadAll');
                     if (this.mask) { this.mask.hide(); this.mask = null; }
+                    iframe?.destroy();
                 });
             }, 2000)
         }
@@ -4901,7 +4917,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
                     const formContentChild = iframeDoc.querySelector('.form-content')?.firstElementChild;
                     formContentChild && formContentChild.setStyles({
-                        'width': '793.7px'
+                        'width': this.json.downloadingFormWidth ? `${this.json.downloadingFormWidth}px` : '793.7px'
                     });
 
                     //页边距
@@ -4938,7 +4954,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             iframe = new Element('iframe', {
                 src: src,
-                "width": "793.7px",
+                "width": this.json.downloadingFormWidth ? `${this.json.downloadingFormWidth}px` : "793.7px",
                 "height": "100%",
                 "frameborder": "0px",
                 "scrolling": "auto",
@@ -5021,7 +5037,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         
         o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id, "pdf", {
             "workHtml": encodeURIComponent(html),
-            "pageWidth": 793.7
+            "pageWidth": this.json.downloadingFormWidth || 793.7
         }, function (json) {
             htmlFormId = json.data.id;
             if(callback)callback();

@@ -3,14 +3,19 @@ package com.x.processplatform.assemble.surface.jaxrs.work;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_processplatform_service_processing;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.x_processplatform_service_processing;
+import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.work.ActionProcessingWo;
+import org.apache.commons.lang3.BooleanUtils;
 
 class ActionProcessing extends BaseAction {
 
@@ -27,6 +32,11 @@ class ActionProcessing extends BaseAction {
             work = emc.find(id, Work.class);
             if (null == work) {
                 throw new ExceptionWorkNotExist(id);
+            }
+            Business business = new Business(emc);
+            Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build();
+            if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
+                throw new ExceptionAccessDenied(effectivePerson, work);
             }
             emc.beginTransaction(Work.class);
             /* 标识数据被修改 */

@@ -1,22 +1,17 @@
 package com.x.server.console.command;
 
-import java.nio.file.Files;
-import java.util.function.Consumer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonObject;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.BaseTools;
-import com.x.base.core.project.tools.H2Tools;
 import com.x.server.console.server.Servers;
-import org.apache.commons.lang3.reflect.MethodUtils;
+import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class StartCommand {
 
@@ -59,11 +54,7 @@ public class StartCommand {
 
 	private static boolean ifInitServerNecessary() {
 		// 密码为空且数据库文件不存在
-		return ifInitServerNecessarySetPassword() && (!ifInitServerNecessaryLocalRepositoryDataH2Exists());
-	}
-
-	private static boolean ifInitServerNecessaryLocalRepositoryDataH2Exists() {
-		return Files.exists(Config.pathLocalRepositoryData(true).resolve(H2Tools.FILENAME_DATABASE));
+		return ifInitServerNecessarySetPassword();
 	}
 
 	private static boolean ifInitServerNecessarySetPassword() {

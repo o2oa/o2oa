@@ -1,29 +1,15 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.bean.tuple.Triple;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.ProcessPlatform.HandoverConfig;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -33,6 +19,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
+import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
@@ -59,14 +46,24 @@ import com.x.processplatform.core.express.assemble.surface.jaxrs.task.ActionProc
 import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingSignalWo;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2GoBackWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2GoBackWo;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 class ActionProcessing extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionProcessing.class);
 
-	private ActionResult<Wo> result = new ActionResult<>();
+	private final ActionResult<Wo> result = new ActionResult<>();
 
 	private static final String TYPE_APPENDTASK = "appendTask";
 	private static final String TYPE_TASK = "task";
@@ -145,8 +142,8 @@ class ActionProcessing extends BaseAction {
 			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowManage()
 					.enableAllowProcessing().build();
 			if (BooleanUtils.isNotTrue(control.getAllowManage())
-					&& BooleanUtils.isNotTrue(control.getAllowProcessing())) {
-				throw new ExceptionAccessDenied(effectivePerson, work);
+					&& !Strings.CI.equals(task.getPerson(), effectivePerson.getDistinguishedName())) {
+				throw new ExceptionAccessDenied(effectivePerson, task);
 			}
 			WorkLog workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, task.getJob(),
 					WorkLog.FROMACTIVITYTOKEN_FIELDNAME, task.getActivityToken());
@@ -210,7 +207,7 @@ class ActionProcessing extends BaseAction {
 
 	/**
 	 * 调用人工环节工作流转后执行脚本
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	private void manualAfterProcessing(Param param, Record rec) throws Exception {
@@ -357,7 +354,7 @@ class ActionProcessing extends BaseAction {
 
 	/**
 	 * 处理退回操作
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	private Record processingGoBack(Param param, OptionGoBack optionGoBack) throws Exception {
@@ -417,12 +414,12 @@ class ActionProcessing extends BaseAction {
 	}
 
 	/**
-	 * 
+	 *
 	 * 先过滤掉connected=false<br>
 	 * 过滤掉非manual环节<br>
 	 * 过滤掉workLog的type=goBack<br>
 	 * 如果有记录goBackActivityToken值,那么仅从这个位置开始.
-	 * 
+	 *
 	 * @param nodes
 	 * @param activityToken
 	 * @return
@@ -498,7 +495,7 @@ class ActionProcessing extends BaseAction {
 
 	/**
 	 * 在 type=prev的设置下获取调用后台goBack所需参数
-	 * 
+	 *
 	 * @param manual
 	 * @param option
 	 * @param nodes
@@ -525,7 +522,7 @@ class ActionProcessing extends BaseAction {
 
 	/**
 	 * 在 type=define的设置下获取调用后台goBack所需参数
-	 * 
+	 *
 	 * @param manual
 	 * @param option
 	 * @param nodes
@@ -564,7 +561,7 @@ class ActionProcessing extends BaseAction {
 
 	/**
 	 * 在 type=any的设置下获取调用后台goBack所需参数
-	 * 
+	 *
 	 * @param manual
 	 * @param option
 	 * @param nodes

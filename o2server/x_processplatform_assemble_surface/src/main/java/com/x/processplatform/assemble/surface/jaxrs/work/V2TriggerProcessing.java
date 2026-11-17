@@ -1,21 +1,20 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
-import java.util.Date;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_processplatform_service_processing;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.StringTools;
+import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.Control;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.assemble.surface.WorkControlBuilder;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
@@ -23,6 +22,9 @@ import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2TriggerProcessingWo;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingWo;
+import java.util.Date;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class V2TriggerProcessing extends BaseAction {
 
@@ -70,6 +72,10 @@ class V2TriggerProcessing extends BaseAction {
 			Work work = emc.find(id, Work.class);
 			if (null == work) {
 				throw new ExceptionWorkNotExist(id);
+			}
+			Control control = new WorkControlBuilder(effectivePerson, business, work).enableAllowVisit().build();
+			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
+				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
 			emc.beginTransaction(Work.class);
 			// 标识数据被修改

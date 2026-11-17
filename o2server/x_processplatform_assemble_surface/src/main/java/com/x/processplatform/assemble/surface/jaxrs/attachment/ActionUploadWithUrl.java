@@ -108,7 +108,7 @@ class ActionUploadWithUrl extends BaseAction {
 			if (attachment == null) {
 				throw new ExceptionEntityNotExist(wi.getWorkId());
 			}
-			byte[] bytes = CipherConnectionAction.getBinary(false, wi.getFileUrl());
+			byte[] bytes = CipherConnectionAction.getBinary(wi.getFileUrl(), effectivePerson);
 			if (bytes == null || bytes.length == 0) {
 				throw new IllegalStateException("can not down file from url.");
 			}

@@ -43,8 +43,7 @@ public class ActionUploadExcelWithUrl extends BaseAction {
             throw new Exception("fileUrl不能为空！");
         }
 
-
-        byte[] bytes = CipherConnectionAction.getBinary(false, wi.getFileUrl());
+        byte[] bytes = CipherConnectionAction.getBinary(wi.getFileUrl(), effectivePerson);
         if (bytes == null || bytes.length == 0) {
             throw new IllegalStateException("can not down file from url.");
         }

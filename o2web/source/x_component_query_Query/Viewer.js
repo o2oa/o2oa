@@ -4930,10 +4930,12 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
         }
 
         var check = function () {
-            if(this.value.length == 1){
-                this.value = this.value.replace(/[^1-9]/g,'')
-            }else{
-                this.value = this.value.replace(/\D/g,'')
+            if(typeof vale === 'string'){
+                if(this.value.length === 1){
+                    this.value = this.value.replace(/[^1-9]/g,'')
+                }else{
+                    this.value = this.value.replace(/\D/g,'')
+                }
             }
             if( this.value.toInt() > total ){
                 this.value = total;
@@ -5043,6 +5045,7 @@ MWF.xApplication.query.Query.Viewer.Exporter = new Class({
             "style": layout.mobile ? "v10_mobile" : "v10_flow",
             "embedded" : true,
             "hasTop": true,
+            "uniqueFlag": 'id',
             "selectableItems": selectList.map(d=>{
                 return {
                     name: d.displayName, id: d.id,

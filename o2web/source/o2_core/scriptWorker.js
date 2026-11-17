@@ -155,20 +155,24 @@ o2.addReady(function () {
         loadModuls();
     }
 
-    o2.getJSON("../x_desktop/res/config/config.json", function (config) {
-        if (config.proxyCenterEnable){
-            if (o2.typeOf(config.center)==="array"){
-                config.center.forEach(function(c){
-                    c.port = window.location.port;
-                });
-            }else{
-                config.port = window.location.port;
+    o2.load('../o2_lib/sjcl.min.js', {}, () => {
+        o2.getJSON("../x_desktop/res/config/config.json", function (config) {
+            if (config.proxyCenterEnable) {
+                if (o2.typeOf(config.center) === "array") {
+                    config.center.forEach(function (c) {
+                        c.port = window.location.port;
+                    });
+                } else {
+                    config.port = window.location.port;
+                }
             }
-        }
-        layout.config = config;
-        o2.tokenName = config.tokenName || "x-token";
-        configLoaded = true;
-        if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { _load(); });
+            layout.config = config;
+            o2.tokenName = config.tokenName || "x-token";
+            configLoaded = true;
+            if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () {
+                _load();
+            });
+        });
     });
 
 });
