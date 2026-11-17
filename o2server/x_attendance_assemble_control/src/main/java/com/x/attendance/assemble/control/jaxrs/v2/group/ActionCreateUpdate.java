@@ -42,7 +42,7 @@ public class ActionCreateUpdate extends BaseAction {
             }
             boolean isManager = business.isManager(effectivePerson);
             if(!isManager && StringUtils.isEmpty(wi.getBelongOrgDn())){
-                throw new ExceptionAccessDenied(effectivePerson);
+                throw new ExceptionEmptyParameter("所属管理组织");
             }
             // 校验
             // 名称不能相同

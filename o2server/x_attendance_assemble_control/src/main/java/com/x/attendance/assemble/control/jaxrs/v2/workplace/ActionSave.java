@@ -3,6 +3,7 @@ package com.x.attendance.assemble.control.jaxrs.v2.workplace;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionCannotRepetitive;
+import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.workplace.util.BaiduLocationTransformHelper;
 import com.x.attendance.assemble.control.jaxrs.v2.workplace.util.TransformPosition;
 import com.x.attendance.assemble.control.jaxrs.workplace.BaseAction;
@@ -78,7 +79,7 @@ public class ActionSave extends BaseAction {
 			Business business = new Business(emc);
 			boolean isManager = business.isManager(effectivePerson);
 			if(!isManager && StringUtils.isEmpty(wrapIn.getBelongOrgDn())){
-				throw new ExceptionAccessDenied(effectivePerson);
+				throw new ExceptionEmptyParameter("所属管理组织");
 			}
 			// 名称不能相同
 			List<AttendanceV2WorkPlace> checkRepetitive = emc.listEqual(AttendanceV2WorkPlace.class, AttendanceV2WorkPlace.placeName_FIELDNAME, wrapIn.getPlaceName());

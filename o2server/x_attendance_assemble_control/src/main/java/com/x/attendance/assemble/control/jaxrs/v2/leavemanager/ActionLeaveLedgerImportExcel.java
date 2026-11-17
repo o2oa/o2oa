@@ -40,7 +40,7 @@ public class ActionLeaveLedgerImportExcel extends BaseAction {
 
     private static final ReentrantLock LOCK = new ReentrantLock();
 
-    private static final int ERROR_COLUMN_INDEX = 3;
+    private static final int ERROR_COLUMN_INDEX = 5;
 
     ActionResult<Wo> execute(EffectivePerson effectivePerson, String leaveTypeId, String grantPeriod, byte[] bytes,
             FormDataContentDisposition disposition) throws Exception {
@@ -127,14 +127,15 @@ public class ActionLeaveLedgerImportExcel extends BaseAction {
         if (mPerson == null) {
             throw new ExceptionWithMessage("用户标识找不到对应的人员");
         }
+        // cell 1 是姓名 没有用
 
-        String grantAmountString = AttendanceV2Helper.getExcelCellStringValue(row.getCell(1));
+        String grantAmountString = AttendanceV2Helper.getExcelCellStringValue(row.getCell(2));
         if (StringUtils.isBlank(grantAmountString)) {
             throw new ExceptionEmptyParameter("发放额度");
         }
         Double grantAmount = parseGrantAmount(grantAmountString);
 
-        String expireTimeString = AttendanceV2Helper.getExcelCellDateFormat(row.getCell(2), DateTools.format_yyyyMMdd);
+        String expireTimeString = AttendanceV2Helper.getExcelCellDateFormat(row.getCell(3), DateTools.format_yyyyMMdd);
         if (StringUtils.isBlank(expireTimeString)) {
             throw new ExceptionEmptyParameter("过期日期");
         }
@@ -172,7 +173,8 @@ public class ActionLeaveLedgerImportExcel extends BaseAction {
     private boolean isBlankRow(Row row) {
         return StringUtils.isBlank(AttendanceV2Helper.getExcelCellStringValue(row.getCell(0)))
                 && StringUtils.isBlank(AttendanceV2Helper.getExcelCellStringValue(row.getCell(1)))
-                && StringUtils.isBlank(AttendanceV2Helper.getExcelCellStringValue(row.getCell(2)));
+                && StringUtils.isBlank(AttendanceV2Helper.getExcelCellStringValue(row.getCell(2)))
+                && StringUtils.isBlank(AttendanceV2Helper.getExcelCellStringValue(row.getCell(3)));
     }
 
     private String saveAttachment(byte[] bytes, String attachmentName, EffectivePerson effectivePerson)

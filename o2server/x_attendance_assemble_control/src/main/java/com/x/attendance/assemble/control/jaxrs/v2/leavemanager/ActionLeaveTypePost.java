@@ -72,14 +72,16 @@ public class ActionLeaveTypePost extends BaseAction {
                     return result;
                 }
             }
-            Integer order = business.getAttendanceV2ManagerFactory()
-                    .findAttendanceV2LeaveTypeBiggestOrderNumber();
-            if (order == null) {
-                order = 100;
-            } else {
-                order = order + 1;
+            if (leaveType.getOrderNumber() == null) {
+                Integer order = business.getAttendanceV2ManagerFactory()
+                        .findAttendanceV2LeaveTypeBiggestOrderNumber();
+                if (order == null) {
+                    order = 100;
+                } else {
+                    order = order + 1;
+                }
+                leaveType.setOrderNumber(order);
             }
-            leaveType.setOrderNumber(order);
             emc.persist(leaveType, CheckPersistType.all);
             Wo wo = new Wo();
             wo.setId(leaveType.getId());

@@ -41,7 +41,7 @@ public class ActionPost extends BaseAction {
                 throw new ExceptionEmptyParameter("班次名称");
             }
             if(!isManager && StringUtils.isEmpty(wi.getBelongOrgDn())){
-                throw new ExceptionAccessDenied(effectivePerson);
+                throw new ExceptionEmptyParameter("所属管理组织");
             }
             // 名称不能相同
             List<AttendanceV2Shift> checkRepetitive = emc.listEqual(AttendanceV2Shift.class, AttendanceV2Shift.shiftName_FIELDNAME, wi.getShiftName());
