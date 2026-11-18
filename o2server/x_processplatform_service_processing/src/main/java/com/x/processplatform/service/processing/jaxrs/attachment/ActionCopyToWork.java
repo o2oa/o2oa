@@ -147,6 +147,11 @@ class ActionCopyToWork extends BaseAction {
 					if(o == null){
 						throw new ExceptionEntityNotExist(w.getId(), Attachment.class);
 					}
+					StorageMapping fromStorageMapping = ThisApplication.context()
+							.storageMappings()
+							.get(Attachment.class, o.getStorage());
+					bs = o.readContent(fromStorageMapping);
+					o.deleteContent(fromStorageMapping);
 					o.setWorkCreateTime(work.getCreateTime() != null ? work.getCreateTime() : new Date());
 					o.setApplication(work.getApplication());
 					o.setProcess(work.getProcess());
@@ -155,6 +160,7 @@ class ActionCopyToWork extends BaseAction {
 					o.setActivityName(work.getActivityName());
 					o.setActivityToken(work.getActivityToken());
 					o.setActivityType(work.getActivityType());
+					o.saveContent(mapping, bs, o.getName(), Config.general().getStorageEncrypt());
 					return o;
 				}else{
 					if(o == null){
