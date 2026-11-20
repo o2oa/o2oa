@@ -265,6 +265,23 @@ MWF.xApplication.process.Xform.OOSelect = MWF.APPOOSelect =  new Class({
 			this.moduleSelectAG = null;
 		}.bind(this));
 	},
+	resetOption: function () {
+		var options = this.node.querySelectorAll('oo-option');
+		options.forEach(o=>{
+			o.destroy();
+		});
+		this.node.empty();
+		this.setOptions();
+		if( this.moduleSelectAG && this.moduleSelectAG.then ){
+			this.moduleSelectAG.then(function(){
+				if( this.json.type === 'Select' )this._checkData();
+				this.fireEvent("resetOption");
+			}.bind(this));
+		}else{
+			if( this.json.type === 'Select' )this._checkData();
+			this.fireEvent("resetOption");
+		}
+	},
 	addOption: function(text, value){
         var option = new Element("oo-option", {
             "value": value || text,
