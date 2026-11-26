@@ -456,6 +456,7 @@ function decodeAddress(base64Payload, keyString) {
 MWF.xDesktop.getServiceAddressConfigObject = function(center, callback, error){
     if(layout.serviceAddressListCache){
         if (callback) callback(layout.serviceAddressListCache, center);
+        return;
     }
 
     var centerConfig = center;
