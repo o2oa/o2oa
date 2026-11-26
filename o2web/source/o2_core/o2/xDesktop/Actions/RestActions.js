@@ -25,6 +25,11 @@ MWF.xDesktop.Actions.RestActions = new Class({
 
         //this.address = "http://xa02.zoneland.net:8080/"+this.serviceName;
         var addressObj = layout.serviceAddressList[this.serviceName];
+
+        if (layout.config.app_protocol=="auto"){
+            layout.config.app_protocol = window.location.protocol;
+        }
+
         var defaultPort = layout.config.app_protocol==='https' ? "443" : "80";
         if (addressObj){
             //var mapping = layout.getAppUrlMapping(layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context);
