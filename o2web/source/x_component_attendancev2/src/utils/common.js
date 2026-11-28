@@ -438,3 +438,7 @@ export {
   WGS84_TO_GCJ02,
   getDistance,
 };
+
+export function getDutyUnitNames(dutyList) {
+  return dutyList.map((duty) => duty.woUnit && duty.woUnit.distinguishedName).filter(Boolean);
+}

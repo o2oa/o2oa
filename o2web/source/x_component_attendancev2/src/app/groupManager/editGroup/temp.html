@@ -9,14 +9,15 @@
             <o-input oo-prop="{'isRequried': true, 'label':$.lp.groupForm.title, 'placeholder':$.lp.groupForm.titlePlaceholder, 'value': $.form.groupName}"
                 oo-model="form.groupName"></o-input>
             <o-org-person-selector
-                oo-prop="{'isRequried': true, 'selectorTitle': $.lp.groupForm.participates, 'label':$.lp.groupForm.participates, 'placeholder': $.lp.groupForm.participatesPlaceholder, 'value': $.form.participateList}"
+                oo-prop="{'isRequried': true, 'selectorTitle': $.lp.groupForm.participates, 'label':$.lp.groupForm.participates, 'placeholder': $.lp.groupForm.participatesPlaceholder, 'value': $.form.participateList,'units': $.units}"
                 oo-model="form.participateList"></o-org-person-selector>
             <o-org-person-selector
-                oo-prop="{'selectorTitle': $.lp.groupForm.unParticipates, 'label':$.lp.groupForm.unParticipates, 'placeholder': $.lp.groupForm.unParticipatesPlaceholder, 'value': $.form.unParticipateList}"
+                oo-prop="{'selectorTitle': $.lp.groupForm.unParticipates, 'label':$.lp.groupForm.unParticipates, 'placeholder': $.lp.groupForm.unParticipatesPlaceholder, 'value': $.form.unParticipateList, 'units': $.units}"
                 oo-model="form.unParticipateList"></o-org-person-selector>
-            <o-org-person-selector
-                oo-prop="{'selectorTitle': $.lp.groupForm.assistAdminList, 'label':$.lp.groupForm.assistAdminList, 'placeholder': $.lp.groupForm.assistAdminListPlaceholder, 'value': $.form.assistAdminList, 'types': ['identity']}"
-                oo-model="form.assistAdminList"></o-org-person-selector>
+
+             <o-org-person-selector
+                oo-prop="{'selectorTitle': $.lp.groupForm.groupBelongs, 'label':$.lp.groupForm.groupBelongs, 'placeholder': $.lp.groupForm.groupBelongsPlaceholder, 'value': $.form.belongs, 'units': $.units, 'count': 1, 'types': ['unit']}"
+                oo-model="form.belongs"></o-org-person-selector>
             
            <!-- 类型选择 -->
            <div class="margin-top">

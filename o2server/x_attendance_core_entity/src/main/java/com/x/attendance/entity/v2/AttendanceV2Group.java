@@ -216,6 +216,20 @@ public class AttendanceV2Group extends SliceJpaObject {
     private List<String> noNeedCheckInDateList;
 
 
+    public static final String belongOrgDn_FIELDNAME = "belongOrgDn";
+    @FieldDescribe("所属组织DN，用于数据权限控制.")
+    @Column(name = ColumnNamePrefix + belongOrgDn_FIELDNAME)
+    private String belongOrgDn;
+
+
+    public String getBelongOrgDn() {
+        return belongOrgDn;
+    }
+
+    public void setBelongOrgDn(String belongOrgDn) {
+        this.belongOrgDn = belongOrgDn;
+    }
+
     public AttendanceV2GroupWorkDayProperties getWorkDateProperties() {
         return workDateProperties;
     }

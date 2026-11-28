@@ -1,3 +1,4 @@
+import { getDutyUnitNames } from "../../../utils/common";
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
 import { shiftActionListByPaging } from "../../../utils/actions";
@@ -20,8 +21,16 @@ export default content({
         totalPage: 1,
         size: 15, // 每页条目数
       },
-     
+     filter:{
+        belongs: [], //
+      }
     };
+  },
+  beforeRender() {
+    // 当前用户的管理范围
+    if (content.groupUnitDutyList && content.groupUnitDutyList.length > 0) {
+      this.bind.filter.belongs = getDutyUnitNames(content.groupUnitDutyList);
+    }
   },
   afterRender() {
     const mask = this.dom.querySelector("#selectShift");
@@ -45,7 +54,9 @@ export default content({
     }
   },
   async loadShiftList() {
-    const json = await shiftActionListByPaging( this.bind.pagerData.page, this.bind.pagerData.size, {});
+    const json = await shiftActionListByPaging( this.bind.pagerData.page, this.bind.pagerData.size, {
+      belongs: this.bind.filter.belongs,
+    });
     if (json) {
       this.bind.shiftList = json.data || [];
       const count = json.count || 0;

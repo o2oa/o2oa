@@ -20,6 +20,7 @@ export default content({
         unit: "DAY", // DAY | HOUR
         active: true,
         isPaid: true,
+        orderNumber: 0,
       }
     }
     },
@@ -45,6 +46,16 @@ export default content({
       o2.api.page.notice(lp.leaveManagerV2.type.namePlaceholder, 'error');
       return;
     }
+    const orderText = String(form.orderNumber ?? "").trim();
+    const order = Number(orderText);
+
+    if (!/^\d+$/.test(orderText) || !Number.isSafeInteger(order)) {
+      o2.api.page.notice(lp.leaveManagerV2.type.orderNumberError, 'error');
+      return;
+    }
+
+    form.orderNumber = order;
+
     const result = await leaveManagerAction("typePost", form);
     console.log(result);
     o2.api.page.notice(lp.saveSuccess, 'success');

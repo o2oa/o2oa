@@ -59,7 +59,9 @@
                         <td>{{d.value.absenceTimes}}</td>
                         <td>{{d.value.fieldWorkTimes}}</td>
                         <td oo-each="$.tableHeaderList" oo-item="h">
-                            <span oo-if="$m.checkDateDetail(h.value, d.value)" class="operator_link_underline" style="white-space: pre-line;" @click="this.openRecordList(h.value, d.value)" >{{ $m.formatRecordList(h.value, d.value)}}</span>
+                            <div oo-if="$m.checkDateDetail(h.value, d.value)" class="" @click="this.openRecordList(h.value, d.value)">
+                                <div oo-each="$m.getRecordDisplayList(h.value, d.value)" oo-item="record">{{ record.value.label }} <span class="{{ record.value.statusClass }}">{{ record.value.result }}</span></div>
+                            </div>
                         </td>
                     </tr>
                 </tbody>

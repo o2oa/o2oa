@@ -1,7 +1,7 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
 import ExcelJS from "exceljs";
-import { formatDate, isEmpty , convertMinutesToHoursAndMinutes, showLoading, hideLoading, fieldWorkFormat} from "../../utils/common";
+import { getDutyUnitNames, formatDate, isEmpty , convertMinutesToHoursAndMinutes, showLoading, hideLoading, fieldWorkFormat} from "../../utils/common";
 import { detailAction } from "../../utils/actions";
 import oOrgPersonSelector from "../../components/o-org-person-selector";
 import oDatePicker from "../../components/o-date-picker";
@@ -38,14 +38,7 @@ export default content({
     this.bind.form.endDate = formatDate(lastDayOfWeek);
     // 当前用户的选择范围
     if (content.myDutyList && content.myDutyList.length > 0) {
-      let units = [];
-      for (let i = 0; i < content.myDutyList.length; i++) {
-        const duty = content.myDutyList[i];
-        if (duty.woUnit && duty.woUnit.distinguishedName) {
-          units.push(duty.woUnit.distinguishedName);
-        }
-      }
-      this.bind.units = units;
+      this.bind.units = getDutyUnitNames(content.myDutyList);
     }
   },
   // yyyy-MM-dd 
@@ -163,7 +156,8 @@ export default content({
       const recordList = detail.recordList || [];
       for (let index = 0; index < recordList.length; index++) {
         const element = recordList[index];
-        result +=  (element.checkInType === 'OnDuty' ? lp.onDuty : lp.offDuty) + ": "+ this._formatRecordResult(element);
+        const noCheck = element.checkInResult === "PreCheckIn" || element.checkInResult === "NotSigned" ;
+        result +=  (noCheck ? "" : element.recordDate ? element.recordDate.substring(11, 16) : "") + " "+ (element.checkInResult === "Normal" ? "" : "("+this._formatRecordResult(element)+")");
         if (index != recordList.length-1) {
           result += "\n";
         }
@@ -171,7 +165,32 @@ export default content({
     }
     return result;
   },
-
+  getRecordDisplayList(date, staticItem) {
+    const result = [];
+    const list = staticItem.detailList || [];
+    let detail = null;
+    for (let index = 0; index < list.length; index++) {
+      const element = list[index];
+      if (element.recordDateString && element.recordDateString == date) {
+        detail = element;
+        break;
+      }
+    }
+    if (detail && detail.workDay) {
+      const recordList = detail.recordList || [];
+      for (let index = 0; index < recordList.length; index++) {
+        const record = recordList[index];
+        const noCheck = record.checkInResult === "PreCheckIn" || record.checkInResult === "NotSigned" ;
+        const recordDisplay = {
+          label: noCheck ? "" : record.recordDate ? record.recordDate.substring(11, 16) : "",
+          result: record.checkInResult === "Normal" ? "" : "("+this._formatRecordResult(record)+")",
+          statusClass: this._formatRecordResultClass(record)
+        };
+        result.push(recordDisplay);
+      }
+    }
+    return result;
+  },
   _formatRecordResult(record) {
     let span = "";
     if (record.fieldWork) {
@@ -197,6 +216,35 @@ export default content({
       }
     }
     return span;
+  },
+  _formatRecordResultClass(record) {
+    let span = "";
+    if (record.fieldWork) {
+      span = "color-fieldWork";
+    } else {
+      const result = record.checkInResult;
+      if (result === "PreCheckIn") {
+        span = "";
+      } else if (this._hasLeave(record)) {
+        span = "color-leave";
+      } else if (result === "NotSigned") {
+        span = "color-nosign";
+      } else if (result === "Normal") {
+        span = "color-normal";
+      } else if (result === "Early") {
+        span = "color-early";
+      } else if (result === "Late") {
+        span = "color-late";
+      } else if (result === "SeriousLate") {
+        span = "color-serilate";
+      } else {
+        span = "";
+      }
+    }
+    return span;
+  },
+  _hasLeave(record) {
+    return record && (record.requestDataId || record.leaveDataId)
   },
   // 格式化用户姓名
   formatName(person) {

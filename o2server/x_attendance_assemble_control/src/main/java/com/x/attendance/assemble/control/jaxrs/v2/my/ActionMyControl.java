@@ -35,15 +35,15 @@ public class ActionMyControl extends BaseAction {
                 return result;
             }
             AttendanceV2Config config = this.getConfig(emc);
+            // 查询个人信息 判断是否有[对应配置的]职务
+            String encodePerson = URLEncoder.encode(person.getDistinguishedName(),
+                    DefaultCharset.name);
+            WoPerson p = ThisApplication.context().applications()
+                    .getQuery(x_organization_assemble_control.class, "person/" + encodePerson)
+                    .getData(WoPerson.class);
             // 已配置的职务
             List<String> dutyNameList = config.getProperties().getStatisticUnitDutyNameList();
             if (dutyNameList != null && !dutyNameList.isEmpty()) {
-                // 查询个人信息 判断是否有[对应配置的]职务
-                String encodePerson = URLEncoder.encode(person.getDistinguishedName(),
-                        DefaultCharset.name);
-                WoPerson p = ThisApplication.context().applications()
-                        .getQuery(x_organization_assemble_control.class, "person/" + encodePerson)
-                        .getData(WoPerson.class);
                 if (p != null && p.getWoIdentityList() != null && !p.getWoIdentityList()
                         .isEmpty()) {
                     List<WoUnitDuty> woUnitDutyList = new ArrayList<>();
@@ -51,7 +51,9 @@ public class ActionMyControl extends BaseAction {
                         if (identity.getWoUnitDutyList() != null && !identity.getWoUnitDutyList()
                                 .isEmpty()) {
                             woUnitDutyList.addAll(identity.getWoUnitDutyList().stream()
-                                    .filter((d) -> dutyNameList.contains(d.getName()))
+                                    .filter((d) -> dutyNameList.contains(d.getName())
+                                                   || dutyNameList.contains(
+                                            d.getDistinguishedName()))
                                     .collect(Collectors.toList()));
                         }
                     }
@@ -61,9 +63,28 @@ public class ActionMyControl extends BaseAction {
                     }
                 }
             }
-            // 查询考勤组 协助管理员
-            wo.setAssistAdmin(business.getAttendanceV2ManagerFactory()
-                    .isAssistAdmin(person.getDistinguishedName()));
+            // 已配置 考勤组管理员职务
+            if (StringUtils.isNotEmpty(config.getProperties().getAttendanceGroupDutyManager())) {
+                if (p != null && p.getWoIdentityList() != null && !p.getWoIdentityList()
+                        .isEmpty()) {
+                    List<WoUnitDuty> groupUnitDutyList = new ArrayList<>();
+                    for (WoIdentity identity : p.getWoIdentityList()) {
+                        if (identity.getWoUnitDutyList() != null && !identity.getWoUnitDutyList()
+                                .isEmpty()) {
+                            groupUnitDutyList.addAll(identity.getWoUnitDutyList().stream()
+                                    .filter((d) ->
+                                            config.getProperties().getAttendanceGroupDutyManager()
+                                                    .equals(d.getName()) || config.getProperties()
+                                                    .getAttendanceGroupDutyManager()
+                                                    .equals(d.getDistinguishedName()))
+                                    .collect(Collectors.toList()));
+                        }
+                    }
+                    if (!groupUnitDutyList.isEmpty()) {
+                        wo.setGroupUnitDutyList(groupUnitDutyList);
+                    }
+                }
+            }
             result.setData(wo);
             return result;
         }
@@ -89,8 +110,18 @@ public class ActionMyControl extends BaseAction {
         private Boolean readAdmin;
         @FieldDescribe("考勤管理员职务列表")
         private List<WoUnitDuty> unitDutyList;
-        @FieldDescribe("是否考勤组协助管理员")
-        private Boolean assistAdmin;
+        @FieldDescribe("考勤组管理员职务对象")
+        private List<WoUnitDuty> groupUnitDutyList;
+
+
+        public List<WoUnitDuty> getGroupUnitDutyList() {
+            return groupUnitDutyList;
+        }
+
+        public void setGroupUnitDutyList(
+                List<WoUnitDuty> groupUnitDutyList) {
+            this.groupUnitDutyList = groupUnitDutyList;
+        }
 
         public Boolean getAdmin() {
             return admin;
@@ -106,14 +137,6 @@ public class ActionMyControl extends BaseAction {
 
         public void setReadAdmin(Boolean readAdmin) {
             this.readAdmin = readAdmin;
-        }
-
-        public Boolean getAssistAdmin() {
-            return assistAdmin;
-        }
-
-        public void setAssistAdmin(Boolean assistAdmin) {
-            this.assistAdmin = assistAdmin;
         }
 
         public List<WoUnitDuty> getUnitDutyList() {

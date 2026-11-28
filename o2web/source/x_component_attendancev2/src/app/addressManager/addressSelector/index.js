@@ -1,3 +1,4 @@
+import { getDutyUnitNames } from "../../../utils/common";
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
 import { attendanceWorkPlaceV2Action } from "../../../utils/actions";
@@ -13,8 +14,16 @@ export default content({
       lp,
       title: lp.workAddressSelector,
       workAddressList: [],
-      workAddressSelected: [], // 
+      workAddressSelected: [],
+      filter:{
+        belongs: [],
+      }
     };
+  },
+  beforeRender() {
+    if (content.groupUnitDutyList && content.groupUnitDutyList.length > 0) {
+      this.bind.filter.belongs = getDutyUnitNames(content.groupUnitDutyList);
+    }
   },
   afterRender() {
     const mask = this.dom.querySelector("#selectShift");
@@ -32,7 +41,10 @@ export default content({
     }
   },
   async loadWorkAddressData() {
-    const data = await attendanceWorkPlaceV2Action("listAll");
+    const filter = {
+      belongs: this.bind.filter.belongs
+    }
+    const data = await attendanceWorkPlaceV2Action("listByManager", filter);
     this.bind.workAddressList = data || [];
   },
   isContainWorkPlace(v) {

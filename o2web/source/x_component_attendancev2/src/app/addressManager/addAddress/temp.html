@@ -41,6 +41,11 @@
             <o-input oo-else
                 oo-prop="{'isRequried': true, 'label':$.lp.workAddressForm.range, 'placeholder': $.lp.workAddressForm.rangePlaceholder,  'value': $.form.errorRange}"
                 oo-model="form.errorRange"></o-input>
+
+            <o-org-person-selector oo-if="!$.form.isView"
+                oo-prop="{'selectorTitle': $.lp.groupForm.groupBelongs, 'label':$.lp.groupForm.groupBelongs, 'placeholder': $.lp.groupForm.groupBelongsPlaceholder, 'value': $.form.belongs, 'units': $.units, 'count': 1, 'types': ['unit']}"
+                oo-model="form.belongs"></o-org-person-selector>
+
             <div class="form-item-line" oo-if="$.form.isView">
                 <div class="form-item-line-label">{{$.lp.workAddressForm.desc}}</div>
                 <div class="form-item-line-content">{{$.form.description}}</div>

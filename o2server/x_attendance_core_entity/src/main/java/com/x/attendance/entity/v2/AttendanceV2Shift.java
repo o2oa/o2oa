@@ -114,6 +114,20 @@ public class AttendanceV2Shift extends SliceJpaObject {
 	private String lateAndEarlyOffTime; // 下班最多可早走时间，上班早到几分钟，下班可早走几分钟 如 90 表示1小时30分钟
 
 
+	public static final String belongOrgDn_FIELDNAME = "belongOrgDn";
+	@FieldDescribe("所属组织DN，用于数据权限控制.")
+	@Column(name = ColumnNamePrefix + belongOrgDn_FIELDNAME)
+	private String belongOrgDn;
+
+
+	public String getBelongOrgDn() {
+		return belongOrgDn;
+	}
+
+	public void setBelongOrgDn(String belongOrgDn) {
+		this.belongOrgDn = belongOrgDn;
+	}
+
 	public String getOperator() {
 		return operator;
 	}

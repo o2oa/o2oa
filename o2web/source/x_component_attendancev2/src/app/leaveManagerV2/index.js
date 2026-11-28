@@ -137,11 +137,13 @@ export default content({
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("sheet1");
     worksheet.addRow([
+      lp.leaveManagerV2.ledgerImportTemplateEmployee,
       lp.leaveManagerV2.ledgerImportTemplatePerson,
       `${leaveType.name || ""}${lp.leaveManagerV2.ledgerImportTemplateAmountSuffix}`,
       lp.leaveManagerV2.ledgerImportTemplateExpireDate,
     ]);
     worksheet.columns = [
+      { width: 28 },
       { width: 28 },
       { width: 18 },
       { width: 18 },
@@ -229,6 +231,10 @@ export default content({
         o2.api.page.notice(this.getLedgerImportResultMessage(result, lp.leaveManagerV2.ledgerImportFail), "error");
         return;
       }
+      // 导入数据有异常内容
+      if (result && result.data && result.data.flag && result.data.errorRows > 0) {
+        this.downloadConfirm(result.data);
+      }
       try {
         await this.addLedgerImportHistory(form.grantPeriod, leaveType.id);
       } catch (e) {
@@ -245,6 +251,35 @@ export default content({
     } finally {
       this.bind.importSubmitting = false;
       await hideLoading(this);
+    }
+  },
+  downloadConfirm(result) {
+    if (result) {
+      var _self = this;
+      o2.api.page.confirm(
+        "info",
+        lp.alert,
+        lpFormat(lp,  "record.importExcelFileSuccess", {number: result.errorRows}),
+        300,
+        100,
+        function () {
+          _self.downloadImportResult(result.flag);
+          this.close();
+        },
+        function () {
+          this.close();
+        }
+      );
+    }
+  },
+  // 下载导入结果
+  downloadImportResult(resultFlag) {
+    if (resultFlag) {
+      const dAction = o2.Actions.load("x_attendance_assemble_control").LeaveAction.action;
+      let url =  dAction.getAddress() + dAction.actions.getResult.uri;
+      url = url.replace("{flag}", encodeURIComponent(resultFlag));
+      console.debug(url);
+      window.open(o2.filterUrl(url));
     }
   },
   uploadLedgerImport(formData) {

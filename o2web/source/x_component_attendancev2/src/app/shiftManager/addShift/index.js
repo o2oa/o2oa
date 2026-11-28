@@ -1,11 +1,12 @@
-import {component as content} from '@o2oa/oovm';
-import {lp, o2} from '@o2oa/component';
-import { isPositiveInt, isEmpty, convertMinutesToHoursAndMinutes } from '../../../utils/common';
+import { component as content } from '@o2oa/oovm';
+import { lp, o2 } from '@o2oa/component';
+import { getDutyUnitNames, isPositiveInt, isEmpty, convertMinutesToHoursAndMinutes } from '../../../utils/common';
 import { attendanceShiftAction } from "../../../utils/actions";
 import template from './template.html';
 import style from "./style.scope.css";
 import oInput from '../../../components/o-input';
 import oTimePicker from '../../../components/o-time-picker';
+import oOrgPersonSelector from "../../../components/o-org-person-selector";
 import oTimeMinutesSelector from '../../../components/o-time-minutes-selector';
 import { setJSONValue } from '../../../utils/common';
 
@@ -13,9 +14,9 @@ import { setJSONValue } from '../../../utils/common';
 export default content({
     template,
     style,
-    components: {oInput, oTimePicker, oTimeMinutesSelector},
+    components: { oInput, oTimePicker, oTimeMinutesSelector, oOrgPersonSelector },
     autoUpdate: true,
-    bind(){
+    bind() {
         return {
             lp,
             fTitle: lp.addShift,
@@ -27,7 +28,10 @@ export default content({
                 lateAndEarlyOffTime: "", // 下班最多可早走时间
                 workTime: 0, // 工作时长分钟数.
                 needLimitWorkTime: true, // 工作时长不足是否记为早退.
+                belongOrgDn: "",
+                belongs: [], // 当前考勤组的管理范围
             },
+            units: [], // 控制组织选择的范围
             timeType: 1,  // 打卡次数 1:每天两次 2:每次4次 3:每天6次
             time1: {
                 onDutyTime: "",
@@ -80,6 +84,14 @@ export default content({
             ]
         };
     },
+    beforeRender() {
+        if (content.groupUnitDutyList && content.groupUnitDutyList.length > 0) {
+            this.bind.units = getDutyUnitNames(content.groupUnitDutyList);
+        }
+        if (this.bind.form.belongOrgDn) {
+            this.bind.form.belongs = [this.bind.form.belongOrgDn];
+        }
+    },
     afterRender() {
         if (this.bind.form && this.bind.form.id && this.bind.form.id !== '') {
             this.bind.fTitle = lp.editShift;
@@ -90,7 +102,7 @@ export default content({
         this.calWorkTime();
         console.log(this.bind)
     },
-    clickChangeLimitWorkTime(){
+    clickChangeLimitWorkTime() {
         this.bind.form.needLimitWorkTime = !this.bind.form.needLimitWorkTime;
     },
     clickChangeOffDutyNextDay(timeType) {
@@ -98,7 +110,7 @@ export default content({
             this.bind.time1.offDutyNextDay = !this.bind.time1.offDutyNextDay;
         } else if (timeType === 2) {
             this.bind.time2.offDutyNextDay = !this.bind.time2.offDutyNextDay;
-        }  else if (timeType === 3) {
+        } else if (timeType === 3) {
             this.bind.time3.offDutyNextDay = !this.bind.time3.offDutyNextDay;
         }
         this.calWorkTime();
@@ -158,7 +170,7 @@ export default content({
     },
     parseRestPeriod(restPeriod) {
         if (!restPeriod || !restPeriod.includes("-")) {
-            return {start: "", end: ""};
+            return { start: "", end: "" };
         }
         const list = restPeriod.split("-");
         return {
@@ -205,38 +217,41 @@ export default content({
     async submitAdd() {
         if (isEmpty(this.bind.form.shiftName)) {
             o2.api.page.notice(lp.shiftForm.shiftNameNotEmpty, 'error');
-            return ;
+            return;
         }
         let myForm = this.bind.form;
         myForm.properties = {
             timeList: []
         };
+        if (myForm.belongs.length > 0) {
+            myForm.belongOrgDn = myForm.belongs[0];
+        }
         if (this.bind.timeType === 1) {
             if (isEmpty(this.bind.time1.onDutyTime)) {
                 o2.api.page.notice(lp.shiftForm.onDutyTimeNotEmpty, 'error');
-                return ;
+                return;
             }
             if (isEmpty(this.bind.time1.offDutyTime)) {
                 o2.api.page.notice(lp.shiftForm.offDutyTimeNotEmpty, 'error');
-                return ;
+                return;
             }
             if (this.restPeriodNeedComplete(this.bind.time1)) {
                 o2.api.page.notice(lp.shiftForm.restPeriodNeedComplete, 'error');
-                return ;
+                return;
             }
             myForm.properties.timeList.push(this.buildTimeForSubmit(this.bind.time1));
         } else if (this.bind.timeType === 2) {
             if (isEmpty(this.bind.time1.onDutyTime) || isEmpty(this.bind.time2.onDutyTime)) {
                 o2.api.page.notice(lp.shiftForm.onDutyTimeNotEmpty, 'error');
-                return ;
+                return;
             }
             if (isEmpty(this.bind.time1.offDutyTime) || isEmpty(this.bind.time2.offDutyTime)) {
                 o2.api.page.notice(lp.shiftForm.offDutyTimeNotEmpty, 'error');
-                return ;
+                return;
             }
             if (this.restPeriodNeedComplete(this.bind.time1) || this.restPeriodNeedComplete(this.bind.time2)) {
                 o2.api.page.notice(lp.shiftForm.restPeriodNeedComplete, 'error');
-                return ;
+                return;
             }
             this.bind.time1.offDutyNextDay = false; // 最后一个下班才能是跨天的
             myForm.properties.timeList.push(this.buildTimeForSubmit(this.bind.time1));
@@ -244,15 +259,15 @@ export default content({
         } else if (this.bind.timeType === 3) {
             if (isEmpty(this.bind.time1.onDutyTime) || isEmpty(this.bind.time2.onDutyTime) || isEmpty(this.bind.time3.onDutyTime)) {
                 o2.api.page.notice(lp.shiftForm.onDutyTimeNotEmpty, 'error');
-                return ;
+                return;
             }
-            if (isEmpty(this.bind.time1.offDutyTime ) || isEmpty(this.bind.time2.offDutyTime) || isEmpty(this.bind.time3.offDutyTime)) {
+            if (isEmpty(this.bind.time1.offDutyTime) || isEmpty(this.bind.time2.offDutyTime) || isEmpty(this.bind.time3.offDutyTime)) {
                 o2.api.page.notice(lp.shiftForm.offDutyTimeNotEmpty, 'error');
-                return ;
+                return;
             }
             if (this.restPeriodNeedComplete(this.bind.time1) || this.restPeriodNeedComplete(this.bind.time2) || this.restPeriodNeedComplete(this.bind.time3)) {
                 o2.api.page.notice(lp.shiftForm.restPeriodNeedComplete, 'error');
-                return ;
+                return;
             }
             this.bind.time1.offDutyNextDay = false;// 最后一个下班才能是跨天的
             this.bind.time2.offDutyNextDay = false;// 最后一个下班才能是跨天的
@@ -263,11 +278,11 @@ export default content({
         debugger
         if (myForm.seriousTardinessLateMinutes !== "0" && !isPositiveInt(myForm.seriousTardinessLateMinutes)) {
             o2.api.page.notice(lp.shiftForm.seriousTardinessLateMinutesNeedNumber, 'error');
-            return ;
+            return;
         }
         if (myForm.absenteeismLateMinutes !== "0" && !isPositiveInt(myForm.absenteeismLateMinutes)) {
             o2.api.page.notice(lp.shiftForm.absenteeismLateMinutesNeedNumber, 'error');
-            return ;
+            return;
         }
         if (myForm.id && myForm.id !== '') {
             const json = await attendanceShiftAction("shiftUpdate", myForm);
@@ -279,5 +294,5 @@ export default content({
         o2.api.page.notice(lp.shiftForm.success, 'success');
         this.closeShift();
     },
-   
+
 });

@@ -11,6 +11,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -18,6 +19,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by fancyLou on 2023/2/15.
@@ -40,15 +42,18 @@ public class ActionListByPage extends BaseAction {
             if (wi == null) {
                 wi = new Wi();
             }
-            String assistAdmin = null;
-            // 不是管理员 只查询协助管理员的数据
-            if(!business.isManager(effectivePerson)){
-                assistAdmin = effectivePerson.getDistinguishedName();
+            boolean isManager = business.isManager(effectivePerson);
+            if(!isManager && (wi.getBelongs() == null || wi.getBelongs().isEmpty())){
+                throw new ExceptionAccessDenied(effectivePerson.getName(), "您不是管理员.");
+            }
+            List<String> unitDNList = null;
+            if (!isManager) {
+                unitDNList = business.getAttendanceV2ManagerFactory().belongOrgs(wi.getBelongs(), business);
             }
             Integer adjustPage = this.adjustPage(page);
             Integer adjustPageSize = this.adjustSize(size);
             List<AttendanceV2Group> list = business.getAttendanceV2ManagerFactory().listGroupWithNameByPage(adjustPage,
-                    adjustPageSize, assistAdmin, wi.getName());
+                    adjustPageSize, unitDNList, wi.getName());
             List<Wo> wos = Wo.copier.copy(list);
             if (wos != null && !wos.isEmpty()) {
                 for (Wo group : wos) {
@@ -63,7 +68,7 @@ public class ActionListByPage extends BaseAction {
                 }
             }
             result.setData(wos);
-            result.setCount(business.getAttendanceV2ManagerFactory().groupCountWithName(assistAdmin, wi.getName()));
+            result.setCount(business.getAttendanceV2ManagerFactory().groupCountWithName(unitDNList, wi.getName()));
             return result;
         }
     }
@@ -74,6 +79,19 @@ public class ActionListByPage extends BaseAction {
         private static final long serialVersionUID = -4138592167949224238L;
         @FieldDescribe("考勤组名称")
         private String name;
+
+
+        @FieldDescribe("所属组织DN")
+        private List<String> belongs;
+
+
+        public List<String> getBelongs() {
+            return belongs;
+        }
+
+        public void setBelongs(List<String> belongs) {
+            this.belongs = belongs;
+        }
 
         public String getName() {
             return name;

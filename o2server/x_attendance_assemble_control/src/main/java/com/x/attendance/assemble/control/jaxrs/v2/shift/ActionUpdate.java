@@ -36,12 +36,13 @@ public class ActionUpdate extends BaseAction {
         ActionResult<Wo> result = new ActionResult<>();
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
-            if(!business.isManager(effectivePerson)){
-                throw new ExceptionAccessDenied(effectivePerson);
-            }
             Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
             if (StringUtils.isBlank(wi.getShiftName())) {
                 throw new ExceptionEmptyParameter("班次名称");
+            }
+            boolean isManager = business.isManager(effectivePerson);
+            if(!isManager && StringUtils.isEmpty(wi.getBelongOrgDn())){
+                throw new ExceptionAccessDenied(effectivePerson);
             }
             // 名称不能相同
             List<AttendanceV2Shift> checkRepetitive = emc.listEqual(AttendanceV2Shift.class, AttendanceV2Shift.shiftName_FIELDNAME, wi.getShiftName());
