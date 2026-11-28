@@ -179,7 +179,26 @@ MWF.xApplication.process.Xform.OOCascade = MWF.APPOOCascade =  new Class({
 		this.searchFunction = this.form.Macro.exec(this.json.searchScript.code, this);
 		return this.searchFunction;
 	},
-
+	resetOption: function () {
+		var select = this.node?.shadowRoot?.querySelector('oo-select');
+		if(select){
+			var options = select.querySelectorAll('oo-option');
+			options.forEach(o=>{
+				o.destroy();
+			});
+		}
+		this.node.empty();
+		this.setOptions();
+		if( this.moduleSelectAG && this.moduleSelectAG.then ){
+			this.moduleSelectAG.then(function(){
+				if( this.json.type === 'Select' )this._checkData();
+				this.fireEvent("resetOption");
+			}.bind(this));
+		}else{
+			if( this.json.type === 'Select' )this._checkData();
+			this.fireEvent("resetOption");
+		}
+	},
 	setOptions: function () {
 		var optionItems = this.getOptions();
 		this._setOptions(optionItems);

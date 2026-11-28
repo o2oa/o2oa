@@ -1147,9 +1147,11 @@ MWF.xApplication.process.workcenter.List = new Class({
 			var form = dataArr[0];
 			var task = dataArr[1];
 			if (form.json.submitFormType === "select") {
-				this.processWork_custom();
+				//this.processWork_custom();
+				this.processWork_pc(task, form, action);
 			} else if (form.json.submitFormType === "script") {
-				this.processWork_custom();
+				//this.processWork_custom();
+				this.processWork_pc(task, form, action);
 			} else {
 				if (form.json.mode == "Mobile") {
 					setTimeout(function () {

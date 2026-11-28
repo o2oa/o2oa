@@ -2088,7 +2088,7 @@ MWF.xApplication.Selector.Person = new Class({
             _self.fireEvent("afterCheckSelectSingleItem",[_self])
         }
     },
-    setSize : function(){
+    setSize: function(){
 
         if( !this.options.width && !this.options.height )return;
 
@@ -2205,7 +2205,8 @@ MWF.xApplication.Selector.Person = new Class({
                 this.shuttleInnerNode.setStyle("margin-top", (selectNodeHeight-shuttleInnerHieght)/2 +"px" )
             }
 
-            var itemAreaScrollNodeHeight = selectNodeHeight - getOffsetY( this.searchInputDiv ) - this.searchInputDiv.getSize().y;
+            //var itemAreaScrollNodeHeight = selectNodeHeight - getOffsetY( this.searchInputDiv ) - this.searchInputDiv.getSize().y;
+            var itemAreaScrollNodeHeight = selectNodeHeight;
             if( this.options.hasTop && this.selectTopNode ){
                 itemAreaScrollNodeHeight = itemAreaScrollNodeHeight - getOffsetY( this.selectTopNode ) - this.selectTopNode.getStyle("height").toInt();
             }
